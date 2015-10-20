@@ -22,34 +22,43 @@
 
 local _M = {}
 
---------------------------------------------------------------------------------
--- Data
---------------------------------------------------------------------------------
+local memory = require "util.memory"
 
-local _addresses = {
-	flag = {
-		dialog = {f = mainmemory.read_u8,     address = 0x00067D, record_size = 1},
-		moving = {f = mainmemory.read_u8,     address = 0x00067B, record_size = 1},
-	},
-	map = {
-		id     = {f = mainmemory.read_u16_be, address = 0x001701, record_size = 1},
-		x      = {f = mainmemory.read_u8,     address = 0x001706, record_size = 1},
-		y      = {f = mainmemory.read_u8,     address = 0x001707, record_size = 1},
-	},
-}
+--------------------------------------------------------------------------------
+-- Private Functions
+--------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
 
-function _M.read(section, key, index)
-	local var = _addresses[section][key]
+function _M.walk(target_map_id, target_x, target_y)
+	local current_map_id = memory.read("map", "id")
+	local current_x = memory.read("map", "x")
+	local current_y = memory.read("map", "y")
 
-	if not index then
-		index = 0
+	if current_map_id == target_map_id and current_x == target_x and current_y == target_y then
+		return true
+	elseif current_map_id ~= target_map_id then
+		return false
+	elseif memory.read("flag", "moving") % 16 ~= 0 then
+		return false
 	end
 
-	return var.f(var.address + index * var.record_size)
+	local dx = target_x - current_x
+	local dy = target_y - current_y
+
+	if dx > 0 then
+		joypad.set({["P1 Right"] = true})
+	elseif dx < 0 then
+		joypad.set({["P1 Left"] = true})
+	elseif dy > 0 then
+		joypad.set({["P1 Down"] = true})
+	elseif dy < 0 then
+		joypad.set({["P1 Up"] = true})
+	end
+
+	return false
 end
 
 return _M

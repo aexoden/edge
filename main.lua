@@ -21,6 +21,7 @@
 --------------------------------------------------------------------------------
 
 local memory = require "util.memory"
+local sequence = require "ai.sequence"
 
 local function is_dialog()
 	return memory.read("flag", "dialog") == 0
@@ -29,6 +30,8 @@ end
 while true do
 	if is_dialog() then
 		joypad.set({["P1 A"] = true})
+	else
+		sequence.cycle()
 	end
 
 	emu.frameadvance()

@@ -22,34 +22,64 @@
 
 local _M = {}
 
+local memory = require "util.memory"
+local walk = require "action.walk"
+
 --------------------------------------------------------------------------------
--- Data
+-- Variables
 --------------------------------------------------------------------------------
 
-local _addresses = {
-	flag = {
-		dialog = {f = mainmemory.read_u8,     address = 0x00067D, record_size = 1},
-		moving = {f = mainmemory.read_u8,     address = 0x00067B, record_size = 1},
-	},
-	map = {
-		id     = {f = mainmemory.read_u16_be, address = 0x001701, record_size = 1},
-		x      = {f = mainmemory.read_u8,     address = 0x001706, record_size = 1},
-		y      = {f = mainmemory.read_u8,     address = 0x001707, record_size = 1},
-	},
-}
+local _q = {}
+
+--------------------------------------------------------------------------------
+-- Sequences
+--------------------------------------------------------------------------------
+
+local function _sequence_introduction()
+	table.insert(_q, {walk.walk, {43, 14, 9}})
+	table.insert(_q, {walk.walk, {42, 8, 10}})
+	table.insert(_q, {walk.walk, {42, 14, 10}})
+	table.insert(_q, {walk.walk, {42, 14, 8}})
+	table.insert(_q, {walk.walk, {42, 13, 8}})
+end
+
+--------------------------------------------------------------------------------
+-- Private Functions
+--------------------------------------------------------------------------------
+
+local function _is_moving()
+	return memory.read("flag", "moving") > 0
+end
+
+local function _check_sequence()
+	if not _is_moving() then
+		local map_id = memory.read("map", "id")
+		local map_x = memory.read("map", "x")
+		local map_y = memory.read("map", "y")
+
+		if map_id == 43 and map_x == 14 and map_y == 5 then
+			_sequence_introduction()
+		end
+	end
+end
+
+local function _execute_next_command()
+	local command = _q[1]
+
+	if command then
+		if command[1](unpack(command[2])) then
+			table.remove(_q, 1)
+		end
+	end
+end
 
 --------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
 
-function _M.read(section, key, index)
-	local var = _addresses[section][key]
-
-	if not index then
-		index = 0
-	end
-
-	return var.f(var.address + index * var.record_size)
+function _M.cycle()
+	_check_sequence()
+	_execute_next_command()
 end
 
 return _M
