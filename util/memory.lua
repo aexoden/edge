@@ -33,7 +33,7 @@ local _addresses = {
 	flag = {
 		dialog  = {f = mainmemory.read_u8,     address = 0x00067D, record_size = 1},
 		moving  = {f = mainmemory.read_u8,     address = 0x0006D5, record_size = 1},
-		ready   = {f = mainmemory.read_u8,     address = 0x0006B1, record_size = 1}, 
+		ready   = {f = mainmemory.read_u8,     address = 0x0006B1, record_size = 1},
 	},
 	map = {
 		id      = {f = mainmemory.read_u16_be, address = 0x001701, record_size = 1},
@@ -42,7 +42,13 @@ local _addresses = {
 	},
 	menu = {
 		open    = {f = mainmemory.read_u8,     address = 0x000500, record_size = 1},
+		ready   = {f = mainmemory.read_u8,     address = 0x000302, record_size = 1},
+		cursor  = {f = mainmemory.read_u8,     address = 0x001A76, record_size = 1},
 	},
+	menu_custom = {
+		open    = {f = mainmemory.read_u8,     address = 0x00030A, record_size = 1},
+		cursor  = {f = mainmemory.read_u8,     address = 0x001BA7, record_size = 1},
+	}
 }
 
 --------------------------------------------------------------------------------

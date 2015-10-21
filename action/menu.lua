@@ -27,11 +27,59 @@ local input = require "util.input"
 local memory = require "util.memory"
 
 --------------------------------------------------------------------------------
+-- Constants
+--------------------------------------------------------------------------------
+
+_M.MENU = {
+	ITEM = 0,
+	MAGIC = 1,
+	EQUIP = 2,
+	STATUS = 3,
+	FORM = 4,
+	CHANGE = 5,
+	CUSTOM = 6,
+	SAVE = 7,
+}
+
+_M.MENU_CUSTOM = {
+	SPEED = 0,
+	MESSAGE = 1,
+	SOUND = 2,
+	R = 3,
+	G = 4,
+	B = 5,
+}
+
+--------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
 
 local function _is_open()
 	return memory.read("menu", "open") > 0
+end
+
+local function _is_open_custom()
+	return memory.read("menu_custom", "open") > 0
+end
+
+local function _is_ready()
+	return memory.read("menu", "ready") == 10
+end
+
+local function _select(current, target, midpoint)
+	if target < current then
+		if current - target <= midpoint then
+			input.press({"P1 Up"})
+		else
+			input.press({"P1 Down"})
+		end
+	else
+		if target - current <= midpoint then
+			input.press({"P1 Down"})
+		else
+			input.press({"P1 Up"})
+		end
+	end
 end
 
 --------------------------------------------------------------------------------
@@ -47,7 +95,41 @@ function _M.open()
 end
 
 function _M.close()
+	if not _is_ready() then
+		return false
+	end
+
 	return input.press({"P1 B"})
+end
+
+function _M.close_custom()
+	return input.press({"P1 B"})
+end
+
+function _M.select(target)
+	local current = memory.read("menu", "cursor")
+
+	if current == target then
+		return input.press({"P1 A"})
+	end
+
+	_select(current, target, 4)
+
+	return false
+end
+
+function _M.select_custom(target)
+	local current = memory.read("menu_custom", "cursor")
+
+	if not _is_open_custom() then
+		return false
+	elseif current == target then
+		return true
+	end
+
+	_select(current, target, 4)
+
+	return false
 end
 
 return _M

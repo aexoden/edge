@@ -23,6 +23,7 @@
 local _M = {}
 
 local flags = require "util.flags"
+local input = require "util.input"
 local memory = require "util.memory"
 local menu = require "action.menu"
 local walk = require "action.walk"
@@ -38,8 +39,19 @@ local _q = {}
 --------------------------------------------------------------------------------
 
 local function _sequence_introduction()
+	-- Change Battle Speed/Battle Message
 	table.insert(_q, {menu.open, {}})
+	table.insert(_q, {menu.select, {menu.MENU.CUSTOM}})
+	table.insert(_q, {menu.select_custom, {menu.MENU_CUSTOM.SPEED}})
+	table.insert(_q, {input.press, {{"P1 Left"}}})
+	table.insert(_q, {input.press, {{"P1 Left"}}})
+	table.insert(_q, {menu.select_custom, {menu.MENU_CUSTOM.MESSAGE}})
+	table.insert(_q, {input.press, {{"P1 Left"}}})
+	table.insert(_q, {input.press, {{"P1 Left"}}})
+	table.insert(_q, {menu.close_custom, {}})
 	table.insert(_q, {menu.close, {}})
+
+	-- Walk to and pick up tent
 	table.insert(_q, {walk.walk, {43, 14, 9}})
 	table.insert(_q, {walk.walk, {42, 8, 10}})
 	table.insert(_q, {walk.walk, {42, 14, 10}})
