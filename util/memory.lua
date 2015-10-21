@@ -27,14 +27,21 @@ local _M = {}
 --------------------------------------------------------------------------------
 
 local _addresses = {
+	counter = {
+		walking = {f = mainmemory.read_u8,     address = 0x00067B, record_size = 1}
+	},
 	flag = {
-		dialog = {f = mainmemory.read_u8,     address = 0x00067D, record_size = 1},
-		moving = {f = mainmemory.read_u8,     address = 0x00067B, record_size = 1},
+		dialog  = {f = mainmemory.read_u8,     address = 0x00067D, record_size = 1},
+		moving  = {f = mainmemory.read_u8,     address = 0x0006D5, record_size = 1},
+		ready   = {f = mainmemory.read_u8,     address = 0x0006B1, record_size = 1}, 
 	},
 	map = {
-		id     = {f = mainmemory.read_u16_be, address = 0x001701, record_size = 1},
-		x      = {f = mainmemory.read_u8,     address = 0x001706, record_size = 1},
-		y      = {f = mainmemory.read_u8,     address = 0x001707, record_size = 1},
+		id      = {f = mainmemory.read_u16_be, address = 0x001701, record_size = 1},
+		x       = {f = mainmemory.read_u8,     address = 0x001706, record_size = 1},
+		y       = {f = mainmemory.read_u8,     address = 0x001707, record_size = 1},
+	},
+	menu = {
+		open    = {f = mainmemory.read_u8,     address = 0x000500, record_size = 1},
 	},
 }
 

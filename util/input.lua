@@ -20,33 +20,47 @@
 -- THE SOFTWARE.
 --------------------------------------------------------------------------------
 
-local input = require "util.input"
-local memory = require "util.memory"
-local sequence = require "ai.sequence"
+local _M = {}
 
 --------------------------------------------------------------------------------
--- Functions
+-- Variables
 --------------------------------------------------------------------------------
 
-local function is_dialog()
-	return memory.read("flag", "dialog") == 0
+_q = {}
+_previous = {}
+
+--------------------------------------------------------------------------------
+-- Public Functions
+--------------------------------------------------------------------------------
+
+function _M.cycle()
+	if #_q > 0 then
+		local buttons = table.remove(_q, 1)
+
+		for k, v in pairs(buttons) do
+			if _previous[k] then
+				buttons[k] = nil
+			end
+		end
+
+		joypad.set(buttons)
+
+		_previous = buttons
+	else
+		_previous = {}
+	end
 end
 
---------------------------------------------------------------------------------
--- Initialization
---------------------------------------------------------------------------------
-
---------------------------------------------------------------------------------
--- Main Loop
---------------------------------------------------------------------------------
-
-while true do
-	if is_dialog() then
-		input.press("P1 A")
-	else
-		sequence.cycle()
+function _M.press(button, delay)
+	if not delay then
+		delay = 0
 	end
 
-	input.cycle()
-	emu.frameadvance()
+	while not _q[delay + 1] do
+		_q[#_q + 1] = {}
+	end
+
+	_q[delay + 1][button] = true
 end
+
+return _M

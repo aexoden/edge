@@ -23,6 +23,7 @@
 local _M = {}
 
 local memory = require "util.memory"
+local menu = require "action.menu"
 local walk = require "action.walk"
 
 --------------------------------------------------------------------------------
@@ -36,6 +37,8 @@ local _q = {}
 --------------------------------------------------------------------------------
 
 local function _sequence_introduction()
+	table.insert(_q, {menu.open, {}})
+	table.insert(_q, {menu.close, {}})
 	table.insert(_q, {walk.walk, {43, 14, 9}})
 	table.insert(_q, {walk.walk, {42, 8, 10}})
 	table.insert(_q, {walk.walk, {42, 14, 10}})
@@ -48,16 +51,21 @@ end
 --------------------------------------------------------------------------------
 
 local function _is_moving()
-	return memory.read("flag", "moving") > 0
+	return memory.read("flag", "moving") == 0
+end
+
+local function _is_ready()
+	return memory.read("flag", "ready") == 0
 end
 
 local function _check_sequence()
-	if not _is_moving() then
+	if #_q == 0 and _is_ready() and not _is_moving() then
 		local map_id = memory.read("map", "id")
 		local map_x = memory.read("map", "x")
 		local map_y = memory.read("map", "y")
 
 		if map_id == 43 and map_x == 14 and map_y == 5 then
+			print("introduction")
 			_sequence_introduction()
 		end
 	end

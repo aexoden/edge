@@ -20,33 +20,41 @@
 -- THE SOFTWARE.
 --------------------------------------------------------------------------------
 
+local _M = {}
+
 local input = require "util.input"
 local memory = require "util.memory"
-local sequence = require "ai.sequence"
 
 --------------------------------------------------------------------------------
--- Functions
+-- Private Functions
 --------------------------------------------------------------------------------
 
-local function is_dialog()
-	return memory.read("flag", "dialog") == 0
+local function _is_open()
+	return memory.read("menu", "open") > 0
 end
 
 --------------------------------------------------------------------------------
--- Initialization
+-- Public Functions
 --------------------------------------------------------------------------------
 
---------------------------------------------------------------------------------
--- Main Loop
---------------------------------------------------------------------------------
-
-while true do
-	if is_dialog() then
-		input.press("P1 A")
-	else
-		sequence.cycle()
+function _M.open()
+	if _is_open() then
+		return true
 	end
 
-	input.cycle()
-	emu.frameadvance()
+	input.press("P1 X")
+
+	return false
 end
+
+function _M.close()
+	if not _is_open() then
+		return true
+	end
+
+	input.press("P1 B")
+
+	return false
+end
+
+return _M

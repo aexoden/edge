@@ -22,11 +22,20 @@
 
 local _M = {}
 
+local input = require "util.input"
 local memory = require "util.memory"
 
 --------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
+
+local function _is_moving()
+	return memory.read("flag", "moving") == 0
+end
+
+local function _is_ready()
+	return memory.read("flag", "ready") == 0
+end
 
 --------------------------------------------------------------------------------
 -- Public Functions
@@ -41,7 +50,7 @@ function _M.walk(target_map_id, target_x, target_y)
 		return true
 	elseif current_map_id ~= target_map_id then
 		return false
-	elseif memory.read("flag", "moving") % 16 ~= 0 then
+	elseif _is_moving() or not _is_ready() then
 		return false
 	end
 
@@ -49,13 +58,13 @@ function _M.walk(target_map_id, target_x, target_y)
 	local dy = target_y - current_y
 
 	if dx > 0 then
-		joypad.set({["P1 Right"] = true})
+		input.press("P1 Right")
 	elseif dx < 0 then
-		joypad.set({["P1 Left"] = true})
+		input.press("P1 Left")
 	elseif dy > 0 then
-		joypad.set({["P1 Down"] = true})
+		input.press("P1 Down")
 	elseif dy < 0 then
-		joypad.set({["P1 Up"] = true})
+		input.press("P1 Up")
 	end
 
 	return false
