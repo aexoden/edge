@@ -26,41 +26,44 @@ local _M = {}
 -- Variables
 --------------------------------------------------------------------------------
 
-_q = {}
-_previous = {}
+_next = nil
 
 --------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
 
 function _M.cycle()
-	if #_q > 0 then
-		local buttons = table.remove(_q, 1)
-
-		for k, v in pairs(buttons) do
-			if _previous[k] then
-				buttons[k] = nil
-			end
+	if _next then
+		if _next.frames == 0 then
+			joypad.set(_next.buttons)
+			_next = nil
+		else
+			_next.frames = _next.frames - 1
 		end
-
-		joypad.set(buttons)
-
-		_previous = buttons
-	else
-		_previous = {}
 	end
 end
 
-function _M.press(button, delay)
+function _M.press(buttons, delay)
+	if _next then
+		return false
+	end
+
 	if not delay then
-		delay = 0
+		delay = math.random(5, 15)
 	end
 
-	while not _q[delay + 1] do
-		_q[#_q + 1] = {}
+	send_buttons = {}
+
+	for k, v in pairs(buttons) do
+		send_buttons[v] = true
 	end
 
-	_q[delay + 1][button] = true
+	_next = {
+		frames = delay,
+		buttons = send_buttons
+	}
+
+	return true
 end
 
 return _M

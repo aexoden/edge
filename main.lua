@@ -38,7 +38,7 @@ local sequence = require "ai.sequence"
 
 while true do
 	if flags.is_dialog() then
-		input.press("P1 A")
+		input.press({"P1 A"})
 	else
 		sequence.cycle()
 	end

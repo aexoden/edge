@@ -22,6 +22,7 @@
 
 local _M = {}
 
+local flags = require "util.flags"
 local input = require "util.input"
 local memory = require "util.memory"
 
@@ -38,23 +39,15 @@ end
 --------------------------------------------------------------------------------
 
 function _M.open()
-	if _is_open() then
-		return true
+	if not flags.is_ready() then
+		return false
 	end
 
-	input.press("P1 X")
-
-	return false
+	return input.press({"P1 X"})
 end
 
 function _M.close()
-	if not _is_open() then
-		return true
-	end
-
-	input.press("P1 B")
-
-	return false
+	return input.press({"P1 B"})
 end
 
 return _M
