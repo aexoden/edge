@@ -22,20 +22,13 @@
 
 local _M = {}
 
+local flags = require "util.flags"
 local input = require "util.input"
 local memory = require "util.memory"
 
 --------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
-
-local function _is_moving()
-	return memory.read("flag", "moving") == 0
-end
-
-local function _is_ready()
-	return memory.read("flag", "ready") == 0
-end
 
 --------------------------------------------------------------------------------
 -- Public Functions
@@ -50,7 +43,7 @@ function _M.walk(target_map_id, target_x, target_y)
 		return true
 	elseif current_map_id ~= target_map_id then
 		return false
-	elseif _is_moving() or not _is_ready() then
+	elseif flags.is_moving() or not flags.is_ready() then
 		return false
 	end
 

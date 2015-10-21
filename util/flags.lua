@@ -20,29 +20,24 @@
 -- THE SOFTWARE.
 --------------------------------------------------------------------------------
 
-local flags = require "util.flags"
-local input = require "util.input"
-local sequence = require "ai.sequence"
+local _M = {}
+
+local memory = require "util.memory"
 
 --------------------------------------------------------------------------------
--- Functions
+-- Public Functions
 --------------------------------------------------------------------------------
 
---------------------------------------------------------------------------------
--- Initialization
---------------------------------------------------------------------------------
-
---------------------------------------------------------------------------------
--- Main Loop
---------------------------------------------------------------------------------
-
-while true do
-	if flags.is_dialog() then
-		input.press("P1 A")
-	else
-		sequence.cycle()
-	end
-
-	input.cycle()
-	emu.frameadvance()
+function _M.is_dialog()
+	return memory.read("flag", "dialog") == 0
 end
+
+function _M.is_moving()
+	return memory.read("flag", "moving") == 0
+end
+
+function _M.is_ready()
+	return memory.read("flag", "ready") == 0
+end
+
+return _M

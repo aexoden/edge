@@ -22,6 +22,7 @@
 
 local _M = {}
 
+local flags = require "util.flags"
 local memory = require "util.memory"
 local menu = require "action.menu"
 local walk = require "action.walk"
@@ -50,16 +51,8 @@ end
 -- Private Functions
 --------------------------------------------------------------------------------
 
-local function _is_moving()
-	return memory.read("flag", "moving") == 0
-end
-
-local function _is_ready()
-	return memory.read("flag", "ready") == 0
-end
-
 local function _check_sequence()
-	if #_q == 0 and _is_ready() and not _is_moving() then
+	if #_q == 0 and flags.is_ready() and not flags.is_moving() then
 		local map_id = memory.read("map", "id")
 		local map_x = memory.read("map", "x")
 		local map_y = memory.read("map", "y")
