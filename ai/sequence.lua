@@ -64,6 +64,21 @@ local function _sequence_introduction()
 	table.insert(_q, {walk.walk, {42, 15, 4}})
 	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
 	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
+
+	-- Walk to Cecil's room
+	table.insert(_q, {walk.walk, {42, 14, 4}})
+	table.insert(_q, {walk.walk, {42, 14, 10}})
+	table.insert(_q, {walk.walk, {42, 1, 10}})
+	table.insert(_q, {walk.walk, {42, 1, 5}})
+	table.insert(_q, {walk.walk, {36, 8, 13}})
+	table.insert(_q, {walk.walk, {45, 2, 12}})
+	table.insert(_q, {walk.walk, {36, 6, 18}})
+	table.insert(_q, {walk.walk, {36, 6, 9}})
+	table.insert(_q, {walk.walk, {50, 5, 4}})
+	table.insert(_q, {walk.walk, {51, 6, 4}})
+	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
+	table.insert(_q, {walk.walk, {51, 9, 4}})
+	table.insert(_q, {walk.walk, {52, 3, 4}})
 end
 
 --------------------------------------------------------------------------------
