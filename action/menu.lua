@@ -91,7 +91,7 @@ function _M.open()
 		return false
 	end
 
-	return input.press({"P1 X"})
+	return input.press({"P1 X"}, input.DELAY.MASH)
 end
 
 function _M.close()
@@ -99,7 +99,7 @@ function _M.close()
 		return false
 	end
 
-	return input.press({"P1 B"})
+	return input.press({"P1 B"}, input.DELAY.MASH)
 end
 
 function _M.close_custom()

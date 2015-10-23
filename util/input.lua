@@ -23,6 +23,16 @@
 local _M = {}
 
 --------------------------------------------------------------------------------
+-- Constants
+--------------------------------------------------------------------------------
+
+_M.DELAY = {
+	NONE = 0,
+	MASH = 1,
+	NORMAL = 2,
+}
+
+--------------------------------------------------------------------------------
 -- Variables
 --------------------------------------------------------------------------------
 
@@ -43,12 +53,20 @@ function _M.cycle()
 	end
 end
 
-function _M.press(buttons, delay)
+function _M.press(buttons, delay_type)
 	if _next then
 		return false
 	end
 
-	if not delay then
+	if not delay_type then
+		delay_type = _M.DELAY.NORMAL
+	end
+
+	delay = 0
+
+	if delay_type == _M.DELAY.MASH then
+		delay = math.random(3, 6)
+	elseif delay_type == _M.DELAY_NORMAL then
 		delay = math.random(5, 15)
 	end
 

@@ -47,13 +47,13 @@ function _M.step(direction)
 	end
 
 	if direction == _M.DIRECTION.UP then
-		input.press({"P1 Up"})
+		input.press({"P1 Up"}, input.DELAY.NONE)
 	elseif direction == _M.DIRECTION.DOWN then
-		input.press({"P1 Down"})
+		input.press({"P1 Down"}, input.DELAY.NONE)
 	elseif direction == _M.DIRECTION.LEFT then
-		input.press({"P1 Left"})
+		input.press({"P1 Left"}, input.DELAY.NONE)
 	else
-		input.press({"P1 Right"})
+		input.press({"P1 Right"}, input.DELAY.NONE)
 	end
 
 	return true
@@ -76,13 +76,13 @@ function _M.walk(target_map_id, target_x, target_y)
 	local dy = target_y - current_y
 
 	if dx > 0 then
-		input.press({"P1 Right"}, 0)
+		input.press({"P1 Right"}, input.DELAY.NONE)
 	elseif dx < 0 then
-		input.press({"P1 Left"}, 0)
+		input.press({"P1 Left"}, input.DELAY.NONE)
 	elseif dy > 0 then
-		input.press({"P1 Down"}, 0)
+		input.press({"P1 Down"}, input.DELAY.NONE)
 	elseif dy < 0 then
-		input.press({"P1 Up"}, 0)
+		input.press({"P1 Up"}, input.DELAY.NONE)
 	end
 
 	return false
