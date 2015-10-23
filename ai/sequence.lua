@@ -57,6 +57,13 @@ local function _sequence_introduction()
 	table.insert(_q, {walk.walk, {42, 14, 10}})
 	table.insert(_q, {walk.walk, {42, 14, 8}})
 	table.insert(_q, {walk.walk, {42, 13, 8}})
+	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+	table.insert(_q, {input.press, {{"P1 A"}}})
+	table.insert(_q, {walk.walk, {42, 14, 8}})
+	table.insert(_q, {walk.walk, {42, 14, 4}})
+	table.insert(_q, {walk.walk, {42, 15, 4}})
+	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+	table.insert(_q, {input.press, {{"P1 A"}}})
 end
 
 --------------------------------------------------------------------------------

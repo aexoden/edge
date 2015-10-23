@@ -27,12 +27,37 @@ local input = require "util.input"
 local memory = require "util.memory"
 
 --------------------------------------------------------------------------------
--- Private Functions
+-- Constants
 --------------------------------------------------------------------------------
+
+_M.DIRECTION = {
+	UP = 0,
+	DOWN = 1,
+	LEFT = 2,
+	RIGHT = 3
+}
 
 --------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
+
+function _M.step(direction)
+	if flags.is_moving() or not flags.is_ready() then
+		return false
+	end
+
+	if direction == _M.DIRECTION.UP then
+		input.press({"P1 Up"})
+	elseif direction == _M.DIRECTION.DOWN then
+		input.press({"P1 Down"})
+	elseif direction == _M.DIRECTION.LEFT then
+		input.press({"P1 Left"})
+	else
+		input.press({"P1 Right"})
+	end
+
+	return true
+end
 
 function _M.walk(target_map_id, target_x, target_y)
 	local current_map_id = memory.read("map", "id")
