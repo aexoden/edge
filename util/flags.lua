@@ -25,6 +25,16 @@ local _M = {}
 local memory = require "util.memory"
 
 --------------------------------------------------------------------------------
+-- Constants
+--------------------------------------------------------------------------------
+
+_M.VEHICLE = {
+	NONE = 0,
+	CHOCOBO = 1,
+	HOVERCRAFT = 3,
+}
+
+--------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
 
@@ -34,7 +44,14 @@ function _M.is_dialog()
 end
 
 function _M.is_moving()
-	return memory.read("counter", "walking") % 16 ~= 0
+	local frames = 16
+	local vehicle = memory.read("map", "vehicle")
+
+	if vehicle == _M.VEHICLE.CHOCOBO or vehicle == _M.VEHICLE.HOVERCRAFT then
+		frames = 8
+	end
+
+	return memory.read("counter", "walking") % frames ~= 0
 end
 
 function _M.is_ready()

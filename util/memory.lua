@@ -39,6 +39,7 @@ local _addresses = {
 	map = {
 		type      = {f = mainmemory.read_u8,     address = 0x001700, record_size = 1},
 		id        = {f = mainmemory.read_u16_be, address = 0x001701, record_size = 1},
+		vehicle   = {f = mainmemory.read_u8,     address = 0x001704, record_size = 1},
 		direction = {f = mainmemory.read_u8,     address = 0x001705, record_size = 1},
 		x         = {f = mainmemory.read_u8,     address = 0x001706, record_size = 1},
 		y         = {f = mainmemory.read_u8,     address = 0x001707, record_size = 1},
