@@ -29,11 +29,12 @@ local memory = require "util.memory"
 --------------------------------------------------------------------------------
 
 function _M.is_dialog()
-	return memory.read("flag", "dialog") == 0
+	local dialog_size = memory.read("counter", "dialog")
+	return dialog_size == 7 or (dialog_size > 0 and memory.read("flag", "dialog") == 0)
 end
 
 function _M.is_moving()
-	return memory.read("flag", "moving") % 16 ~= 0
+	return memory.read("counter", "walking") % 16 ~= 0
 end
 
 function _M.is_ready()
