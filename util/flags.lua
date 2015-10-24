@@ -33,7 +33,7 @@ function _M.is_dialog()
 end
 
 function _M.is_moving()
-	return memory.read("flag", "moving") == 0
+	return memory.read("flag", "moving") % 16 ~= 0
 end
 
 function _M.is_ready()

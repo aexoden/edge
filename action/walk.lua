@@ -32,9 +32,9 @@ local memory = require "util.memory"
 
 _M.DIRECTION = {
 	UP = 0,
-	DOWN = 1,
-	LEFT = 2,
-	RIGHT = 3
+	RIGHT = 1,
+	DOWN = 2,
+	LEFT = 3
 }
 
 --------------------------------------------------------------------------------
@@ -59,14 +59,83 @@ function _M.step(direction)
 	return true
 end
 
+function _M.chase(target_map_id, npcs)
+	local current_map_id = memory.read("map", "id")
+	local current_x = memory.read("map", "x")
+	local current_y = memory.read("map", "y")
+	local current_direction = memory.read("map", "direction")
+
+	if flags.is_moving() or not flags.is_ready() then
+		return false
+	elseif current_map_id ~= target_map_id then
+		return false
+	end
+
+	local target_npc = -1
+	local target_distance = 10000
+
+	for _, i in pairs(npcs) do
+		local dx = memory.read("npc", "x", i) - current_x
+		local dy = memory.read("npc", "y", i) - current_y
+
+		if (dx == 0 and math.abs(dy) == 1) or (dy == 0 and math.abs(dx) == 1) then
+			local direction = _M.DIRECTION.UP
+
+			if dx == 0 and dy == -1 then
+				direction = _M.DIRECTION.UP
+			elseif dx == 0 and dy == 1 then
+				direction = _M.DIRECTION.DOWN
+			elseif dy == 0 and dx == -1 then
+				direction = _M.DIRECTION.LEFT
+			else
+				direction = _M.DIRECTION.RIGHT
+			end
+
+			if current_direction ~= direction then
+				_M.step(direction)
+				return false
+			end
+
+			input.press({"P1 A"}, input.DELAY.MASH)
+			return true
+		else
+			local distance = math.abs(dx) + math.abs(dy)
+
+			if distance < target_distance then
+				target_npc = i
+				target_distance = distance
+			end
+		end
+	end
+
+	local dx = memory.read("npc", "x", target_npc) - current_x
+	local dy = memory.read("npc", "y", target_npc) - current_y
+
+	if math.abs(dx) > math.abs(dy) then
+		if dx > 0 then
+			_M.step(_M.DIRECTION.RIGHT)
+		elseif dx < 0 then
+			_M.step(_M.DIRECTION.LEFT)
+		end
+	else
+		if dy > 0 then
+			_M.step(_M.DIRECTION.DOWN)
+		elseif dy < 0 then
+			_M.step(_M.DIRECTION.UP)
+		end
+	end
+
+	return false
+end
+
 function _M.walk(target_map_id, target_x, target_y)
 	local current_map_id = memory.read("map", "id")
 	local current_x = memory.read("map", "x")
 	local current_y = memory.read("map", "y")
 
-	if current_map_id == target_map_id and current_x == target_x and current_y == target_y then
+	if (not target_map_id or current_map_id == target_map_id) and current_x == target_x and current_y == target_y then
 		return true
-	elseif current_map_id ~= target_map_id then
+	elseif target_map_id and current_map_id ~= target_map_id then
 		return false
 	elseif flags.is_moving() or not flags.is_ready() then
 		return false

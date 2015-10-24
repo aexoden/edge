@@ -38,7 +38,7 @@ local _q = {}
 -- Sequences
 --------------------------------------------------------------------------------
 
-local function _sequence_introduction()
+local function _sequence_prologue()
 	-- Change Battle Speed/Battle Message
 	table.insert(_q, {menu.open, {}})
 	table.insert(_q, {menu.select, {menu.MENU.CUSTOM}})
@@ -81,19 +81,32 @@ local function _sequence_introduction()
 	table.insert(_q, {walk.walk, {52, 3, 4}})
 end
 
+local function _sequence_d_mist()
+	-- Walk to Chocobo's Forest and get chocobo
+	table.insert(_q, {walk.walk, {nil, 102, 160}})
+	table.insert(_q, {walk.walk, {nil, 89, 160}})
+	table.insert(_q, {walk.walk, {nil, 89, 163}})
+	table.insert(_q, {walk.chase, {210, {6, 7, 8}}})
+	table.insert(_q, {walk.walk, {nil, 89, 147}})
+end
+
 --------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
 
 local function _check_sequence()
 	if #_q == 0 and flags.is_ready() and not flags.is_moving() then
+		local map_type = memory.read("map", "type")
 		local map_id = memory.read("map", "id")
 		local map_x = memory.read("map", "x")
 		local map_y = memory.read("map", "y")
 
-		if map_id == 43 and map_x == 14 and map_y == 5 then
-			print("introduction")
-			_sequence_introduction()
+		if map_type == 3 and map_id == 43 and map_x == 14 and map_y == 5 then
+			console.log("Sequence: Prologue")
+			_sequence_prologue()
+		elseif map_type == 0 and map_x == 102 and map_y == 158 then
+			console.log("Sequence: D.Mist")
+			_sequence_d_mist()
 		end
 	end
 end
