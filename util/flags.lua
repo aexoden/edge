@@ -38,6 +38,10 @@ _M.VEHICLE = {
 -- Public Functions
 --------------------------------------------------------------------------------
 
+function _M.is_battle()
+	return memory.read("battle", "active") > 0
+end
+
 function _M.is_dialog()
 	local dialog_size = memory.read("counter", "dialog")
 	return dialog_size == 7 or (dialog_size > 0 and (memory.read("flag", "dialog") == 0 or memory.read("flag", "prompt") == 0))

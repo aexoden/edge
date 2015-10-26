@@ -27,8 +27,11 @@ local _M = {}
 --------------------------------------------------------------------------------
 
 local _addresses = {
+	battle = {
+		active    = {f = mainmemory.read_u8,     address = 0x000203, record_size = 1},
+	},
 	counter = {
-		dialog    = {f = mainmemory.read_u8,     address = 0x0006Df, record_size = 1},
+		dialog    = {f = mainmemory.read_u8,     address = 0x0006DF, record_size = 1},
 		walking   = {f = mainmemory.read_u8,     address = 0x00067B, record_size = 1},
 	},
 	flag = {

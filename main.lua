@@ -20,6 +20,7 @@
 -- THE SOFTWARE.
 --------------------------------------------------------------------------------
 
+local battle = require "ai.battle"
 local flags = require "util.flags"
 local input = require "util.input"
 local sequence = require "ai.sequence"
@@ -37,7 +38,9 @@ local sequence = require "ai.sequence"
 --------------------------------------------------------------------------------
 
 while true do
-	if flags.is_dialog() then
+	if flags.is_battle() then
+		battle.cycle()
+	elseif flags.is_dialog() then
 		input.press({"P1 A"}, input.DELAY.MASH)
 	else
 		sequence.cycle()
