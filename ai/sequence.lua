@@ -22,8 +22,8 @@
 
 local _M = {}
 
-local flags = require "util.flags"
 local input = require "util.input"
+local log = require "util.log"
 local memory = require "util.memory"
 local menu = require "action.menu"
 local walk = require "action.walk"
@@ -133,17 +133,17 @@ end
 --------------------------------------------------------------------------------
 
 local function _check_sequence()
-	if #_q == 0 and flags.is_ready() and not flags.is_moving() then
-		local map_type = memory.read("map", "type")
-		local map_id = memory.read("map", "id")
-		local map_x = memory.read("map", "x")
-		local map_y = memory.read("map", "y")
+	if #_q == 0 and walk.is_ready() and not walk.is_mid_tile() then
+		local map_area = memory.read("walk", "map_area")
+		local map_id = memory.read("walk", "map_id")
+		local map_x = memory.read("walk", "x")
+		local map_y = memory.read("walk", "y")
 
-		if map_type == 3 and map_id == 43 and map_x == 14 and map_y == 5 then
-			console.log("Sequence: Prologue")
+		if map_area == 3 and map_id == 43 and map_x == 14 and map_y == 5 then
+			log.log("Beginning Sequence: Prologue")
 			_sequence_prologue()
-		elseif map_type == 0 and map_x == 102 and map_y == 158 then
-			console.log("Sequence: D.Mist")
+		elseif map_area == 0 and map_x == 102 and map_y == 158 then
+			log.log("Beginning Sequence: D.Mist")
 			_sequence_d_mist()
 		end
 	end
@@ -166,6 +166,12 @@ end
 function _M.cycle()
 	_check_sequence()
 	_execute_next_command()
+
+	return true
+end
+
+function _M.reset()
+	_q = {}
 end
 
 return _M

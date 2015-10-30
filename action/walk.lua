@@ -22,7 +22,6 @@
 
 local _M = {}
 
-local flags = require "util.flags"
 local input = require "util.input"
 local memory = require "util.memory"
 
@@ -37,12 +36,37 @@ _M.DIRECTION = {
 	LEFT = 3
 }
 
+_M.VEHICLE = {
+	NONE = 0,
+	CHOCOBO = 1,
+	HOVERCRAFT = 3,
+}
+
+--------------------------------------------------------------------------------
+-- Private Functions
+--------------------------------------------------------------------------------
+
 --------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
 
+function _M.is_mid_tile()
+	local frames = 16
+	local vehicle = memory.read("walk", "vehicle")
+
+	if vehicle == _M.VEHICLE.CHOCOBO or vehicle == _M.VEHICLE.HOVERCRAFT then
+		frames = 8
+	end
+
+	return memory.read("walk", "frames") % frames ~= 0
+end
+
+function _M.is_ready()
+	return memory.read("walk", "state") == 0
+end
+
 function _M.step(direction)
-	if flags.is_moving() or not flags.is_ready() then
+	if _M.is_mid_tile() or not _M.is_ready() then
 		return false
 	end
 
@@ -60,12 +84,12 @@ function _M.step(direction)
 end
 
 function _M.chase(target_map_id, npcs)
-	local current_map_id = memory.read("map", "id")
-	local current_x = memory.read("map", "x")
-	local current_y = memory.read("map", "y")
-	local current_direction = memory.read("map", "direction")
+	local current_map_id = memory.read("walk", "map_id")
+	local current_x = memory.read("walk", "x")
+	local current_y = memory.read("walk", "y")
+	local current_direction = memory.read("walk", "direction")
 
-	if flags.is_moving() or not flags.is_ready() then
+	if _M.is_mid_tile() or not _M.is_ready() then
 		return false
 	elseif current_map_id ~= target_map_id then
 		return false
@@ -129,15 +153,15 @@ function _M.chase(target_map_id, npcs)
 end
 
 function _M.walk(target_map_id, target_x, target_y)
-	local current_map_id = memory.read("map", "id")
-	local current_x = memory.read("map", "x")
-	local current_y = memory.read("map", "y")
+	local current_map_id = memory.read("walk", "map_id")
+	local current_x = memory.read("walk", "x")
+	local current_y = memory.read("walk", "y")
 
 	if (not target_map_id or current_map_id == target_map_id) and current_x == target_x and current_y == target_y then
 		return true
 	elseif target_map_id and current_map_id ~= target_map_id then
 		return false
-	elseif flags.is_moving() or not flags.is_ready() then
+	elseif _M.is_mid_tile() or not _M.is_ready() then
 		return false
 	end
 

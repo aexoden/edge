@@ -22,59 +22,108 @@
 
 local _M = {}
 
+local log = require "util.log"
+
+memory.usememorydomain("CARTROM")
+
+--------------------------------------------------------------------------------
+-- Text Conversion
+--------------------------------------------------------------------------------
+
+local _characters = {
+	[0x4F] = "N",
+	[0x55] = "T",
+	[0x6A] = "o",
+	[0x70] = "u",
+}
+
+local function _read_character(address)
+	return(_characters[mainmemory.read_u8(address)])
+end
+
 --------------------------------------------------------------------------------
 -- Data
 --------------------------------------------------------------------------------
 
 local _addresses = {
 	battle = {
-		active    = {f = mainmemory.read_u8,     address = 0x000203, record_size = 1},
+		formation  = {f = mainmemory.read_u16_le, address = 0x001800, record_size = {0x01, 0x01}},
+		state      = {f = mainmemory.read_u8,     address = 0x000203, record_size = {0x01, 0x01}},
 	},
-	counter = {
-		dialog    = {f = mainmemory.read_u8,     address = 0x0006DF, record_size = 1},
-		walking   = {f = mainmemory.read_u8,     address = 0x00067B, record_size = 1},
+	battle_dialog = {
+		state      = {f = mainmemory.read_u8,     address = 0x00F43A, record_size = {0x01, 0x01}},
+		text       = {f = _read_character,        address = 0x00DB6E, record_size = {0x02, 0x01}},
 	},
-	flag = {
-		dialog    = {f = mainmemory.read_u8,     address = 0x00067D, record_size = 1},
-		moving    = {f = mainmemory.read_u8,     address = 0x0006D5, record_size = 1},
-		prompt    = {f = mainmemory.read_u8,     address = 0x000654, record_size = 1},
-		ready     = {f = mainmemory.read_u8,     address = 0x0006B1, record_size = 1},
+	battle_menu = {
+		command    = {f = mainmemory.read_u8,     address = 0x003303, record_size = {0x1C, 0x04}},
+		cursor     = {f = mainmemory.read_u8,     address = 0x000060, record_size = {0x01, 0x01}},
+		item_count = {f = mainmemory.read_u8,     address = 0x00321C, record_size = {0x04, 0x01}},
+		item_id    = {f = mainmemory.read_u8,     address = 0x00321B, record_size = {0x04, 0x01}},
+		menu       = {f = mainmemory.read_u8,     address = 0x001823, record_size = {0x01, 0x01}},
+		opening    = {f = mainmemory.read_u8,     address = 0x001820, record_size = {0x01, 0x01}},
+		slot       = {f = mainmemory.read_s8,     address = 0x0000D0, record_size = {0x01, 0x01}},
+		subcursor  = {f = mainmemory.read_u8,     address = 0x000063, record_size = {0x01, 0x01}},
+		target     = {f = mainmemory.read_u8,     address = 0x00EF8D, record_size = {0x01, 0x01}},
 	},
-	map = {
-		type      = {f = mainmemory.read_u8,     address = 0x001700, record_size = 1},
-		id        = {f = mainmemory.read_u16_be, address = 0x001701, record_size = 1},
-		vehicle   = {f = mainmemory.read_u8,     address = 0x001704, record_size = 1},
-		direction = {f = mainmemory.read_u8,     address = 0x001705, record_size = 1},
-		x         = {f = mainmemory.read_u8,     address = 0x001706, record_size = 1},
-		y         = {f = mainmemory.read_u8,     address = 0x001707, record_size = 1},
+	character = {
+		id         = {f = mainmemory.read_u8,     address = 0x002000, record_size = {0x80, 0x01}},
+		hp         = {f = mainmemory.read_u16_be, address = 0x002007, record_size = {0x80, 0x01}},
+	},
+	dialog = {
+		height     = {f = mainmemory.read_u8,     address = 0x0006DF, record_size = {0x01, 0x01}},
+		prompt     = {f = mainmemory.read_u8,     address = 0x000654, record_size = {0x01, 0x01}},
+		state      = {f = mainmemory.read_u8,     address = 0x00067D, record_size = {0x01, 0x01}},
 	},
 	menu = {
-		open      = {f = mainmemory.read_u8,     address = 0x000500, record_size = 1},
-		ready     = {f = mainmemory.read_u8,     address = 0x000302, record_size = 1},
-		cursor    = {f = mainmemory.read_u8,     address = 0x001A76, record_size = 1},
+		cursor     = {f = mainmemory.read_u8,     address = 0x001A76, record_size = {0x01, 0x01}},
+		ready      = {f = mainmemory.read_u8,     address = 0x000302, record_size = {0x01, 0x01}},
+		state      = {f = mainmemory.read_u8,     address = 0x000500, record_size = {0x01, 0x01}},
 	},
-	menu_custom = {
-		open      = {f = mainmemory.read_u8,     address = 0x00030A, record_size = 1},
-		cursor    = {f = mainmemory.read_u8,     address = 0x001BA7, record_size = 1},
+	monster = {
+		hp         = {f = mainmemory.read_u16_be, address = 0x002287, record_size = {0x80, 0x01}},
 	},
 	npc = {
-		x         = {f = mainmemory.read_u8,     address = 0x000904, record_size = 15},
-		y         = {f = mainmemory.read_u8,     address = 0x000906, record_size = 15},
+		x          = {f = mainmemory.read_u8,     address = 0x000904, record_size = {0x0F, 0x01}},
+		y          = {f = mainmemory.read_u8,     address = 0x000906, record_size = {0x0F, 0x01}},
 	},
+	menu_custom = {
+		cursor     = {f = mainmemory.read_u8,     address = 0x001BA7, record_size = {0x01, 0x01}},
+		state      = {f = mainmemory.read_u8,     address = 0x00030A, record_size = {0x01, 0x01}},
+	},
+	walk = {
+		direction  = {f = mainmemory.read_u8,     address = 0x001705, record_size = {0x01, 0x01}},
+		frames     = {f = mainmemory.read_u8,     address = 0x00067B, record_size = {0x01, 0x01}},
+		map_area   = {f = mainmemory.read_u8,     address = 0x001700, record_size = {0x01, 0x01}},
+		map_id     = {f = mainmemory.read_u16_be, address = 0x001701, record_size = {0x01, 0x01}},
+		state      = {f = mainmemory.read_u8,     address = 0x0006B1, record_size = {0x01, 0x01}},
+		vehicle    = {f = mainmemory.read_u8,     address = 0x001704, record_size = {0x01, 0x01}},
+		x          = {f = mainmemory.read_u8,     address = 0x001706, record_size = {0x01, 0x01}},
+		y          = {f = mainmemory.read_u8,     address = 0x001707, record_size = {0x01, 0x01}},
+	}
 }
 
 --------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
 
-function _M.read(section, key, index)
-	local var = _addresses[section][key]
+function _M.read(category, key, index, subindex)
+	if _addresses[category] and _addresses[category][key] then
+		local var = _addresses[category][key]
 
-	if not index then
-		index = 0
+		if not index then
+			index = 0
+		end
+
+		if not subindex then
+			subindex = 0
+		end
+
+		return var.f(var.address + index * var.record_size[1] + subindex * var.record_size[2])
+	else
+		log.error(string.format("Attempted to read invalid memory address: %s.%s", category, key))
+
+		return 0
 	end
-
-	return var.f(var.address + index * var.record_size)
 end
 
 return _M

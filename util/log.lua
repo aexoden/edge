@@ -20,43 +20,52 @@
 -- THE SOFTWARE.
 --------------------------------------------------------------------------------
 
-local battle = require "ai.battle"
-local dialog = require "util.dialog"
-local input = require "util.input"
-local log = require "util.log"
-local sequence = require "ai.sequence"
-
-local memory = require "util.memory"
+local _M = {}
 
 --------------------------------------------------------------------------------
--- Functions
+-- Variables
 --------------------------------------------------------------------------------
 
-local function _reset()
-	log.reset()
+local _file = nil
 
-	log.log("Edge Final Fantasy IV Speed Run Bot")
-	log.log("-----------------------------------")
-	log.log("Beginning New Run")
+--------------------------------------------------------------------------------
+-- Public Functions
+--------------------------------------------------------------------------------
 
-	dialog.reset()
-	battle.reset()
-	sequence.reset()
+local function _log(message)
+	message = string.format("%s :: %s", os.date("!%Y-%m-%d %X+0000"), message)
+	console.log(message)
+
+	if _file then
+		_file:write(message)
+		_file:write("\n")
+		_file:flush()
+	end
 end
 
 --------------------------------------------------------------------------------
--- Initialization
+-- Public Functions
 --------------------------------------------------------------------------------
 
-_reset()
-
---------------------------------------------------------------------------------
--- Main Loop
---------------------------------------------------------------------------------
-
-while true do
-	local result = dialog.cycle() or battle.cycle() or sequence.cycle()
-
-	input.cycle()
-	emu.frameadvance()
+function _M.error(message)
+	_log(string.format("ERROR :: %s", message))
 end
+
+function _M.warning(message)
+	_log(string.format("WARNING :: %s", message))
+end
+
+function _M.log(message)
+	_log(message)
+end
+
+function _M.reset()
+	if _file then
+		_file:close()
+		_file = nil
+	end
+
+	_file, err = io.open(string.format("edge-%s.log", os.date("!%Y%m%d%H%M%S")), "w")
+end
+
+return _M

@@ -22,44 +22,37 @@
 
 local _M = {}
 
+local input = require "util.input"
 local memory = require "util.memory"
 
 --------------------------------------------------------------------------------
--- Constants
+-- Private Functions
 --------------------------------------------------------------------------------
 
-_M.VEHICLE = {
-	NONE = 0,
-	CHOCOBO = 1,
-	HOVERCRAFT = 3,
-}
+local function _is_dialog()
+	local battle_dialog_state = memory.read("battle_dialog", "state")
+	local dialog_height = memory.read("dialog", "height")
+	local dialog_state = memory.read("dialog", "state")
+	local dialog_prompt = memory.read("dialog", "prompt")
+
+	return battle_dialog_state == 1 or dialog_height == 7 or (dialog_height > 0 and (dialog_state == 0 or dialog_prompt == 0))
+end
 
 --------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
 
-function _M.is_battle()
-	return memory.read("battle", "active") > 0
-end
+function _M.cycle()
+	if _is_dialog() then
+		input.press({"P1 A"}, input.DELAY.MASH)
 
-function _M.is_dialog()
-	local dialog_size = memory.read("counter", "dialog")
-	return dialog_size == 7 or (dialog_size > 0 and (memory.read("flag", "dialog") == 0 or memory.read("flag", "prompt") == 0))
-end
-
-function _M.is_moving()
-	local frames = 16
-	local vehicle = memory.read("map", "vehicle")
-
-	if vehicle == _M.VEHICLE.CHOCOBO or vehicle == _M.VEHICLE.HOVERCRAFT then
-		frames = 8
+		return true
 	end
 
-	return memory.read("counter", "walking") % frames ~= 0
+	return false
 end
 
-function _M.is_ready()
-	return memory.read("flag", "ready") == 0
+function _M.reset()
 end
 
 return _M
