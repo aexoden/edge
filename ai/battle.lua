@@ -34,11 +34,13 @@ local menu = require "action.menu"
 _M.FORMATION = {
 	D_MIST = 222,
 	GIRL = 236,
+	OFFICER = 237,
 }
 
 local _formation_descriptions = {
 	[_M.FORMATION.D_MIST] = "D.Mist",
 	[_M.FORMATION.GIRL] = "Girl",
+	[_M.FORMATION.OFFICER] = "Officer and Soldiers"
 }
 
 --------------------------------------------------------------------------------
@@ -104,6 +106,10 @@ local function _command_parry()
 	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.PARRY}})
 end
 
+local function _command_run_buffer()
+	table.insert(_state.q, {menu.battle.run_buffer, {}})
+end
+
 local function _command_wait_frames(frames)
 	table.insert(_state.q, {menu.wait_frames, {frames}})
 end
@@ -156,9 +162,15 @@ local function _battle_girl(character, turn)
 	end
 end
 
+local function _battle_officer(character, turn)
+	_command_run_buffer()
+	_command_fight()
+end
+
 local _battle_functions = {
 	[_M.FORMATION.D_MIST] = _battle_d_mist,
 	[_M.FORMATION.GIRL] = _battle_girl,
+	[_M.FORMATION.OFFICER] = _battle_officer,
 }
 
 --------------------------------------------------------------------------------

@@ -355,6 +355,14 @@ function _M.battle.item_equipment_select(index)
 	return false
 end
 
+function _M.battle.run_buffer(target)
+	if _M.battle.wait_text("Ca") then
+		return true
+	else
+		input.press({"P1 L", "P1 R"}, input.DELAY.NONE)
+	end
+end
+
 function _M.battle.target(target)
 	if _is_battle_opening() then
 		return false

@@ -236,6 +236,15 @@ local function _sequence_girl()
 	table.insert(_q, {walk.walk, {1, 8, 16}})
 end
 
+local function _sequence_officer()
+	table.insert(_q, {walk.walk, {nil, 103, 117}})
+	table.insert(_q, {walk.walk, {nil, 104, 117}})
+	table.insert(_q, {walk.walk, {nil, 104, 109}})
+	table.insert(_q, {walk.walk, {nil, 125, 109}})
+	table.insert(_q, {walk.walk, {nil, 125, 104}})
+	table.insert(_q, {walk.walk, {2, 15, 26}})
+end
+
 --------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
@@ -247,15 +256,25 @@ local function _check_sequence()
 		local map_x = memory.read("walk", "x")
 		local map_y = memory.read("walk", "y")
 
+		local sequence = nil
+
 		if map_area == 3 and map_id == 43 and map_x == 14 and map_y == 5 then
-			log.log("Beginning Sequence: Prologue")
-			_sequence_prologue()
+			title = "Prologue"
+			sequence = _sequence_prologue
 		elseif map_area == 0 and map_x == 102 and map_y == 158 then
-			log.log("Beginning Sequence: D.Mist")
-			_sequence_d_mist()
+			title = "D.Mist"
+			sequence = _sequence_d_mist
 		elseif map_area == 0 and map_x == 84 and map_y == 120 then
-			log.log("Beginning Sequence: Girl")
-			_sequence_girl()
+			title = "Girl"
+			sequence = _sequence_girl
+		elseif map_area == 0 and map_x == 103 and map_y == 119 then
+			title = "Officer"
+			sequence = _sequence_officer
+		end
+
+		if sequence then
+			log.log(string.format("Beginning Sequence: %s", title))
+			sequence()
 		end
 	end
 end
