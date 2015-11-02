@@ -51,6 +51,16 @@ _state = nil
 -- Private Functions
 --------------------------------------------------------------------------------
 
+local function _get_formation_description(formation)
+	local description = _formation_descriptions[formation]
+
+	if not description then
+		description = string.format("Formation #%d", formation)
+	end
+
+	return description
+end
+
 local function _is_battle()
 	return memory.read("battle", "state") > 0
 end
@@ -163,13 +173,7 @@ function _M.cycle()
 			_reset_state()
 			_state.formation = formation
 
-			local description = _formation_descriptions[formation]
-
-			if not description then
-				description = string.format("Formation #%d", formation)
-			end
-
-			log.log(string.format("Beginning Battle: %s", description))
+			log.log(string.format("Beginning Battle: %s", _get_formation_description(formation)))
 		end
 
 		if battle_function then
@@ -203,6 +207,7 @@ function _M.cycle()
 		return true
 	else
 		if _state.formation then
+			log.log(string.format("Ending Battle: %s", _get_formation_description(_state.formation)))
 			_reset_state()
 		end
 
