@@ -67,6 +67,7 @@ end
 
 local function _reset_state()
 	_state = {
+		frame = nil,
 		formation = nil,
 		q = {},
 		slot = nil,
@@ -172,8 +173,31 @@ function _M.cycle()
 		if formation ~= _state.formation then
 			_reset_state()
 			_state.formation = formation
+			_state.frame = emu.framecount()
 
-			log.log(string.format("Beginning Battle: %s", _get_formation_description(formation)))
+			local attack_type = "Normal"
+			local attack_value = memory.read("battle", "type")
+
+			if attack_value == 1 then
+				attack_type = "Strike First"
+			elseif attack_value == 128 then
+				if memory.read("battle", "back") == 8 then
+					attack_type = "Back Attack"
+				else
+					attack_type = "Surprised"
+				end
+			end
+
+			local party_level = memory.read("battle", "party_level")
+			local stats
+
+			if party_level > 0 then
+				stats = string.format("%s/%s/%s", attack_type, memory.read("battle", "party_level"), memory.read("battle", "enemy_level"))
+			else
+				stats = attack_type
+			end
+
+			log.log(string.format("Beginning Battle: %s (%s)", _get_formation_description(formation), stats))
 		end
 
 		if battle_function then
@@ -207,7 +231,7 @@ function _M.cycle()
 		return true
 	else
 		if _state.formation then
-			log.log(string.format("Ending Battle: %s", _get_formation_description(_state.formation)))
+			log.log(string.format("Ending Battle: %s (%d frames)", _get_formation_description(_state.formation), emu.framecount() - _state.frame))
 			_reset_state()
 		end
 

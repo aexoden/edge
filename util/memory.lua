@@ -47,8 +47,12 @@ end
 
 local _addresses = {
 	battle = {
+		back          = {f = mainmemory.read_u8,     address = 0x003581, record_size = {0x01, 0x01}},
 		formation     = {f = mainmemory.read_u16_le, address = 0x001800, record_size = {0x01, 0x01}},
 		state         = {f = mainmemory.read_u8,     address = 0x000203, record_size = {0x01, 0x01}},
+		party_level   = {f = mainmemory.read_u8,     address = 0x0038D4, record_size = {0x01, 0x01}},
+		enemy_level   = {f = mainmemory.read_u8,     address = 0x0038D5, record_size = {0x01, 0x01}},
+		type          = {f = mainmemory.read_u8,     address = 0x0038D8, record_size = {0x01, 0x01}},
 	},
 	battle_dialog = {
 		state         = {f = mainmemory.read_u8,     address = 0x00F43A, record_size = {0x01, 0x01}},
