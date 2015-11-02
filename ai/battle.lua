@@ -33,12 +33,12 @@ local menu = require "action.menu"
 
 _M.FORMATION = {
 	D_MIST = 222,
-	RYDIA = 236,
+	GIRL = 236,
 }
 
 local _formation_descriptions = {
 	[_M.FORMATION.D_MIST] = "D.Mist",
-	[_M.FORMATION.RYDIA] = "Rydia",
+	[_M.FORMATION.GIRL] = "Girl",
 }
 
 --------------------------------------------------------------------------------
@@ -149,7 +149,7 @@ local function _battle_d_mist(character, turn)
 	end
 end
 
-local function _battle_rydia(character, turn)
+local function _battle_girl(character, turn)
 	if character == menu.CHARACTER.CECIL then
 		_command_wait_frames(350)
 		_command_change()
@@ -158,7 +158,7 @@ end
 
 local _battle_functions = {
 	[_M.FORMATION.D_MIST] = _battle_d_mist,
-	[_M.FORMATION.RYDIA] = _battle_rydia,
+	[_M.FORMATION.GIRL] = _battle_girl,
 }
 
 --------------------------------------------------------------------------------

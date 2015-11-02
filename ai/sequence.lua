@@ -128,7 +128,7 @@ local function _sequence_d_mist()
 	table.insert(_q, {walk.walk, {108, 27, 2}})
 end
 
-local function _sequence_rydia()
+local function _sequence_girl()
 	-- TODO: Detect and do something about the Mist Clip battle.
 
 	-- Walk toward mist and begin the Mist Clip.
@@ -254,8 +254,8 @@ local function _check_sequence()
 			log.log("Beginning Sequence: D.Mist")
 			_sequence_d_mist()
 		elseif map_area == 0 and map_x == 84 and map_y == 120 then
-			log.log("Beginning Sequence: Rydia")
-			_sequence_rydia()
+			log.log("Beginning Sequence: Girl")
+			_sequence_girl()
 		end
 	end
 end
