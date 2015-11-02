@@ -152,13 +152,21 @@ function _M.chase(target_map_id, npcs)
 	return false
 end
 
+function _M.interact()
+	if _M.is_mid_tile() or not _M.is_ready() then
+		return false
+	end
+
+	return input.press({"P1 A"}, input.DELAY.MASH)
+end
+
 function _M.walk(target_map_id, target_x, target_y)
 	local current_map_id = memory.read("walk", "map_id")
 	local current_x = memory.read("walk", "x")
 	local current_y = memory.read("walk", "y")
 
 	if (not target_map_id or current_map_id == target_map_id) and current_x == target_x and current_y == target_y then
-		return true
+		return nil
 	elseif target_map_id and current_map_id ~= target_map_id then
 		return false
 	elseif _M.is_mid_tile() or not _M.is_ready() then

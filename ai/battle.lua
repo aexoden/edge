@@ -33,10 +33,12 @@ local menu = require "action.menu"
 
 _M.FORMATION = {
 	D_MIST = 222,
+	RYDIA = 236,
 }
 
 local _formation_descriptions = {
-	[_M.FORMATION.D_MIST] = "D.Mist"
+	[_M.FORMATION.D_MIST] = "D.Mist",
+	[_M.FORMATION.RYDIA] = "Rydia",
 }
 
 --------------------------------------------------------------------------------
@@ -73,6 +75,10 @@ end
 -- Command Helpers
 --------------------------------------------------------------------------------
 
+local function _command_change(target)
+	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.CHANGE}})
+end
+
 local function _command_fight(target)
 	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.FIGHT}})
 	table.insert(_state.q, {menu.battle.target, {target}})
@@ -88,7 +94,7 @@ local function _command_parry()
 end
 
 local function _command_wait_frames(frames)
-	table.insert(_state.q, {menu.battle.wait_frames, {frames}})
+	table.insert(_state.q, {menu.wait_frames, {frames}})
 end
 
 local function _command_wait_text(text)
@@ -100,7 +106,7 @@ end
 --------------------------------------------------------------------------------
 
 local function _battle_d_mist(character, turn)
-	if character == menu.battle.CHARACTER.KAIN then
+	if character == menu.CHARACTER.KAIN then
 		if turn == 2 or memory.read("monster", "hp", 0) < 48 then
 			_command_fight()
 		else
@@ -111,19 +117,19 @@ local function _battle_d_mist(character, turn)
 
 			_command_jump()
 		end
-	elseif character == menu.battle.CHARACTER.CECIL then
+	elseif character == menu.CHARACTER.CECIL then
 		if turn == 5 then
 			_command_parry()
 		else
 			if turn == 6 then
 				_command_wait_text("No")
 				table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.ITEM}})
-				table.insert(_state.q, {menu.battle.item_select, {menu.battle.ITEM.NONE, 2}})
+				table.insert(_state.q, {menu.battle.item_select, {menu.ITEM.NONE, 2}})
 				table.insert(_state.q, {menu.battle.item_equipment_select, {1}})
-				table.insert(_state.q, {menu.battle.wait_frames, {5}})
+				table.insert(_state.q, {menu.wait_frames, {5}})
 				table.insert(_state.q, {menu.battle.item_equipment_select, {1}})
-				table.insert(_state.q, {menu.battle.item_select, {menu.battle.ITEM.NONE, 1}})
-				table.insert(_state.q, {menu.battle.wait_frames, {5}})
+				table.insert(_state.q, {menu.battle.item_select, {menu.ITEM.NONE, 1}})
+				table.insert(_state.q, {menu.wait_frames, {5}})
 				table.insert(_state.q, {menu.battle.item_close, {}})
 			end
 
@@ -132,8 +138,16 @@ local function _battle_d_mist(character, turn)
 	end
 end
 
+local function _battle_rydia(character, turn)
+	if character == menu.CHARACTER.CECIL then
+		_command_wait_frames(350)
+		_command_change()
+	end
+end
+
 local _battle_functions = {
-	[_M.FORMATION.D_MIST] = _battle_d_mist
+	[_M.FORMATION.D_MIST] = _battle_d_mist,
+	[_M.FORMATION.RYDIA] = _battle_rydia,
 }
 
 --------------------------------------------------------------------------------
@@ -170,7 +184,7 @@ function _M.cycle()
 			if slot >= 0 and memory.read("battle_menu", "menu") ~= menu.battle.MENU.NONE then
 			 	if not _state.queued then
 					_state.turns[slot] = _state.turns[slot] + 1
-					battle_function(menu.battle.get_character_id(slot), _state.turns[slot])
+					battle_function(menu.get_character_id(slot), _state.turns[slot])
 					_state.queued = true
 				elseif #_state.q > 0 then
 					local command = _state.q[1]

@@ -53,8 +53,12 @@ function _M.cycle()
 	end
 end
 
+function _M.is_clear()
+	return not _next
+end
+
 function _M.press(buttons, delay_type)
-	if _next then
+	if _next or (emu.islagged() and delay_type ~= _M.DELAY.NONE) then
 		return false
 	end
 
