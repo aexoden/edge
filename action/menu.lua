@@ -79,12 +79,15 @@ _M.EQUIP = {
 _M.ITEM = {
 	NONE = 0x00,
 	TENT = 0xE2,
-	DAGGER = {
+	WEAPON = {
 		DANCING = 0x3C,
 	},
 	SHIELD = {
 		SHADOW = 0x62,
 	},
+	HELM = {
+		TIARA = 0x7B,
+	}
 }
 
 _M.battle.MENU = {
@@ -571,12 +574,20 @@ function _M.select_character(character)
 		end
 	end
 
+	return _M.select_character_slot(index)
+end
+
+function _M.select_character_slot(slot)
+	if not _is_ready() then
+		return false
+	end
+
 	local character = memory.read("menu", "character")
 
-	if character == index then
+	if character == slot then
 		return input.press({"P1 A"}, input.DELAY.NORMAL)
 	else
-		_select(memory.read("menu", "character"), index, 2)
+		_select(character, slot, 2)
 	end
 
 	return false

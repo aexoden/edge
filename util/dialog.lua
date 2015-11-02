@@ -26,6 +26,12 @@ local input = require "util.input"
 local memory = require "util.memory"
 
 --------------------------------------------------------------------------------
+-- Variables
+--------------------------------------------------------------------------------
+
+local _mash_button = "P1 A"
+
+--------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
 
@@ -44,7 +50,7 @@ end
 
 function _M.cycle()
 	if _is_dialog() then
-		input.press({"P1 A"}, input.DELAY.MASH)
+		input.press({_mash_button}, input.DELAY.MASH)
 
 		return true
 	end
@@ -53,6 +59,11 @@ function _M.cycle()
 end
 
 function _M.reset()
+end
+
+function _M.set_mash_button(mash_button)
+	_mash_button = mash_button
+	return true
 end
 
 return _M

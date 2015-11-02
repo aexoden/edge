@@ -160,7 +160,7 @@ function _M.interact()
 	return input.press({"P1 A"}, input.DELAY.MASH)
 end
 
-function _M.walk(target_map_id, target_x, target_y)
+function _M.walk(target_map_id, target_x, target_y, npc_safe)
 	local current_map_id = memory.read("walk", "map_id")
 	local current_x = memory.read("walk", "x")
 	local current_y = memory.read("walk", "y")
@@ -171,6 +171,19 @@ function _M.walk(target_map_id, target_x, target_y)
 		return false
 	elseif _M.is_mid_tile() or not _M.is_ready() then
 		return false
+	end
+
+	if npc_safe then
+		for i = 0, 11 do
+			local npc_x = memory.read("npc", "x", i)
+			local npc_y = memory.read("npc", "y", i)
+
+			if npc_x == current_x and ((npc_y >= current_y and npc_y <= target_y) or (npc_y <= current_y and npc_y >= target_y)) then
+				return false
+			elseif npc_y == current_y and ((npc_x >= current_x and npc_x <= target_x) or (npc_x <= current_x and npc_x >= target_x)) then
+				return false
+			end
+		end
 	end
 
 	local dx = target_x - current_x

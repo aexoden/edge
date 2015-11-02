@@ -22,6 +22,7 @@
 
 local _M = {}
 
+local dialog = require "util.dialog"
 local input = require "util.input"
 local log = require "util.log"
 local memory = require "util.memory"
@@ -195,7 +196,7 @@ local function _sequence_girl()
 	table.insert(_q, {menu.close, {}})
 	table.insert(_q, {menu.shop.select, {menu.shop.MENU.BUY}})
 	table.insert(_q, {menu.shop.select_count, {10}})
-	table.insert(_q, {menu.shop.select_buy, {menu.ITEM.DAGGER.DANCING}})
+	table.insert(_q, {menu.shop.select_buy, {menu.ITEM.WEAPON.DANCING}})
 	table.insert(_q, {menu.confirm, {}})
 	table.insert(_q, {menu.wait_frames, {3}})
 	table.insert(_q, {menu.close, {}})
@@ -245,6 +246,67 @@ local function _sequence_officer()
 	table.insert(_q, {walk.walk, {2, 15, 26}})
 end
 
+local function _sequence_tellah()
+	-- Equip the Tiara on Rydia.
+	table.insert(_q, {menu.open, {input.DELAY.MASH}})
+	table.insert(_q, {menu.select, {menu.MENU.EQUIP}})
+	table.insert(_q, {menu.select_character, {menu.CHARACTER.RYDIA}})
+	table.insert(_q, {menu.select_equip, {menu.EQUIP.HEAD}})
+	table.insert(_q, {menu.select_equip_item, {menu.ITEM.HELM.TIARA, 1}})
+	table.insert(_q, {menu.wait_frames, {5}})
+	table.insert(_q, {menu.close, {}})
+
+	-- Change formation.
+	table.insert(_q, {menu.select, {menu.MENU.FORM}})
+	table.insert(_q, {menu.select_character, {menu.CHARACTER.RYDIA}})
+	table.insert(_q, {menu.select_character_slot, {1}})
+	table.insert(_q, {menu.wait_frames, {5}})
+	table.insert(_q, {menu.close, {}})
+
+	-- Visit Rosa.
+	table.insert(_q, {walk.walk, {16, 18, 12}})
+	table.insert(_q, {walk.walk, {16, 18, 14}})
+	table.insert(_q, {walk.walk, {16, 20, 14}})
+	table.insert(_q, {walk.walk, {16, 20, 17}})
+	table.insert(_q, {walk.walk, {2, 14, 18, true}})
+	table.insert(_q, {walk.walk, {2, 18, 18, true}})
+	table.insert(_q, {walk.walk, {2, 18, 16, true}})
+	table.insert(_q, {walk.walk, {2, 24, 16, true}})
+	table.insert(_q, {walk.walk, {2, 24, 15, true}})
+	table.insert(_q, {walk.walk, {2, 28, 15, true}})
+	table.insert(_q, {walk.walk, {2, 28, 13, true}})
+	table.insert(_q, {dialog.set_mash_button, {"P1 B"}})
+	table.insert(_q, {walk.walk, {18, 4, 6}})
+
+	-- Leave Kaipo and head to Tellah.
+	table.insert(_q, {walk.walk, {18, 6, 5}})
+	table.insert(_q, {dialog.set_mash_button, {"P1 A"}})
+	table.insert(_q, {walk.walk, {18, 4, 5}})
+	table.insert(_q, {walk.walk, {18, 4, 18}})
+	table.insert(_q, {walk.walk, {2, 23, 14, true}})
+	table.insert(_q, {walk.walk, {2, 23, 19, true}})
+	table.insert(_q, {walk.walk, {2, 23, 19, true}})
+	table.insert(_q, {walk.walk, {2, 20, 19, true}})
+	table.insert(_q, {walk.walk, {2, 20, 19, true}})
+	table.insert(_q, {walk.walk, {2, 20, 26, true}})
+	table.insert(_q, {walk.walk, {2, 15, 26, true}})
+	table.insert(_q, {walk.walk, {2, 15, 30, true}})
+	table.insert(_q, {walk.walk, {2, 16, 30}})
+	table.insert(_q, {walk.walk, {2, 16, 31}})
+	table.insert(_q, {walk.walk, {nil, 135, 104}})
+	table.insert(_q, {walk.walk, {nil, 135, 84}})
+	table.insert(_q, {walk.walk, {nil, 138, 84}})
+	table.insert(_q, {walk.walk, {nil, 138, 83}})
+	table.insert(_q, {walk.walk, {111, 26, 28}})
+	table.insert(_q, {walk.walk, {111, 21, 28}})
+	table.insert(_q, {walk.walk, {111, 21, 25}})
+	table.insert(_q, {walk.walk, {111, 15, 25}})
+	table.insert(_q, {walk.walk, {111, 15, 22}})
+	table.insert(_q, {walk.walk, {111, 7, 22}})
+	table.insert(_q, {walk.walk, {111, 7, 16}})
+	table.insert(_q, {walk.interact, {}})
+end
+
 --------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
@@ -270,6 +332,9 @@ local function _check_sequence()
 		elseif map_area == 0 and map_x == 103 and map_y == 119 then
 			title = "Officer"
 			sequence = _sequence_officer
+		elseif map_area == 3 and map_id == 16 and map_x == 14 and map_y == 12 then
+			title = "Tellah"
+			sequence = _sequence_tellah
 		end
 
 		if sequence then
