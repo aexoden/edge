@@ -33,7 +33,8 @@ local walk = require "action.walk"
 -- Variables
 --------------------------------------------------------------------------------
 
-local _q = {}
+local _q = nil
+local _state = nil
 
 --------------------------------------------------------------------------------
 -- Sequences
@@ -415,6 +416,66 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {118, 16, 10}})
 end
 
+local function _sequence_edward()
+	-- Open the menu.
+	table.insert(_q, {menu.open, {}})
+
+	-- Deal with the Change rod.
+	if memory.read("character", "r_hand_count", 1) == 255 then
+		_state.multi_change = true
+
+		table.insert(_q, {menu.select, {menu.MENU.EQUIP}})
+		table.insert(_q, {menu.select_character, {menu.CHARACTER.TELLAH}})
+		table.insert(_q, {menu.select_equip, {menu.EQUIP.R_HAND}})
+		table.insert(_q, {menu.select_equip_item, {menu.ITEM.WEAPON.CHANGE, 1}})
+		table.insert(_q, {menu.wait_frames, {5}})
+		table.insert(_q, {menu.select_equip, {menu.EQUIP.R_HAND}})
+		table.insert(_q, {menu.select_equip_item, {menu.ITEM.NONE, 1}})
+		table.insert(_q, {menu.wait_frames, {5}})
+		table.insert(_q, {menu.select_equip, {menu.EQUIP.R_HAND}})
+		table.insert(_q, {menu.select_equip_item, {menu.ITEM.WEAPON.CHANGE, 1}})
+		table.insert(_q, {menu.wait_frames, {5}})
+		table.insert(_q, {menu.close, {}})
+	elseif memory.read("character", "r_hand", 1) == menu.ITEM.WEAPON.CHANGE then
+		table.insert(_q, {menu.select, {menu.MENU.EQUIP}})
+		table.insert(_q, {menu.select_character, {menu.CHARACTER.TELLAH}})
+		table.insert(_q, {menu.select_equip, {menu.EQUIP.R_HAND}})
+		table.insert(_q, {menu.select_equip_item, {menu.ITEM.WEAPON.CHANGE, 1}})
+		table.insert(_q, {menu.wait_frames, {5}})
+		table.insert(_q, {menu.select_equip, {menu.EQUIP.R_HAND}})
+		table.insert(_q, {menu.select_equip_item, {menu.ITEM.WEAPON.STAFF, 1}})
+		table.insert(_q, {menu.wait_frames, {5}})
+		table.insert(_q, {menu.close, {}})
+	end
+
+	-- Change formation.
+	table.insert(_q, {menu.select, {menu.MENU.FORM}})
+	table.insert(_q, {input.press, {{"P1 Left"}, input.DELAY.MASH}})
+	table.insert(_q, {menu.select_character, {menu.CHARACTER.TELLAH}})
+	table.insert(_q, {menu.select_character, {menu.CHARACTER.RYDIA}})
+	table.insert(_q, {menu.wait_frames, {5}})
+	table.insert(_q, {menu.select, {menu.MENU.FORM}})
+	table.insert(_q, {menu.select_character, {menu.CHARACTER.CECIL}})
+	table.insert(_q, {menu.select_character_slot, {3}})
+	table.insert(_q, {menu.wait_frames, {5}})
+	table.insert(_q, {menu.close, {}})
+
+	-- Walk to Damcyan.
+	table.insert(_q, {walk.walk, {nil, 123, 67}})
+	table.insert(_q, {walk.walk, {nil, 123, 68}})
+	table.insert(_q, {walk.walk, {nil, 120, 68}})
+	table.insert(_q, {walk.walk, {nil, 120, 64}})
+	table.insert(_q, {walk.walk, {nil, 119, 64}})
+	table.insert(_q, {walk.walk, {nil, 119, 58}})
+	table.insert(_q, {walk.walk, {37, 16, 11}})
+	table.insert(_q, {walk.walk, {63, 8, 7}})
+	table.insert(_q, {walk.walk, {64, 8, 10}})
+	table.insert(_q, {walk.walk, {64, 7, 10}})
+	table.insert(_q, {walk.walk, {64, 7, 13}})
+	table.insert(_q, {walk.walk, {64, 8, 13}})
+	table.insert(_q, {walk.walk, {65, 13, 11}})
+end
+
 --------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
@@ -446,6 +507,9 @@ local function _check_sequence()
 		elseif map_area == 3 and map_id == 111 and map_x == 7 and map_y == 13 then
 			title = "Octomamm"
 			sequence = _sequence_octomamm
+		elseif map_area == 0 and map_x == 125 and map_y == 67 then
+			title = "Edward"
+			sequence = _sequence_edward
 		end
 
 		if sequence then
@@ -488,6 +552,10 @@ end
 
 function _M.reset()
 	_q = {}
+
+	_state = {
+		multi_change = false
+	}
 end
 
 return _M

@@ -51,7 +51,7 @@ local _addresses = {
 	battle = {
 		back          = {f = mainmemory.read_u8,     address = 0x003581, record_size = {0x01, 0x01}},
 		dropped_gp    = {f = mainmemory.read_u24_le, address = 0x00359A, record_size = {0x01, 0x01}},
-		ending        = {f = mainmemory.read_u8,     address = 0x0000A8, record_size = {0x01, 0x01}}, 
+		ending        = {f = mainmemory.read_u8,     address = 0x0000A8, record_size = {0x01, 0x01}},
 		formation     = {f = mainmemory.read_u16_le, address = 0x001800, record_size = {0x01, 0x01}},
 		state         = {f = mainmemory.read_u8,     address = 0x000203, record_size = {0x01, 0x01}},
 		party_level   = {f = mainmemory.read_u8,     address = 0x0038D4, record_size = {0x01, 0x01}},
@@ -78,7 +78,9 @@ local _addresses = {
 		id            = {f = mainmemory.read_u8,     address = 0x002000, record_size = {0x80, 0x01}},
 		hp            = {f = mainmemory.read_u16_le, address = 0x002007, record_size = {0x80, 0x01}},
 		r_hand        = {f = mainmemory.read_u8,     address = 0x002033, record_size = {0x80, 0x01}},
+		r_hand_count  = {f = mainmemory.read_u8,     address = 0x002034, record_size = {0x80, 0x01}},
 		l_hand        = {f = mainmemory.read_u8,     address = 0x002035, record_size = {0x80, 0x01}},
+		l_hand_count  = {f = mainmemory.read_u8,     address = 0x002036, record_size = {0x80, 0x01}},
 	},
 	dialog = {
 		height        = {f = mainmemory.read_u8,     address = 0x0006DF, record_size = {0x01, 0x01}},
