@@ -23,6 +23,7 @@
 local _M = {}
 
 local dialog = require "util.dialog"
+local game = require "util.game"
 local input = require "util.input"
 local log = require "util.log"
 local memory = require "util.memory"
@@ -141,28 +142,28 @@ local function _sequence_girl()
 	table.insert(_q, {walk.step, {walk.DIRECTION.LEFT}})
 	table.insert(_q, {menu.open, {input.DELAY.NONE}})
 	table.insert(_q, {menu.select, {menu.MENU.ITEM}})
-	table.insert(_q, {menu.select_item, {menu.ITEM.TENT, 1}})
-	table.insert(_q, {menu.select_item, {menu.ITEM.TENT, 1}})
+	table.insert(_q, {menu.select_item, {game.ITEM.ITEM.TENT}})
+	table.insert(_q, {menu.select_item, {game.ITEM.ITEM.TENT}})
 	table.insert(_q, {walk.walk, {nil, 95, 119, true}})
 	table.insert(_q, {walk.step, {walk.DIRECTION.RIGHT}})
 	table.insert(_q, {menu.open, {input.DELAY.NONE}})
 
 	-- Remove Kain's Iron glove.
 	table.insert(_q, {menu.select, {menu.MENU.EQUIP}})
-	table.insert(_q, {menu.select_character, {menu.CHARACTER.KAIN}})
+	table.insert(_q, {menu.select_character, {game.CHARACTER.KAIN}})
 	table.insert(_q, {menu.select_equip, {menu.EQUIP.ARMS}})
-	table.insert(_q, {menu.select_equip_item, {menu.ITEM.NONE, 1}})
+	table.insert(_q, {menu.select_equip_item, {game.ITEM.NONE, 1}})
 	table.insert(_q, {menu.wait_frames, {5}})
 	table.insert(_q, {menu.close, {}})
 
 	-- Equip and unequip the Shadow shield.
 	table.insert(_q, {menu.select, {menu.MENU.EQUIP}})
-	table.insert(_q, {menu.select_character, {menu.CHARACTER.CECIL}})
+	table.insert(_q, {menu.select_character, {game.CHARACTER.CECIL}})
 	table.insert(_q, {menu.select_equip, {menu.EQUIP.L_HAND}})
-	table.insert(_q, {menu.select_equip_item, {menu.ITEM.SHIELD.SHADOW, 1}})
+	table.insert(_q, {menu.select_equip_item, {game.ITEM.SHIELD.SHADOW, 1}})
 	table.insert(_q, {menu.wait_frames, {5}})
 	table.insert(_q, {menu.select_equip, {menu.EQUIP.L_HAND}})
-	table.insert(_q, {menu.select_equip_item, {menu.ITEM.NONE, 1}})
+	table.insert(_q, {menu.select_equip_item, {game.ITEM.NONE, 1}})
 	table.insert(_q, {menu.wait_frames, {5}})
 	table.insert(_q, {menu.close, {}})
 
@@ -190,14 +191,14 @@ local function _sequence_girl()
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {menu.shop.select, {menu.shop.MENU.SELL}})
 	table.insert(_q, {menu.shop.select_count, {1}})
-	table.insert(_q, {menu.shop.select_sell, {menu.ITEM.SHIELD.SHADOW}})
+	table.insert(_q, {menu.shop.select_sell, {game.ITEM.SHIELD.SHADOW}})
 	table.insert(_q, {menu.wait_frames, {3}})
 	table.insert(_q, {menu.confirm, {}})
 	table.insert(_q, {menu.wait_frames, {3}})
 	table.insert(_q, {menu.close, {}})
 	table.insert(_q, {menu.shop.select, {menu.shop.MENU.BUY}})
 	table.insert(_q, {menu.shop.select_count, {10}})
-	table.insert(_q, {menu.shop.select_buy, {menu.ITEM.WEAPON.DANCING}})
+	table.insert(_q, {menu.shop.select_buy, {game.ITEM.WEAPON.DANCING}})
 	table.insert(_q, {menu.confirm, {}})
 	table.insert(_q, {menu.wait_frames, {3}})
 	table.insert(_q, {menu.close, {}})
@@ -251,15 +252,15 @@ local function _sequence_tellah()
 	-- Equip the Tiara on Rydia.
 	table.insert(_q, {menu.open, {input.DELAY.MASH}})
 	table.insert(_q, {menu.select, {menu.MENU.EQUIP}})
-	table.insert(_q, {menu.select_character, {menu.CHARACTER.RYDIA}})
+	table.insert(_q, {menu.select_character, {game.CHARACTER.RYDIA}})
 	table.insert(_q, {menu.select_equip, {menu.EQUIP.HEAD}})
-	table.insert(_q, {menu.select_equip_item, {menu.ITEM.HELM.TIARA, 1}})
+	table.insert(_q, {menu.select_equip_item, {game.ITEM.HELM.TIARA, 1}})
 	table.insert(_q, {menu.wait_frames, {5}})
 	table.insert(_q, {menu.close, {}})
 
 	-- Change formation.
 	table.insert(_q, {menu.select, {menu.MENU.FORM}})
-	table.insert(_q, {menu.select_character, {menu.CHARACTER.RYDIA}})
+	table.insert(_q, {menu.select_character, {game.CHARACTER.RYDIA}})
 	table.insert(_q, {menu.select_character_slot, {1}})
 	table.insert(_q, {menu.wait_frames, {5}})
 	table.insert(_q, {menu.close, {}})
@@ -421,29 +422,26 @@ local function _sequence_edward()
 	table.insert(_q, {menu.open, {}})
 
 	-- Deal with the Change rod.
-	if memory.read("character", "r_hand_count", 1) == 255 then
+	if game.character.get_stat(game.CHARACTER.TELLAH, "r_hand_count") == 255 then
 		_state.multi_change = true
 
 		table.insert(_q, {menu.select, {menu.MENU.EQUIP}})
-		table.insert(_q, {menu.select_character, {menu.CHARACTER.TELLAH}})
+		table.insert(_q, {menu.select_character, {game.CHARACTER.TELLAH}})
 		table.insert(_q, {menu.select_equip, {menu.EQUIP.R_HAND}})
-		table.insert(_q, {menu.select_equip_item, {menu.ITEM.WEAPON.CHANGE, 1}})
+		table.insert(_q, {menu.select_equip_item, {game.ITEM.WEAPON.CHANGE, 1}})
 		table.insert(_q, {menu.wait_frames, {5}})
 		table.insert(_q, {menu.select_equip, {menu.EQUIP.R_HAND}})
-		table.insert(_q, {menu.select_equip_item, {menu.ITEM.NONE, 1}})
+		table.insert(_q, {menu.select_equip_item, {game.ITEM.NONE, 1}})
 		table.insert(_q, {menu.wait_frames, {5}})
 		table.insert(_q, {menu.select_equip, {menu.EQUIP.R_HAND}})
-		table.insert(_q, {menu.select_equip_item, {menu.ITEM.WEAPON.CHANGE, 1}})
+		table.insert(_q, {menu.select_equip_item, {game.ITEM.WEAPON.CHANGE, 1}})
 		table.insert(_q, {menu.wait_frames, {5}})
 		table.insert(_q, {menu.close, {}})
-	elseif memory.read("character", "r_hand", 1) == menu.ITEM.WEAPON.CHANGE then
+	elseif game.character.get_stat(game.CHARACTER.TELLAH, "r_hand") == game.ITEM.WEAPON.CHANGE then
 		table.insert(_q, {menu.select, {menu.MENU.EQUIP}})
-		table.insert(_q, {menu.select_character, {menu.CHARACTER.TELLAH}})
+		table.insert(_q, {menu.select_character, {game.CHARACTER.TELLAH}})
 		table.insert(_q, {menu.select_equip, {menu.EQUIP.R_HAND}})
-		table.insert(_q, {menu.select_equip_item, {menu.ITEM.WEAPON.CHANGE, 1}})
-		table.insert(_q, {menu.wait_frames, {5}})
-		table.insert(_q, {menu.select_equip, {menu.EQUIP.R_HAND}})
-		table.insert(_q, {menu.select_equip_item, {menu.ITEM.WEAPON.STAFF, 1}})
+		table.insert(_q, {menu.select_equip_item, {game.ITEM.WEAPON.STAFF, 1}})
 		table.insert(_q, {menu.wait_frames, {5}})
 		table.insert(_q, {menu.close, {}})
 	end
@@ -451,11 +449,11 @@ local function _sequence_edward()
 	-- Change formation.
 	table.insert(_q, {menu.select, {menu.MENU.FORM}})
 	table.insert(_q, {input.press, {{"P1 Left"}, input.DELAY.MASH}})
-	table.insert(_q, {menu.select_character, {menu.CHARACTER.TELLAH}})
-	table.insert(_q, {menu.select_character, {menu.CHARACTER.RYDIA}})
+	table.insert(_q, {menu.select_character, {game.CHARACTER.TELLAH}})
+	table.insert(_q, {menu.select_character, {game.CHARACTER.RYDIA}})
 	table.insert(_q, {menu.wait_frames, {5}})
 	table.insert(_q, {menu.select, {menu.MENU.FORM}})
-	table.insert(_q, {menu.select_character, {menu.CHARACTER.CECIL}})
+	table.insert(_q, {menu.select_character, {game.CHARACTER.CECIL}})
 	table.insert(_q, {menu.select_character_slot, {3}})
 	table.insert(_q, {menu.wait_frames, {5}})
 	table.insert(_q, {menu.close, {}})

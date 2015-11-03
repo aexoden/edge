@@ -25,6 +25,7 @@ local _M = {}
 _M.battle = {}
 _M.shop = {}
 
+local game = require "util.game"
 local input = require "util.input"
 local memory = require "util.memory"
 local walk = require "action.walk"
@@ -53,55 +54,12 @@ _M.MENU_CUSTOM = {
 	B = 5,
 }
 
-_M.CHARACTER = {
-	CECIL = 1,
-	KAIN = 2,
-	RYDIA = 3,
-	TELLAH = 4,
-	EDWARD = 5,
-	ROSA = 6,
-	YANG = 7,
-	PALOM = 8,
-	POROM = 9,
-	CID = 14,
-	EDGE = 18,
-	FUSOYA = 19,
-}
-
 _M.EQUIP = {
 	R_HAND = 0,
 	L_HAND = 1,
 	HEAD = 2,
 	BODY = 3,
 	ARMS = 4,
-}
-
-_M.ITEM = {
-	NONE = 0x00,
-	TENT = 0xE2,
-	WEAPON = {
-		CHANGE = 0x0B,
-		DANCING = 0x3C,
-		DARKNESS = 0x17,
-		STAFF = 0x0F,
-	},
-	SHIELD = {
-		SHADOW = 0x62,
-	},
-	HELM = {
-		TIARA = 0x7B,
-	}
-}
-
-_M.SPELL = {
-	BLACK = {
-		LIT_1 = 0x23,
-		STOP = 0x2C,
-	},
-	WHITE = {
-		CURE_2 = 0x0F,
-		LIFE_1 = 0x13,
-	},
 }
 
 _M.battle.MENU = {
@@ -349,23 +307,6 @@ function _M.battle.base_select(target_command)
 	return false
 end
 
-function _M.battle.get_weapon()
-	local slot = memory.read("battle_menu", "slot")
-
-	local index = nil
-	local weapon = nil
-
-	if bit.band(memory.read("character", "id", slot), 0x40) > 0 then
-		index = 1
-		weapon = memory.read("character", "l_hand", slot)
-	else
-		index = 0
-		weapon = memory.read("character", "r_hand", slot)
-	end
-
-	return index, weapon
-end
-
 function _M.battle.item_close()
 	return input.press({"P1 B"}, input.DELAY.MASH)
 end
@@ -444,7 +385,7 @@ function _M.battle.target(type, target)
 	end
 
 	if type == _M.battle.TARGET.CHARACTER then
-		target = _M.get_slot(target) + _TARGET.PARTY
+		target = game.character.get_slot(target) + _TARGET.PARTY
 	elseif type == _M.battle.TARGET.PARTY then
 		target = target + _TARGET.PARTY
 	elseif type == _M.battle.TARGET.ENEMY_ALL then
@@ -592,34 +533,6 @@ end
 -- Public Functions
 --------------------------------------------------------------------------------
 
-function _M.get_character_id(slot)
-	local character_id = bit.band(memory.read("character", "id", slot), 0x0F)
-
-	if character_id == 10 or character_id == 12 then
-		character_id = _M.CHARACTER.TELLAH
-	elseif character_id == 11 then
-		character_id = _M.CHARACTER.CECIL
-	elseif character_id == 13 then
-		character_id = _M.CHARACTER.YANG
-	elseif character_id == 15 or character_id == 20 then
-		character_id = _M.CHARACTER.KAIN
-	elseif character_id == 16 then
-		character_id = _M.CHARACTER.ROSA
-	elseif character_id == 17 then
-		character_id = _M.CHARACTER.RYDIA
-	end
-
-	return character_id
-end
-
-function _M.get_slot(character)
-	for i = 0, 4 do
-		if _M.get_character_id(i) == character then
-			return i
-		end
-	end
-end
-
 function _M.open(delay)
 	if not walk.is_ready() then
 		return false
@@ -673,8 +586,6 @@ function _M.select_character(character)
 		return false
 	end
 
-	local index = 0
-
 	local slots = {
 		[0] = 2,
 		[1] = 0,
@@ -683,15 +594,7 @@ function _M.select_character(character)
 		[4] = 3,
 	}
 
-	for i = 0, 4 do
-		local id = _M.get_character_id(i)
-
-		if id == character then
-			index = slots[i]
-		end
-	end
-
-	return _M.select_character_slot(index)
+	return _M.select_character_slot(slots[game.character.get_slot(character)])
 end
 
 function _M.select_character_slot(slot)
@@ -743,6 +646,10 @@ function _M.select_equip_item(item, number)
 		return false
 	end
 
+	if not number then
+		number = 1
+	end
+
 	local cursor = memory.read("menu_equip", "cursor")
 
 	local subcursor = (memory.read("menu_equip", "subcursor_y", cursor) + memory.read("menu_equip", "scroll", cursor)) * 2 + memory.read("menu_equip", "subcursor_x", cursor)
@@ -754,6 +661,10 @@ end
 function _M.select_item(item, number)
 	if not _is_open_item() or not _is_ready() then
 		return false
+	end
+
+	if not number then
+		number = 1
 	end
 
 	local cursor = (memory.read("menu_item", "cursor_y") + memory.read("menu_item", "scroll")) * 2 + memory.read("menu_item", "cursor_x")

@@ -68,8 +68,9 @@ local _addresses = {
 		item_count    = {f = mainmemory.read_u8,     address = 0x00321C, record_size = {0x04, 0x01}},
 		item_id       = {f = mainmemory.read_u8,     address = 0x00321B, record_size = {0x04, 0x01}},
 		menu          = {f = mainmemory.read_u8,     address = 0x001823, record_size = {0x01, 0x01}},
+		open          = {f = mainmemory.read_u8,     address = 0x0000D7, record_size = {0x01, 0x01}},
 		opening       = {f = mainmemory.read_u8,     address = 0x001820, record_size = {0x01, 0x01}},
-		slot          = {f = mainmemory.read_s8,     address = 0x0000D0, record_size = {0x01, 0x01}},
+		slot          = {f = mainmemory.read_u8,     address = 0x001822, record_size = {0x01, 0x01}},
 		spell_id      = {f = mainmemory.read_u8,     address = 0x002C7B, record_size = {0x120, 0x04}},
 		subcursor     = {f = mainmemory.read_u8,     address = 0x000063, record_size = {0x01, 0x01}},
 		target        = {f = mainmemory.read_u8,     address = 0x00EF8D, record_size = {0x01, 0x01}},
@@ -86,6 +87,9 @@ local _addresses = {
 		height        = {f = mainmemory.read_u8,     address = 0x0006DF, record_size = {0x01, 0x01}},
 		prompt        = {f = mainmemory.read_u8,     address = 0x000654, record_size = {0x01, 0x01}},
 		state         = {f = mainmemory.read_u8,     address = 0x00067D, record_size = {0x01, 0x01}},
+	},
+	enemy = {
+		hp            = {f = mainmemory.read_u16_le, address = 0x002287, record_size = {0x80, 0x01}},
 	},
 	menu = {
 		character     = {f = mainmemory.read_u8,     address = 0x0001E7, record_size = {0x01, 0x01}},
@@ -127,9 +131,6 @@ local _addresses = {
 		sell_x        = {f = mainmemory.read_u8,     address = 0x001B95, record_size = {0x01, 0x01}},
 		sell_scroll   = {f = mainmemory.read_u8,     address = 0x001B96, record_size = {0x01, 0x01}},
 		sell_state    = {f = mainmemory.read_u8,     address = 0x00B79A, record_size = {0x01, 0x01}},
-	},
-	monster = {
-		hp            = {f = mainmemory.read_u16_le, address = 0x002287, record_size = {0x80, 0x01}},
 	},
 	npc = {
 		x             = {f = mainmemory.read_u8,     address = 0x000904, record_size = {0x0F, 0x01}},
