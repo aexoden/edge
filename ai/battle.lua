@@ -33,6 +33,7 @@ local menu = require "action.menu"
 
 _M.FORMATION = {
 	D_MIST = 222,
+	OCTOMAMM = 223,
 	GIRL = 236,
 	OFFICER = 237,
 }
@@ -40,7 +41,8 @@ _M.FORMATION = {
 local _formation_descriptions = {
 	[_M.FORMATION.D_MIST] = "D.Mist",
 	[_M.FORMATION.GIRL] = "Girl",
-	[_M.FORMATION.OFFICER] = "Officer and Soldiers"
+	[_M.FORMATION.OCTOMAMM] = "Octomamm",
+	[_M.FORMATION.OFFICER] = "Officer and Soldiers",
 }
 
 --------------------------------------------------------------------------------
@@ -61,6 +63,13 @@ local function _get_formation_description(formation)
 	end
 
 	return description
+end
+
+local function _get_character_stat(stat, character)
+	local slot = menu.get_slot(character)
+	local value = memory.read("character", stat, slot)
+
+	return value
 end
 
 local function _is_battle()
@@ -88,18 +97,59 @@ end
 -- Command Helpers
 --------------------------------------------------------------------------------
 
-local function _command_change(target)
+local function _command_magic(type, spell, target_type, target)
+	table.insert(_state.q, {menu.battle.base_select, {type}})
+	table.insert(_state.q, {menu.battle.magic_select, {spell}})
+	table.insert(_state.q, {menu.battle.target, {target_type, target}})
+end
+
+local function _command_black(spell, target_type, target)
+	_command_magic(menu.battle.COMMAND.BLACK, spell, target_type, target)
+end
+
+local function _command_white(spell, target_type, target)
+	_command_magic(menu.battle.COMMAND.WHITE, spell, target_type, target)
+end
+
+local function _command_change()
 	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.CHANGE}})
 end
 
-local function _command_fight(target)
-	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.FIGHT}})
-	table.insert(_state.q, {menu.battle.target, {target}})
+local function _command_duplicate(index, single)
+	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.ITEM}})
+	table.insert(_state.q, {menu.battle.item_select, {menu.ITEM.NONE, 2}})
+	table.insert(_state.q, {menu.battle.item_equipment_select, {index}})
+	table.insert(_state.q, {menu.wait_frames, {10}})
+
+	if not single then
+		table.insert(_state.q, {menu.battle.item_equipment_select, {index}})
+		table.insert(_state.q, {menu.battle.item_select, {menu.ITEM.NONE, 1}})
+		table.insert(_state.q, {menu.wait_frames, {10}})
+	end
+
+	table.insert(_state.q, {menu.battle.item_close, {}})
 end
 
-local function _command_jump(target)
+local function _command_equip(id)
+	local index, weapon = menu.battle.get_weapon()
+
+	if weapon ~= id then
+		table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.ITEM}})
+		table.insert(_state.q, {menu.battle.item_select, {id}})
+		table.insert(_state.q, {menu.battle.item_equipment_select, {index}})
+		table.insert(_state.q, {menu.wait_frames, {10}})
+		table.insert(_state.q, {menu.battle.item_close, {}})
+	end
+end
+
+local function _command_fight(target_type, target)
+	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.FIGHT}})
+	table.insert(_state.q, {menu.battle.target, {target_type, target}})
+end
+
+local function _command_jump(target_type, target)
 	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.JUMP}})
-	table.insert(_state.q, {menu.battle.target, {target}})
+	table.insert(_state.q, {menu.battle.target, {target_type, target}})
 end
 
 local function _command_parry()
@@ -108,6 +158,22 @@ end
 
 local function _command_run_buffer()
 	table.insert(_state.q, {menu.battle.run_buffer, {}})
+end
+
+local function _command_use_dancing(target_type, target)
+	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.ITEM}})
+
+	local index, weapon = menu.battle.get_weapon()
+
+	if weapon ~= menu.ITEM.WEAPON.DANCING then
+		table.insert(_state.q, {menu.battle.item_select, {menu.ITEM.WEAPON.DANCING}})
+		table.insert(_state.q, {menu.battle.item_equipment_select, {index}})
+		table.insert(_state.q, {menu.wait_frames, {10}})
+	end
+
+	table.insert(_state.q, {menu.battle.item_equipment_select, {index}})
+	table.insert(_state.q, {menu.battle.item_equipment_select, {index}})
+	table.insert(_state.q, {menu.battle.target, {target_type, target}})
 end
 
 local function _command_wait_frames(frames)
@@ -140,14 +206,7 @@ local function _battle_d_mist(character, turn)
 		else
 			if turn == 6 then
 				_command_wait_text("No")
-				table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.ITEM}})
-				table.insert(_state.q, {menu.battle.item_select, {menu.ITEM.NONE, 2}})
-				table.insert(_state.q, {menu.battle.item_equipment_select, {1}})
-				table.insert(_state.q, {menu.wait_frames, {5}})
-				table.insert(_state.q, {menu.battle.item_equipment_select, {1}})
-				table.insert(_state.q, {menu.battle.item_select, {menu.ITEM.NONE, 1}})
-				table.insert(_state.q, {menu.wait_frames, {5}})
-				table.insert(_state.q, {menu.battle.item_close, {}})
+				_command_duplicate(1)
 			end
 
 			_command_fight()
@@ -162,6 +221,40 @@ local function _battle_girl(character, turn)
 	end
 end
 
+local function _battle_octomamm(character, turn)
+	if character == menu.CHARACTER.CECIL then
+		if turn == 1 then
+			_command_equip(menu.ITEM.WEAPON.DARKNESS)
+		end
+
+		_command_fight()
+	elseif character == menu.CHARACTER.RYDIA then
+		_command_use_dancing()
+	elseif character == menu.CHARACTER.TELLAH then
+		if turn == 1 then
+			_command_equip(menu.ITEM.WEAPON.CHANGE)
+		end
+
+		local rydia_hp = _get_character_stat("hp", menu.CHARACTER.RYDIA)
+		local cecil_hp = _get_character_stat("hp", menu.CHARACTER.CECIL)
+
+		if rydia_hp == 0 then
+			_command_white(menu.SPELL.WHITE.LIFE_1, menu.battle.TARGET.CHARACTER, menu.CHARACTER.RYDIA)
+		elseif rydia_hp < 15 or cecil_hp < 100 then
+			_command_white(menu.SPELL.WHITE.CURE_2, menu.battle.TARGET.PARTY_ALL)
+		elseif memory.read("monster", "hp", 0) < 1200 then
+			if not _state.tellah_duplicate then
+				_command_duplicate(0)
+				_state.tellah_duplicate = true
+			end
+
+			_command_black(menu.SPELL.BLACK.STOP, menu.battle.TARGET.CHARACTER, menu.CHARACTER.TELLAH)
+		else
+			_command_black(menu.SPELL.BLACK.LIT_1)
+		end
+	end
+end
+
 local function _battle_officer(character, turn)
 	_command_run_buffer()
 	_command_fight()
@@ -170,6 +263,7 @@ end
 local _battle_functions = {
 	[_M.FORMATION.D_MIST] = _battle_d_mist,
 	[_M.FORMATION.GIRL] = _battle_girl,
+	[_M.FORMATION.OCTOMAMM] = _battle_octomamm,
 	[_M.FORMATION.OFFICER] = _battle_officer,
 }
 
@@ -243,7 +337,13 @@ function _M.cycle()
 		return true
 	else
 		if _state.formation then
-			log.log(string.format("Ending Battle: %s (%d frames)", _get_formation_description(_state.formation), emu.framecount() - _state.frame))
+			local gp = 0
+
+			if memory.read("battle", "ending") == 64 then
+				gp = memory.read("battle", "dropped_gp")
+			end
+
+			log.log(string.format("Ending Battle: %s (%d frames) (dropped %d GP)", _get_formation_description(_state.formation), emu.framecount() - _state.frame, gp))
 			_reset_state()
 		end
 

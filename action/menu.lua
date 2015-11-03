@@ -80,7 +80,10 @@ _M.ITEM = {
 	NONE = 0x00,
 	TENT = 0xE2,
 	WEAPON = {
+		CHANGE = 0x0B,
 		DANCING = 0x3C,
+		DARKNESS = 0x17,
+		STAFF = 0x0F,
 	},
 	SHIELD = {
 		SHADOW = 0x62,
@@ -88,6 +91,17 @@ _M.ITEM = {
 	HELM = {
 		TIARA = 0x7B,
 	}
+}
+
+_M.SPELL = {
+	BLACK = {
+		LIT_1 = 0x23,
+		STOP = 0x2C,
+	},
+	WHITE = {
+		CURE_2 = 0x0F,
+		LIFE_1 = 0x13,
+	},
 }
 
 _M.battle.MENU = {
@@ -130,10 +144,24 @@ _M.battle.COMMAND = {
 	NONE = 0xFF,
 }
 
+_M.battle.TARGET = {
+	ENEMY = 0,
+	PARTY = 1,
+	CHARACTER = 2,
+	ENEMY_ALL = 3,
+	PARTY_ALL = 4,
+}
+
 _M.shop.MENU = {
 	BUY = 0,
 	SELL = 1,
 	EXIT = 2,
+}
+
+local _TARGET = {
+	PARTY_ALL = 13,
+	ENEMY_ALL = 255,
+	PARTY = 8,
 }
 
 --------------------------------------------------------------------------------
@@ -170,6 +198,16 @@ local function _get_item_index(category, key, item, number)
 
 		if count == number then
 			return i
+		end
+	end
+
+	return 0
+end
+
+local function _get_spell_index(slot, spell)
+	for i = 0, 71 do
+		if memory.read("battle_menu", "spell_id", slot, i) == spell then
+			return i % 24
 		end
 	end
 
@@ -244,20 +282,20 @@ local function _select_horizontal(current, target, midpoint, delay)
 	end
 end
 
-local function _select_item(current, target)
+local function _select_item_magic(current, target, mod)
 	if current == target then
-		return input.press({"P1 A"}, input.DELAY.NORMAL)
+		return input.press({"P1 A"}, input.DELAY.MASH)
 	elseif current > target then
-		if (current - target) % 2 ~= 0 then
-			input.press({"P1 Left"}, input.DELAY.NORMAL)
+		if (current - target) % mod ~= 0 then
+			input.press({"P1 Left"}, input.DELAY.MASH)
 		else
-			input.press({"P1 Up"}, input.DELAY.NORMAL)
+			input.press({"P1 Up"}, input.DELAY.MASH)
 		end
 	else
-		if (target - current) % 2 ~= 0 then
-			input.press({"P1 Right"}, input.DELAY.NORMAL)
+		if (target - current) % mod ~= 0 then
+			input.press({"P1 Right"}, input.DELAY.MASH)
 		else
-			input.press({"P1 Down"}, input.DELAY.NORMAL)
+			input.press({"P1 Down"}, input.DELAY.MASH)
 		end
 	end
 
@@ -311,8 +349,25 @@ function _M.battle.base_select(target_command)
 	return false
 end
 
+function _M.battle.get_weapon()
+	local slot = memory.read("battle_menu", "slot")
+
+	local index = nil
+	local weapon = nil
+
+	if bit.band(memory.read("character", "id", slot), 0x40) > 0 then
+		index = 1
+		weapon = memory.read("character", "l_hand", slot)
+	else
+		index = 0
+		weapon = memory.read("character", "r_hand", slot)
+	end
+
+	return index, weapon
+end
+
 function _M.battle.item_close()
-	return input.press({"P1 B"}, input.DELAY.NORMAL)
+	return input.press({"P1 B"}, input.DELAY.MASH)
 end
 
 function _M.battle.item_select(item, number)
@@ -322,15 +377,19 @@ function _M.battle.item_select(item, number)
 		return false
 	end
 
+	if not number then
+		number = 1
+	end
+
 	if menu == _M.battle.MENU.EQUIPMENT then
-		input.press({"P1 Down"}, input.DELAY.NORMAL)
+		input.press({"P1 Down"}, input.DELAY.MASH)
 		return false
 	end
 
 	local subcursor = memory.read("battle_menu", "subcursor")
 	local index = _get_item_index("battle_menu", "item_id", item, number)
 
-	return _select_item(subcursor, index)
+	return _select_item_magic(subcursor, index, 2)
 end
 
 function _M.battle.item_equipment_select(index)
@@ -341,21 +400,34 @@ function _M.battle.item_equipment_select(index)
 	end
 
 	if menu ~= _M.battle.MENU.EQUIPMENT then
-		input.press({"P1 Up"}, input.DELAY.NORMAL)
+		input.press({"P1 Up"}, input.DELAY.MASH)
 		return false
 	end
 
 	local subcursor = memory.read("battle_menu", "subcursor")
 
 	if subcursor == index then
-		return input.press({"P1 A"}, input.DELAY.NORMAL)
+		return input.press({"P1 A"}, input.DELAY.MASH)
 	elseif subcursor > index then
-		input.press({"P1 Left"}, input.DELAY.NORMAL)
+		input.press({"P1 Left"}, input.DELAY.MASH)
 	else
-		input.press({"P1 Right"}, input.DELAY.NORMAL)
+		input.press({"P1 Right"}, input.DELAY.MASH)
 	end
 
 	return false
+end
+
+function _M.battle.magic_select(spell)
+	local menu = memory.read("battle_menu", "menu")
+
+	if _is_battle_opening() or menu ~= _M.battle.MENU.MAGIC then
+		return false
+	end
+
+	local subcursor = memory.read("battle_menu", "subcursor")
+	local index = _get_spell_index(memory.read("battle_menu", "slot"), spell)
+
+	return _select_item_magic(subcursor, index, 3)
 end
 
 function _M.battle.run_buffer(target)
@@ -366,20 +438,57 @@ function _M.battle.run_buffer(target)
 	end
 end
 
-function _M.battle.target(target)
+function _M.battle.target(type, target)
 	if _is_battle_opening() then
 		return false
 	end
 
-	-- TODO: Actually target the given target.
+	if type == _M.battle.TARGET.CHARACTER then
+		target = _M.get_slot(target) + _TARGET.PARTY
+	elseif type == _M.battle.TARGET.PARTY then
+		target = target + _TARGET.PARTY
+	elseif type == _M.battle.TARGET.ENEMY_ALL then
+		target = _TARGET.ENEMY_ALL
+	elseif type == _M.battle.TARGET.PARTY_ALL then
+		target = _TARGET.PARTY_ALL
+	end
 
 	local menu = memory.read("battle_menu", "menu")
 
 	if menu ~= _M.battle.MENU.TARGET_FIGHT and menu ~= _M.battle.MENU.TARGET_SKILL and menu ~= _M.battle.MENU.TARGET_ITEM_MAGIC then
 		return false
 	else
-		return input.press({"P1 A"}, input.DELAY.MASH)
+		local cursor = memory.read("battle_menu", "target")
+
+		if target and cursor ~= target then
+			if target == _TARGET.PARTY_ALL then
+				input.press({"P1 Right"}, input.DELAY.MASH)
+			elseif target == _TARGET.ENEMY_ALL then
+				input.press({"P1 Left"}, input.DELAY.MASH)
+			elseif cursor < _TARGET.PARTY and target >= _TARGET.PARTY then
+				input.press({"P1 Right"}, input.DELAY.MASH)
+			elseif cursor >= _TARGET.PARTY and target < _TARGET.PARTY then
+				input.press({"P1 Left"}, input.DELAY.MASH)
+			else
+				-- TODO: Handle enemy targeting.
+				if target >= _TARGET.PARTY then
+					local slots = {
+						[8] = 2,
+						[9] = 0,
+						[10] = 4,
+						[11] = 1,
+						[12] = 3,
+					}
+
+					_select(slots[cursor], slots[target], 2)
+				end
+			end
+		else
+			return input.press({"P1 A"}, input.DELAY.MASH)
+		end
 	end
+
+	return false
 end
 
 function _M.battle.wait_text(text)
@@ -476,7 +585,7 @@ function _M.shop.select_sell(item)
 	local cursor = (memory.read("menu_shop", "sell_y") + memory.read("menu_shop", "sell_scroll")) * 2 + memory.read("menu_shop", "sell_x")
 	local index = _get_item_index("menu_item", "item_id", item, 1)
 
-	return _select_item(cursor, index)
+	return _select_item_magic(cursor, index, 2)
 end
 
 --------------------------------------------------------------------------------
@@ -501,6 +610,14 @@ function _M.get_character_id(slot)
 	end
 
 	return character_id
+end
+
+function _M.get_slot(character)
+	for i = 0, 4 do
+		if _M.get_character_id(i) == character then
+			return i
+		end
+	end
 end
 
 function _M.open(delay)
@@ -631,7 +748,7 @@ function _M.select_equip_item(item, number)
 	local subcursor = (memory.read("menu_equip", "subcursor_y", cursor) + memory.read("menu_equip", "scroll", cursor)) * 2 + memory.read("menu_equip", "subcursor_x", cursor)
 	local index = _get_item_index("menu_item", "item_id", item, number)
 
-	return _select_item(subcursor, index)
+	return _select_item_magic(subcursor, index, 2)
 end
 
 function _M.select_item(item, number)
@@ -642,7 +759,7 @@ function _M.select_item(item, number)
 	local cursor = (memory.read("menu_item", "cursor_y") + memory.read("menu_item", "scroll")) * 2 + memory.read("menu_item", "cursor_x")
 	local index = _get_item_index("menu_item", "item_id", item, number)
 
-	return _select_item(cursor, index)
+	return _select_item_magic(cursor, index, 2)
 end
 
 function _M.select_save(slot)

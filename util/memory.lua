@@ -50,6 +50,8 @@ end
 local _addresses = {
 	battle = {
 		back          = {f = mainmemory.read_u8,     address = 0x003581, record_size = {0x01, 0x01}},
+		dropped_gp    = {f = mainmemory.read_u24_le, address = 0x00359A, record_size = {0x01, 0x01}},
+		ending        = {f = mainmemory.read_u8,     address = 0x0000A8, record_size = {0x01, 0x01}}, 
 		formation     = {f = mainmemory.read_u16_le, address = 0x001800, record_size = {0x01, 0x01}},
 		state         = {f = mainmemory.read_u8,     address = 0x000203, record_size = {0x01, 0x01}},
 		party_level   = {f = mainmemory.read_u8,     address = 0x0038D4, record_size = {0x01, 0x01}},
@@ -68,12 +70,15 @@ local _addresses = {
 		menu          = {f = mainmemory.read_u8,     address = 0x001823, record_size = {0x01, 0x01}},
 		opening       = {f = mainmemory.read_u8,     address = 0x001820, record_size = {0x01, 0x01}},
 		slot          = {f = mainmemory.read_s8,     address = 0x0000D0, record_size = {0x01, 0x01}},
+		spell_id      = {f = mainmemory.read_u8,     address = 0x002C7B, record_size = {0x120, 0x04}},
 		subcursor     = {f = mainmemory.read_u8,     address = 0x000063, record_size = {0x01, 0x01}},
 		target        = {f = mainmemory.read_u8,     address = 0x00EF8D, record_size = {0x01, 0x01}},
 	},
 	character = {
 		id            = {f = mainmemory.read_u8,     address = 0x002000, record_size = {0x80, 0x01}},
-		hp            = {f = mainmemory.read_u16_be, address = 0x002007, record_size = {0x80, 0x01}},
+		hp            = {f = mainmemory.read_u16_le, address = 0x002007, record_size = {0x80, 0x01}},
+		r_hand        = {f = mainmemory.read_u8,     address = 0x002033, record_size = {0x80, 0x01}},
+		l_hand        = {f = mainmemory.read_u8,     address = 0x002035, record_size = {0x80, 0x01}},
 	},
 	dialog = {
 		height        = {f = mainmemory.read_u8,     address = 0x0006DF, record_size = {0x01, 0x01}},
@@ -122,7 +127,7 @@ local _addresses = {
 		sell_state    = {f = mainmemory.read_u8,     address = 0x00B79A, record_size = {0x01, 0x01}},
 	},
 	monster = {
-		hp            = {f = mainmemory.read_u16_be, address = 0x002287, record_size = {0x80, 0x01}},
+		hp            = {f = mainmemory.read_u16_le, address = 0x002287, record_size = {0x80, 0x01}},
 	},
 	npc = {
 		x             = {f = mainmemory.read_u8,     address = 0x000904, record_size = {0x0F, 0x01}},
