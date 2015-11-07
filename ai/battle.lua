@@ -249,9 +249,10 @@ local function _battle_octomamm(character, turn)
 end
 
 local function _battle_officer(character, turn)
-	-- TODO: Don't attack the Officer.
-	_command_run_buffer()
-	_command_fight()
+	if turn <= 3 then
+		_command_run_buffer()
+		_command_fight()
+	end
 end
 
 local _battle_functions = {
