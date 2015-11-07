@@ -34,8 +34,11 @@ local walk = require "action.walk"
 -- Variables
 --------------------------------------------------------------------------------
 
+_M.state = {
+	multi_change = false,
+}
+
 local _q = nil
-local _state = nil
 
 --------------------------------------------------------------------------------
 -- Sequences
@@ -402,15 +405,16 @@ local function _sequence_edward()
 	table.insert(_q, {menu.field.open, {}})
 
 	-- Deal with the Change rod.
-	if game.character.get_stat(game.CHARACTER.TELLAH, "r_hand_count") == 255 then
-		_state.multi_change = true
+	local weapon, quantity = game.character.get_equipment(game.character.get_slot(game.CHARACTER.TELLAH), game.EQUIP.R_HAND)
 
+	if quantity == 255 then
+		_M.state.multi_change = true
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.NONE}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
 		table.insert(_q, {menu.field.equip.close, {}})
-	elseif game.character.get_stat(game.CHARACTER.TELLAH, "r_hand") == game.ITEM.WEAPON.CHANGE then
+	elseif weapon == game.ITEM.WEAPON.CHANGE then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.STAFF}})
 		table.insert(_q, {menu.field.equip.close, {}})
