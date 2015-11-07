@@ -24,6 +24,7 @@ local battle = require "ai.battle"
 local dialog = require "util.dialog"
 local input = require "util.input"
 local log = require "util.log"
+local menu = require "action.menu"
 local sequence = require "ai.sequence"
 
 local memory = require "util.memory"
@@ -38,6 +39,8 @@ local function _reset()
 	log.log("Edge Final Fantasy IV Speed Run Bot")
 	log.log("-----------------------------------")
 	log.log("Beginning New Run")
+
+	menu.reset()
 
 	dialog.reset()
 	battle.reset()

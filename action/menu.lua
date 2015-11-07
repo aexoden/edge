@@ -22,9 +22,28 @@
 
 local _M = {}
 
-_M.battle = {}
-_M.shop = {}
+_M.battle = {
+	command = {},
+	dialog = {},
+	equip = {},
+	item = {},
+	magic = {},
+}
 
+_M.field = {
+	custom = {},
+	equip = {},
+	form = {},
+	item = {},
+	save = {},
+}
+
+_M.shop = {
+	buy = {},
+	sell = {},
+}
+
+local dialog = require "util.dialog"
 local game = require "util.game"
 local input = require "util.input"
 local memory = require "util.memory"
@@ -34,135 +53,103 @@ local walk = require "action.walk"
 -- Constants
 --------------------------------------------------------------------------------
 
-_M.MENU = {
-	ITEM = 0,
-	MAGIC = 1,
-	EQUIP = 2,
-	STATUS = 3,
-	FORM = 4,
-	CHANGE = 5,
-	CUSTOM = 6,
-	SAVE = 7,
-}
-
-_M.MENU_CUSTOM = {
-	SPEED = 0,
-	MESSAGE = 1,
-	SOUND = 2,
-	R = 3,
-	G = 4,
-	B = 5,
-}
-
-_M.EQUIP = {
-	R_HAND = 0,
-	L_HAND = 1,
-	HEAD = 2,
-	BODY = 3,
-	ARMS = 4,
+_M.battle.COMMAND = {
+	FIGHT  = 0x00,
+	ITEM   = 0x01,
+	WHITE  = 0x02,
+	BLACK  = 0x03,
+	CALL   = 0x04,
+	JUMP   = 0x06,
+	SING   = 0x08,
+	AIM    = 0x0C,
+	KICK   = 0x0E,
+	TWIN   = 0x10,
+	COVER  = 0x13,
+	PEEP   = 0x14,
+	DART   = 0x16,
+	SNEAK  = 0x17,
+	NINJA  = 0x18,
+	CHANGE = 0x1A,
+	PARRY  = 0x1B,
+	SHOW   = 0x1C,
+	OFF    = 0x1D,
+	NONE   = 0xFF,
 }
 
 _M.battle.MENU = {
-	NONE = 0,
-	BASE = 1,
-	PARRY = 2,
-	CHANGE = 3,
-	TARGET_FIGHT = 4,
-	ITEM = 5,
-	MAGIC = 6,
-	TARGET_SKILL = 7,
-	CLOSING = 8,
-	OPENING_MAGIC = 9,
-	CLOSING_MAGIC = 10,
-	EQUIPMENT = 11,
-	TARGET_ITEM_MAGIC = 12,
-	CLOSING_ITEM = 15,
-}
-
-_M.battle.COMMAND = {
-	FIGHT = 0,
-	ITEM = 1,
-	WHITE = 2,
-	BLACK = 3,
-	CALL = 4,
-	JUMP = 6,
-	SING = 8,
-	AIM = 12,
-	KICK = 14,
-	TWIN = 16,
-	COVER = 19,
-	PEEP = 20,
-	DART = 22,
-	SNEAK = 23,
-	NINJA = 24,
-	CHANGE = 26,
-	PARRY = 27,
-	SHOW = 28,
-	OFF = 29,
-	NONE = 0xFF,
+	NONE              = 0x00,
+	COMMAND           = 0x01,
+	PARRY             = 0x02,
+	CHANGE            = 0x03,
+	TARGET_FIGHT      = 0x04,
+	ITEM              = 0x05,
+	MAGIC             = 0x06,
+	TARGET_SKILL      = 0x07,
+	CLOSING           = 0x08,
+	OPENING_MAGIC     = 0x09,
+	CLOSING_MAGIC     = 0x0A,
+	EQUIP             = 0x0B,
+	TARGET_ITEM_MAGIC = 0x0C,
+	CLOSING_ITEM      = 0x0F,
 }
 
 _M.battle.TARGET = {
-	ENEMY = 0,
-	PARTY = 1,
-	CHARACTER = 2,
-	ENEMY_ALL = 3,
-	PARTY_ALL = 4,
+	ENEMY     = 0x00,
+	PARTY     = 0x08,
+	PARTY_ALL = 0x0D,
+	CHARACTER = 0xFE,
+	ENEMY_ALL = 0xFF,
 }
 
-_M.shop.MENU = {
-	BUY = 0,
-	SELL = 1,
-	EXIT = 2,
+_M.field.CHOICE = {
+	ITEM    = 0x00,
+	MAGIC   = 0x01,
+	EQUIP   = 0x02,
+	STATUS  = 0x03,
+	FORM    = 0x04,
+	CHANGE  = 0x05,
+	CUSTOM  = 0x06,
+	SAVE    = 0x07,
 }
 
-local _TARGET = {
-	PARTY_ALL = 13,
-	ENEMY_ALL = 255,
-	PARTY = 8,
+_M.field.custom.CHOICE = {
+	SPEED   = 0x00,
+	MESSAGE = 0x01,
+	SOUND   = 0x02,
+	R       = 0x03,
+	G       = 0x04,
+	B       = 0x05,
+}
+
+_M.shop.CHOICE = {
+	BUY  = 0x00,
+	SELL = 0x01,
+	EXIT = 0x02,
 }
 
 --------------------------------------------------------------------------------
 -- Variables
 --------------------------------------------------------------------------------
 
-local _wait_frame = nil
+local _state
 
 --------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
 
-local function _get_battle_dialog_text(characters)
-	local text = ""
-
-	for i = 0, characters - 1 do
-		local character = memory.read("battle_dialog", "text", i)
-
-		if character then
-			text = text .. character
-		end
-	end
-
-	return text
+local function _is_cursor_visible()
+	return memory.read("menu", "cursor_state") == 10
 end
 
-local function _get_item_index(category, key, item, number)
-	local count = 0
-
-	for i = 0, 47 do
-		if memory.read(category, key, i) == item then
-			count = count + 1
-		end
-
-		if count == number then
-			return i
-		end
-	end
-
-	return 0
+local function _is_subcursor_visible()
+	return memory.read("menu", "subcursor_state") == 10
 end
 
-local function _get_spell_index(slot, spell)
+local function _is_cursor3_visible()
+	return memory.read("menu", "cursor3_state") == 10
+end
+
+local function _get_magic_index(slot, spell)
 	for i = 0, 71 do
 		if memory.read("battle_menu", "spell_id", slot, i) == spell then
 			return i % 24
@@ -172,88 +159,378 @@ local function _get_spell_index(slot, spell)
 	return 0
 end
 
-local function _is_open()
+local function _select_single_column(current, target, midpoint, buttons)
+	if target < current then
+		if current - target <= midpoint then
+			input.press({buttons[1]}, input.DELAY.NORMAL)
+		else
+			input.press({buttons[2]}, input.DELAY.NORMAL)
+		end
+	elseif target > current then
+		if target - current <= midpoint then
+			input.press({buttons[2]}, input.DELAY.NORMAL)
+		else
+			input.press({buttons[1]}, input.DELAY.NORMAL)
+		end
+	end
+end
+
+local function _select_horizontal(current, target, midpoint)
+	_select_single_column(current, target, midpoint, {"P1 Left", "P1 Right"})
+end
+
+local function _select_vertical(current, target, midpoint)
+	_select_single_column(current, target, midpoint, {"P1 Up", "P1 Down"})
+end
+
+local function _select_multi_column(current, target, columns)
+	if target < current then
+		if (current - target) % columns ~= 0 then
+			input.press({"P1 Left"}, input.DELAY.NORMAL)
+		else
+			input.press({"P1 Up"}, input.DELAY.NORMAL)
+		end
+	elseif target > current then
+		if (target - current) % columns ~= 0 then
+			input.press({"P1 Right"}, input.DELAY.NORMAL)
+		else
+			input.press({"P1 Down"}, input.DELAY.NORMAL)
+		end
+	end
+end
+
+--------------------------------------------------------------------------------
+-- Field Menu State Functions
+--------------------------------------------------------------------------------
+
+function _M.field.is_open()
 	return memory.read("menu", "state") > 0
 end
 
-local function _is_open_custom()
+function _M.field.custom.is_open()
 	return memory.read("menu_custom", "state") > 0
 end
 
-local function _is_open_item()
+function _M.field.equip.is_open()
+	return memory.read("menu_equip", "state") > 0
+end
+
+function _M.field.equip.is_selecting_character()
+	return memory.read("menu_equip", "phase") == 0
+end
+
+function _M.field.form.is_open()
+	return memory.read("menu_form", "state") > 0
+end
+
+function _M.field.form.is_selected()
+	return memory.read("menu_form", "selected") == 0
+end
+
+function _M.field.item.is_open()
 	return memory.read("menu_item", "state") > 0
 end
 
-local function _is_open_save()
+function _M.field.save.is_open()
 	return memory.read("menu_save", "state") > 0
 end
 
-local function _is_battle_opening()
-	return memory.read("battle_menu", "opening") == 1 or memory.read("battle_menu", "menu") == _M.battle.MENU.NONE
-end
+--------------------------------------------------------------------------------
+-- Field Menu Internal Functions
+--------------------------------------------------------------------------------
 
-local function _is_ready()
-	return memory.read("menu", "ready") == 10
-end
-
-local function _is_sell_ready()
-	return memory.read("menu_shop", "sell_state") == 129
-end
-
-local function _is_buy_ready()
-	return memory.read("menu_shop", "buy_state") == 129
-end
-
-local function _is_active()
-	return memory.read("menu", "active") == 0
-end
-
-local function _select(current, target, midpoint, delay)
-	if target < current then
-		if current - target <= midpoint then
-			input.press({"P1 Up"}, delay)
-		else
-			input.press({"P1 Down"}, delay)
-		end
+function _M.field.open_submenu(menu, is_open)
+	if is_open then
+		return true
 	else
-		if target - current <= midpoint then
-			input.press({"P1 Down"}, delay)
+		_M.field.select(menu)
+	end
+
+	return false
+end
+
+function _M.field.close_submenu(is_open)
+	if not is_open then
+		return true
+	else
+		input.press({"P1 B"}, input.DELAY.NORMAL)
+	end
+
+	return false
+end
+
+function _M.field.select(choice)
+	local cursor = _M.field.get_cursor()
+
+	if cursor then
+		if cursor == choice then
+			return input.press({"P1 A"})
 		else
-			input.press({"P1 Up"}, delay)
+			_select_vertical(cursor, choice, 4)
 		end
+	end
+
+	return false
+end
+
+function _M.field.get_cursor()
+	if _is_cursor_visible() then
+		return memory.read("menu", "cursor")
+	else
+		return nil
 	end
 end
 
-local function _select_horizontal(current, target, midpoint, delay)
-	if target < current then
-		if current - target <= midpoint then
-			input.press({"P1 Left"}, delay)
-		else
-			input.press({"P1 Right"}, delay)
-		end
+function _M.field.item.get_cursor()
+	if _is_cursor_visible() then
+		return (memory.read("menu_item", "cursor_y") + memory.read("menu_item", "scroll")) * 2 + memory.read("menu_item", "cursor_x")
 	else
-		if target - current <= midpoint then
-			input.press({"P1 Right"}, delay)
-		else
-			input.press({"P1 Left"}, delay)
-		end
+		return nil
 	end
 end
 
-local function _select_item_magic(current, target, mod)
-	if current == target then
-		return input.press({"P1 A"}, input.DELAY.MASH)
-	elseif current > target then
-		if (current - target) % mod ~= 0 then
-			input.press({"P1 Left"}, input.DELAY.MASH)
+--------------------------------------------------------------------------------
+-- Field Menu External Functions
+--------------------------------------------------------------------------------
+
+function _M.field.open(delay)
+	if _M.field.is_open() then
+		return true
+	else
+		if not delay then
+			delay = input.DELAY.MASH
+		end
+
+		input.press({"P1 X"}, delay)
+	end
+
+	return false
+end
+
+function _M.field.close()
+	if not _M.field.is_open() then
+		return true
+	else
+		input.press({"P1 B"}, input.DELAY.MASH)
+	end
+
+	return false
+end
+
+function _M.field.custom.open()
+	return _M.field.open_submenu(_M.field.CHOICE.CUSTOM, _M.field.custom.is_open())
+end
+
+function _M.field.custom.close()
+	return _M.field.close_submenu(_M.field.custom.is_open())
+end
+
+function _M.field.custom.select(target)
+	local cursor = memory.read("menu_custom", "cursor")
+
+	if _is_subcursor_visible() then
+		if cursor == target then
+			return true
 		else
-			input.press({"P1 Up"}, input.DELAY.MASH)
+			_select_vertical(cursor, target, 4)
+		end
+	end
+
+	return false
+end
+
+function _M.field.equip.open(character)
+	if _M.field.equip.is_open() then
+		if _M.field.equip.is_selecting_character() then
+			local cursor = memory.read("menu", "character")
+			local index = game.character.get_index(game.character.get_slot(character))
+
+			if cursor == index then
+				input.press({"P1 A"}, input.DELAY.NORMAL)
+			else
+				_select_vertical(cursor, index, 2)
+			end
+		else
+			return true
 		end
 	else
-		if (target - current) % mod ~= 0 then
-			input.press({"P1 Right"}, input.DELAY.MASH)
+		_M.field.select(_M.field.CHOICE.EQUIP)
+	end
+
+	return false
+end
+
+function _M.field.equip.close()
+	return _M.field.close_submenu(_M.field.equip.is_open())
+end
+
+function _M.field.equip.equip(location, item)
+	if _is_cursor_visible() and game.character.get_equipment(memory.read("menu_equip", "slot"), location) == item then
+		_state.frame = nil
+		return true
+	elseif _is_subcursor_visible() then
+		local cursor = memory.read("menu_equip", "cursor")
+		local subcursor = (memory.read("menu_equip", "subcursor_y", cursor) + memory.read("menu_equip", "scroll", cursor)) * 2 + memory.read("menu_equip", "subcursor_x", cursor)
+		local index = game.item.get_index(item, 0)
+
+		if subcursor == index then
+			input.press({"P1 A"}, input.DELAY.NORMAL)
 		else
-			input.press({"P1 Down"}, input.DELAY.MASH)
+			_select_multi_column(subcursor, index, 2)
+		end
+	elseif not _state.frame or emu.framecount() - _state.frame > 3 then
+		local cursor = memory.read("menu_equip", "cursor")
+
+		if cursor == location then
+			input.press({"P1 A"}, input.DELAY.NORMAL)
+			_state.frame = emu.framecount()
+		else
+			_select_vertical(cursor, location, 2)
+		end
+	end
+
+	return false
+end
+
+function _M.field.form.move(character, index, formation)
+	local cursor = memory.read("menu", "character")
+
+	if _M.field.form.is_open() then
+		if formation and formation ~= memory.read("party", "formation") then
+			input.press({"P1 Left"}, input.DELAY.NORMAL)
+		elseif _M.field.form.is_selected() then
+			if cursor == index then
+				return input.press({"P1 A"}, input.DELAY.NORMAL)
+			else
+				_select_vertical(cursor, index, 2)
+			end
+		else
+			local index = game.character.get_index(game.character.get_slot(character))
+
+			if cursor == index then
+				input.press({"P1 A"}, input.DELAY.NORMAL)
+			else
+				_select_vertical(cursor, index, 2)
+			end
+		end
+	else
+		_M.field.select(_M.field.CHOICE.FORM)
+	end
+end
+
+function _M.field.form.swap(character1, character2, change)
+	return _M.field.form.move(character1, game.character.get_index(game.character.get_slot(character2)), change)
+end
+
+function _M.field.item.open()
+	return _M.field.open_submenu(_M.field.CHOICE.ITEM, _M.field.item.is_open())
+end
+
+function _M.field.item.select(item, index)
+	local cursor = _M.field.item.get_cursor()
+	local index = game.item.get_index(item, index)
+
+	if cursor then
+		if cursor == index then
+			return input.press({"P1 A"}, input.DELAY.NORMAL)
+		else
+			_select_multi_column(cursor, index, 2)
+		end
+	end
+
+	return false
+end
+
+function _M.field.save.open()
+	return _M.field.open_submenu(_M.field.CHOICE.SAVE, _M.field.save.is_open())
+end
+
+function _M.field.save.save(slot)
+	if _M.field.save.is_open() then
+		if _is_cursor_visible() then
+			return input.press({"P1 A"}, input.DELAY.NORMAL)
+		else
+			local cursor = memory.read("menu_save", "cursor")
+
+			if cursor == slot then
+				input.press({"P1 A"}, input.DELAY.NORMAL)
+			else
+				_select_vertical(cursor, slot, 2)
+			end
+		end
+	else
+		_M.field.select(_M.field.CHOICE.SAVE)
+	end
+
+	return false
+end
+
+--------------------------------------------------------------------------------
+-- Shop Menu State Functions
+--------------------------------------------------------------------------------
+
+function _M.shop.is_open()
+	return memory.read("menu", "state") > 0
+end
+
+--------------------------------------------------------------------------------
+-- Shop Menu Internal Functions
+--------------------------------------------------------------------------------
+
+function _M.shop.is_buy()
+	return memory.read("menu_shop", "buy_state") >= 128
+end
+
+function _M.shop.is_sell()
+	return memory.read("menu_shop", "sell_state") >= 128
+end
+
+--------------------------------------------------------------------------------
+-- Shop Menu Internal Functions
+--------------------------------------------------------------------------------
+
+function _M.shop.shop(target, target_quantity)
+	if _is_cursor_visible() or _is_subcursor_visible() then
+		if _M.shop.is_buy() or _M.shop.is_sell() then
+			local cursor = memory.read("menu_shop", "subcursor")
+
+			if target_quantity == 1 then
+				if cursor == 0 then
+					return input.press({"P1 A"}, input.DELAY.NORMAL)
+				else
+					_select_horizontal(cursor, 0, 1)
+				end
+			else
+				if cursor == 1 then
+					local current_quantity = memory.read("menu_shop", "quantity")
+
+					if current_quantity == target_quantity then
+						return input.press({"P1 A"}, input.DELAY.NORMAL)
+					else
+						local delta = math.abs(current_quantity - target_quantity)
+
+						if delta > 5 then
+							input.press({"P1 X"}, input.DELAY.NORMAL)
+						else
+							if current_quantity < target_quantity then
+								input.press({"P1 Up"}, input.DELAY.NORMAL)
+							else
+								input.press({"P1 Down"}, input.DELAY.NORMAL)
+							end
+						end
+					end
+				else
+					_select_horizontal(cursor, 1, 1)
+				end
+			end
+		else
+			local cursor = memory.read("menu_shop", "cursor")
+
+			if cursor == target then
+				input.press({"P1 A"})
+			else
+				_select_horizontal(cursor, target, 1)
+			end
 		end
 	end
 
@@ -261,159 +538,159 @@ local function _select_item_magic(current, target, mod)
 end
 
 --------------------------------------------------------------------------------
--- Battle Menu Functions
+-- Shop Menu External Functions
 --------------------------------------------------------------------------------
 
-function _M.battle.base_select(target_command)
-	if _is_battle_opening() then
-		return false
+function _M.shop.close()
+	if not _M.shop.is_open() then
+		return true
+	else
+		input.press({"P1 B"}, input.DELAY.MASH)
 	end
 
-	local slot = memory.read("battle_menu", "slot")
-	local cursor = memory.read("battle_menu", "cursor")
+	return false
+end
+
+function _M.shop.buy.open(quantity)
+	return _M.shop.shop(_M.shop.CHOICE.BUY, quantity)
+end
+
+function _M.shop.buy.close()
+	if not _M.shop.is_buy() then
+		return true
+	else
+		input.press({"P1 B"}, input.DELAY.MASH)
+	end
+
+	return false
+end
+
+function _M.shop.buy.buy(item)
+	local cursor = memory.read("menu_shop", "buy")
+	local index, entries
+
+	for i = 0, 7 do
+		local value = memory.read("menu_shop", "buy_item", i)
+
+		if value == item then
+			index = i
+		elseif value == game.ITEM.NONE then
+			entries = i
+			break
+		end
+	end
+
+	if not _state.gp then
+		_state.gp = memory.read("party", "gp")
+	end
+
+	if _is_cursor3_visible() then
+		input.press({"P1 A"}, input.DELAY.NORMAL)
+	elseif memory.read("party", "gp") < _state.gp then
+		_state.gp = nil
+		return true
+	elseif cursor == index then
+		input.press({"P1 A"}, input.DELAY.NORMAL)
+	else
+		_select_vertical(cursor, index, math.floor(entries / 2))
+	end
+
+	return false
+end
+
+function _M.shop.sell.open(quantity)
+	return _M.shop.shop(_M.shop.CHOICE.SELL, quantity)
+end
+
+function _M.shop.sell.close()
+	if not _M.shop.is_sell() then
+		return true
+	else
+		input.press({"P1 B"}, input.DELAY.MASH)
+	end
+
+	return false
+end
+
+function _M.shop.sell.sell(item)
+	local cursor = (memory.read("menu_shop", "sell_y") + memory.read("menu_shop", "sell_scroll")) * 2 + memory.read("menu_shop", "sell_x")
+	local index = game.item.get_index(item, 0)
+
+	if not index then
+		return true
+	elseif _is_cursor3_visible() then
+		input.press({"P1 A"}, input.DELAY.NORMAL)
+	elseif cursor == index then
+		input.press({"P1 A"}, input.DELAY.NORMAL)
+	else
+		_select_multi_column(cursor, index, 2)
+	end
+
+	return false
+end
+
+--------------------------------------------------------------------------------
+-- Battle Menu State Functions
+--------------------------------------------------------------------------------
+
+function _M.battle.is_open()
+	return memory.read("battle_menu", "open") > 0 and memory.read("battle_menu", "opening") ~= 1 and memory.read("battle_menu", "menu") ~= _M.battle.MENU.NONE
+end
+
+function _M.battle.is_target()
+	local menu = memory.read("battle_menu", "menu")
+	return menu == _M.battle.MENU.TARGET_FIGHT or menu == _M.battle.MENU.TARGET_SKILL or menu == _M.battle.MENU.TARGET_ITEM_MAGIC
+end
+
+function _M.battle.command.get_cursor()
 	local menu = memory.read("battle_menu", "menu")
 
 	if menu == _M.battle.MENU.CHANGE then
-		cursor = 5
+		return 5
 	elseif menu == _M.battle.MENU.PARRY then
-		cursor = 6
-	end
-
-	local index = 0
-	local max_index = 0
-
-	for i = 0, 6 do
-		local command = memory.read("battle_menu", "command", slot, i)
-
-		if command == target_command then
-			index = i
-		end
-
-		if i < 5 and command ~= _M.battle.COMMAND.NONE then
-			max_index = i
-		end
-	end
-
-	if cursor == index then
-		return input.press({"P1 A"}, input.DELAY.MASH)
-	elseif index == 5 then
-		input.press({"P1 Left"}, input.DELAY.MASH)
-	elseif index == 6 then
-		input.press({"P1 Right"}, input.DELAY.MASH)
+		return 6
 	else
-		_select(cursor, index, math.floor(max_index / 2), input.DELAY.MASH)
+		return memory.read("battle_menu", "cursor")
 	end
-
-	return false
 end
 
-function _M.battle.item_close()
-	return input.press({"P1 B"}, input.DELAY.MASH)
-end
-
-function _M.battle.item_select(item, number)
+function _M.battle.command.is_open()
 	local menu = memory.read("battle_menu", "menu")
-
-	if _is_battle_opening() or (menu ~= _M.battle.MENU.ITEM and menu ~= _M.battle.MENU.EQUIPMENT) then
-		return false
-	end
-
-	if not number then
-		number = 1
-	end
-
-	if menu == _M.battle.MENU.EQUIPMENT then
-		input.press({"P1 Down"}, input.DELAY.MASH)
-		return false
-	end
-
-	local subcursor = memory.read("battle_menu", "subcursor")
-	local index = _get_item_index("battle_menu", "item_id", item, number)
-
-	return _select_item_magic(subcursor, index, 2)
+	return menu == _M.battle.MENU.COMMAND or menu == _M.battle.MENU.CHANGE or menu == _M.battle.MENU.PARRY
 end
 
-function _M.battle.item_equipment_select(index)
+function _M.battle.magic.is_open()
 	local menu = memory.read("battle_menu", "menu")
-
-	if _is_battle_opening() or (menu ~= _M.battle.MENU.ITEM and menu ~= _M.battle.MENU.EQUIPMENT) then
-		return false
-	end
-
-	if menu ~= _M.battle.MENU.EQUIPMENT then
-		input.press({"P1 Up"}, input.DELAY.MASH)
-		return false
-	end
-
-	local subcursor = memory.read("battle_menu", "subcursor")
-
-	if subcursor == index then
-		return input.press({"P1 A"}, input.DELAY.MASH)
-	elseif subcursor > index then
-		input.press({"P1 Left"}, input.DELAY.MASH)
-	else
-		input.press({"P1 Right"}, input.DELAY.MASH)
-	end
-
-	return false
+	return menu == _M.battle.MENU.MAGIC or menu == _M.battle.MENU.OPENING_MAGIC or menu == _M.battle.MENU.CLOSING_MAGIC
 end
 
-function _M.battle.magic_select(spell)
-	local menu = memory.read("battle_menu", "menu")
+--------------------------------------------------------------------------------
+-- Battle Menu External Functions
+--------------------------------------------------------------------------------
 
-	if _is_battle_opening() or menu ~= _M.battle.MENU.MAGIC then
-		return false
-	end
-
-	local subcursor = memory.read("battle_menu", "subcursor")
-	local index = _get_spell_index(memory.read("battle_menu", "slot"), spell)
-
-	return _select_item_magic(subcursor, index, 3)
-end
-
-function _M.battle.run_buffer(target)
-	if _M.battle.wait_text("Ca") then
-		return true
-	else
-		input.press({"P1 L", "P1 R"}, input.DELAY.NONE)
-	end
-end
-
-function _M.battle.target(type, target)
-	if _is_battle_opening() then
-		return false
-	end
-
-	if type == _M.battle.TARGET.CHARACTER then
-		target = game.character.get_slot(target) + _TARGET.PARTY
-	elseif type == _M.battle.TARGET.PARTY then
-		target = target + _TARGET.PARTY
-	elseif type == _M.battle.TARGET.ENEMY_ALL then
-		target = _TARGET.ENEMY_ALL
-	elseif type == _M.battle.TARGET.PARTY_ALL then
-		target = _TARGET.PARTY_ALL
-	end
-
-	local menu = memory.read("battle_menu", "menu")
-
-	if menu ~= _M.battle.MENU.TARGET_FIGHT and menu ~= _M.battle.MENU.TARGET_SKILL and menu ~= _M.battle.MENU.TARGET_ITEM_MAGIC then
-		return false
-	else
+function _M.battle.target(target, index)
+	if _M.battle.is_open() and _M.battle.is_target() then
 		local cursor = memory.read("battle_menu", "target")
 
-		if target and cursor ~= target then
-			if target == _TARGET.PARTY_ALL then
+		if target == _M.battle.TARGET.CHARACTER then
+			index = game.character.get_slot(index) + _M.battle.TARGET.PARTY
+		elseif target == _M.battle.TARGET.PARTY then
+			index = index + _M.battle.TARGET.PARTY
+		elseif target == _M.battle.TARGET.ENEMY_ALL or target == _M.battle.TARGET.PARTY_ALL then
+			index = target
+		end
+
+		if not index or cursor == index then
+			return input.press({"P1 A"}, input.DELAY.MASH)
+		else
+			if index == _M.battle.TARGET.PARTY_ALL or (cursor < _M.battle.TARGET.PARTY and index >= _M.battle.TARGET.PARTY) then
 				input.press({"P1 Right"}, input.DELAY.MASH)
-			elseif target == _TARGET.ENEMY_ALL then
-				input.press({"P1 Left"}, input.DELAY.MASH)
-			elseif cursor < _TARGET.PARTY and target >= _TARGET.PARTY then
-				input.press({"P1 Right"}, input.DELAY.MASH)
-			elseif cursor >= _TARGET.PARTY and target < _TARGET.PARTY then
+			elseif index == _M.battle.TARGET.ENEMY_ALL or (cursor >= _M.battle.TARGET.PARTY and index < _M.battle.TARGET.PARTY) then
 				input.press({"P1 Left"}, input.DELAY.MASH)
 			else
 				-- TODO: Handle enemy targeting.
-				if target >= _TARGET.PARTY then
-					local slots = {
+				if index >= _M.battle.TARGET.PARTY then
+					local index_map = {
 						[8] = 2,
 						[9] = 0,
 						[10] = 4,
@@ -421,288 +698,183 @@ function _M.battle.target(type, target)
 						[12] = 3,
 					}
 
-					_select(slots[cursor], slots[target], 2)
+					_select_vertical(index_map[cursor], index_map[index], 2)
 				end
 			end
-		else
-			return input.press({"P1 A"}, input.DELAY.MASH)
 		end
 	end
 
 	return false
 end
 
-function _M.battle.wait_text(text)
-	return _get_battle_dialog_text(#text) == text
-end
-
---------------------------------------------------------------------------------
--- Shop Menu Functions
---------------------------------------------------------------------------------
-
-function _M.shop.select(target)
-	if not _is_ready() then
-		return false
-	end
-
-	local cursor = memory.read("menu_shop", "cursor")
-
-	if cursor == target then
-		return input.press({"P1 A"})
-	end
-
-	_select_horizontal(cursor, target, 1)
-
-	return false
-end
-
-function _M.shop.select_count(target)
-	if not _is_sell_ready() and not _is_buy_ready() then
-		return false
-	end
-
-	local cursor = memory.read("menu_shop", "subcursor")
-
-	if target == 1 then
-		if cursor == 0 then
-			return input.press({"P1 A"}, input.DELAY.NORMAL)
+function _M.battle.command.select(target_command)
+	if _M.battle.is_open() then
+		if not _M.battle.command.is_open() then
+			return true
 		else
-			_select_horizontal(cursor, 0, 1)
-		end
-	else
-		if cursor == 1 then
-			local count = memory.read("menu_shop", "count")
+			local slot = memory.read("battle_menu", "slot")
+			local cursor = _M.battle.command.get_cursor()
 
-			if count == target then
-				return input.press({"P1 A"}, input.DELAY.NORMAL)
+			local index, entries
+
+			for i = 0, 6 do
+				local command = memory.read("battle_menu", "command", slot, i)
+
+				if command == target_command then
+					index = i
+				end
+
+				if i < 5 and command ~= _M.battle.COMMAND.NONE then
+					entries = i + 1
+				end
+			end
+
+			if cursor == index then
+				input.press({"P1 A"}, input.DELAY.MASH)
+			elseif index == 5 then
+				input.press({"P1 Left"}, input.DELAY.MASH)
+			elseif index == 6 then
+				input.press({"P1 Right"}, input.DELAY.MASH)
 			else
-				local delta = math.abs(count - target)
+				_select_vertical(cursor, index, math.floor(entries / 2), input.DELAY.MASH)
+			end
+		end
+	end
 
-				if delta > 5 then
-					input.press({"P1 X"}, input.DELAY.NORMAL)
-				else
-					if count < target then
-						input.press({"P1 Up"}, input.DELAY.NORMAL)
-					else
-						input.press({"P1 Down"}, input.DELAY.NORMAL)
-					end
+	return false
+end
+
+function _M.battle.equip.select(index)
+	local cursor = memory.read("battle_menu", "subcursor")
+	local menu = memory.read("battle_menu", "menu")
+
+	if _M.battle.is_open() then
+		if _state.item_selected ~= nil and memory.read("battle_menu", "item_selected") ~= _state.item_selected then
+			_state.item_selected = nil
+			return true
+		elseif menu == _M.battle.MENU.ITEM then
+			input.press({"P1 Up"}, input.DELAY.NORMAL)
+		elseif menu == _M.battle.MENU.EQUIP then
+			if cursor == index then
+				input.press({"P1 A"}, input.DELAY.NORMAL)
+
+				if _state.item_selected == nil then
+					_state.item_selected = memory.read("battle_menu", "item_selected")
 				end
+			elseif cursor > index then
+				input.press({"P1 Left"}, input.DELAY.NORMAL)
+			else
+				input.press({"P1 Right"}, input.DELAY.NORMAL)
+			end
+		end
+	end
+
+	return false
+end
+
+function _M.battle.item.close()
+	if memory.read("battle_menu", "menu") == _M.battle.MENU.COMMAND then
+		return true
+	else
+		input.press({"P1 B"}, input.DELAY.MASH)
+	end
+end
+
+function _M.battle.item.select(item, index)
+	local menu = memory.read("battle_menu", "menu")
+	local cursor = memory.read("battle_menu", "subcursor")
+	local index = game.item.get_index(item, index, true)
+
+	if _M.battle.is_open() then
+		if _state.item_selected ~= nil and memory.read("battle_menu", "item_selected") ~= _state.item_selected then
+			_state.item_selected = nil
+			return true
+		elseif menu == _M.battle.MENU.EQUIP then
+			input.press({"P1 Down"}, input.DELAY.NORMAL)
+		elseif menu == _M.battle.MENU.ITEM then
+			if cursor == index then
+				input.press({"P1 A"}, input.DELAY.NORMAL)
+
+				if _state.item_selected == nil then
+					_state.item_selected = memory.read("battle_menu", "item_selected")
+				end
+			else
+				_select_multi_column(cursor, index, 2)
+			end
+		end
+	end
+
+	return false
+end
+
+function _M.battle.magic.select(spell)
+	local menu = memory.read("battle_menu", "menu")
+	local cursor = memory.read("battle_menu", "subcursor")
+	local index = _get_magic_index(memory.read("battle_menu", "slot"), spell)
+
+	if _M.battle.is_open() then
+		if not _M.battle.magic.is_open() then
+			return true
+		elseif cursor == index then
+			input.press({"P1 A"}, input.DELAY.NORMAL)
+		else
+			_select_multi_column(cursor, index, 3)
+		end
+	end
+
+	return false
+end
+
+function _M.battle.dialog.wait(text)
+	return dialog.get_battle_text(#text) == text
+end
+
+function _M.battle.run_buffer()
+	if _M.battle.dialog.wait("Ca") then
+		return true
+	else
+		input.press({"P1 L", "P1 R"}, input.DELAY.NONE)
+	end
+
+	return false
+end
+
+--------------------------------------------------------------------------------
+-- Global Menu Functions
+--------------------------------------------------------------------------------
+
+function _M.confirm()
+	if _is_cursor_visible() then
+		return input.press({"P1 A"}, input.DELAY.MASH)
+	end
+
+	return false
+end
+
+function _M.wait(frames)
+	if input.is_clear() then
+		if _wait_frame then
+			if emu.framecount() >= _wait_frame then
+				_wait_frame = nil
+				return true
 			end
 		else
-			_select_horizontal(cursor, 1, 1)
+			_wait_frame = emu.framecount() + frames
 		end
 	end
 
 	return false
-end
-
-function _M.shop.select_buy(item)
-	local index = 0
-	local max = 0
-
-	for i = 0, 7 do
-		local value = memory.read("menu_shop", "buy_item", i)
-
-		if value == item then
-			index = i
-		elseif value == 0 then
-			max = i
-			break
-		end
-	end
-
-	local cursor = memory.read("menu_shop", "buy")
-
-	if cursor == index then
-		return input.press({"P1 A"}, input.DELAY.NORMAL)
-	end
-
-	_select(cursor, index, math.floor(max / 2))
-
-	return false
-end
-
-function _M.shop.select_sell(item)
-	local cursor = (memory.read("menu_shop", "sell_y") + memory.read("menu_shop", "sell_scroll")) * 2 + memory.read("menu_shop", "sell_x")
-	local index = _get_item_index("menu_item", "item_id", item, 1)
-
-	return _select_item_magic(cursor, index, 2)
 end
 
 --------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
 
-function _M.open(delay)
-	if not walk.is_ready() then
-		return false
-	end
-
-	if not delay then
-		delay = input.DELAY.MASH
-	end
-
-	return input.press({"P1 X"}, delay)
-end
-
-function _M.close()
-	if emu.islagged() or not _is_ready() then
-		return false
-	end
-
-	return input.press({"P1 B"}, input.DELAY.MASH)
-end
-
-function _M.close_custom()
-	return input.press({"P1 B"})
-end
-
-function _M.confirm()
-	if not _is_ready() then
-		return false
-	end
-
-	return input.press({"P1 A"}, input.DELAY.NORMAL)
-end
-
-function _M.select(target)
-	if not _is_ready() or not _is_active() then
-		return false
-	end
-
-	local current = memory.read("menu", "cursor")
-
-	if current == target then
-		return input.press({"P1 A"})
-	end
-
-	_select(current, target, 4)
-
-	return false
-end
-
-function _M.select_character(character)
-	if not _is_ready() then
-		return false
-	end
-
-	local slots = {
-		[0] = 2,
-		[1] = 0,
-		[2] = 4,
-		[3] = 1,
-		[4] = 3,
+function _M.reset()
+	_state = {
+		flag = nil,
+		wait_frame = nil,
 	}
-
-	return _M.select_character_slot(slots[game.character.get_slot(character)])
-end
-
-function _M.select_character_slot(slot)
-	if not _is_ready() then
-		return false
-	end
-
-	local character = memory.read("menu", "character")
-
-	if character == slot then
-		return input.press({"P1 A"}, input.DELAY.NORMAL)
-	else
-		_select(character, slot, 2)
-	end
-
-	return false
-end
-
-function _M.select_custom(target)
-	local current = memory.read("menu_custom", "cursor")
-
-	if not _is_open_custom() then
-		return false
-	elseif current == target then
-		return true
-	end
-
-	_select(current, target, 4)
-
-	return false
-end
-
-function _M.select_equip(target)
-	local current = memory.read("menu_equip", "cursor")
-
-	if not _is_ready() then
-		return false
-	elseif current == target then
-		return input.press({"P1 A"}, input.DELAY.NORMAL)
-	end
-
-	_select(current, target, 2)
-
-	return false
-end
-
-function _M.select_equip_item(item, number)
-	if not _is_ready() then
-		return false
-	end
-
-	if not number then
-		number = 1
-	end
-
-	local cursor = memory.read("menu_equip", "cursor")
-
-	local subcursor = (memory.read("menu_equip", "subcursor_y", cursor) + memory.read("menu_equip", "scroll", cursor)) * 2 + memory.read("menu_equip", "subcursor_x", cursor)
-	local index = _get_item_index("menu_item", "item_id", item, number)
-
-	return _select_item_magic(subcursor, index, 2)
-end
-
-function _M.select_item(item, number)
-	if not _is_open_item() or not _is_ready() then
-		return false
-	end
-
-	if not number then
-		number = 1
-	end
-
-	local cursor = (memory.read("menu_item", "cursor_y") + memory.read("menu_item", "scroll")) * 2 + memory.read("menu_item", "cursor_x")
-	local index = _get_item_index("menu_item", "item_id", item, number)
-
-	return _select_item_magic(cursor, index, 2)
-end
-
-function _M.select_save(slot)
-	local cursor = memory.read("menu_save", "cursor")
-
-	if not _is_open_save() then
-		return false
-	elseif cursor == slot then
-		return input.press({"P1 A"}, input.DELAY.NORMAL)
-	end
-
-	_select(cursor, slot, 2)
-
-	return false
-end
-
-function _M.wait_frames(frames)
-	if not input.is_clear() then
-		return false
-	end
-
-	if _wait_frame then
-		if emu.framecount() >= _wait_frame then
-			_wait_frame = nil
-			return true
-		else
-			return false
-		end
-	else
-		_wait_frame = emu.framecount() + frames
-		return false
-	end
 end
 
 return _M

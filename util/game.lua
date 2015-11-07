@@ -24,6 +24,7 @@ local _M = {}
 
 _M.character = {}
 _M.enemy = {}
+_M.item = {}
 
 local memory = require "util.memory"
 
@@ -46,9 +47,17 @@ _M.CHARACTER = {
 	FUSOYA = 11,
 }
 
-_M.HAND = {
-	RIGHT = 0x00,
-	LEFT  = 0x01,
+_M.EQUIP = {
+	R_HAND = 0x00,
+	L_HAND = 0x01,
+	HEAD   = 0x02,
+	BODY   = 0x03,
+	ARMS   = 0x04,
+}
+
+_M.FORMATION = {
+	THREE_FRONT = 0,
+	TWO_FRONT   = 1,
 }
 
 _M.ITEM = {
@@ -123,7 +132,7 @@ end
 --------------------------------------------------------------------------------
 
 local function _get_character_id(slot)
-	return bit.band(memory.read("character", "id", slot), 0x0F)
+	return bit.band(memory.read("character", "id", slot), 0x1F)
 end
 
 --------------------------------------------------------------------------------
@@ -142,8 +151,36 @@ function _M.character.get_slot(character)
 	end
 end
 
+function _M.character.get_index(slot)
+	if slot == 1 then
+		return 0
+	elseif slot == 3 then
+		return 1
+	elseif slot == 0 then
+		return 2
+	elseif slot == 4 then
+		return 3
+	elseif slot == 2 then
+		return 4
+	end
+end
+
 function _M.character.get_stat(character, stat)
 	return memory.read("character", stat, _M.character.get_slot(character))
+end
+
+function _M.character.get_equipment(slot, location)
+	if location == _M.EQUIP.R_HAND then
+		return memory.read("character", "r_hand", slot), memory.read("character", "r_hand_count", slot)
+	elseif location == _M.EQUIP.L_HAND then
+		return memory.read("character", "l_hand", slot), memory.read("character", "l_hand_count", slot)
+	elseif location == _M.EQUIP.HEAD then
+		return memory.read("character", "head", slot), 1
+	elseif location == _M.EQUIP.BODY then
+		return memory.read("character", "body", slot), 1
+	elseif location == _M.EQUIP.ARMS then
+		return memory.read("character", "arms", slot), 1
+	end
 end
 
 function _M.character.get_weapon(character)
@@ -151,14 +188,42 @@ function _M.character.get_weapon(character)
 	local hand, weapon
 
 	if bit.band(memory.read("character", "id", slot), 0x40) > 0 then
-		return _M.HAND.LEFT, memory.read("character", "l_hand", slot)
+		return _M.EQUIP.L_HAND, memory.read("character", "l_hand", slot)
 	else
-		return _M.HAND.RIGHT, memory.read("character", "r_hand", slot)
+		return _M.EQUIP.R_HAND, memory.read("character", "r_hand", slot)
 	end
 end
 
 function _M.enemy.get_stat(enemy, stat)
 	return memory.read("enemy", stat, enemy)
+end
+
+function _M.item.get_index(item, index, battle)
+	local category, key
+
+	if battle then
+		category, key = "battle_menu", "item_id"
+	else
+		category, key = "menu_item", "item_id"
+	end
+
+	if not index then
+		index = 0
+	end
+
+	local count = 0
+
+	for i = 0, 47 do
+		if memory.read(category, key, i) == item then
+			if count == index then
+				return i
+			end
+
+			count = count + 1
+		end
+	end
+
+	return nil
 end
 
 return _M

@@ -43,16 +43,16 @@ local _state = nil
 
 local function _sequence_prologue()
 	-- Change Battle Speed/Battle Message
-	table.insert(_q, {menu.open, {}})
-	table.insert(_q, {menu.select, {menu.MENU.CUSTOM}})
-	table.insert(_q, {menu.select_custom, {menu.MENU_CUSTOM.SPEED}})
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.custom.open, {}})
+	table.insert(_q, {menu.field.custom.select, {menu.field.custom.CHOICE.SPEED}})
 	table.insert(_q, {input.press, {{"P1 Left"}, input.DELAY.MASH}})
 	table.insert(_q, {input.press, {{"P1 Left"}, input.DELAY.MASH}})
-	table.insert(_q, {menu.select_custom, {menu.MENU_CUSTOM.MESSAGE}})
+	table.insert(_q, {menu.field.custom.select, {menu.field.custom.CHOICE.MESSAGE}})
 	table.insert(_q, {input.press, {{"P1 Left"}, input.DELAY.MASH}})
 	table.insert(_q, {input.press, {{"P1 Left"}, input.DELAY.MASH}})
-	table.insert(_q, {menu.close_custom, {}})
-	table.insert(_q, {menu.close, {}})
+	table.insert(_q, {menu.field.custom.close, {}})
+	table.insert(_q, {menu.field.close, {}})
 
 	-- Walk to and pick up tent
 	table.insert(_q, {walk.walk, {43, 14, 9}})
@@ -140,45 +140,35 @@ local function _sequence_girl()
 	table.insert(_q, {walk.walk, {nil, 86, 119}})
 	table.insert(_q, {walk.walk, {nil, 95, 119}})
 	table.insert(_q, {walk.step, {walk.DIRECTION.LEFT}})
-	table.insert(_q, {menu.open, {input.DELAY.NONE}})
-	table.insert(_q, {menu.select, {menu.MENU.ITEM}})
-	table.insert(_q, {menu.select_item, {game.ITEM.ITEM.TENT}})
-	table.insert(_q, {menu.select_item, {game.ITEM.ITEM.TENT}})
-	table.insert(_q, {walk.walk, {nil, 95, 119, true}})
+	table.insert(_q, {menu.field.open, {input.DELAY.NONE}})
+	table.insert(_q, {menu.field.item.open, {}})
+	table.insert(_q, {menu.field.item.select, {game.ITEM.ITEM.TENT}})
+	table.insert(_q, {menu.field.item.select, {game.ITEM.ITEM.TENT}})
+	table.insert(_q, {walk.walk, {nil, 95, 119}})
 	table.insert(_q, {walk.step, {walk.DIRECTION.RIGHT}})
-	table.insert(_q, {menu.open, {input.DELAY.NONE}})
+	table.insert(_q, {menu.field.open, {input.DELAY.NONE}})
 
-	-- Remove Kain's Iron glove.
-	table.insert(_q, {menu.select, {menu.MENU.EQUIP}})
-	table.insert(_q, {menu.select_character, {game.CHARACTER.KAIN}})
-	table.insert(_q, {menu.select_equip, {menu.EQUIP.ARMS}})
-	table.insert(_q, {menu.select_equip_item, {game.ITEM.NONE, 1}})
-	table.insert(_q, {menu.wait_frames, {5}})
-	table.insert(_q, {menu.close, {}})
+	-- Remove Kain's Iron arms.
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE}})
+	table.insert(_q, {menu.field.equip.close, {}})
 
 	-- Equip and unequip the Shadow shield.
-	table.insert(_q, {menu.select, {menu.MENU.EQUIP}})
-	table.insert(_q, {menu.select_character, {game.CHARACTER.CECIL}})
-	table.insert(_q, {menu.select_equip, {menu.EQUIP.L_HAND}})
-	table.insert(_q, {menu.select_equip_item, {game.ITEM.SHIELD.SHADOW, 1}})
-	table.insert(_q, {menu.wait_frames, {5}})
-	table.insert(_q, {menu.select_equip, {menu.EQUIP.L_HAND}})
-	table.insert(_q, {menu.select_equip_item, {game.ITEM.NONE, 1}})
-	table.insert(_q, {menu.wait_frames, {5}})
-	table.insert(_q, {menu.close, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.SHIELD.SHADOW}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.NONE}})
+	table.insert(_q, {menu.field.equip.close, {}})
 
 	-- Save and reset.
-	table.insert(_q, {menu.select, {menu.MENU.SAVE}})
-	table.insert(_q, {menu.select_save, {1}})
-	table.insert(_q, {menu.confirm, {}})
+	table.insert(_q, {menu.field.save.save, {1}})
 	table.insert(_q, {input.press, {{"Reset"}, input.DELAY.NORMAL}})
-	table.insert(_q, {menu.wait_frames, {132}})
+	table.insert(_q, {menu.wait, {132}})
 	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
-	table.insert(_q, {menu.wait_frames, {132}})
+	table.insert(_q, {menu.wait, {132}})
 	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
 	table.insert(_q, {menu.confirm, {}})
 
-	-- Walk to the shop and buy Dancing daggers.
+	-- Walk to the shop and open the shopping menu.
 	table.insert(_q, {walk.walk, {nil, 98, 119}})
 	table.insert(_q, {walk.walk, {nil, 97, 119}})
 	table.insert(_q, {walk.walk, {1, 19, 16}})
@@ -189,21 +179,17 @@ local function _sequence_girl()
 	table.insert(_q, {walk.walk, {1, 14, 25}})
 	table.insert(_q, {walk.walk, {225, 4, 5}})
 	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {menu.shop.select, {menu.shop.MENU.SELL}})
-	table.insert(_q, {menu.shop.select_count, {1}})
-	table.insert(_q, {menu.shop.select_sell, {game.ITEM.SHIELD.SHADOW}})
-	table.insert(_q, {menu.wait_frames, {3}})
-	table.insert(_q, {menu.confirm, {}})
-	table.insert(_q, {menu.wait_frames, {3}})
-	table.insert(_q, {menu.close, {}})
-	table.insert(_q, {menu.shop.select, {menu.shop.MENU.BUY}})
-	table.insert(_q, {menu.shop.select_count, {10}})
-	table.insert(_q, {menu.shop.select_buy, {game.ITEM.WEAPON.DANCING}})
-	table.insert(_q, {menu.confirm, {}})
-	table.insert(_q, {menu.wait_frames, {3}})
-	table.insert(_q, {menu.close, {}})
-	table.insert(_q, {menu.wait_frames, {3}})
-	table.insert(_q, {menu.close, {}})
+
+	-- Sell the Shadow shield.
+	table.insert(_q, {menu.shop.sell.open, {1}})
+	table.insert(_q, {menu.shop.sell.sell, {game.ITEM.SHIELD.SHADOW}})
+	table.insert(_q, {menu.shop.sell.close, {}})
+
+	-- Buy 10 Dancing daggers.
+	table.insert(_q, {menu.shop.buy.open, {10}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.WEAPON.DANCING}})
+	table.insert(_q, {menu.shop.buy.close, {}})
+	table.insert(_q, {menu.shop.close, {}})
 
 	-- Collect the Tiara and Change rod.
 	table.insert(_q, {walk.walk, {225, 4, 10}})
@@ -250,20 +236,14 @@ end
 
 local function _sequence_tellah()
 	-- Equip the Tiara on Rydia.
-	table.insert(_q, {menu.open, {input.DELAY.MASH}})
-	table.insert(_q, {menu.select, {menu.MENU.EQUIP}})
-	table.insert(_q, {menu.select_character, {game.CHARACTER.RYDIA}})
-	table.insert(_q, {menu.select_equip, {menu.EQUIP.HEAD}})
-	table.insert(_q, {menu.select_equip_item, {game.ITEM.HELM.TIARA, 1}})
-	table.insert(_q, {menu.wait_frames, {5}})
-	table.insert(_q, {menu.close, {}})
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.RYDIA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.TIARA}})
+	table.insert(_q, {menu.field.equip.close, {}})
 
 	-- Change formation.
-	table.insert(_q, {menu.select, {menu.MENU.FORM}})
-	table.insert(_q, {menu.select_character, {game.CHARACTER.RYDIA}})
-	table.insert(_q, {menu.select_character_slot, {1}})
-	table.insert(_q, {menu.wait_frames, {5}})
-	table.insert(_q, {menu.close, {}})
+	table.insert(_q, {menu.field.form.move, {game.CHARACTER.RYDIA, 1}})
+	table.insert(_q, {menu.field.close, {}})
 
 	-- Visit Rosa.
 	table.insert(_q, {walk.walk, {16, 18, 12}})
@@ -419,44 +399,27 @@ end
 
 local function _sequence_edward()
 	-- Open the menu.
-	table.insert(_q, {menu.open, {}})
+	table.insert(_q, {menu.field.open, {}})
 
 	-- Deal with the Change rod.
 	if game.character.get_stat(game.CHARACTER.TELLAH, "r_hand_count") == 255 then
 		_state.multi_change = true
 
-		table.insert(_q, {menu.select, {menu.MENU.EQUIP}})
-		table.insert(_q, {menu.select_character, {game.CHARACTER.TELLAH}})
-		table.insert(_q, {menu.select_equip, {menu.EQUIP.R_HAND}})
-		table.insert(_q, {menu.select_equip_item, {game.ITEM.WEAPON.CHANGE, 1}})
-		table.insert(_q, {menu.wait_frames, {5}})
-		table.insert(_q, {menu.select_equip, {menu.EQUIP.R_HAND}})
-		table.insert(_q, {menu.select_equip_item, {game.ITEM.NONE, 1}})
-		table.insert(_q, {menu.wait_frames, {5}})
-		table.insert(_q, {menu.select_equip, {menu.EQUIP.R_HAND}})
-		table.insert(_q, {menu.select_equip_item, {game.ITEM.WEAPON.CHANGE, 1}})
-		table.insert(_q, {menu.wait_frames, {5}})
-		table.insert(_q, {menu.close, {}})
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.NONE}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
+		table.insert(_q, {menu.field.equip.close, {}})
 	elseif game.character.get_stat(game.CHARACTER.TELLAH, "r_hand") == game.ITEM.WEAPON.CHANGE then
-		table.insert(_q, {menu.select, {menu.MENU.EQUIP}})
-		table.insert(_q, {menu.select_character, {game.CHARACTER.TELLAH}})
-		table.insert(_q, {menu.select_equip, {menu.EQUIP.R_HAND}})
-		table.insert(_q, {menu.select_equip_item, {game.ITEM.WEAPON.STAFF, 1}})
-		table.insert(_q, {menu.wait_frames, {5}})
-		table.insert(_q, {menu.close, {}})
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.STAFF}})
+		table.insert(_q, {menu.field.equip.close, {}})
 	end
 
 	-- Change formation.
-	table.insert(_q, {menu.select, {menu.MENU.FORM}})
-	table.insert(_q, {input.press, {{"P1 Left"}, input.DELAY.MASH}})
-	table.insert(_q, {menu.select_character, {game.CHARACTER.TELLAH}})
-	table.insert(_q, {menu.select_character, {game.CHARACTER.RYDIA}})
-	table.insert(_q, {menu.wait_frames, {5}})
-	table.insert(_q, {menu.select, {menu.MENU.FORM}})
-	table.insert(_q, {menu.select_character, {game.CHARACTER.CECIL}})
-	table.insert(_q, {menu.select_character_slot, {3}})
-	table.insert(_q, {menu.wait_frames, {5}})
-	table.insert(_q, {menu.close, {}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.TELLAH, game.CHARACTER.RYDIA, game.FORMATION.TWO_FRONT}})
+	table.insert(_q, {menu.field.form.move, {game.CHARACTER.CECIL, 3}})
+	table.insert(_q, {menu.field.close, {}})
 
 	-- Walk to Damcyan.
 	table.insert(_q, {walk.walk, {nil, 123, 67}})
@@ -479,13 +442,13 @@ end
 --------------------------------------------------------------------------------
 
 local function _check_sequence()
-	if #_q == 0 and walk.is_ready() and not walk.is_mid_tile() then
+	if #_q == 0 and walk.is_ready() and not walk.is_mid_tile() and not walk.is_transition() then
 		local map_area = memory.read("walk", "map_area")
 		local map_id = memory.read("walk", "map_id")
 		local map_x = memory.read("walk", "x")
 		local map_y = memory.read("walk", "y")
 
-		local sequence = nil
+		local title, sequence
 
 		if map_area == 3 and map_id == 43 and map_x == 14 and map_y == 5 then
 			title = "Prologue"
@@ -517,35 +480,28 @@ local function _check_sequence()
 	end
 end
 
-local function _execute_next_command()
-	while true do
-		local command = _q[1]
-
-		if command then
-			local result = command[1](unpack(command[2]))
-
-			if result == nil or result == true then
-				table.remove(_q, 1)
-			end
-
-			if result ~= nil then
-				break
-			end
-		else
-			break
-		end
-	end
-end
-
 --------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
 
 function _M.cycle()
-	_check_sequence()
-	_execute_next_command()
+	while true do
+		_check_sequence()
 
-	return true
+		local command = _q[1]
+
+		if command then
+			local result = command[1](unpack(command[2]))
+
+			if result then
+				table.remove(_q, 1)
+			else
+				return true
+			end
+		else
+			return true
+		end
+	end
 end
 
 function _M.reset()

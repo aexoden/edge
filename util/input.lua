@@ -36,25 +36,16 @@ _M.DELAY = {
 -- Variables
 --------------------------------------------------------------------------------
 
-local _last, _next
+local _next
 
 --------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
 
 function _M.cycle()
-	if _last then
-		if emu.islagged() then
-			_next = _last
-		end
-
-		_last = nil
-	end
-
 	if _next then
 		if _next.frames == 0 then
 			joypad.set(_next.buttons)
-			_last = _next
 			_next = nil
 		else
 			_next.frames = _next.frames - 1
@@ -67,7 +58,7 @@ function _M.is_clear()
 end
 
 function _M.press(buttons, delay_type)
-	if _next or (emu.islagged() and (delay_type ~= _M.DELAY.NONE or _last)) then
+	if _next or (emu.islagged() and delay_type ~= _M.DELAY.NONE) then
 		return false
 	end
 

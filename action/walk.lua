@@ -65,6 +65,10 @@ function _M.is_ready()
 	return memory.read("walk", "state") == 0
 end
 
+function _M.is_transition()
+	return memory.read("walk", "transition") % 128 > 0
+end
+
 function _M.step(direction)
 	if _M.is_mid_tile() or not _M.is_ready() then
 		return false
@@ -166,7 +170,7 @@ function _M.walk(target_map_id, target_x, target_y, npc_safe)
 	local current_y = memory.read("walk", "y")
 
 	if (not target_map_id or current_map_id == target_map_id) and current_x == target_x and current_y == target_y then
-		return nil
+		return true
 	elseif target_map_id and current_map_id ~= target_map_id then
 		return false
 	elseif _M.is_mid_tile() or not _M.is_ready() then

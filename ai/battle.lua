@@ -92,8 +92,8 @@ end
 --------------------------------------------------------------------------------
 
 local function _command_magic(type, spell, target_type, target)
-	table.insert(_state.q, {menu.battle.base_select, {type}})
-	table.insert(_state.q, {menu.battle.magic_select, {spell}})
+	table.insert(_state.q, {menu.battle.command.select, {type}})
+	table.insert(_state.q, {menu.battle.magic.select, {spell}})
 	table.insert(_state.q, {menu.battle.target, {target_type, target}})
 end
 
@@ -106,48 +106,47 @@ local function _command_white(spell, target_type, target)
 end
 
 local function _command_change()
-	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.CHANGE}})
+	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.CHANGE}})
 end
 
 local function _command_duplicate(hand, single)
-	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.ITEM}})
-	table.insert(_state.q, {menu.battle.item_select, {game.ITEM.NONE, 2}})
-	table.insert(_state.q, {menu.battle.item_equipment_select, {hand}})
-	table.insert(_state.q, {menu.wait_frames, {10}})
+	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+	table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE, 1}})
+	table.insert(_state.q, {menu.battle.equip.select, {hand}})
+	--table.insert(_state.q, {menu.wait, {10}})
 
 	if not single then
-		table.insert(_state.q, {menu.battle.item_equipment_select, {hand}})
-		table.insert(_state.q, {menu.battle.item_select, {game.ITEM.NONE, 1}})
-		table.insert(_state.q, {menu.wait_frames, {10}})
+		table.insert(_state.q, {menu.battle.equip.select, {hand}})
+		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE, 0}})
+		--table.insert(_state.q, {menu.wait, {10}})
 	end
 
-	table.insert(_state.q, {menu.battle.item_close, {}})
+	table.insert(_state.q, {menu.battle.item.close, {}})
 end
 
 local function _command_equip(character, target_weapon)
 	local hand, current_weapon = game.character.get_weapon(character)
 
 	if current_weapon ~= target_weapon then
-		table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.ITEM}})
-		table.insert(_state.q, {menu.battle.item_select, {target_weapon}})
-		table.insert(_state.q, {menu.battle.item_equipment_select, {hand}})
-		table.insert(_state.q, {menu.wait_frames, {10}})
-		table.insert(_state.q, {menu.battle.item_close, {}})
+		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+		table.insert(_state.q, {menu.battle.item.select, {target_weapon}})
+		table.insert(_state.q, {menu.battle.equip.select, {hand}})
+		table.insert(_state.q, {menu.battle.item.close, {}})
 	end
 end
 
 local function _command_fight(target_type, target)
-	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.FIGHT}})
+	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT}})
 	table.insert(_state.q, {menu.battle.target, {target_type, target}})
 end
 
 local function _command_jump(target_type, target)
-	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.JUMP}})
+	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.JUMP}})
 	table.insert(_state.q, {menu.battle.target, {target_type, target}})
 end
 
 local function _command_parry()
-	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.PARRY}})
+	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.PARRY}})
 end
 
 local function _command_run_buffer()
@@ -155,27 +154,26 @@ local function _command_run_buffer()
 end
 
 local function _command_use_weapon(character, target_weapon, target_type, target)
-	table.insert(_state.q, {menu.battle.base_select, {menu.battle.COMMAND.ITEM}})
+	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
 
 	local hand, current_weapon = game.character.get_weapon(character)
 
 	if current_weapon ~= target_weapon then
-		table.insert(_state.q, {menu.battle.item_select, {target_weapon}})
-		table.insert(_state.q, {menu.battle.item_equipment_select, {hand}})
-		table.insert(_state.q, {menu.wait_frames, {10}})
+		table.insert(_state.q, {menu.battle.item.select, {target_weapon}})
+		table.insert(_state.q, {menu.battle.equip.select, {hand}})
 	end
 
-	table.insert(_state.q, {menu.battle.item_equipment_select, {hand}})
-	table.insert(_state.q, {menu.battle.item_equipment_select, {hand}})
+	table.insert(_state.q, {menu.battle.equip.select, {hand}})
+	table.insert(_state.q, {menu.battle.equip.select, {hand}})
 	table.insert(_state.q, {menu.battle.target, {target_type, target}})
 end
 
 local function _command_wait_frames(frames)
-	table.insert(_state.q, {menu.wait_frames, {frames}})
+	table.insert(_state.q, {menu.wait, {frames}})
 end
 
 local function _command_wait_text(text)
-	table.insert(_state.q, {menu.battle.wait_text, {text}})
+	table.insert(_state.q, {menu.battle.dialog.wait, {text}})
 end
 
 --------------------------------------------------------------------------------
@@ -200,7 +198,7 @@ local function _battle_d_mist(character, turn)
 		else
 			if turn == 6 then
 				_command_wait_text("No")
-				_command_duplicate(game.HAND.LEFT)
+				_command_duplicate(game.EQUIP.L_HAND)
 			end
 
 			_command_fight()
@@ -239,7 +237,7 @@ local function _battle_octomamm(character, turn)
 			if not _state.duplicated_change then
 				_state.duplicated_change = true
 
-				_command_duplicate(game.HAND.RIGHT)
+				_command_duplicate(game.EQUIP.R_HAND)
 				_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 			else
 				_command_parry()

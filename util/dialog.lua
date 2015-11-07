@@ -58,6 +58,24 @@ function _M.cycle()
 	return false
 end
 
+function _M.get_battle_text(characters)
+	local text = ""
+
+	if not characters then
+		characters = 24
+	end
+
+	for i = 0, characters - 1 do
+		local character = memory.read("battle_dialog", "text", i)
+
+		if character then
+			text = text .. character
+		end
+	end
+
+	return text
+end
+
 function _M.reset()
 end
 
