@@ -66,6 +66,7 @@ _M.ITEM = {
 		TIARA    = 0x7B,
 	},
 	ITEM = {
+		LIFE     = 0xD4,
 		TENT     = 0xE2,
 	},
 	SHIELD = {

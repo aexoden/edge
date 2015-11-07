@@ -33,17 +33,19 @@ local menu = require "action.menu"
 --------------------------------------------------------------------------------
 
 _M.FORMATION = {
-	D_MIST = 222,
+	D_MIST   = 222,
 	OCTOMAMM = 223,
-	GIRL = 236,
-	OFFICER = 237,
+	ANTLION  = 224,
+	GIRL     = 236,
+	OFFICER  = 237,
 }
 
 local _formation_descriptions = {
-	[_M.FORMATION.D_MIST] = "D.Mist",
-	[_M.FORMATION.GIRL] = "Girl",
+	[_M.FORMATION.ANTLION]  = "Antlion",
+	[_M.FORMATION.D_MIST]   = "D.Mist",
+	[_M.FORMATION.GIRL]     = "Girl",
 	[_M.FORMATION.OCTOMAMM] = "Octomamm",
-	[_M.FORMATION.OFFICER] = "Officer and Soldiers",
+	[_M.FORMATION.OFFICER]  = "Officer and Soldiers",
 }
 
 --------------------------------------------------------------------------------
@@ -153,6 +155,13 @@ local function _command_run_buffer()
 	table.insert(_state.q, {menu.battle.run_buffer, {}})
 end
 
+local function _command_use_item(item, target_type, target)
+	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+	table.insert(_state.q, {menu.battle.item.select, {item}})
+	table.insert(_state.q, {menu.battle.item.select, {item}})
+	table.insert(_state.q, {menu.battle.target, {target_type, target}})
+end
+
 local function _command_use_weapon(character, target_weapon, target_type, target)
 	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
 
@@ -179,6 +188,20 @@ end
 --------------------------------------------------------------------------------
 -- Battles
 --------------------------------------------------------------------------------
+
+local function _battle_antlion(character, turn)
+	if character == game.CHARACTER.CECIL then
+		if game.character.get_stat(game.CHARACTER.RYDIA, "hp") == 0 and game.item.get_index(game.ITEM.ITEM.LIFE, 0, true) then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+		else
+			_command_parry()
+		end
+	elseif character == game.CHARACTER.EDWARD then
+		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+	elseif character == game.CHARACTER.RYDIA then
+		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+	end
+end
 
 local function _battle_d_mist(character, turn)
 	if character == game.CHARACTER.KAIN then
@@ -256,6 +279,7 @@ local function _battle_officer(character, turn)
 end
 
 local _battle_functions = {
+	[_M.FORMATION.ANTLION] = _battle_antlion,
 	[_M.FORMATION.D_MIST] = _battle_d_mist,
 	[_M.FORMATION.GIRL] = _battle_girl,
 	[_M.FORMATION.OCTOMAMM] = _battle_octomamm,

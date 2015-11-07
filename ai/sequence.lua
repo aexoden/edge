@@ -441,6 +441,57 @@ local function _sequence_edward()
 	table.insert(_q, {walk.walk, {65, 13, 11}})
 end
 
+local function _sequence_antlion()
+	-- Travel to the Antlion cave.
+	table.insert(_q, {walk.walk, {nil, 117, 50}})
+	table.insert(_q, {walk.walk, {nil, 124, 50}})
+	table.insert(_q, {walk.walk, {nil, 124, 48}})
+	table.insert(_q, {walk.walk, {nil, 127, 48}})
+	table.insert(_q, {walk.walk, {nil, 127, 46}})
+	table.insert(_q, {walk.walk, {nil, 131, 46}})
+	table.insert(_q, {walk.walk, {nil, 131, 49}})
+	table.insert(_q, {walk.walk, {nil, 132, 49}})
+	table.insert(_q, {walk.walk, {nil, 132, 57}})
+	table.insert(_q, {walk.walk, {nil, 136, 57}})
+	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
+	table.insert(_q, {walk.walk, {nil, 136, 56}})
+
+	-- Walk to the Life chest.
+	table.insert(_q, {walk.walk, {119, 15, 8}})
+	table.insert(_q, {walk.walk, {119, 14, 8}})
+	table.insert(_q, {walk.walk, {119, 14, 13}})
+	table.insert(_q, {walk.walk, {119, 17, 13}})
+	table.insert(_q, {walk.walk, {119, 17, 15}})
+	table.insert(_q, {walk.walk, {119, 19, 15}})
+	table.insert(_q, {walk.walk, {119, 19, 12}})
+	table.insert(_q, {walk.walk, {119, 25, 12}})
+	table.insert(_q, {walk.walk, {119, 25, 14}})
+	table.insert(_q, {walk.walk, {119, 27, 14}})
+	table.insert(_q, {walk.walk, {119, 27, 23}})
+	table.insert(_q, {walk.walk, {120, 27, 4}})
+	table.insert(_q, {walk.walk, {120, 28, 4}})
+	table.insert(_q, {walk.walk, {120, 28, 13}})
+	table.insert(_q, {walk.walk, {120, 29, 13}})
+	table.insert(_q, {walk.walk, {120, 29, 18}})
+	table.insert(_q, {walk.walk, {120, 28, 18}})
+	table.insert(_q, {walk.walk, {120, 28, 24}})
+	table.insert(_q, {walk.walk, {120, 29, 24}})
+	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+	table.insert(_q, {walk.interact, {}})
+
+	-- Walk to Antlion.
+	table.insert(_q, {walk.walk, {120, 29, 26}})
+	table.insert(_q, {walk.walk, {120, 25, 26}})
+	table.insert(_q, {walk.walk, {120, 25, 28}})
+	table.insert(_q, {walk.walk, {120, 22, 28}})
+	table.insert(_q, {walk.walk, {120, 22, 31}})
+	table.insert(_q, {walk.walk, {120, 3, 31}})
+	table.insert(_q, {walk.walk, {120, 3, 23}})
+	table.insert(_q, {walk.walk, {120, 14, 23}})
+	table.insert(_q, {walk.walk, {120, 14, 29}})
+	table.insert(_q, {walk.walk, {121, 14, 19}})
+end
+
 --------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
@@ -475,6 +526,9 @@ local function _check_sequence()
 		elseif map_area == 0 and map_x == 125 and map_y == 67 then
 			title = "Edward"
 			sequence = _sequence_edward
+		elseif map_area == 0 and map_x == 117 and map_y == 57 then
+			title = "Antlion"
+			sequence = _sequence_antlion
 		end
 
 		if sequence then
