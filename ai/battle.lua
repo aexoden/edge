@@ -38,6 +38,7 @@ _M.FORMATION = {
 	ANTLION  = 224,
 	GIRL     = 236,
 	OFFICER  = 237,
+	WATERHAG = 239,
 }
 
 local _formation_descriptions = {
@@ -46,6 +47,7 @@ local _formation_descriptions = {
 	[_M.FORMATION.GIRL]     = "Girl",
 	[_M.FORMATION.OCTOMAMM] = "Octomamm",
 	[_M.FORMATION.OFFICER]  = "Officer and Soldiers",
+	[_M.FORMATION.WATERHAG] = "WaterHag",
 }
 
 --------------------------------------------------------------------------------
@@ -191,7 +193,7 @@ end
 
 local function _battle_antlion(character, turn)
 	if character == game.CHARACTER.CECIL then
-		if game.character.get_stat(game.CHARACTER.RYDIA, "hp") == 0 and game.item.get_index(game.ITEM.ITEM.LIFE, 0, true) then
+		if game.character.get_stat(game.CHARACTER.RYDIA, "hp") == 0 and game.item.get_index(game.ITEM.ITEM.LIFE, 0, game.INVENTORY.BATTLE) then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
 		else
 			_command_parry()
@@ -278,12 +280,17 @@ local function _battle_officer(character, turn)
 	end
 end
 
+local function _battle_waterhag(character, turn)
+	_command_fight()
+end
+
 local _battle_functions = {
 	[_M.FORMATION.ANTLION] = _battle_antlion,
 	[_M.FORMATION.D_MIST] = _battle_d_mist,
 	[_M.FORMATION.GIRL] = _battle_girl,
 	[_M.FORMATION.OCTOMAMM] = _battle_octomamm,
 	[_M.FORMATION.OFFICER] = _battle_officer,
+	[_M.FORMATION.WATERHAG] = _battle_waterhag,
 }
 
 --------------------------------------------------------------------------------

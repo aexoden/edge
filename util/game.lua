@@ -60,6 +60,12 @@ _M.FORMATION = {
 	TWO_FRONT   = 1,
 }
 
+_M.INVENTORY = {
+	BATTLE = 0,
+	FIELD = 1,
+	DIALOG = 2,
+}
+
 _M.ITEM = {
 	NONE         = 0x00,
 	HELM = {
@@ -67,6 +73,7 @@ _M.ITEM = {
 	},
 	ITEM = {
 		LIFE     = 0xD4,
+		SANDRUBY = 0xF0,
 		TENT     = 0xE2,
 	},
 	SHIELD = {
@@ -199,11 +206,13 @@ function _M.enemy.get_stat(enemy, stat)
 	return memory.read("enemy", stat, enemy)
 end
 
-function _M.item.get_index(item, index, battle)
+function _M.item.get_index(item, index, inventory)
 	local category, key
 
-	if battle then
+	if inventory == _M.INVENTORY.BATTLE then
 		category, key = "battle_menu", "item_id"
+	elseif inventory == _M.INVENTORY.DIALOG then
+		category, key = "dialog", "item_id"
 	else
 		category, key = "menu_item", "item_id"
 	end

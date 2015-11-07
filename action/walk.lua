@@ -43,8 +43,10 @@ _M.VEHICLE = {
 }
 
 --------------------------------------------------------------------------------
--- Private Functions
+-- Variables
 --------------------------------------------------------------------------------
+
+_state = {}
 
 --------------------------------------------------------------------------------
 -- Public Functions
@@ -66,7 +68,8 @@ function _M.is_ready()
 end
 
 function _M.is_transition()
-	return memory.read("walk", "transition") % 128 > 0
+	local transition = memory.read("walk", "transition")
+	return transition ~= 0 and transition ~= 128 and transition ~= 255
 end
 
 function _M.step(direction)
@@ -85,6 +88,25 @@ function _M.step(direction)
 	end
 
 	return true
+end
+
+function _M.board()
+	if _M.is_mid_tile() or not _M.is_ready() then
+		return false
+	end
+
+	if not _state.vehicle then
+		_state.vehicle = memory.read("walk", "vehicle")
+	end
+
+	if memory.read("walk", "vehicle") ~= _state.vehicle then
+		_state.vehicle = nil
+		return true
+	else
+		input.press({"P1 A"}, input.DELAY.MASH)
+	end
+
+	return false
 end
 
 function _M.chase(target_map_id, npcs)
@@ -204,6 +226,10 @@ function _M.walk(target_map_id, target_x, target_y, npc_safe)
 	end
 
 	return false
+end
+
+function _M.reset()
+	_state = {}
 end
 
 return _M

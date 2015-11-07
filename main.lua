@@ -24,10 +24,10 @@ local battle = require "ai.battle"
 local dialog = require "util.dialog"
 local input = require "util.input"
 local log = require "util.log"
+local memory = require "util.memory"
 local menu = require "action.menu"
 local sequence = require "ai.sequence"
-
-local memory = require "util.memory"
+local walk = require "action.walk"
 
 --------------------------------------------------------------------------------
 -- Functions
@@ -41,6 +41,7 @@ local function _reset()
 	log.log("Beginning New Run")
 
 	menu.reset()
+	walk.reset()
 
 	dialog.reset()
 	battle.reset()

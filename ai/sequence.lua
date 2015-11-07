@@ -492,6 +492,90 @@ local function _sequence_antlion()
 	table.insert(_q, {walk.walk, {121, 14, 19}})
 end
 
+local function _sequence_waterhag()
+	-- Leave the Antlion cave.
+	table.insert(_q, {walk.walk, {121, 14, 3}})
+	table.insert(_q, {walk.walk, {120, 14, 23}})
+	table.insert(_q, {walk.walk, {120, 3, 23}})
+	table.insert(_q, {walk.walk, {120, 3, 31}})
+	table.insert(_q, {walk.walk, {120, 22, 31}})
+	table.insert(_q, {walk.walk, {120, 22, 28}})
+	table.insert(_q, {walk.walk, {120, 25, 28}})
+	table.insert(_q, {walk.walk, {120, 25, 26}})
+	table.insert(_q, {walk.walk, {120, 29, 26}})
+	table.insert(_q, {walk.walk, {120, 29, 24}})
+	table.insert(_q, {walk.walk, {120, 28, 24}})
+	table.insert(_q, {walk.walk, {120, 28, 16}})
+	table.insert(_q, {walk.walk, {120, 29, 16}})
+	table.insert(_q, {walk.walk, {120, 29, 5}})
+	table.insert(_q, {walk.walk, {120, 28, 5}})
+	table.insert(_q, {walk.walk, {120, 28, 4}})
+	table.insert(_q, {walk.walk, {120, 27, 4}})
+	table.insert(_q, {walk.walk, {120, 27, 2}})
+	table.insert(_q, {walk.walk, {119, 27, 14}})
+	table.insert(_q, {walk.walk, {119, 25, 14}})
+	table.insert(_q, {walk.walk, {119, 25, 12}})
+	table.insert(_q, {walk.walk, {119, 19, 12}})
+	table.insert(_q, {walk.walk, {119, 19, 15}})
+	table.insert(_q, {walk.walk, {119, 17, 15}})
+	table.insert(_q, {walk.walk, {119, 17, 10}})
+	table.insert(_q, {walk.walk, {119, 14, 10}})
+	table.insert(_q, {walk.walk, {119, 14, 5}})
+	table.insert(_q, {walk.walk, {119, 15, 5}})
+	table.insert(_q, {walk.walk, {119, 15, 3}})
+
+	-- Board the hovercraft and travel to Kaipo.
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {nil, 132, 57}})
+	table.insert(_q, {walk.walk, {nil, 132, 49}})
+	table.insert(_q, {walk.walk, {nil, 131, 49}})
+	table.insert(_q, {walk.walk, {nil, 131, 46}})
+	table.insert(_q, {walk.walk, {nil, 126, 46}})
+	table.insert(_q, {walk.walk, {nil, 126, 49}})
+	table.insert(_q, {walk.walk, {nil, 122, 49}})
+	table.insert(_q, {walk.walk, {nil, 122, 62}})
+	table.insert(_q, {walk.walk, {nil, 115, 62}})
+	table.insert(_q, {walk.walk, {nil, 115, 68}})
+	table.insert(_q, {walk.walk, {nil, 99, 68}})
+	table.insert(_q, {walk.walk, {nil, 99, 77}})
+	table.insert(_q, {walk.walk, {nil, 98, 77}})
+	table.insert(_q, {walk.walk, {nil, 98, 80}})
+	table.insert(_q, {walk.walk, {nil, 100, 80}})
+	table.insert(_q, {walk.walk, {nil, 100, 83}})
+	table.insert(_q, {walk.walk, {nil, 118, 83}})
+	table.insert(_q, {walk.walk, {nil, 118, 104}})
+	table.insert(_q, {walk.walk, {nil, 124, 104}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 125, 104}})
+
+	-- Walk to Rosa and use the SandRuby.
+	table.insert(_q, {walk.walk, {2, 15, 25, true}})
+	table.insert(_q, {walk.walk, {2, 20, 25, true}})
+	table.insert(_q, {walk.walk, {2, 20, 19, true}})
+	table.insert(_q, {walk.walk, {2, 23, 19, true}})
+	table.insert(_q, {walk.walk, {2, 23, 15, true}})
+	table.insert(_q, {walk.walk, {2, 28, 15, true}})
+	table.insert(_q, {walk.walk, {2, 28, 13, true}})
+	table.insert(_q, {walk.walk, {18, 4, 5}})
+	table.insert(_q, {walk.walk, {18, 6, 5}})
+	table.insert(_q, {walk.walk, {18, 6, 3}})
+	table.insert(_q, {walk.step, {walk.DIRECTION.RIGHT}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.SANDRUBY}})
+end
+
+local _sequences = {
+	{title = "Prologue", f = _sequence_prologue, map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
+	{title = "D.Mist",   f = _sequence_d_mist,   map_area = 0, map_id = nil, map_x = 102, map_y = 158},
+	{title = "Girl",     f = _sequence_girl,     map_area = 0, map_id = nil, map_x = 84,  map_y = 120},
+	{title = "Officer",  f = _sequence_officer,  map_area = 0, map_id = nil, map_x = 103, map_y = 119},
+	{title = "Tellah",   f = _sequence_tellah,   map_area = 3, map_id = 16,  map_x = 14,  map_y = 12},
+	{title = "Octomamm", f = _sequence_octomamm, map_area = 3, map_id = 111, map_x = 7,   map_y = 13},
+	{title = "Edward",   f = _sequence_edward,   map_area = 0, map_id = nil, map_x = 125, map_y = 67},
+	{title = "Antlion",  f = _sequence_antlion,  map_area = 0, map_id = nil, map_x = 117, map_y = 57},
+	{title = "WaterHag", f = _sequence_waterhag, map_area = 3, map_id = 121, map_x = 14,  map_y = 20},
+}
+
 --------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
@@ -503,37 +587,11 @@ local function _check_sequence()
 		local map_x = memory.read("walk", "x")
 		local map_y = memory.read("walk", "y")
 
-		local title, sequence
-
-		if map_area == 3 and map_id == 43 and map_x == 14 and map_y == 5 then
-			title = "Prologue"
-			sequence = _sequence_prologue
-		elseif map_area == 0 and map_x == 102 and map_y == 158 then
-			title = "D.Mist"
-			sequence = _sequence_d_mist
-		elseif map_area == 0 and map_x == 84 and map_y == 120 then
-			title = "Girl"
-			sequence = _sequence_girl
-		elseif map_area == 0 and map_x == 103 and map_y == 119 then
-			title = "Officer"
-			sequence = _sequence_officer
-		elseif map_area == 3 and map_id == 16 and map_x == 14 and map_y == 12 then
-			title = "Tellah"
-			sequence = _sequence_tellah
-		elseif map_area == 3 and map_id == 111 and map_x == 7 and map_y == 13 then
-			title = "Octomamm"
-			sequence = _sequence_octomamm
-		elseif map_area == 0 and map_x == 125 and map_y == 67 then
-			title = "Edward"
-			sequence = _sequence_edward
-		elseif map_area == 0 and map_x == 117 and map_y == 57 then
-			title = "Antlion"
-			sequence = _sequence_antlion
-		end
-
-		if sequence then
-			log.log(string.format("Beginning Sequence: %s", title))
-			sequence()
+		for _, sequence in pairs(_sequences) do
+			if map_area == sequence.map_area and (not sequence.map_id or map_id == sequence.map_id) and map_x == sequence.map_x and map_y == sequence.map_y then
+				log.log(string.format("Beginning Sequence: %s", sequence.title))
+				sequence.f()
+			end
 		end
 	end
 end

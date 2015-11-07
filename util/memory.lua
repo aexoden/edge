@@ -92,6 +92,13 @@ local _addresses = {
 		height          = {f = mainmemory.read_u8,     address = 0x0006DF, record_size = {0x01, 0x01}},
 		prompt          = {f = mainmemory.read_u8,     address = 0x000654, record_size = {0x01, 0x01}},
 		state           = {f = mainmemory.read_u8,     address = 0x00067D, record_size = {0x01, 0x01}},
+		cursor_x        = {f = mainmemory.read_u8,     address = 0x00068B, record_size = {0x01, 0x01}},
+		cursor_y        = {f = mainmemory.read_u8,     address = 0x00068C, record_size = {0x01, 0x01}},
+		cursor_scroll   = {f = mainmemory.read_u8,     address = 0x0006BA, record_size = {0x01, 0x01}},
+		cursor_wait     = {f = mainmemory.read_u8,     address = 0x000689, record_size = {0x01, 0x01}},
+		height_lower    = {f = mainmemory.read_u8,     address = 0x0006DA, record_size = {0x01, 0x01}},
+		item_id         = {f = mainmemory.read_u8,     address = 0x000712, record_size = {0x02, 0x01}},
+		item_count      = {f = mainmemory.read_u8,     address = 0x000713, record_size = {0x02, 0x01}},
 	},
 	enemy = {
 		hp              = {f = mainmemory.read_u16_le, address = 0x002287, record_size = {0x80, 0x01}},

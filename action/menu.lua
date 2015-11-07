@@ -30,6 +30,8 @@ _M.battle = {
 	magic = {},
 }
 
+_M.dialog = {}
+
 _M.field = {
 	custom = {},
 	equip = {},
@@ -783,7 +785,7 @@ end
 function _M.battle.item.select(item, index)
 	local menu = memory.read("battle_menu", "menu")
 	local cursor = memory.read("battle_menu", "subcursor")
-	local index = game.item.get_index(item, index, true)
+	local index = game.item.get_index(item, index, game.INVENTORY.BATTLE)
 
 	if _M.battle.is_open() then
 		if _state.item_selected ~= nil and memory.read("battle_menu", "item_selected") ~= _state.item_selected then
@@ -834,6 +836,25 @@ function _M.battle.run_buffer()
 		return true
 	else
 		input.press({"P1 L", "P1 R"}, input.DELAY.NONE)
+	end
+
+	return false
+end
+
+--------------------------------------------------------------------------------
+-- Dialog Menu Functions
+--------------------------------------------------------------------------------
+
+function _M.dialog.select(item)
+	local cursor = (memory.read("dialog", "cursor_y") + memory.read("dialog", "cursor_scroll")) * 2 + memory.read("dialog", "cursor_x")
+	local index = game.item.get_index(item, 0, game.INVENTORY.DIALOG)
+
+	if memory.read("dialog", "height_lower") == 8 and memory.read("dialog", "cursor_wait") == 0 then
+		if cursor == index then
+			return input.press({"P1 A"}, input.DELAY.NORMAL)
+		else
+			_select_multi_column(cursor, index, 2)
+		end
 	end
 
 	return false
