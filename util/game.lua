@@ -47,6 +47,11 @@ _M.CHARACTER = {
 	FUSOYA = 11,
 }
 
+_M.ENEMY = {
+	BOMB     = 0x55,
+	GRAYBOMB = 0x56,
+}
+
 _M.EQUIP = {
 	R_HAND = 0x00,
 	L_HAND = 0x01,
@@ -93,6 +98,7 @@ _M.MAGIC = {
 		STOP  = 0x2C,
 	},
 	WHITE = {
+		CURE1 = 0x0E,
 		CURE2 = 0x0F,
 		LIFE1 = 0x13,
 	},
@@ -202,8 +208,38 @@ function _M.character.get_weapon(character)
 	end
 end
 
-function _M.enemy.get_stat(enemy, stat)
-	return memory.read("enemy", stat, enemy)
+function _M.enemy.get_id(index)
+	local type = memory.read("enemy", "type", index)
+
+	if type < 0xFF then
+		local id = memory.read("enemy", "id", type)
+
+		if id < 0xFF then
+			return id
+		end
+	end
+
+	return nil
+end
+
+function _M.enemy.get_stat(index, stat)
+	return memory.read("enemy", stat, index)
+end
+
+function _M.enemy.get_weakest(enemy)
+	local weakest = {nil, 999999}
+
+	for i = 0, 7 do
+		if _M.enemy.get_id(i) == enemy then
+			local hp = _M.enemy.get_stat(i, "hp")
+
+			if hp <= weakest[2] then
+				weakest = {i, hp}
+			end
+		end
+	end
+
+	return weakest[1]
 end
 
 function _M.item.get_index(item, index, inventory)

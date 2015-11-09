@@ -564,6 +564,58 @@ local function _sequence_waterhag()
 	table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.SANDRUBY}})
 end
 
+local function _sequence_mombomb()
+	-- Leave Kaipo.
+	table.insert(_q, {walk.walk, {18, 4, 18}})
+	table.insert(_q, {walk.walk, {2, 23, 14, true}})
+	table.insert(_q, {walk.walk, {2, 23, 19, true}})
+	table.insert(_q, {walk.walk, {2, 20, 19, true}})
+	table.insert(_q, {walk.walk, {2, 20, 26, true}})
+	table.insert(_q, {walk.walk, {2, 15, 26, true}})
+	table.insert(_q, {walk.walk, {2, 15, 30, true}})
+	table.insert(_q, {walk.walk, {2, 14, 30}})
+	table.insert(_q, {walk.walk, {2, 14, 31}})
+
+	-- Head to Mt.Hobs.
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {nil, 107, 104}})
+	table.insert(_q, {walk.walk, {nil, 107, 83}})
+	table.insert(_q, {walk.walk, {nil, 99, 83}})
+	table.insert(_q, {walk.walk, {nil, 99, 79}})
+	table.insert(_q, {walk.walk, {nil, 98, 79}})
+	table.insert(_q, {walk.walk, {nil, 98, 76}})
+	table.insert(_q, {walk.walk, {nil, 99, 76}})
+	table.insert(_q, {walk.walk, {nil, 99, 68}})
+	table.insert(_q, {walk.walk, {nil, 115, 68}})
+	table.insert(_q, {walk.walk, {nil, 115, 62}})
+	table.insert(_q, {walk.walk, {nil, 124, 62}})
+	table.insert(_q, {walk.walk, {nil, 124, 62}})
+	table.insert(_q, {walk.walk, {nil, 124, 48}})
+	table.insert(_q, {walk.walk, {nil, 127, 48}})
+	table.insert(_q, {walk.walk, {nil, 127, 46}})
+	table.insert(_q, {walk.walk, {nil, 131, 46}})
+	table.insert(_q, {walk.walk, {nil, 131, 49}})
+	table.insert(_q, {walk.walk, {nil, 143, 49}})
+	table.insert(_q, {walk.walk, {nil, 143, 48}})
+	table.insert(_q, {walk.walk, {nil, 150, 48}})
+	table.insert(_q, {walk.walk, {nil, 150, 49}})
+	table.insert(_q, {walk.walk, {nil, 151, 49}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 152, 49}})
+
+	-- Head up the mountain to MomBomb.
+	table.insert(_q, {walk.walk, {126, 15, 26}})
+	table.insert(_q, {walk.walk, {126, 15, 17}})
+	table.insert(_q, {walk.walk, {126, 8, 17}})
+	table.insert(_q, {walk.walk, {126, 8, 11}})
+	table.insert(_q, {walk.walk, {126, 22, 11}})
+	table.insert(_q, {walk.walk, {126, 22, 7}})
+	table.insert(_q, {walk.walk, {127, 8, 23}})
+	table.insert(_q, {walk.walk, {127, 16, 23}})
+	table.insert(_q, {walk.walk, {127, 16, 20}})
+	table.insert(_q, {walk.walk, {127, 20, 20}})
+end
+
 local _sequences = {
 	{title = "Prologue", f = _sequence_prologue, map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",   f = _sequence_d_mist,   map_area = 0, map_id = nil, map_x = 102, map_y = 158},
@@ -574,6 +626,7 @@ local _sequences = {
 	{title = "Edward",   f = _sequence_edward,   map_area = 0, map_id = nil, map_x = 125, map_y = 67},
 	{title = "Antlion",  f = _sequence_antlion,  map_area = 0, map_id = nil, map_x = 117, map_y = 57},
 	{title = "WaterHag", f = _sequence_waterhag, map_area = 3, map_id = 121, map_x = 14,  map_y = 20},
+	{title = "MomBomb",  f = _sequence_mombomb,  map_area = 3, map_id = 18,  map_x = 4,   map_y = 5},
 }
 
 --------------------------------------------------------------------------------

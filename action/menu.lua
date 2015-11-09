@@ -99,6 +99,7 @@ _M.battle.TARGET = {
 	ENEMY     = 0x00,
 	PARTY     = 0x08,
 	PARTY_ALL = 0x0D,
+	NONE      = 0x0F,
 	CHARACTER = 0xFE,
 	ENEMY_ALL = 0xFF,
 }
@@ -667,6 +668,93 @@ function _M.battle.magic.is_open()
 end
 
 --------------------------------------------------------------------------------
+-- Battle Menu Internal Functions
+--------------------------------------------------------------------------------
+
+function _M.battle.is_target_valid(index)
+	return memory.read("battle_menu", "target_valid", index) ~= 0xFF
+end
+
+function _M.battle.get_default_target(direction, index)
+	if direction == walk.DIRECTION.UP then
+		return memory.read("battle_menu", "target_default_up", index)
+	elseif direction == walk.DIRECTION.DOWN then
+		return memory.read("battle_menu", "target_default_down", index)
+	else
+		return nil
+	end
+end
+
+function _M.battle.get_next_target(index, direction)
+	if direction == walk.DIRECTION.UP then
+		return math.floor(memory.read("battle_menu", "target_up_down", index) / 16)
+	elseif direction == walk.DIRECTION.DOWN then
+		return memory.read("battle_menu", "target_up_down", index) % 16
+	elseif direction == walk.DIRECTION.LEFT then
+		return math.floor(memory.read("battle_menu", "target_left_right", index) / 16)
+	elseif direction == walk.DIRECTION.RIGHT then
+		return memory.read("battle_menu", "target_left_right", index) % 16
+	end
+end
+
+function _M.battle.get_target(index, direction)
+	index = _M.battle.get_next_target(index, direction)
+
+	while index ~= _M.battle.TARGET.NONE and not _M.battle.is_target_valid(index) do
+		index = _M.battle.get_next_target(index, direction)
+	end
+
+	if index == _M.battle.TARGET.NONE then
+		if direction == walk.DIRECTION.LEFT or direction == walk.DIRECTION.RIGHT then
+			index = nil
+		else
+			for i = 0, 7 do
+				index = _M.battle.get_default_target(direction, i)
+
+				if _M.battle.is_target_valid(index) then
+					break
+				elseif i == 7 then
+					index = nil
+				end
+			end
+		end
+	end
+
+	return index
+end
+
+function _M.battle.get_target_direction(cursor, index)
+	local q = {cursor}
+	local parents = {}
+
+	while #q > 0 and not parents[index] do
+		local node = table.remove(q, 1)
+
+		for _, direction in pairs(walk.DIRECTION) do
+			local next = _M.battle.get_target(node, direction)
+
+			if next and not parents[next] then
+				parents[next] = {node, direction}
+			end
+
+			q[#q + 1] = next
+		end
+	end
+
+	if not parents[index] then
+		return nil
+	end
+
+	local direction
+
+	while index ~= cursor do
+		index, direction = unpack(parents[index])
+	end
+
+	return direction
+end
+
+--------------------------------------------------------------------------------
 -- Battle Menu External Functions
 --------------------------------------------------------------------------------
 
@@ -690,7 +778,6 @@ function _M.battle.target(target, index)
 			elseif index == _M.battle.TARGET.ENEMY_ALL or (cursor >= _M.battle.TARGET.PARTY and index < _M.battle.TARGET.PARTY) then
 				input.press({"P1 Left"}, input.DELAY.MASH)
 			else
-				-- TODO: Handle enemy targeting.
 				if index >= _M.battle.TARGET.PARTY then
 					local index_map = {
 						[8] = 2,
@@ -701,6 +788,18 @@ function _M.battle.target(target, index)
 					}
 
 					_select_vertical(index_map[cursor], index_map[index], 2)
+				else
+					local direction = _M.battle.get_target_direction(cursor, index)
+
+					if direction == walk.DIRECTION.UP then
+						input.press({"P1 Up"}, input.DELAY.MASH)
+					elseif direction == walk.DIRECTION.LEFT then
+						input.press({"P1 Left"}, input.DELAY.MASH)
+					elseif direction == walk.DIRECTION.DOWN then
+						input.press({"P1 Down"}, input.DELAY.MASH)
+					elseif direction == walk.DIRECTION.RIGHT then
+						input.press({"P1 Right"}, input.DELAY.MASH)
+					end
 				end
 			end
 		end

@@ -36,6 +36,7 @@ _M.FORMATION = {
 	D_MIST   = 222,
 	OCTOMAMM = 223,
 	ANTLION  = 224,
+	MOMBOMB  = 225,
 	GIRL     = 236,
 	OFFICER  = 237,
 	WATERHAG = 239,
@@ -45,6 +46,7 @@ local _formation_descriptions = {
 	[_M.FORMATION.ANTLION]  = "Antlion",
 	[_M.FORMATION.D_MIST]   = "D.Mist",
 	[_M.FORMATION.GIRL]     = "Girl",
+	[_M.FORMATION.MOMBOMB]  = "MomBomb",
 	[_M.FORMATION.OCTOMAMM] = "Octomamm",
 	[_M.FORMATION.OFFICER]  = "Officer and Soldiers",
 	[_M.FORMATION.WATERHAG] = "WaterHag",
@@ -94,6 +96,11 @@ end
 --------------------------------------------------------------------------------
 -- Command Helpers
 --------------------------------------------------------------------------------
+
+local function _command_aim(target_type, target)
+	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.AIM}})
+	table.insert(_state.q, {menu.battle.target, {target_type, target}})
+end
 
 local function _command_magic(type, spell, target_type, target)
 	table.insert(_state.q, {menu.battle.command.select, {type}})
@@ -146,6 +153,11 @@ end
 
 local function _command_jump(target_type, target)
 	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.JUMP}})
+	table.insert(_state.q, {menu.battle.target, {target_type, target}})
+end
+
+local function _command_kick(target_type, target)
+	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.KICK}})
 	table.insert(_state.q, {menu.battle.target, {target_type, target}})
 end
 
@@ -238,6 +250,51 @@ local function _battle_girl(character, turn)
 	end
 end
 
+local function _battle_mombomb(character, turn)
+	if memory.read("enemy", "hp", 0) > 10000 then
+		if character == game.CHARACTER.CECIL or character == game.CHARACTER.YANG then
+			_command_fight()
+		elseif character == game.CHARACTER.EDWARD or character == game.CHARACTER.RYDIA then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+		elseif character == game.CHARACTER.ROSA then
+			local count = 0, last
+
+			for i = 0, 4 do
+				if memory.read("character", "hp", i) < memory.read("character", "hp_max", i) * 0.8 then
+					count = count + 1
+					last = i
+				end
+			end
+
+			if count > 1 then
+				_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY_ALL)
+			elseif count == 1 then
+				_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY, last)
+			else
+				_command_parry()
+			end
+		end
+	elseif memory.read("enemy", "hp", 0) > 0 then
+		if character == game.CHARACTER.YANG then
+			_command_wait_text("Ex")
+			_command_wait_frames(60)
+			_command_kick()
+		else
+			_command_parry()
+		end
+	else
+		if character == game.CHARACTER.CECIL then
+			_command_fight()
+		elseif character == game.CHARACTER.EDWARD or character == game.CHARACTER.RYDIA then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, game.enemy.get_weakest(game.ENEMY.GRAYBOMB))
+		elseif character == game.CHARACTER.ROSA then
+			_command_aim(menu.battle.TARGET.ENEMY, game.enemy.get_weakest(game.ENEMY.BOMB))
+		elseif character == game.CHARACTER.YANG then
+			_command_kick()
+		end
+	end
+end
+
 local function _battle_octomamm(character, turn)
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
@@ -288,6 +345,7 @@ local _battle_functions = {
 	[_M.FORMATION.ANTLION] = _battle_antlion,
 	[_M.FORMATION.D_MIST] = _battle_d_mist,
 	[_M.FORMATION.GIRL] = _battle_girl,
+	[_M.FORMATION.MOMBOMB] = _battle_mombomb,
 	[_M.FORMATION.OCTOMAMM] = _battle_octomamm,
 	[_M.FORMATION.OFFICER] = _battle_officer,
 	[_M.FORMATION.WATERHAG] = _battle_waterhag,
