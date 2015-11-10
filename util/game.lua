@@ -49,6 +49,7 @@ _M.CHARACTER = {
 
 _M.ENEMY = {
 	BOMB     = 0x55,
+	FIGHTER  = 0x2C,
 	GRAYBOMB = 0x56,
 }
 

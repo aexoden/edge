@@ -616,6 +616,44 @@ local function _sequence_mombomb()
 	table.insert(_q, {walk.walk, {127, 20, 20}})
 end
 
+local function _sequence_dragoon()
+	-- Leave Mt.Hobs.
+	table.insert(_q, {walk.walk, {127, 19, 14}})
+	table.insert(_q, {walk.walk, {127, 19, 9}})
+	table.insert(_q, {walk.walk, {128, 20, 10}})
+	table.insert(_q, {walk.walk, {128, 20, 14}})
+	table.insert(_q, {walk.walk, {128, 14, 14}})
+	table.insert(_q, {walk.walk, {128, 14, 15}})
+	table.insert(_q, {walk.walk, {128, 11, 15}})
+	table.insert(_q, {walk.walk, {128, 11, 17}})
+	table.insert(_q, {walk.walk, {128, 10, 17}})
+	table.insert(_q, {walk.walk, {128, 10, 21}})
+	table.insert(_q, {walk.walk, {128, 18, 21}})
+	table.insert(_q, {walk.walk, {128, 18, 27}})
+	table.insert(_q, {walk.walk, {128, 21, 27}})
+	table.insert(_q, {walk.walk, {128, 21, 31}})
+
+	-- Walk to Fabul.
+	table.insert(_q, {walk.walk, {nil, 162, 50}})
+	table.insert(_q, {walk.walk, {nil, 162, 49}})
+	table.insert(_q, {walk.walk, {nil, 171, 49}})
+	table.insert(_q, {walk.walk, {nil, 171, 38}})
+	table.insert(_q, {walk.walk, {nil, 185, 38}})
+	table.insert(_q, {walk.walk, {nil, 185, 45}})
+	table.insert(_q, {walk.walk, {nil, 200, 45}})
+	table.insert(_q, {walk.walk, {nil, 200, 48}})
+	table.insert(_q, {walk.walk, {nil, 207, 48}})
+	table.insert(_q, {walk.walk, {nil, 207, 58}})
+	table.insert(_q, {walk.walk, {nil, 214, 58}})
+
+	-- Walk to the King.
+	table.insert(_q, {walk.walk, {38, 15, 14}})
+	table.insert(_q, {walk.walk, {71, 11, 3}})
+	table.insert(_q, {walk.walk, {72, 4, 0}})
+	table.insert(_q, {walk.walk, {73, 8, 12}})
+
+end
+
 local _sequences = {
 	{title = "Prologue", f = _sequence_prologue, map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",   f = _sequence_d_mist,   map_area = 0, map_id = nil, map_x = 102, map_y = 158},
@@ -627,6 +665,7 @@ local _sequences = {
 	{title = "Antlion",  f = _sequence_antlion,  map_area = 0, map_id = nil, map_x = 117, map_y = 57},
 	{title = "WaterHag", f = _sequence_waterhag, map_area = 3, map_id = 121, map_x = 14,  map_y = 20},
 	{title = "MomBomb",  f = _sequence_mombomb,  map_area = 3, map_id = 18,  map_x = 4,   map_y = 5},
+	{title = "Dragoon",  f = _sequence_dragoon,  map_area = 3, map_id = 127, map_x = 21,  map_y = 14},
 }
 
 --------------------------------------------------------------------------------

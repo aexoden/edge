@@ -808,6 +808,20 @@ function _M.battle.target(target, index)
 	return false
 end
 
+function _M.battle.command.has_command(target_command)
+	local slot = memory.read("battle_menu", "slot")
+
+	for i = 0, 6 do
+		local command = memory.read("battle_menu", "command", slot, i)
+
+		if command == target_command then
+			return true
+		end
+	end
+
+	return false
+end
+
 function _M.battle.command.select(target_command)
 	if _M.battle.is_open() then
 		if not _M.battle.command.is_open() then
@@ -845,27 +859,31 @@ function _M.battle.command.select(target_command)
 	return false
 end
 
-function _M.battle.equip.select(index)
+function _M.battle.equip.select(index, delay)
 	local cursor = memory.read("battle_menu", "subcursor")
 	local menu = memory.read("battle_menu", "menu")
+
+	if not delay then
+		delay = input.DELAY.NORMAL
+	end
 
 	if _M.battle.is_open() then
 		if _state.item_selected ~= nil and memory.read("battle_menu", "item_selected") ~= _state.item_selected then
 			_state.item_selected = nil
 			return true
 		elseif menu == _M.battle.MENU.ITEM then
-			input.press({"P1 Up"}, input.DELAY.NORMAL)
+			input.press({"P1 Up"}, delay)
 		elseif menu == _M.battle.MENU.EQUIP then
 			if cursor == index then
-				input.press({"P1 A"}, input.DELAY.NORMAL)
+				input.press({"P1 A"}, delay)
 
 				if _state.item_selected == nil then
 					_state.item_selected = memory.read("battle_menu", "item_selected")
 				end
 			elseif cursor > index then
-				input.press({"P1 Left"}, input.DELAY.NORMAL)
+				input.press({"P1 Left"}, delay)
 			else
-				input.press({"P1 Right"}, input.DELAY.NORMAL)
+				input.press({"P1 Right"}, delay)
 			end
 		end
 	end

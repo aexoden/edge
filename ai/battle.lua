@@ -40,16 +40,24 @@ _M.FORMATION = {
 	GIRL     = 236,
 	OFFICER  = 237,
 	WATERHAG = 239,
+	DRAGOON  = 241,
+	GENERAL  = 247,
+	WEEPER   = 248,
+	GARGOYLE = 249,
 }
 
 local _formation_descriptions = {
 	[_M.FORMATION.ANTLION]  = "Antlion",
 	[_M.FORMATION.D_MIST]   = "D.Mist",
+	[_M.FORMATION.DRAGOON]  = "Dragoon",
+	[_M.FORMATION.GARGOYLE] = "Gargoyle",
+	[_M.FORMATION.GENERAL]  = "General/Fighters",
 	[_M.FORMATION.GIRL]     = "Girl",
 	[_M.FORMATION.MOMBOMB]  = "MomBomb",
 	[_M.FORMATION.OCTOMAMM] = "Octomamm",
-	[_M.FORMATION.OFFICER]  = "Officer and Soldiers",
+	[_M.FORMATION.OFFICER]  = "Officer/Soldiers",
 	[_M.FORMATION.WATERHAG] = "WaterHag",
+	[_M.FORMATION.WEEPER]   = "Weeper/WaterHag/Imp"
 }
 
 --------------------------------------------------------------------------------
@@ -186,8 +194,8 @@ local function _command_use_weapon(character, target_weapon, target_type, target
 		table.insert(_state.q, {menu.battle.equip.select, {hand}})
 	end
 
-	table.insert(_state.q, {menu.battle.equip.select, {hand}})
-	table.insert(_state.q, {menu.battle.equip.select, {hand}})
+	table.insert(_state.q, {menu.battle.equip.select, {hand, input.DELAY.MASH}})
+	table.insert(_state.q, {menu.battle.equip.select, {hand, input.DELAY.MASH}})
 	table.insert(_state.q, {menu.battle.target, {target_type, target}})
 end
 
@@ -238,6 +246,46 @@ local function _battle_d_mist(character, turn)
 				_command_duplicate(game.EQUIP.L_HAND)
 			end
 
+			_command_fight()
+		end
+	end
+end
+
+local function _battle_dragoon(character, turn)
+	_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+end
+
+local function _battle_gargoyle(character, turn)
+	if character == game.CHARACTER.CECIL then
+		_command_fight()
+	elseif character == game.CHARACTER.EDWARD then
+		if menu.battle.command.has_command(menu.battle.COMMAND.SHOW) then
+			_command_parry()
+		elseif turn == 1 then
+			_command_run_buffer()
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 0)
+		else
+			_command_fight()
+		end
+	elseif character == game.CHARACTER.YANG then
+		_command_fight()
+	end
+end
+
+local function _battle_general(character, turn)
+	if game.enemy.get_weakest(game.ENEMY.FIGHTER) then
+		if character == game.CHARACTER.CECIL then
+			_command_fight()
+		elseif character == game.CHARACTER.EDWARD then
+			if menu.battle.command.has_command(menu.battle.COMMAND.SHOW) then
+				_command_parry()
+			elseif turn == 1 then
+				_command_run_buffer()
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 1)
+			else
+				_command_fight()
+			end
+		elseif character == game.CHARACTER.YANG then
 			_command_fight()
 		end
 	end
@@ -341,14 +389,40 @@ local function _battle_waterhag(character, turn)
 	_command_fight()
 end
 
+local function _battle_weeper(character, turn)
+	if character == game.CHARACTER.CECIL then
+		if turn == 1 then
+			_command_run_buffer()
+			_command_fight(menu.battle.TARGET.ENEMY, 2)
+		else
+			_command_fight()
+		end
+	elseif character == game.CHARACTER.EDWARD then
+		if menu.battle.command.has_command(menu.battle.COMMAND.SHOW) then
+			_command_parry()
+		elseif turn == 1 then
+			_command_run_buffer()
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 0)
+		else
+			_command_fight()
+		end
+	elseif character == game.CHARACTER.YANG then
+		_command_fight()
+	end
+end
+
 local _battle_functions = {
 	[_M.FORMATION.ANTLION] = _battle_antlion,
 	[_M.FORMATION.D_MIST] = _battle_d_mist,
+	[_M.FORMATION.DRAGOON] = _battle_dragoon,
+	[_M.FORMATION.GARGOYLE] = _battle_gargoyle,
+	[_M.FORMATION.GENERAL] = _battle_general,
 	[_M.FORMATION.GIRL] = _battle_girl,
 	[_M.FORMATION.MOMBOMB] = _battle_mombomb,
 	[_M.FORMATION.OCTOMAMM] = _battle_octomamm,
 	[_M.FORMATION.OFFICER] = _battle_officer,
 	[_M.FORMATION.WATERHAG] = _battle_waterhag,
+	[_M.FORMATION.WEEPER] = _battle_weeper,
 }
 
 --------------------------------------------------------------------------------
