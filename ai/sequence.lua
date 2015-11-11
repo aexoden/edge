@@ -651,7 +651,162 @@ local function _sequence_dragoon()
 	table.insert(_q, {walk.walk, {71, 11, 3}})
 	table.insert(_q, {walk.walk, {72, 4, 0}})
 	table.insert(_q, {walk.walk, {73, 8, 12}})
+end
 
+local function _sequence_twins()
+	-- Head to the Fabul Inn.
+	table.insert(_q, {walk.walk, {74, 11, 15}})
+	table.insert(_q, {walk.walk, {74, 11, 26}})
+	table.insert(_q, {walk.walk, {73, 4, 7}})
+	table.insert(_q, {walk.walk, {73, 8, 7}})
+	table.insert(_q, {walk.walk, {73, 8, 14}})
+	table.insert(_q, {walk.walk, {72, 4, 9}})
+	table.insert(_q, {walk.walk, {71, 11, 11}})
+	table.insert(_q, {walk.walk, {71, 6, 11}})
+	table.insert(_q, {walk.walk, {71, 6, 10}})
+	table.insert(_q, {walk.walk, {71, 5, 10}})
+	table.insert(_q, {walk.walk, {71, 5, 7}})
+	table.insert(_q, {walk.walk, {76, 20, 5}})
+	table.insert(_q, {walk.walk, {76, 17, 5}})
+
+	-- Remove the Tiara and equip the Black sword.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.RYDIA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.CAP}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.BLACK}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.close, {}})
+
+	-- Head to the boat.
+	table.insert(_q, {walk.walk, {79, 5, 5}})
+	table.insert(_q, {walk.walk, {79, 1, 5}})
+	table.insert(_q, {walk.walk, {79, 1, 6}})
+	table.insert(_q, {walk.walk, {78, 1, 6}})
+	table.insert(_q, {walk.walk, {77, 1, 6}})
+	table.insert(_q, {walk.walk, {77, 2, 6}})
+	table.insert(_q, {walk.walk, {77, 2, 10}})
+	table.insert(_q, {walk.walk, {38, 17, 11}})
+	table.insert(_q, {walk.walk, {38, 15, 11}})
+	table.insert(_q, {walk.walk, {38, 15, 10}})
+	table.insert(_q, {walk.walk, {72, 6, 13}})
+	table.insert(_q, {walk.walk, {72, 6, 6}})
+	table.insert(_q, {walk.walk, {72, 4, 6}})
+	table.insert(_q, {walk.walk, {72, 4, 9}})
+	table.insert(_q, {walk.walk, {71, 11, 15}})
+	table.insert(_q, {walk.walk, {38, 15, 31}})
+	table.insert(_q, {walk.walk, {nil, 216, 59}})
+	table.insert(_q, {walk.walk, {nil, 216, 58}})
+	table.insert(_q, {walk.walk, {nil, 220, 58}})
+	table.insert(_q, {walk.walk, {nil, 220, 56}})
+	table.insert(_q, {walk.walk, {nil, 221, 56}})
+
+	-- Go to the Mysidian item shop.
+	table.insert(_q, {walk.walk, {nil, 145, 199}})
+	table.insert(_q, {walk.walk, {nil, 154, 199}})
+	table.insert(_q, {walk.walk, {3, 16, 27, true}})
+	table.insert(_q, {walk.walk, {3, 27, 27, true}})
+	table.insert(_q, {walk.walk, {3, 27, 26, true}})
+	table.insert(_q, {walk.walk, {231, 5, 5}})
+	table.insert(_q, {walk.interact, {}})
+
+	-- Purchase items from the shop.
+	table.insert(_q, {menu.shop.buy.open, {70}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.CURE2}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.LIFE}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.HEAL}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.ETHER1}})
+	table.insert(_q, {menu.shop.buy.close, {}})
+	table.insert(_q, {menu.shop.close, {}})
+
+	-- Head to the armor shop.
+	table.insert(_q, {walk.walk, {231, 5, 10}})
+	table.insert(_q, {walk.walk, {3, 27, 27}})
+	table.insert(_q, {walk.walk, {3, 15, 27, true}})
+	table.insert(_q, {walk.walk, {3, 15, 26, true}})
+	table.insert(_q, {walk.walk, {3, 8, 26, true}})
+	table.insert(_q, {walk.walk, {3, 8, 24, true}})
+	table.insert(_q, {walk.walk, {3, 9, 24, true}})
+	table.insert(_q, {walk.walk, {3, 9, 23, true}})
+	table.insert(_q, {walk.walk, {230, 4, 5, true}})
+	table.insert(_q, {walk.interact, {}})
+
+	-- Buy various needed armor items.
+	table.insert(_q, {menu.shop.buy.open, {10}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.HELM.GAEA}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ARMOR.GAEA}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.RING.SILVER}})
+	table.insert(_q, {menu.shop.switch_quantity, {}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.SHIELD.PALADIN}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ARMS.PALADIN}})
+	table.insert(_q, {menu.shop.buy.close, {}})
+	table.insert(_q, {menu.shop.close, {}})
+
+	-- Head to the Elder.
+	table.insert(_q, {walk.walk, {230, 4, 10, true}})
+	table.insert(_q, {walk.walk, {3, 9, 24, true}})
+	table.insert(_q, {walk.walk, {3, 8, 24, true}})
+	table.insert(_q, {walk.walk, {3, 8, 26, true}})
+	table.insert(_q, {walk.walk, {3, 16, 26, true}})
+	table.insert(_q, {walk.walk, {3, 16, 8, true}})
+	table.insert(_q, {walk.walk, {22, 14, 6, true}})
+	table.insert(_q, {walk.interact, {}})
+end
+
+local function _sequence_milon()
+	-- Walk to Mt.Ordeals.
+	table.insert(_q, {walk.walk, {22, 14, 12, true}})
+	table.insert(_q, {walk.walk, {3, 16, 31, true}})
+	table.insert(_q, {walk.walk, {nil, 157, 200}})
+	table.insert(_q, {walk.walk, {nil, 157, 205}})
+	table.insert(_q, {walk.walk, {nil, 175, 205}})
+	table.insert(_q, {walk.walk, {nil, 175, 211}})
+	table.insert(_q, {walk.walk, {nil, 182, 211}})
+	table.insert(_q, {walk.walk, {nil, 182, 192}})
+	table.insert(_q, {walk.walk, {nil, 211, 192}})
+	table.insert(_q, {walk.walk, {nil, 211, 201}})
+	table.insert(_q, {walk.walk, {nil, 218, 201}})
+	table.insert(_q, {walk.walk, {nil, 218, 199}})
+
+	-- Walk up the mountain.
+	table.insert(_q, {walk.walk, {132, 20, 29}})
+	table.insert(_q, {walk.walk, {132, 12, 29}})
+	table.insert(_q, {walk.walk, {132, 12, 28}})
+	table.insert(_q, {walk.walk, {132, 11, 28}})
+	table.insert(_q, {walk.walk, {132, 9, 24}})
+	table.insert(_q, {walk.walk, {132, 11, 24}})
+	table.insert(_q, {walk.walk, {132, 11, 23}})
+	table.insert(_q, {walk.walk, {132, 17, 23}})
+	table.insert(_q, {walk.walk, {132, 17, 18}})
+	table.insert(_q, {walk.walk, {132, 14, 18}})
+	table.insert(_q, {walk.walk, {132, 14, 12}})
+	table.insert(_q, {walk.walk, {132, 19, 12}})
+	table.insert(_q, {walk.walk, {132, 19, 9}})
+	table.insert(_q, {walk.walk, {133, 8, 24}})
+	table.insert(_q, {walk.walk, {133, 8, 17}})
+	table.insert(_q, {walk.walk, {133, 18, 17}})
+	table.insert(_q, {walk.walk, {133, 18, 8}})
+	table.insert(_q, {walk.walk, {133, 21, 8}})
+	table.insert(_q, {walk.walk, {133, 21, 7}})
+	table.insert(_q, {walk.walk, {134, 23, 25}})
+	table.insert(_q, {walk.walk, {134, 19, 25}})
+	table.insert(_q, {walk.walk, {134, 19, 23}})
+	table.insert(_q, {walk.walk, {134, 18, 23}})
+	table.insert(_q, {walk.walk, {134, 18, 17}})
+	table.insert(_q, {walk.walk, {134, 24, 17}})
+	table.insert(_q, {walk.walk, {134, 24, 8}})
+	table.insert(_q, {walk.walk, {134, 11, 8}})
+	table.insert(_q, {walk.walk, {134, 11, 7}})
+	table.insert(_q, {walk.walk, {135, 15, 23}})
+	table.insert(_q, {walk.walk, {135, 18, 23}})
+	table.insert(_q, {walk.walk, {135, 18, 16}})
+	table.insert(_q, {walk.walk, {135, 16, 16}})
+	table.insert(_q, {walk.walk, {135, 16, 10}})
+	table.insert(_q, {walk.walk, {135, 15, 10}})
+
+	-- Heal and equip.
+	table.insert(_q, {menu.field.open, {}})
 end
 
 local _sequences = {
@@ -666,6 +821,8 @@ local _sequences = {
 	{title = "WaterHag", f = _sequence_waterhag, map_area = 3, map_id = 121, map_x = 14,  map_y = 20},
 	{title = "MomBomb",  f = _sequence_mombomb,  map_area = 3, map_id = 18,  map_x = 4,   map_y = 5},
 	{title = "Dragoon",  f = _sequence_dragoon,  map_area = 3, map_id = 127, map_x = 21,  map_y = 14},
+	{title = "Twins",    f = _sequence_twins,    map_area = 3, map_id = 74,  map_x = 12,  map_y = 15},
+	{title = "Milon",    f = _sequence_milon,    map_area = 3, map_id = 22,  map_x = 14,  map_y = 7},
 }
 
 --------------------------------------------------------------------------------

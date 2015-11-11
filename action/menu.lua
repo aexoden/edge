@@ -378,10 +378,11 @@ function _M.field.equip.equip(location, item)
 
 		if subcursor == index then
 			input.press({"P1 A"}, input.DELAY.NORMAL)
+			_state.frame = emu.framecount()
 		else
 			_select_multi_column(subcursor, index, 2)
 		end
-	elseif not _state.frame or emu.framecount() - _state.frame > 3 then
+	elseif not _state.frame or emu.framecount() - _state.frame > 15 then
 		local cursor = memory.read("menu_equip", "cursor")
 
 		if cursor == location then
@@ -552,6 +553,23 @@ function _M.shop.close()
 	end
 
 	return false
+end
+
+function _M.shop.switch_quantity()
+	local cursor = memory.read("menu_shop", "subcursor")
+
+	if not _state.cursor then
+		_state.cursor = cursor
+	end
+
+	if cursor ~= _state.cursor then
+		_state.cursor = nil
+		return true
+	elseif cursor == 0 then
+		input.press({"P1 Right"})
+	else
+		input.press({"P1 Left"})
+	end
 end
 
 function _M.shop.buy.open(quantity)

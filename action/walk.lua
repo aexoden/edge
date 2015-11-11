@@ -69,7 +69,7 @@ end
 
 function _M.is_transition()
 	local transition = memory.read("walk", "transition")
-	return transition ~= 0 and transition ~= 128 and transition ~= 255
+	return transition ~= 0 and transition ~= 128 and transition ~= 255 and transition ~= 120
 end
 
 function _M.step(direction)
@@ -204,10 +204,12 @@ function _M.walk(target_map_id, target_x, target_y, npc_safe)
 			local npc_x = memory.read("npc", "x", i)
 			local npc_y = memory.read("npc", "y", i)
 
-			if npc_x == current_x and ((npc_y >= current_y and npc_y <= target_y) or (npc_y <= current_y and npc_y >= target_y)) then
-				return false
-			elseif npc_y == current_y and ((npc_x >= current_x and npc_x <= target_x) or (npc_x <= current_x and npc_x >= target_x)) then
-				return false
+			if memory.read("npc", "visible", i) > 0 then
+				if npc_x == current_x and ((npc_y >= current_y and npc_y <= target_y) or (npc_y <= current_y and npc_y >= target_y)) then
+					return false
+				elseif npc_y == current_y and ((npc_x >= current_x and npc_x <= target_x) or (npc_x <= current_x and npc_x >= target_x)) then
+					return false
+				end
 			end
 		end
 	end

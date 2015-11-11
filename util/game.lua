@@ -74,18 +74,34 @@ _M.INVENTORY = {
 
 _M.ITEM = {
 	NONE         = 0x00,
+	ARMOR = {
+		GAEA     = 0x8F,
+	},
+	ARMS = {
+		PALADIN  = 0xA0,
+	},
 	HELM = {
+		CAP      = 0x77,
+		GAEA     = 0x79,
 		TIARA    = 0x7B,
 	},
 	ITEM = {
+		CURE2    = 0xCF,
+		ETHER1   = 0xD1,
+		HEAL     = 0xDD,
 		LIFE     = 0xD4,
 		SANDRUBY = 0xF0,
 		TENT     = 0xE2,
 	},
+	RING = {
+		SILVER   = 0xA9,
+	},
 	SHIELD = {
+		PALADIN  = 0x64,
 		SHADOW   = 0x62,
 	},
 	WEAPON = {
+		BLACK    = 0x18,
 		CHANGE   = 0x0B,
 		DANCING  = 0x3C,
 		DARKNESS = 0x17,

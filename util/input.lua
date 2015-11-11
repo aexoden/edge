@@ -69,7 +69,7 @@ function _M.press(buttons, delay_type)
 	delay = 0
 
 	if delay_type == _M.DELAY.MASH then
-		delay = math.random(3, 5)
+		delay = math.random(2, 4)
 	elseif delay_type == _M.DELAY.NORMAL then
 		delay = math.random(5, 15)
 	end
