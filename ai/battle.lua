@@ -37,6 +37,8 @@ _M.FORMATION = {
 	OCTOMAMM = 223,
 	ANTLION  = 224,
 	MOMBOMB  = 225,
+	MILON    = 226,
+	MILON_Z  = 227,
 	GIRL     = 236,
 	OFFICER  = 237,
 	WATERHAG = 239,
@@ -44,20 +46,6 @@ _M.FORMATION = {
 	GENERAL  = 247,
 	WEEPER   = 248,
 	GARGOYLE = 249,
-}
-
-local _formation_descriptions = {
-	[_M.FORMATION.ANTLION]  = "Antlion",
-	[_M.FORMATION.D_MIST]   = "D.Mist",
-	[_M.FORMATION.DRAGOON]  = "Dragoon",
-	[_M.FORMATION.GARGOYLE] = "Gargoyle",
-	[_M.FORMATION.GENERAL]  = "General/Fighters",
-	[_M.FORMATION.GIRL]     = "Girl",
-	[_M.FORMATION.MOMBOMB]  = "MomBomb",
-	[_M.FORMATION.OCTOMAMM] = "Octomamm",
-	[_M.FORMATION.OFFICER]  = "Officer/Soldiers",
-	[_M.FORMATION.WATERHAG] = "WaterHag",
-	[_M.FORMATION.WEEPER]   = "Weeper/WaterHag/Imp"
 }
 
 --------------------------------------------------------------------------------
@@ -70,16 +58,6 @@ _state = nil
 -- Private Functions
 --------------------------------------------------------------------------------
 
-local function _get_formation_description(formation)
-	local description = _formation_descriptions[formation]
-
-	if not description then
-		description = string.format("Formation #%d", formation)
-	end
-
-	return description
-end
-
 local function _is_battle()
 	return memory.read("battle", "state") > 0
 end
@@ -88,6 +66,7 @@ local function _reset_state()
 	_state = {
 		frame = nil,
 		formation = nil,
+		index = nil,
 		q = {},
 		slot = nil,
 		queued = false,
@@ -175,6 +154,11 @@ end
 
 local function _command_run_buffer()
 	table.insert(_state.q, {menu.battle.run_buffer, {}})
+end
+
+local function _command_twin()
+	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.TWIN}})
+	table.insert(_state.q, {menu.battle.target, {menu.battle.TARGET.ENEMY_ALL, nil}})
 end
 
 local function _command_use_item(item, target_type, target)
@@ -298,6 +282,53 @@ local function _battle_girl(character, turn)
 	end
 end
 
+local function _battle_milon(character, turn)
+	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp")
+	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp")
+
+	local worst_twin = nil
+
+	if palom_hp < 70 and palom_hp < porom_hp then
+		worst_twin = game.CHARACTER.PALOM
+	elseif porom_hp < 70 and porom_hp < palom_hp then
+		worst_twin = game.CHARACTER.POROM
+	end
+
+	if character == game.CHARACTER.CECIL then
+		if turn <= 2 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, game.enemy.get_closest(game.ENEMY.GHAST))
+		elseif worst_twin then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, worst_twin)
+		else
+			_command_fight()
+		end
+	elseif character == game.CHARACTER.PALOM then
+		if turn == 1 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, game.enemy.get_closest(game.ENEMY.GHAST))
+		else
+			_command_twin()
+		end
+	elseif character == game.CHARACTER.POROM then
+		_command_twin()
+	elseif character == game.CHARACTER.TELLAH then
+		if turn == 1 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, game.enemy.get_closest(game.ENEMY.GHAST))
+		elseif worst_twin then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, worst_twin)
+		else
+			_command_parry()
+		end
+	end
+end
+
+local function _battle_milon_z(character, turn)
+	if character == game.CHARACTER.CECIL then
+		_command_fight()
+	else
+		_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY)
+	end
+end
+
 local function _battle_mombomb(character, turn)
 	if memory.read("enemy", "hp", 0) > 10000 then
 		if character == game.CHARACTER.CECIL or character == game.CHARACTER.YANG then
@@ -411,18 +442,20 @@ local function _battle_weeper(character, turn)
 	end
 end
 
-local _battle_functions = {
-	[_M.FORMATION.ANTLION] = _battle_antlion,
-	[_M.FORMATION.D_MIST] = _battle_d_mist,
-	[_M.FORMATION.DRAGOON] = _battle_dragoon,
-	[_M.FORMATION.GARGOYLE] = _battle_gargoyle,
-	[_M.FORMATION.GENERAL] = _battle_general,
-	[_M.FORMATION.GIRL] = _battle_girl,
-	[_M.FORMATION.MOMBOMB] = _battle_mombomb,
-	[_M.FORMATION.OCTOMAMM] = _battle_octomamm,
-	[_M.FORMATION.OFFICER] = _battle_officer,
-	[_M.FORMATION.WATERHAG] = _battle_waterhag,
-	[_M.FORMATION.WEEPER] = _battle_weeper,
+local _formations = {
+	[_M.FORMATION.ANTLION]  = {title = "Antlion",             f = _battle_antlion,  split = true},
+	[_M.FORMATION.D_MIST]   = {title = "D.Mist",              f = _battle_d_mist,   split = true},
+	[_M.FORMATION.DRAGOON]  = {title = "Dragoon",             f = _battle_dragoon,  split = true},
+	[_M.FORMATION.GARGOYLE] = {title = "Gargoyle",            f = _battle_gargoyle, split = false},
+	[_M.FORMATION.GENERAL]  = {title = "General/Fighters",    f = _battle_general,  split = false},
+	[_M.FORMATION.GIRL]     = {title = "Girl",                f = _battle_girl,     split = true},
+	[_M.FORMATION.MILON]    = {title = "Milon",               f = _battle_milon,    split = true},
+	[_M.FORMATION.MILON_Z]  = {title = "Milon Z.",            f = _battle_milon_z,  split = true},
+	[_M.FORMATION.MOMBOMB]  = {title = "MomBomb",             f = _battle_mombomb,  split = true},
+	[_M.FORMATION.OCTOMAMM] = {title = "Octomamm",            f = _battle_octomamm, split = true},
+	[_M.FORMATION.OFFICER]  = {title = "Officer/Soldiers",    f = _battle_officer,  split = true},
+	[_M.FORMATION.WATERHAG] = {title = "WaterHag",            f = _battle_waterhag, split = true},
+	[_M.FORMATION.WEEPER]   = {title = "Weeper/WaterHag/Imp", f = _battle_weeper,   split = true},
 }
 
 --------------------------------------------------------------------------------
@@ -431,40 +464,41 @@ local _battle_functions = {
 
 function _M.cycle()
 	if _is_battle() then
-		local formation = memory.read("battle", "formation")
-		local battle_function = _battle_functions[formation]
+		local index = memory.read("battle", "formation")
+		local formation = _formations[index]
 
-		if formation ~= _state.formation then
+		if not formation then
+			formation = {title = string.format("Formation #%d", index), f = nil, split = false}
+		end
+
+		if index ~= _state.index then
 			_reset_state()
+			_state.index = index
 			_state.formation = formation
 			_state.frame = emu.framecount()
 
-			local attack_type = "Normal"
-			local attack_value = memory.read("battle", "type")
+			local attack_type = game.battle.get_type()
 
-			if attack_value == 1 then
-				attack_type = "Strike First"
-			elseif attack_value == 128 then
-				if memory.read("battle", "back") == 8 then
-					attack_type = "Back Attack"
-				else
-					attack_type = "Surprised"
-				end
-			end
+			local types = {
+				[game.battle.TYPE.NORMAL] = "Normal",
+				[game.battle.TYPE.STRIKE_FIRST] = "Strike First",
+				[game.battle.TYPE.SURPRISED] = "Surprised",
+				[game.battle.TYPE.BACK_ATTACK] = "Back Attack",
+			}
 
 			local party_level = memory.read("battle", "party_level")
 			local stats
 
 			if party_level > 0 then
-				stats = string.format("%s/%s/%s", attack_type, memory.read("battle", "party_level"), memory.read("battle", "enemy_level"))
+				stats = string.format("%s/%s/%s", types[attack_type], memory.read("battle", "party_level"), memory.read("battle", "enemy_level"))
 			else
-				stats = attack_type
+				stats = types[attack_type]
 			end
 
-			log.log(string.format("Beginning Battle: %s (%s)", _get_formation_description(formation), stats))
+			log.log(string.format("Beginning Battle: %s (%s)", formation.title, stats))
 		end
 
-		if battle_function then
+		if formation.f then
 			local open = memory.read("battle_menu", "open") > 0
 			local slot = memory.read("battle_menu", "slot")
 
@@ -481,7 +515,7 @@ function _M.cycle()
 			if open and memory.read("battle_menu", "menu") ~= menu.battle.MENU.NONE then
 			 	if not _state.queued then
 					_state.turns[slot] = _state.turns[slot] + 1
-					battle_function(game.character.get_character(slot), _state.turns[slot])
+					formation.f(game.character.get_character(slot), _state.turns[slot])
 					_state.queued = true
 				elseif #_state.q > 0 then
 					local command = _state.q[1]
@@ -506,7 +540,7 @@ function _M.cycle()
 				gp = memory.read("battle", "dropped_gp")
 			end
 
-			log.log(string.format("Ending Battle: %s (%d frames) (dropped %d GP)", _get_formation_description(_state.formation), emu.framecount() - _state.frame, gp))
+			log.log(string.format("Ending Battle: %s (%d frames) (dropped %d GP)", _state.formation.title, emu.framecount() - _state.frame, gp))
 			_reset_state()
 		end
 

@@ -69,7 +69,7 @@ end
 
 function _M.is_transition()
 	local transition = memory.read("walk", "transition")
-	return transition ~= 0 and transition ~= 128 and transition ~= 255 and transition ~= 120
+	return transition ~= 0 and transition ~= 128 and transition ~= 255 and transition ~= 120 and transition ~= 16
 end
 
 function _M.step(direction)

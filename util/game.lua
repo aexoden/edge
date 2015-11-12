@@ -22,6 +22,7 @@
 
 local _M = {}
 
+_M.battle = {}
 _M.character = {}
 _M.enemy = {}
 _M.item = {}
@@ -31,6 +32,13 @@ local memory = require "util.memory"
 --------------------------------------------------------------------------------
 -- Public Constants
 --------------------------------------------------------------------------------
+
+_M.battle.TYPE = {
+	NORMAL       = 0,
+	STRIKE_FIRST = 1,
+	SURPRISED    = 2,
+	BACK_ATTACK  = 3,
+}
 
 _M.CHARACTER = {
 	CECIL  = 0,
@@ -48,9 +56,10 @@ _M.CHARACTER = {
 }
 
 _M.ENEMY = {
-	BOMB     = 0x55,
 	FIGHTER  = 0x2C,
+	BOMB     = 0x55,
 	GRAYBOMB = 0x56,
+	GHAST    = 0xD3,
 }
 
 _M.EQUIP = {
@@ -111,6 +120,7 @@ _M.ITEM = {
 
 _M.MAGIC = {
 	BLACK = {
+		PIGGY = 0x1A,
 		LIT1  = 0x23,
 		STOP  = 0x2C,
 	},
@@ -169,6 +179,23 @@ end
 --------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
+
+function _M.battle.get_type()
+	local type = _M.battle.TYPE.NORMAL
+	local value = memory.read("battle", "type")
+
+	if value == 1 then
+		type = _M.battle.TYPE.STRIKE_FIRST
+	elseif value == 128 then
+		if memory.read("battle", "back") == 8 or memory.read("battle", "back2") == 113 then
+			type = _M.battle.TYPE.BACK_ATTACK
+		else
+			type = _M.battle.TYPE.SURPRISED
+		end
+	end
+
+	return type
+end
 
 function _M.character.get_character(slot)
 	return _CHARACTERS[_get_character_id(slot)]
@@ -241,6 +268,14 @@ end
 
 function _M.enemy.get_stat(index, stat)
 	return memory.read("enemy", stat, index)
+end
+
+function _M.enemy.get_closest(enemy)
+	for i = 7, 0, -1 do
+		if _M.enemy.get_id(i) == enemy then
+			return i
+		end
+	end
 end
 
 function _M.enemy.get_weakest(enemy)

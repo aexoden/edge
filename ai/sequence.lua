@@ -41,6 +41,55 @@ _M.state = {
 local _q = nil
 
 --------------------------------------------------------------------------------
+-- Private Functions
+--------------------------------------------------------------------------------
+
+local function _restore_party()
+	local revive = {}
+	local cure = {}
+
+	for slot = 0, 4 do
+		local hp = memory.read("character", "hp", slot)
+
+		if hp < memory.read("character", "hp_max", slot) then
+			local character = game.character.get_character(slot)
+
+			if hp == 0 then
+				revive[#revive + 1] = character
+			end
+
+			cure[#cure + 1] = character
+		end
+	end
+
+	local stack = {}
+
+	if #revive + #cure > 0 then
+		table.insert(stack, {menu.field.item.open, {}})
+
+		for _, character in pairs(revive) do
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
+			table.insert(stack, {menu.field.item.select_character, {character}})
+		end
+
+		for _, character in pairs(cure) do
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
+			table.insert(stack, {menu.field.item.select_character, {character}})
+		end
+
+		table.insert(stack, {menu.field.item.close, {}})
+	end
+
+	while #stack > 0 do
+		table.insert(_q, 2, table.remove(stack))
+	end
+
+	return true
+end
+
+--------------------------------------------------------------------------------
 -- Sequences
 --------------------------------------------------------------------------------
 
@@ -807,6 +856,56 @@ local function _sequence_milon()
 
 	-- Heal and equip.
 	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {_restore_party, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.POROM}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.TIARA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.PALOM}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.CHANGE}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
+
+	if _M.state.multi_change then
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
+	end
+
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.close, {}})
+
+	-- Begin the battle.
+	table.insert(_q, {walk.walk, {135, 14, 10}})
+end
+
+local function _sequence_milon_z()
+	-- Heal and prepare the party.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {_restore_party, {}})
+	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.PALOM}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
+	table.insert(_q, {menu.field.magic.select_character, {game.CHARACTER.PALOM}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
+	table.insert(_q, {menu.field.magic.select_character, {game.CHARACTER.POROM}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
+	table.insert(_q, {menu.field.magic.select_character, {game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
+	table.insert(_q, {menu.field.magic.select_character, {game.CHARACTER.TELLAH}})
+	table.insert(_q, {menu.field.magic.close, {}})
+	table.insert(_q, {menu.field.change, {}})
+	table.insert(_q, {menu.field.close, {}})
+
+	-- Walk to Milon Z.
+	table.insert(_q, {walk.walk, {135, 9, 10}})
 end
 
 local _sequences = {
@@ -823,6 +922,7 @@ local _sequences = {
 	{title = "Dragoon",  f = _sequence_dragoon,  map_area = 3, map_id = 127, map_x = 21,  map_y = 14},
 	{title = "Twins",    f = _sequence_twins,    map_area = 3, map_id = 74,  map_x = 12,  map_y = 15},
 	{title = "Milon",    f = _sequence_milon,    map_area = 3, map_id = 22,  map_x = 14,  map_y = 7},
+	{title = "Milon Z.", f = _sequence_milon_z,  map_area = 3, map_id = 135, map_x = 14,  map_y = 10},
 }
 
 --------------------------------------------------------------------------------

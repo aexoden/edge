@@ -53,6 +53,7 @@ end
 local _addresses = {
 	battle = {
 		back                = {f = mainmemory.read_u8,     address = 0x003581, record_size = {0x01, 0x01}},
+		back2               = {f = mainmemory.read_u8,     address = 0x00030B, record_size = {0x01, 0x01}},
 		dropped_gp          = {f = mainmemory.read_u24_le, address = 0x00359A, record_size = {0x01, 0x01}},
 		ending              = {f = mainmemory.read_u8,     address = 0x0000A8, record_size = {0x01, 0x01}},
 		formation           = {f = mainmemory.read_u16_le, address = 0x001800, record_size = {0x01, 0x01}},
@@ -117,6 +118,7 @@ local _addresses = {
 		character           = {f = mainmemory.read_u8,     address = 0x0001E7, record_size = {0x01, 0x01}},
 		cursor              = {f = mainmemory.read_u8,     address = 0x001A76, record_size = {0x01, 0x01}},
 		cursor_state        = {f = mainmemory.read_u8,     address = 0x000302, record_size = {0x01, 0x01}},
+		selected            = {f = mainmemory.read_u8,     address = 0x001A77, record_size = {0x01, 0x01}},
 		state               = {f = mainmemory.read_u8,     address = 0x000500, record_size = {0x01, 0x01}},
 		subcursor_state     = {f = mainmemory.read_u8,     address = 0x000312, record_size = {0x01, 0x01}},
 		cursor3_state       = {f = mainmemory.read_u8,     address = 0x00031E, record_size = {0x01, 0x01}},
@@ -140,6 +142,7 @@ local _addresses = {
 		state               = {f = mainmemory.read_u8,     address = 0x001BB8, record_size = {0x01, 0x01}},
 	},
 	menu_item = {
+		character           = {f = mainmemory.read_u8,     address = 0x001B3E, record_size = {0x01, 0x01}},
 		cursor_x            = {f = mainmemory.read_u8,     address = 0x001B22, record_size = {0x01, 0x01}},
 		cursor_y            = {f = mainmemory.read_u8,     address = 0x001B23, record_size = {0x01, 0x01}},
 		item_id             = {f = mainmemory.read_u8,     address = 0x001440, record_size = {0x02, 0x01}},
@@ -147,6 +150,16 @@ local _addresses = {
 		scroll              = {f = mainmemory.read_u8,     address = 0x001B1A, record_size = {0x01, 0x01}},
 		selected            = {f = mainmemory.read_u8,     address = 0x001B19, record_size = {0x01, 0x01}},
 		state               = {f = mainmemory.read_u8,     address = 0x001BC9, record_size = {0x01, 0x01}},
+	},
+	menu_magic = {
+		character           = {f = mainmemory.read_u8,     address = 0x001B8A, record_size = {0x01, 0x01}},
+		cursor              = {f = mainmemory.read_u8,     address = 0x001B81, record_size = {0x01, 0x01}},
+		list                = {f = mainmemory.read_u8,     address = 0x001B7E, record_size = {0x01, 0x01}},
+		selecting           = {f = mainmemory.read_u8,     address = 0x001B87, record_size = {0x01, 0x01}},
+		spell               = {f = mainmemory.read_u8,     address = 0x001560, record_size = {0x18, 0x01}},
+		state               = {f = mainmemory.read_u8,     address = 0x001BC4, record_size = {0x01, 0x01}},
+		subcursor           = {f = mainmemory.read_u8,     address = 0x00011D, record_size = {0x01, 0x01}},
+		unknown             = {f = mainmemory.read_u8,     address = 0x001BC4, record_size = {0x01, 0x01}},
 	},
 	menu_save = {
 		cursor              = {f = mainmemory.read_u8,     address = 0x001A3C, record_size = {0x01, 0x01}},
