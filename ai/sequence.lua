@@ -908,6 +908,13 @@ local function _sequence_milon_z()
 	table.insert(_q, {walk.walk, {135, 9, 10}})
 end
 
+local function _sequence_paladin()
+	-- Walk to the Paladin scene.
+	table.insert(_q, {walk.walk, {135, 9, 11}})
+	table.insert(_q, {walk.walk, {135, 6, 11}})
+	table.insert(_q, {walk.walk, {135, 6, 10}})
+end
+
 local _sequences = {
 	{title = "Prologue", f = _sequence_prologue, map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",   f = _sequence_d_mist,   map_area = 0, map_id = nil, map_x = 102, map_y = 158},
@@ -923,6 +930,7 @@ local _sequences = {
 	{title = "Twins",    f = _sequence_twins,    map_area = 3, map_id = 74,  map_x = 12,  map_y = 15},
 	{title = "Milon",    f = _sequence_milon,    map_area = 3, map_id = 22,  map_x = 14,  map_y = 7},
 	{title = "Milon Z.", f = _sequence_milon_z,  map_area = 3, map_id = 135, map_x = 14,  map_y = 10},
+	{title = "Paladin",  f = _sequence_paladin,  map_area = 3, map_id = 135, map_x = 9,   map_y = 10},
 }
 
 --------------------------------------------------------------------------------

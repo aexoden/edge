@@ -43,6 +43,7 @@ _M.FORMATION = {
 	OFFICER  = 237,
 	WATERHAG = 239,
 	DRAGOON  = 241,
+	D_KNIGHT = 246,
 	GENERAL  = 247,
 	WEEPER   = 248,
 	GARGOYLE = 249,
@@ -209,6 +210,19 @@ local function _battle_antlion(character, turn)
 	end
 end
 
+local function _battle_d_knight(character, turn)
+	if turn == 3 then
+		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.SHIELD.PALADIN}})
+		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.L_HAND, input.DELAY.MASH}})
+		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND, input.DELAY.MASH}})
+		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND, input.DELAY.MASH}})
+		table.insert(_state.q, {menu.battle.target, {}})
+	else
+		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+	end
+end
+
 local function _battle_d_mist(character, turn)
 	if character == game.CHARACTER.KAIN then
 		if turn == 2 or game.enemy.get_stat(0, "hp") < 48 then
@@ -247,7 +261,7 @@ local function _battle_gargoyle(character, turn)
 			_command_parry()
 		elseif turn == 1 then
 			_command_run_buffer()
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 0)
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 		else
 			_command_fight()
 		end
@@ -444,6 +458,7 @@ end
 
 local _formations = {
 	[_M.FORMATION.ANTLION]  = {title = "Antlion",             f = _battle_antlion,  split = true},
+	[_M.FORMATION.D_KNIGHT] = {title = "D.Knight",            f = _battle_d_knight, split = false},
 	[_M.FORMATION.D_MIST]   = {title = "D.Mist",              f = _battle_d_mist,   split = true},
 	[_M.FORMATION.DRAGOON]  = {title = "Dragoon",             f = _battle_dragoon,  split = true},
 	[_M.FORMATION.GARGOYLE] = {title = "Gargoyle",            f = _battle_gargoyle, split = false},
