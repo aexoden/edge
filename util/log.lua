@@ -41,6 +41,8 @@ local function _log(message)
 		_file:write("\n")
 		_file:flush()
 	end
+
+	return true
 end
 
 --------------------------------------------------------------------------------
@@ -48,15 +50,15 @@ end
 --------------------------------------------------------------------------------
 
 function _M.error(message)
-	_log(string.format("ERROR :: %s", message))
+	return _log(string.format("ERROR :: %s", message))
 end
 
 function _M.warning(message)
-	_log(string.format("WARNING :: %s", message))
+	return _log(string.format("WARNING :: %s", message))
 end
 
 function _M.log(message)
-	_log(message)
+	return _log(message)
 end
 
 function _M.reset()

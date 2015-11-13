@@ -253,6 +253,7 @@ local function _sequence_girl()
 	table.insert(_q, {menu.confirm, {}})
 
 	-- Walk to the shop and open the shopping menu.
+	table.insert(_q, {_log_seed, {}})
 	table.insert(_q, {walk.walk, {nil, 98, 119}})
 	table.insert(_q, {walk.walk, {nil, 97, 119}})
 	table.insert(_q, {walk.walk, {1, 19, 16}})
