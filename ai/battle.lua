@@ -500,7 +500,7 @@ function _M.cycle()
 		local formation = _formations[index]
 
 		if not formation then
-			formation = {title = string.format("Formation #%d", index), f = nil, split = false}
+			formation = {title = "Unknown", f = nil, split = false}
 		end
 
 		if index ~= _state.index then
@@ -522,9 +522,9 @@ function _M.cycle()
 			local stats
 
 			if party_level > 0 then
-				stats = string.format("%s/%s/%s", types[attack_type], memory.read("battle", "party_level"), memory.read("battle", "enemy_level"))
+				stats = string.format("%d/%s/%d/%d", index, types[attack_type], memory.read("battle", "party_level"), memory.read("battle", "enemy_level"))
 			else
-				stats = types[attack_type]
+				stats = string.format("%d/%s/-/-", index, types[attack_type])
 			end
 
 			log.log(string.format("Beginning Battle: %s (%s)", formation.title, stats))
