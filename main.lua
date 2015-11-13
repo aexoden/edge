@@ -34,7 +34,7 @@ local walk = require "action.walk"
 -- Configuration
 --------------------------------------------------------------------------------
 
-TEST_MODE = true
+TEST_MODE = false
 
 local SEED = nil
 
@@ -49,6 +49,7 @@ local function _reset()
 	log.log("-----------------------------------")
 	log.log("Beginning New Run")
 
+	bridge.reset()
 	menu.reset()
 	walk.reset()
 
@@ -72,6 +73,7 @@ local function _reset()
 		math.random()
 		math.random()
 	end
+
 
 	sequence.reset(not TEST_MODE)
 end

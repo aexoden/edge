@@ -40,10 +40,29 @@ _M.state = {
 }
 
 local _q = nil
+local _state = {}
 
 --------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
+
+local function _log_prologue()
+	if not _state.count then
+		_state.count = 0
+	end
+
+	if memory.read("walk", "transition") == 127 then
+		_state.count = _state.count + 1
+
+		if _state.count == 5 then
+			bridge.split("Prologue")
+			_state.count = nil
+			return true
+		end
+	end
+
+	return false
+end
 
 local function _log_seed()
 	return log.log(string.format("On seed %d after resetting at Mist", memory.read("walk", "seed")))
@@ -122,7 +141,7 @@ local function _sequence_new_game()
 	table.insert(_q, {input.press, {{"Reset"}, input.DELAY.NORMAL}})
 	table.insert(_q, {_set_initial_seed, {}})
 	table.insert(_q, {menu.wait, {132}})
-	table.insert(_q, {bridge.split, {}})
+	table.insert(_q, {bridge.split, {"Start"}})
 	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
 end
 
@@ -170,6 +189,7 @@ local function _sequence_prologue()
 	table.insert(_q, {walk.walk, {52, 7, 5}})
 	table.insert(_q, {walk.walk, {52, 7, 4}})
 	table.insert(_q, {walk.walk, {52, 3, 4}})
+	table.insert(_q, {_log_prologue, {}})
 end
 
 local function _sequence_d_mist()
@@ -257,8 +277,8 @@ local function _sequence_girl()
 	table.insert(_q, {menu.confirm, {}})
 
 	-- Walk to the shop and open the shopping menu.
-	table.insert(_q, {_log_seed, {}})
 	table.insert(_q, {walk.walk, {nil, 98, 119}})
+	table.insert(_q, {_log_seed, {}})
 	table.insert(_q, {walk.walk, {nil, 97, 119}})
 	table.insert(_q, {walk.walk, {1, 19, 16}})
 	table.insert(_q, {walk.walk, {1, 19, 24}})
@@ -921,9 +941,6 @@ local function _sequence_milon()
 end
 
 local function _sequence_milon_z()
-	-- Take a couple of steps.
-	--table.insert(_q, {walk.walk, {135, 10, 10}})
-
 	-- Heal and prepare the party.
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {_restore_party, {}})

@@ -22,6 +22,7 @@
 
 local _M = {}
 
+local bridge = require "util.bridge"
 local input = require "util.input"
 local memory = require "util.memory"
 
@@ -32,8 +33,37 @@ local memory = require "util.memory"
 local _mash_button = "P1 A"
 
 --------------------------------------------------------------------------------
+-- Dialog Splits
+--------------------------------------------------------------------------------
+
+local _splits = {
+	["Sage Tel"] = {message = "Tellah", done = false},
+	["Prince E"] = {message = "Edward", done = false},
+	["Palom th"] = {message = "Twins", done = false},
+	["Cecil be"] = {message = "Paladin", done = false},
+}
+
+--------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
+
+local function _get_text(category, key, characters)
+	local text = ""
+
+	if not characters then
+		characters = 24
+	end
+
+	for i = 0, characters - 1 do
+		local character = memory.read(category, key, i)
+
+		if character then
+			text = text .. character
+		end
+	end
+
+	return text
+end
 
 local function _is_dialog()
 	local battle_dialog_state = memory.read("battle_dialog", "state")
@@ -50,6 +80,13 @@ end
 
 function _M.cycle()
 	if _is_dialog() then
+		local text = _M.get_text(8)
+
+		if _splits[text] and not _splits[text].done then
+			bridge.split(_splits[text].message)
+			_splits[text].done = true
+		end
+
 		input.press({_mash_button}, input.DELAY.MASH)
 
 		return true
@@ -59,24 +96,17 @@ function _M.cycle()
 end
 
 function _M.get_battle_text(characters)
-	local text = ""
+	return _get_text("battle_dialog", "text", characters)
+end
 
-	if not characters then
-		characters = 24
-	end
-
-	for i = 0, characters - 1 do
-		local character = memory.read("battle_dialog", "text", i)
-
-		if character then
-			text = text .. character
-		end
-	end
-
-	return text
+function _M.get_text(characters)
+	return _get_text("dialog", "text", characters)
 end
 
 function _M.reset()
+	for key, _ in pairs(_splits) do
+		_splits[key].done = false
+	end
 end
 
 function _M.set_mash_button(mash_button)

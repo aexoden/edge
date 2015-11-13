@@ -63,7 +63,8 @@ function _M.send(message)
 	end
 end
 
-function _M.split()
+function _M.split(message)
+	log.log("Split: " .. message)
 	return _M.send("startorsplit")
 end
 

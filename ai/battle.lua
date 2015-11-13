@@ -487,7 +487,7 @@ local _formations = {
 	[_M.FORMATION.OCTOMAMM] = {title = "Octomamm",            f = _battle_octomamm, split = true},
 	[_M.FORMATION.OFFICER]  = {title = "Officer/Soldiers",    f = _battle_officer,  split = true},
 	[_M.FORMATION.WATERHAG] = {title = "WaterHag",            f = _battle_waterhag, split = true},
-	[_M.FORMATION.WEEPER]   = {title = "Weeper/WaterHag/Imp", f = _battle_weeper,   split = true},
+	[_M.FORMATION.WEEPER]   = {title = "Weeper/WaterHag/Imp", f = _battle_weeper,   split = false},
 }
 
 --------------------------------------------------------------------------------
@@ -572,11 +572,12 @@ function _M.cycle()
 				gp = memory.read("battle", "dropped_gp")
 			end
 
+			log.log(string.format("Ending Battle: %s (%d frames) (dropped %d GP)", _state.formation.title, emu.framecount() - _state.frame, gp))
+
 			if _state.formation.split then
-				bridge.split()
+				bridge.split(_state.formation.title)
 			end
 
-			log.log(string.format("Ending Battle: %s (%d frames) (dropped %d GP)", _state.formation.title, emu.framecount() - _state.frame, gp))
 			_reset_state()
 		end
 
