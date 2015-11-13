@@ -329,7 +329,7 @@ local function _battle_milon(character, turn)
 		elseif worst_twin and worst_twin.hp == 0 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
 		else
-			_command_twin()
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 		end
 	elseif character == game.CHARACTER.POROM then
 		if worst_twin and worst_twin.hp == 0 then
