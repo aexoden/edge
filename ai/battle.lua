@@ -304,32 +304,48 @@ local function _battle_milon(character, turn)
 	local worst_twin = nil
 
 	if palom_hp < 70 and palom_hp < porom_hp then
-		worst_twin = game.CHARACTER.PALOM
+		worst_twin = {twin = game.CHARACTER.PALOM, hp = palom_hp}
 	elseif porom_hp < 70 and porom_hp < palom_hp then
-		worst_twin = game.CHARACTER.POROM
+		worst_twin = {twin = game.CHARACTER.POROM, hp = porom_hp}
 	end
 
 	if character == game.CHARACTER.CECIL then
-		if turn <= 2 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, game.enemy.get_closest(game.ENEMY.GHAST))
+		if turn == 1 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 4)
+		elseif turn == 2 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 1)
 		elseif worst_twin then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, worst_twin)
+			if worst_twin.hp == 0 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+			else
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+			end
 		else
 			_command_fight()
 		end
 	elseif character == game.CHARACTER.PALOM then
 		if turn == 1 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, game.enemy.get_closest(game.ENEMY.GHAST))
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 2)
+		elseif worst_twin and worst_twin.hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
 		else
 			_command_twin()
 		end
 	elseif character == game.CHARACTER.POROM then
-		_command_twin()
+		if worst_twin and worst_twin.hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+		else
+			_command_twin()
+		end
 	elseif character == game.CHARACTER.TELLAH then
 		if turn == 1 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, game.enemy.get_closest(game.ENEMY.GHAST))
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 3)
 		elseif worst_twin then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, worst_twin)
+			if worst_twin.hp == 0 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+			else
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+			end
 		else
 			_command_parry()
 		end
