@@ -21,6 +21,7 @@
 --------------------------------------------------------------------------------
 
 local battle = require "ai.battle"
+local bridge = require "util.bridge"
 local dialog = require "util.dialog"
 local input = require "util.input"
 local log = require "util.log"
@@ -28,6 +29,14 @@ local memory = require "util.memory"
 local menu = require "action.menu"
 local sequence = require "ai.sequence"
 local walk = require "action.walk"
+
+--------------------------------------------------------------------------------
+-- Configuration
+--------------------------------------------------------------------------------
+
+TEST_MODE = true
+
+local SEED = nil
 
 --------------------------------------------------------------------------------
 -- Functions
@@ -45,7 +54,26 @@ local function _reset()
 
 	dialog.reset()
 	battle.reset()
-	sequence.reset()
+
+	if not TEST_MODE then
+		local seed = SEED
+
+		if not seed then
+			math.randomseed(os.time())
+			math.random()
+			math.random()
+			math.random()
+			seed = math.random(0, 2147483646)
+		end
+
+		log.log(string.format("RNG Seed: %d", seed))
+		math.randomseed(seed)
+		math.random()
+		math.random()
+		math.random()
+	end
+
+	sequence.reset(not TEST_MODE)
 end
 
 --------------------------------------------------------------------------------

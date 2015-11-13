@@ -22,70 +22,53 @@
 
 local _M = {}
 
---------------------------------------------------------------------------------
--- Constants
---------------------------------------------------------------------------------
-
-_M.DELAY = {
-	NONE = 0,
-	MASH = 1,
-	NORMAL = 2,
-}
+local log = require "util.log"
+local socket = require "socket"
 
 --------------------------------------------------------------------------------
 -- Variables
 --------------------------------------------------------------------------------
 
-local _next
+local _socket = nil
+
+--------------------------------------------------------------------------------
+-- Private Functions
+--------------------------------------------------------------------------------
+
+local function _connect()
+	_socket = socket.connect("127.0.0.1", 16834)
+
+	if _socket then
+		_socket:settimeout(0.005)
+		_socket:setoption("keepalive", true)
+		log.log("Connected to LiveSplit")
+		return true
+	else
+		log.error("Could not connect to LiveSplit")
+	end
+end
 
 --------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
 
-function _M.cycle()
-	if _next then
-		if _next.frames == 0 then
-			joypad.set(_next.buttons)
-			_next = nil
-		else
-			_next.frames = _next.frames - 1
-		end
+function _M.send(message)
+	if not _socket and not TEST_MODE then
+		_connect()
+	end
+
+	if _socket then
+		_socket:send(message .. "\r\n")
+		return true
 	end
 end
 
-function _M.is_clear()
-	return not _next
+function _M.split()
+	return _M.send("startorsplit")
 end
 
-function _M.press(buttons, delay_type)
-	if _next or (emu.islagged() and delay_type ~= _M.DELAY.NONE) then
-		return false
-	end
-
-	if not delay_type then
-		delay_type = _M.DELAY.NORMAL
-	end
-
-	delay = 0
-
-	if delay_type == _M.DELAY.MASH then
-		delay = math.random(1, 3)
-	elseif delay_type == _M.DELAY.NORMAL then
-		delay = math.random(5, 10)
-	end
-
-	send_buttons = {}
-
-	for k, v in pairs(buttons) do
-		send_buttons[v] = true
-	end
-
-	_next = {
-		frames = delay,
-		buttons = send_buttons
-	}
-
-	return true
+function _M.reset()
+	return _M.send("reset")
 end
 
 return _M

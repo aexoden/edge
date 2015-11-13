@@ -114,6 +114,9 @@ local _addresses = {
 		type                = {f = mainmemory.read_u8,     address = 0x0029B5, record_size = {0x01, 0x01}},
 		id                  = {f = mainmemory.read_u8,     address = 0x0029AD, record_size = {0x01, 0x01}},
 	},
+	game = {
+		counter             = {f = mainmemory.read_u8,     address = 0x000FFF, record_size = {0x01, 0x01}},
+	},
 	menu = {
 		character           = {f = mainmemory.read_u8,     address = 0x0001E7, record_size = {0x01, 0x01}},
 		cursor              = {f = mainmemory.read_u8,     address = 0x001A76, record_size = {0x01, 0x01}},
@@ -191,6 +194,7 @@ local _addresses = {
 		frames              = {f = mainmemory.read_u8,     address = 0x00067B, record_size = {0x01, 0x01}},
 		map_area            = {f = mainmemory.read_u8,     address = 0x001700, record_size = {0x01, 0x01}},
 		map_id              = {f = mainmemory.read_u16_be, address = 0x001701, record_size = {0x01, 0x01}},
+		seed                = {f = mainmemory.read_u8,     address = 0x0017EF, record_size = {0x01, 0x01}},
 		state               = {f = mainmemory.read_u8,     address = 0x0006B1, record_size = {0x01, 0x01}},
 		transition          = {f = mainmemory.read_u8,     address = 0x000679, record_size = {0x01, 0x01}},
 		vehicle             = {f = mainmemory.read_u8,     address = 0x001704, record_size = {0x01, 0x01}},

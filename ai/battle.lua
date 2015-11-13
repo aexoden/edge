@@ -22,6 +22,7 @@
 
 local _M = {}
 
+local bridge = require "util.bridge"
 local game = require "util.game"
 local input = require "util.input"
 local log = require "util.log"
@@ -553,6 +554,10 @@ function _M.cycle()
 
 			if memory.read("battle", "ending") == 64 then
 				gp = memory.read("battle", "dropped_gp")
+			end
+
+			if _state.formation.split then
+				bridge.split()
 			end
 
 			log.log(string.format("Ending Battle: %s (%d frames) (dropped %d GP)", _state.formation.title, emu.framecount() - _state.frame, gp))

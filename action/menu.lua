@@ -224,7 +224,7 @@ end
 --------------------------------------------------------------------------------
 
 function _M.field.is_open()
-	return memory.read("menu", "state") > 0
+	return memory.read("menu", "state") == 170
 end
 
 function _M.field.custom.is_open()
@@ -407,7 +407,7 @@ function _M.field.custom.select(target)
 end
 
 function _M.field.equip.open(character)
-	return _M.field.open_submenu_with_character(_M.field.CHOICE.EQUIP, character, _M.field.equip.is_open(), _m.field.equip.is_selecting_character())
+	return _M.field.open_submenu_with_character(_M.field.CHOICE.EQUIP, character, _M.field.equip.is_open(), _M.field.equip.is_selecting_character())
 end
 
 function _M.field.equip.close()

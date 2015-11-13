@@ -22,6 +22,7 @@
 
 local _M = {}
 
+local bridge = require "util.bridge"
 local dialog = require "util.dialog"
 local game = require "util.game"
 local input = require "util.input"
@@ -89,9 +90,27 @@ local function _restore_party()
 	return true
 end
 
+local function _set_initial_seed()
+	local seed = memory.read("game", "counter")
+
+	if seed == 59 then
+		return input.press({"P1 A"}, input.DELAY.NONE)
+	end
+
+	return false
+end
+
 --------------------------------------------------------------------------------
 -- Sequences
 --------------------------------------------------------------------------------
+
+local function _sequence_new_game()
+	table.insert(_q, {input.press, {{"Reset"}, input.DELAY.NORMAL}})
+	table.insert(_q, {_set_initial_seed, {}})
+	table.insert(_q, {menu.wait, {132}})
+	table.insert(_q, {bridge.split, {}})
+	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
+end
 
 local function _sequence_prologue()
 	-- Change Battle Speed/Battle Message
@@ -133,6 +152,9 @@ local function _sequence_prologue()
 	table.insert(_q, {walk.walk, {51, 6, 4}})
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {51, 9, 4}})
+	table.insert(_q, {walk.walk, {52, 7, 4}})
+	table.insert(_q, {walk.walk, {52, 7, 5}})
+	table.insert(_q, {walk.walk, {52, 7, 4}})
 	table.insert(_q, {walk.walk, {52, 3, 4}})
 end
 
@@ -884,6 +906,9 @@ local function _sequence_milon()
 end
 
 local function _sequence_milon_z()
+	-- Take a couple of steps.
+	--table.insert(_q, {walk.walk, {135, 10, 10}})
+
 	-- Heal and prepare the party.
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {_restore_party, {}})
@@ -977,12 +1002,16 @@ function _M.cycle()
 	end
 end
 
-function _M.reset()
+function _M.reset(full_reset)
 	_q = {}
 
 	_state = {
 		multi_change = false
 	}
+
+	if full_reset then
+		_sequence_new_game(seed)
+	end
 end
 
 return _M
