@@ -270,7 +270,7 @@ local function _sequence_girl()
 	-- Save and reset.
 	table.insert(_q, {menu.field.save.save, {1}})
 	table.insert(_q, {input.press, {{"Reset"}, input.DELAY.NORMAL}})
-	table.insert(_q, {menu.wait, {132}})
+	table.insert(_q, {menu.wait, {math.random(132, 387)}})
 	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
 	table.insert(_q, {menu.wait, {132}})
 	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
