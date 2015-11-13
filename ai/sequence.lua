@@ -45,6 +45,10 @@ local _q = nil
 -- Private Functions
 --------------------------------------------------------------------------------
 
+local function _log_seed()
+	return log.log(string.format("On seed %d after resetting at Mist", memory.read("walk", "seed")))
+end
+
 local function _restore_party()
 	local revive = {}
 	local cure = {}
