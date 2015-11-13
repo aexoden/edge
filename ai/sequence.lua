@@ -48,24 +48,28 @@ local _q = nil
 local function _restore_party()
 	local revive = {}
 	local cure = {}
+	local ether = {}
 
 	for slot = 0, 4 do
 		local hp = memory.read("character", "hp", slot)
+		local character = game.character.get_character(slot)
 
 		if hp < memory.read("character", "hp_max", slot) then
-			local character = game.character.get_character(slot)
-
 			if hp == 0 then
 				revive[#revive + 1] = character
 			end
 
 			cure[#cure + 1] = character
 		end
+
+		if memory.read("character", "mp", slot) < memory.read("character", "mp_max", slot) then
+			ether[#ether + 1] = character
+		end
 	end
 
 	local stack = {}
 
-	if #revive + #cure > 0 then
+	if #revive + #cure + #ether > 0 then
 		table.insert(stack, {menu.field.item.open, {}})
 
 		for _, character in pairs(revive) do
@@ -77,6 +81,12 @@ local function _restore_party()
 		for _, character in pairs(cure) do
 			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
 			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
+			table.insert(stack, {menu.field.item.select_character, {character}})
+		end
+
+		for _, character in pairs(ether) do
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ETHER1}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ETHER1}})
 			table.insert(stack, {menu.field.item.select_character, {character}})
 		end
 

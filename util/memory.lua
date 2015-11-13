@@ -89,6 +89,8 @@ local _addresses = {
 		id                  = {f = mainmemory.read_u8,     address = 0x001000, record_size = {0x40, 0x01}},
 		hp                  = {f = mainmemory.read_u16_le, address = 0x002007, record_size = {0x80, 0x01}},
 		hp_max              = {f = mainmemory.read_u16_le, address = 0x002009, record_size = {0x80, 0x01}},
+		mp                  = {f = mainmemory.read_u16_le, address = 0x00200B, record_size = {0x80, 0x01}},
+		mp_max              = {f = mainmemory.read_u16_le, address = 0x00200D, record_size = {0x80, 0x01}},
 		r_hand              = {f = mainmemory.read_u8,     address = 0x002033, record_size = {0x80, 0x01}},
 		r_hand_count        = {f = mainmemory.read_u8,     address = 0x002034, record_size = {0x80, 0x01}},
 		l_hand              = {f = mainmemory.read_u8,     address = 0x002035, record_size = {0x80, 0x01}},
