@@ -547,25 +547,32 @@ function _M.field.magic.select(spell)
 	return false
 end
 
-function _M.field.magic.select_character(character)
+function _M.field.magic.select_character(character, all)
 	if not _is_cursor_visible() then
 		if _state.cast_frame then
 			if input.press({"P1 A"}, input.DELAY.NORMAL) then
 				_state.cast_frame = nil
 				return true
 			end
+		elseif all then
+			input.press({"P1 A"}, input.DELAY.NORMAL)
+			_state.cast_frame = emu.framecount()
 		else
 			return false
 		end
 	elseif not _state.cast_frame or emu.framecount() - _state.cast_frame > 30 then
-		local cursor = memory.read("menu_magic", "character")
-		local index = game.character.get_index(game.character.get_slot(character))
-
-		if cursor == index then
-			input.press({"P1 A"}, input.DELAY.NORMAL)
-			_state.cast_frame = emu.framecount()
+		if all then
+			input.press({"P1 Left"}, input.DELAY.NORMAL)
 		else
-			_select_vertical(cursor, index, 2)
+			local cursor = memory.read("menu_magic", "character")
+			local index = game.character.get_index(game.character.get_slot(character))
+
+			if cursor == index then
+				input.press({"P1 A"}, input.DELAY.NORMAL)
+				_state.cast_frame = emu.framecount()
+			else
+				_select_vertical(cursor, index, 2)
+			end
 		end
 	end
 
