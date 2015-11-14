@@ -521,7 +521,7 @@ function _M.field.magic.close()
 	return _M.field.close_submenu(_M.field.magic.is_not_closed())
 end
 
-function _M.field.magic.select(spell)
+function _M.field.magic.select(spell, extra_button)
 	local list, index = _get_field_magic_index(spell)
 
 	if not list then
@@ -530,9 +530,9 @@ function _M.field.magic.select(spell)
 		local cursor = memory.read("menu_magic", "subcursor")
 
 		if cursor == index then
-			return input.press({"P1 A"}, input.DELAY.NORMAL)
+			return input.press({"P1 A", extra_button}, input.DELAY.NORMAL)
 		else
-			_select_multi_column(cursor, index, 3)
+			_select_multi_column(cursor, index, 3, true)
 		end
 	else
 		local cursor = memory.read("menu_magic", "cursor")
@@ -568,8 +568,9 @@ function _M.field.magic.select_character(character, all)
 			local index = game.character.get_index(game.character.get_slot(character))
 
 			if cursor == index then
-				input.press({"P1 A"}, input.DELAY.NORMAL)
-				_state.cast_frame = emu.framecount()
+				if input.press({"P1 A"}, input.DELAY.NORMAL) then
+					_state.cast_frame = emu.framecount()
+				end
 			else
 				_select_vertical(cursor, index, 2)
 			end

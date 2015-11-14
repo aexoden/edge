@@ -28,6 +28,7 @@ local input = require "util.input"
 local log = require "util.log"
 local memory = require "util.memory"
 local menu = require "action.menu"
+local sequence = require "ai.sequence"
 
 --------------------------------------------------------------------------------
 -- Constants
@@ -40,6 +41,7 @@ _M.FORMATION = {
 	MOMBOMB  = 225,
 	MILON    = 226,
 	MILON_Z  = 227,
+	BAIGAN   = 228,
 	GIRL     = 236,
 	OFFICER  = 237,
 	WATERHAG = 239,
@@ -109,6 +111,11 @@ end
 
 local function _command_change()
 	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.CHANGE}})
+end
+
+local function _command_cover(target)
+	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.COVER}})
+	table.insert(_state.q, {menu.battle.target, {menu.battle.TARGET.CHARACTER, target}})
 end
 
 local function _command_duplicate(hand, single)
@@ -210,6 +217,50 @@ local function _battle_antlion(character, turn)
 		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 	elseif character == game.CHARACTER.RYDIA then
 		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+	end
+end
+
+local function _battle_baigan(character, turn)
+	if character == game.CHARACTER.CECIL then
+		if turn == 1 then
+			_command_run_buffer()
+			_command_cover(game.CHARACTER.TELLAH)
+		elseif turn == 2 then
+			if game.character.get_stat(game.CHARACTER.POROM, "hp") > 0 then
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+			elseif game.character.get_stat(game.CHARACTER.PALOM, "hp") > 0 then
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
+			else
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+			end
+		else
+			-- TODO: Wait for Meteo
+			_command_equip(character, game.ITEM.WEAPON.LEGEND)
+		end
+	elseif character == game.CHARACTER.PALOM then
+		if game.character.get_stat(game.CHARACTER.YANG, "hp") > 0 then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+		elseif game.character.get_stat(game.CHARACTER.POROM, "hp") > 0 then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+		else
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
+		end
+	elseif character == game.CHARACTER.YANG then
+		if game.character.get_stat(game.CHARACTER.POROM, "hp") > 0 then
+			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+		elseif game.character.get_stat(game.CHARACTER.PALOM, "hp") > 0 then
+			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
+		else
+			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+		end
+	elseif character == game.CHARACTER.TELLAH then
+		if not sequence.state.multi_change then
+			_command_equip(character, game.ITEM.WEAPON.THUNDER)
+		end
+
+		_command_black(game.MAGIC.BLACK.METEO, menu.battle.TARGET.ENEMY_ALL)
+	else
+		_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 	end
 end
 
@@ -494,6 +545,7 @@ end
 
 local _formations = {
 	[_M.FORMATION.ANTLION]  = {title = "Antlion",             f = _battle_antlion,  split = true},
+	[_M.FORMATION.BAIGAN]   = {title = "Baigan",              f = _battle_baigan,   split = true},
 	[_M.FORMATION.D_KNIGHT] = {title = "D.Knight",            f = _battle_d_knight, split = false},
 	[_M.FORMATION.D_MIST]   = {title = "D.Mist",              f = _battle_d_mist,   split = true},
 	[_M.FORMATION.DRAGOON]  = {title = "Dragoon",             f = _battle_dragoon,  split = true},

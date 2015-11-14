@@ -85,16 +85,23 @@ _M.ITEM = {
 	NONE         = 0x00,
 	ARMOR = {
 		GAEA     = 0x8F,
+		KARATE   = 0x98,
 	},
 	ARMS = {
 		PALADIN  = 0xA0,
 	},
+	CLAW = {
+		ICECLAW  = 0x02,
+		THUNDER  = 0x03,
+	},
 	HELM = {
 		CAP      = 0x77,
 		GAEA     = 0x79,
+		HEADBAND = 0x7D,
 		TIARA    = 0x7B,
 	},
 	ITEM = {
+		BARON    = 0xEF,
 		CURE2    = 0xCF,
 		ETHER1   = 0xD1,
 		HEAL     = 0xDD,
@@ -114,7 +121,9 @@ _M.ITEM = {
 		CHANGE   = 0x0B,
 		DANCING  = 0x3C,
 		DARKNESS = 0x17,
+		LEGEND   = 0x19,
 		STAFF    = 0x0F,
+		THUNDER  = 0x0A,
 	},
 }
 
@@ -123,11 +132,14 @@ _M.MAGIC = {
 		PIGGY = 0x1A,
 		LIT1  = 0x23,
 		STOP  = 0x2C,
+		METEO = 0x2F,
 	},
 	WHITE = {
 		CURE1 = 0x0E,
 		CURE2 = 0x0F,
+		CURE4 = 0x11,
 		LIFE1 = 0x13,
+		SIGHT = 0x17,
 	},
 }
 

@@ -68,7 +68,7 @@ local function _log_seed()
 	return log.log(string.format("New Seed: %d", memory.read("walk", "seed")))
 end
 
-local function _restore_party()
+local function _restore_party(characters)
 	local revive = {}
 	local cure = {}
 	local ether = {}
@@ -77,16 +77,18 @@ local function _restore_party()
 		local hp = memory.read("character", "hp", slot)
 		local character = game.character.get_character(slot)
 
-		if hp < memory.read("character", "hp_max", slot) then
-			if hp == 0 then
-				revive[#revive + 1] = character
+		if not characters or characters[character] then
+			if hp < memory.read("character", "hp_max", slot) then
+				if hp == 0 then
+					revive[#revive + 1] = character
+				end
+
+				cure[#cure + 1] = character
 			end
 
-			cure[#cure + 1] = character
-		end
-
-		if memory.read("character", "mp", slot) < memory.read("character", "mp_max", slot) then
-			ether[#ether + 1] = character
+			if memory.read("character", "mp", slot) < memory.read("character", "mp_max", slot) then
+				ether[#ether + 1] = character
+			end
 		end
 	end
 
@@ -131,6 +133,29 @@ local function _set_initial_seed()
 	end
 
 	return false
+end
+
+local function _underflow_mp(character)
+	local stack = {}
+
+	local mp = game.character.get_stat(character, "mp")
+	local casts = math.floor(mp / 40)
+
+	for i = 0, casts - 1 do
+		table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE4}})
+		table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE4}})
+		table.insert(stack, {menu.field.magic.select_character, {character}})
+	end
+
+	table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE4}})
+	table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.SIGHT, "P1 Up"}})
+	table.insert(stack, {menu.field.magic.select_character, {character}})
+
+	while #stack > 0 do
+		table.insert(_q, 2, table.remove(stack))
+	end
+
+	return true
 end
 
 --------------------------------------------------------------------------------
@@ -1050,6 +1075,130 @@ local function _sequence_karate()
 
 end
 
+local function _sequence_baigan()
+	-- Walk to the Weapon/Armor shop and begin shopping.
+	table.insert(_q, {walk.walk, {11, 14, 21, true}})
+	table.insert(_q, {walk.walk, {0, 20, 27, true}})
+	table.insert(_q, {walk.walk, {0, 17, 27, true}})
+	table.insert(_q, {walk.walk, {0, 17, 19, true}})
+	table.insert(_q, {walk.walk, {0, 14, 19, true}})
+	table.insert(_q, {walk.walk, {0, 14, 17, true}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.BARON}})
+	table.insert(_q, {walk.walk, {0, 14, 16, true}})
+	table.insert(_q, {walk.chase, {12, {0}, true}})
+
+	-- Buy armor.
+	table.insert(_q, {menu.shop.buy.open, {1}})
+
+	if not _M.state.multi_change then
+		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.WEAPON.THUNDER}})
+	end
+
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.CLAW.ICECLAW}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.CLAW.THUNDER}})
+	table.insert(_q, {menu.shop.buy.close, {}})
+	table.insert(_q, {menu.shop.close, {}})
+
+	-- Buy weapons.
+	table.insert(_q, {walk.walk, {12, 6, 8}})
+	table.insert(_q, {walk.walk, {12, 10, 8}})
+	table.insert(_q, {walk.walk, {12, 10, 7}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {menu.shop.buy.open, {10}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.HELM.HEADBAND}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ARMOR.KARATE}})
+	table.insert(_q, {menu.shop.buy.close, {}})
+	table.insert(_q, {menu.shop.close, {}})
+
+	-- Walk to the Baigan battle room.
+	table.insert(_q, {walk.walk, {12, 10, 9}})
+	table.insert(_q, {walk.walk, {12, 7, 9}})
+	table.insert(_q, {walk.walk, {12, 7, 12}})
+	table.insert(_q, {walk.walk, {0, 14, 20}})
+	table.insert(_q, {walk.walk, {0, 7, 20}})
+	table.insert(_q, {walk.walk, {0, 7, 21}})
+	table.insert(_q, {walk.walk, {0, 3, 21}})
+	table.insert(_q, {walk.walk, {0, 3, 20}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.BARON}})
+	table.insert(_q, {walk.walk, {0, 3, 19}})
+	table.insert(_q, {walk.walk, {68, 2, 4}})
+	table.insert(_q, {walk.walk, {58, 3, 15}})
+	table.insert(_q, {walk.walk, {58, 7, 15}})
+	table.insert(_q, {walk.walk, {58, 7, 24}})
+	table.insert(_q, {walk.walk, {58, 16, 24}})
+	table.insert(_q, {walk.walk, {58, 16, 17}})
+	table.insert(_q, {walk.walk, {58, 12, 17}})
+	table.insert(_q, {walk.walk, {58, 12, 7}})
+	table.insert(_q, {walk.walk, {58, 14, 7}})
+	table.insert(_q, {walk.walk, {58, 14, 5}})
+	table.insert(_q, {walk.walk, {58, 18, 5}})
+	table.insert(_q, {walk.walk, {58, 18, 7}})
+	table.insert(_q, {walk.walk, {58, 20, 7}})
+	table.insert(_q, {walk.walk, {58, 20, 16}})
+	table.insert(_q, {walk.walk, {58, 27, 16}})
+	table.insert(_q, {walk.walk, {58, 27, 7}})
+	table.insert(_q, {walk.walk, {59, 1, 3}})
+	table.insert(_q, {walk.walk, {59, 4, 3}})
+	table.insert(_q, {walk.walk, {59, 4, 8}})
+	table.insert(_q, {walk.walk, {59, 13, 8}})
+	table.insert(_q, {walk.walk, {59, 13, 6}})
+	table.insert(_q, {walk.walk, {59, 16, 6}})
+	table.insert(_q, {walk.walk, {59, 16, 10}})
+	table.insert(_q, {walk.walk, {59, 25, 10}})
+	table.insert(_q, {walk.walk, {59, 25, 12}})
+	table.insert(_q, {walk.walk, {59, 26, 12}})
+	table.insert(_q, {walk.walk, {59, 26, 13}})
+	table.insert(_q, {walk.walk, {59, 30, 13}})
+	table.insert(_q, {walk.walk, {59, 30, 3}})
+	table.insert(_q, {walk.walk, {62, 2, 23}})
+	table.insert(_q, {walk.walk, {62, 8, 23}})
+	table.insert(_q, {walk.walk, {62, 8, 5}})
+	table.insert(_q, {walk.walk, {60, 6, 12}})
+	table.insert(_q, {walk.walk, {60, 12, 12}})
+	table.insert(_q, {walk.walk, {60, 12, 10}})
+	table.insert(_q, {walk.walk, {60, 14, 10}})
+	table.insert(_q, {walk.walk, {60, 14, 2}})
+	table.insert(_q, {walk.walk, {36, 10, 2}})
+	table.insert(_q, {walk.walk, {36, 0, 2}})
+	table.insert(_q, {walk.walk, {36, 0, 30}})
+	table.insert(_q, {walk.walk, {36, 3, 30}})
+	table.insert(_q, {walk.walk, {36, 3, 19}})
+	table.insert(_q, {walk.walk, {36, 8, 19}})
+	table.insert(_q, {walk.walk, {36, 8, 17}})
+	table.insert(_q, {walk.walk, {45, 2, 2}})
+	table.insert(_q, {walk.walk, {36, 12, 13}})
+	table.insert(_q, {walk.walk, {42, 1, 10}})
+	table.insert(_q, {walk.walk, {42, 5, 10}})
+
+	-- Do the pre-Baigan menu.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.TELLAH}})
+	table.insert(_q, {_underflow_mp, {game.CHARACTER.TELLAH}})
+	table.insert(_q, {menu.field.magic.close, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = true, [game.CHARACTER.TELLAH] = true}}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.POROM}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.HEADBAND}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.KARATE}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.ARMS.PALADIN}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.YANG}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.CLAW.THUNDER}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.CLAW.ICECLAW}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.HEADBAND}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.KARATE}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.close, {}})
+
+	-- Engage Baigan.
+	table.insert(_q, {walk.walk, {42, 6, 10}})
+end
+
 local _sequences = {
 	{title = "Prologue", f = _sequence_prologue, map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",   f = _sequence_d_mist,   map_area = 0, map_id = nil, map_x = 102, map_y = 158},
@@ -1067,6 +1216,7 @@ local _sequences = {
 	{title = "Milon Z.", f = _sequence_milon_z,  map_area = 3, map_id = 135, map_x = 14,  map_y = 10},
 	{title = "Paladin",  f = _sequence_paladin,  map_area = 3, map_id = 135, map_x = 9,   map_y = 10},
 	{title = "Karate",   f = _sequence_karate,   map_area = 3, map_id = 135, map_x = 6,   map_y = 10},
+	{title = "Baigan",   f = _sequence_baigan,   map_area = 3, map_id = 11,  map_x = 14,  map_y = 15},
 }
 
 --------------------------------------------------------------------------------

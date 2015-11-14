@@ -118,7 +118,7 @@ function _M.board()
 	return false
 end
 
-function _M.chase(target_map_id, npcs)
+function _M.chase(target_map_id, npcs, shop)
 	local current_map_id = memory.read("walk", "map_id")
 	local current_x = memory.read("walk", "x")
 	local current_y = memory.read("walk", "y")
@@ -136,6 +136,10 @@ function _M.chase(target_map_id, npcs)
 	for _, i in pairs(npcs) do
 		local dx = memory.read("npc", "x", i) - current_x
 		local dy = memory.read("npc", "y", i) - current_y
+
+		if shop then
+			dy = dy + 1
+		end
 
 		if (dx == 0 and math.abs(dy) == 1) or (dy == 0 and math.abs(dx) == 1) then
 			local direction = _M.DIRECTION.UP
@@ -170,7 +174,11 @@ function _M.chase(target_map_id, npcs)
 	local dx = memory.read("npc", "x", target_npc) - current_x
 	local dy = memory.read("npc", "y", target_npc) - current_y
 
-	if math.abs(dx) > math.abs(dy) then
+	if shop then
+		dy = dy + 1
+	end
+
+	if math.abs(dx) >= math.abs(dy) then
 		if dx > 0 then
 			_M.step(_M.DIRECTION.RIGHT)
 		elseif dx < 0 then
