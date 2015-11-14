@@ -527,7 +527,7 @@ function _M.cycle()
 				stats = string.format("%d/%s/-/-", index, types[attack_type])
 			end
 
-			log.log(string.format("Beginning Battle: %s (%s)", formation.title, stats))
+			log.log(string.format("Battle Start: %s (%s)", formation.title, stats))
 		end
 
 		if formation.f then
@@ -572,7 +572,9 @@ function _M.cycle()
 				gp = memory.read("battle", "dropped_gp")
 			end
 
-			log.log(string.format("Ending Battle: %s (%d frames) (dropped %d GP)", _state.formation.title, emu.framecount() - _state.frame, gp))
+			local stats = string.format("%d/%d frames/%d GP dropped", _state.index, emu.framecount() - _state.frame, gp)
+
+			log.log(string.format("Battle Complete: %s (%s)", _state.formation.title, stats))
 
 			if _state.formation.split then
 				bridge.split(_state.formation.title)

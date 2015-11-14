@@ -65,7 +65,7 @@ local function _log_prologue()
 end
 
 local function _log_seed()
-	return log.log(string.format("On seed %d after resetting at Mist", memory.read("walk", "seed")))
+	return log.log(string.format("New Seed: %d", memory.read("walk", "seed")))
 end
 
 local function _restore_party()
@@ -994,7 +994,7 @@ local function _check_sequence()
 
 		for _, sequence in pairs(_sequences) do
 			if map_area == sequence.map_area and (not sequence.map_id or map_id == sequence.map_id) and map_x == sequence.map_x and map_y == sequence.map_y then
-				log.log(string.format("Beginning Sequence: %s", sequence.title))
+				log.log(string.format("Sequence: %s", sequence.title))
 				sequence.f()
 			end
 		end
