@@ -963,6 +963,93 @@ local function _sequence_paladin()
 	table.insert(_q, {walk.walk, {135, 6, 10}})
 end
 
+local function _sequence_karate()
+	-- Leave Mt.Ordeals.
+	table.insert(_q, {walk.walk, {135, 6, 11}})
+	table.insert(_q, {walk.walk, {135, 9, 11}})
+	table.insert(_q, {walk.walk, {135, 9, 10}})
+	table.insert(_q, {walk.walk, {135, 16, 10}})
+	table.insert(_q, {walk.walk, {135, 16, 16}})
+	table.insert(_q, {walk.walk, {135, 18, 16}})
+	table.insert(_q, {walk.walk, {135, 18, 23}})
+	table.insert(_q, {walk.walk, {135, 15, 23}})
+	table.insert(_q, {walk.walk, {135, 15, 21}})
+	table.insert(_q, {walk.walk, {134, 24, 8}})
+	table.insert(_q, {walk.walk, {134, 24, 17}})
+	table.insert(_q, {walk.walk, {134, 18, 17}})
+	table.insert(_q, {walk.walk, {134, 18, 23}})
+	table.insert(_q, {walk.walk, {134, 19, 23}})
+	table.insert(_q, {walk.walk, {134, 19, 25}})
+	table.insert(_q, {walk.walk, {134, 23, 25}})
+	table.insert(_q, {walk.walk, {134, 23, 22}})
+	table.insert(_q, {walk.walk, {133, 18, 8}})
+	table.insert(_q, {walk.walk, {133, 18, 17}})
+	table.insert(_q, {walk.walk, {133, 8, 17}})
+	table.insert(_q, {walk.walk, {133, 8, 24}})
+	table.insert(_q, {walk.walk, {133, 10, 24}})
+	table.insert(_q, {walk.walk, {133, 10, 23}})
+	table.insert(_q, {walk.walk, {132, 19, 12}})
+	table.insert(_q, {walk.walk, {132, 14, 12}})
+	table.insert(_q, {walk.walk, {132, 14, 18}})
+	table.insert(_q, {walk.walk, {132, 17, 18}})
+	table.insert(_q, {walk.walk, {132, 17, 23}})
+	table.insert(_q, {walk.walk, {132, 11, 23}})
+	table.insert(_q, {walk.walk, {132, 11, 24}})
+	table.insert(_q, {walk.walk, {132, 10, 24}})
+	table.insert(_q, {walk.walk, {132, 10, 28}})
+	table.insert(_q, {walk.walk, {132, 17, 28}})
+	table.insert(_q, {walk.walk, {132, 17, 30}})
+	table.insert(_q, {walk.walk, {132, 20, 30}})
+	table.insert(_q, {walk.walk, {132, 20, 31}})
+
+	-- Walk to the Chocobo forest and get a chocobo.
+	table.insert(_q, {walk.walk, {nil, 218, 209}})
+	table.insert(_q, {walk.walk, {nil, 213, 209}})
+	table.insert(_q, {walk.chase, {209, {6, 7, 8}}})
+
+	-- Ride the chocobo to Mysidia.
+	table.insert(_q, {walk.walk, {nil, 213, 200}})
+	table.insert(_q, {walk.walk, {nil, 201, 200}})
+	table.insert(_q, {walk.walk, {nil, 201, 192}})
+	table.insert(_q, {walk.walk, {nil, 182, 192}})
+	table.insert(_q, {walk.walk, {nil, 182, 211}})
+	table.insert(_q, {walk.walk, {nil, 175, 211}})
+	table.insert(_q, {walk.walk, {nil, 175, 203}})
+	table.insert(_q, {walk.walk, {nil, 157, 203}})
+	table.insert(_q, {walk.walk, {nil, 157, 199}})
+	table.insert(_q, {walk.walk, {nil, 156, 199}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 155, 199}})
+
+	-- Walk to the Elder.
+	table.insert(_q, {walk.walk, {3, 16, 8, true}})
+	table.insert(_q, {walk.walk, {22, 14, 6, true}})
+	table.insert(_q, {walk.interact, {}})
+
+	-- Walk to the Serpent Road.
+	table.insert(_q, {walk.walk, {22, 14, 12, true}})
+	table.insert(_q, {walk.walk, {3, 16, 20, true}})
+	table.insert(_q, {walk.walk, {3, 19, 20, true}})
+	table.insert(_q, {walk.walk, {3, 19, 19, true}})
+	table.insert(_q, {walk.walk, {3, 25, 19, true}})
+	table.insert(_q, {walk.walk, {3, 25, 17, true}})
+	table.insert(_q, {walk.walk, {137, 4, 5}})
+
+	-- Walk to Yang.
+	-- TODO: Fix the second and third to last steps. They currently go one step
+	--       too far to the left to avoid a potential trap.
+	table.insert(_q, {walk.walk, {151, 5, 14}})
+	table.insert(_q, {walk.walk, {0, 20, 27}})
+	table.insert(_q, {walk.walk, {0, 20, 26}})
+	table.insert(_q, {walk.walk, {11, 18, 17, true}})
+	table.insert(_q, {walk.walk, {11, 18, 8, true}})
+	table.insert(_q, {walk.walk, {11, 11, 8, true}})
+	table.insert(_q, {walk.walk, {11, 11, 4, true}})
+	table.insert(_q, {walk.walk, {11, 13, 4, true}})
+	table.insert(_q, {walk.interact, {}})
+
+end
+
 local _sequences = {
 	{title = "Prologue", f = _sequence_prologue, map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",   f = _sequence_d_mist,   map_area = 0, map_id = nil, map_x = 102, map_y = 158},
@@ -979,6 +1066,7 @@ local _sequences = {
 	{title = "Milon",    f = _sequence_milon,    map_area = 3, map_id = 22,  map_x = 14,  map_y = 7},
 	{title = "Milon Z.", f = _sequence_milon_z,  map_area = 3, map_id = 135, map_x = 14,  map_y = 10},
 	{title = "Paladin",  f = _sequence_paladin,  map_area = 3, map_id = 135, map_x = 9,   map_y = 10},
+	{title = "Karate",   f = _sequence_karate,   map_area = 3, map_id = 135, map_x = 6,   map_y = 10},
 }
 
 --------------------------------------------------------------------------------
