@@ -73,21 +73,30 @@ function _M.is_transition()
 end
 
 function _M.step(direction)
-	if _M.is_mid_tile() or not _M.is_ready() then
+	if _state.stepped and memory.read("walk", "direction") == direction then
+		_state.stepped = nil
+		return true
+	elseif _M.is_mid_tile() or not _M.is_ready() then
 		return false
-	end
-
-	if direction == _M.DIRECTION.UP then
-		input.press({"P1 Up"}, input.DELAY.NONE)
-	elseif direction == _M.DIRECTION.DOWN then
-		input.press({"P1 Down"}, input.DELAY.NONE)
-	elseif direction == _M.DIRECTION.LEFT then
-		input.press({"P1 Left"}, input.DELAY.NONE)
 	else
-		input.press({"P1 Right"}, input.DELAY.NONE)
+		local result
+
+		if direction == _M.DIRECTION.UP then
+			result = input.press({"P1 Up"}, input.DELAY.NONE)
+		elseif direction == _M.DIRECTION.DOWN then
+			result = input.press({"P1 Down"}, input.DELAY.NONE)
+		elseif direction == _M.DIRECTION.LEFT then
+			result = input.press({"P1 Left"}, input.DELAY.NONE)
+		else
+			result = input.press({"P1 Right"}, input.DELAY.NONE)
+		end
+
+		if result then
+			_state.stepped = true
+		end
 	end
 
-	return true
+	return false
 end
 
 function _M.board()
