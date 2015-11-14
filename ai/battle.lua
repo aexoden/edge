@@ -42,6 +42,7 @@ _M.FORMATION = {
 	MILON    = 226,
 	MILON_Z  = 227,
 	BAIGAN   = 228,
+	KAINAZZO = 229,
 	GIRL     = 236,
 	OFFICER  = 237,
 	WATERHAG = 239,
@@ -358,6 +359,22 @@ local function _battle_guards(character, turn)
 	end
 end
 
+local function _battle_kainazzo(character, turn)
+	if character == game.CHARACTER.CECIL or character == game.CHARACTER.YANG then
+		if turn == 1 then
+			_command_fight()
+		elseif game.character.get_stat(game.CHARACTER.TELLAH, "hp") < 200 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		else
+			_command_parry()
+		end
+	elseif character == game.CHARACTER.TELLAH then
+		_command_black(game.MAGIC.BLACK.LIT3)
+	else
+		_command_parry()
+	end
+end
+
 local function _battle_karate(character, turn)
 	if character == game.CHARACTER.CECIL then
 		_command_wait_text("Yang:A")
@@ -553,6 +570,7 @@ local _formations = {
 	[_M.FORMATION.GENERAL]  = {title = "General/Fighters",    f = _battle_general,  split = false},
 	[_M.FORMATION.GIRL]     = {title = "Girl",                f = _battle_girl,     split = true},
 	[_M.FORMATION.GUARDS]   = {title = "Guards",              f = _battle_guards,   split = false},
+	[_M.FORMATION.KAINAZZO] = {title = "Kainazzo",            f = _battle_kainazzo, split = true},
 	[_M.FORMATION.KARATE]   = {title = "Karate",              f = _battle_karate,   split = true},
 	[_M.FORMATION.MILON]    = {title = "Milon",               f = _battle_milon,    split = true},
 	[_M.FORMATION.MILON_Z]  = {title = "Milon Z.",            f = _battle_milon_z,  split = true},

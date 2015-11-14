@@ -32,6 +32,15 @@ local menu = require "action.menu"
 local walk = require "action.walk"
 
 --------------------------------------------------------------------------------
+-- Constants
+--------------------------------------------------------------------------------
+
+_RESTORE = {
+	REVIVE = 0,
+	CURE = 1,
+}
+
+--------------------------------------------------------------------------------
 -- Variables
 --------------------------------------------------------------------------------
 
@@ -77,17 +86,19 @@ local function _restore_party(characters)
 		local hp = memory.read("character", "hp", slot)
 		local character = game.character.get_character(slot)
 
-		if not characters or characters[character] then
+		if not characters or characters[character] == _RESTORE.CURE then
 			if hp < memory.read("character", "hp_max", slot) then
-				if hp == 0 then
-					revive[#revive + 1] = character
-				end
-
 				cure[#cure + 1] = character
 			end
 
 			if memory.read("character", "mp", slot) < memory.read("character", "mp_max", slot) then
 				ether[#ether + 1] = character
+			end
+		end
+
+		if not characters or characters[character] == _RESTORE.REVIVE or characters[character] == _RESTORE.CURE then
+			if hp == 0 then
+				revive[#revive + 1] = character
 			end
 		end
 	end
@@ -1199,6 +1210,21 @@ local function _sequence_baigan()
 	table.insert(_q, {walk.walk, {42, 6, 10}})
 end
 
+local function _sequence_kainazzo()
+	-- Heal the party as needed.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.CURE, [game.CHARACTER.TELLAH] = _RESTORE.CURE, [game.CHARACTER.YANG] = _RESTORE.REVIVE}}})
+	table.insert(_q, {menu.field.change, {}})
+	table.insert(_q, {menu.field.close, {}})
+
+	-- Walk to Kainazzo.
+	table.insert(_q, {walk.walk, {42, 8, 0}})
+	table.insert(_q, {walk.walk, {43, 14, 2}})
+	table.insert(_q, {walk.walk, {138, 7, 2}})
+	table.insert(_q, {walk.walk, {44, 8, 4}})
+	table.insert(_q, {walk.interact, {}})
+end
+
 local _sequences = {
 	{title = "Prologue", f = _sequence_prologue, map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",   f = _sequence_d_mist,   map_area = 0, map_id = nil, map_x = 102, map_y = 158},
@@ -1217,6 +1243,7 @@ local _sequences = {
 	{title = "Paladin",  f = _sequence_paladin,  map_area = 3, map_id = 135, map_x = 9,   map_y = 10},
 	{title = "Karate",   f = _sequence_karate,   map_area = 3, map_id = 135, map_x = 6,   map_y = 10},
 	{title = "Baigan",   f = _sequence_baigan,   map_area = 3, map_id = 11,  map_x = 14,  map_y = 15},
+	{title = "Kainazzo", f = _sequence_kainazzo, map_area = 3, map_id = 42,  map_x = 8,   map_y = 4},
 }
 
 --------------------------------------------------------------------------------

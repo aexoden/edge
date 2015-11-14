@@ -131,6 +131,7 @@ _M.MAGIC = {
 	BLACK = {
 		PIGGY = 0x1A,
 		LIT1  = 0x23,
+		LIT3  = 0x25,
 		STOP  = 0x2C,
 		METEO = 0x2F,
 	},
