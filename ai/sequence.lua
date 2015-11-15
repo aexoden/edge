@@ -1215,6 +1215,15 @@ local function _sequence_kainazzo()
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.CURE, [game.CHARACTER.TELLAH] = _RESTORE.CURE, [game.CHARACTER.YANG] = _RESTORE.REVIVE}}})
 	table.insert(_q, {menu.field.change, {}})
+
+	if not _M.state.multi_change then
+		if game.character.get_weapon(game.CHARACTER.PALOM) == game.ITEM.WEAPON.CHANGE then
+			table.insert(_q, {menu.field.equip.open, {game.CHARACTER.PALOM}})
+			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.DANCING}})
+			table.insert(_q, {menu.field.equip.close, {}})
+		end
+	end
+
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Walk to Kainazzo.
@@ -1222,6 +1231,110 @@ local function _sequence_kainazzo()
 	table.insert(_q, {walk.walk, {43, 14, 2}})
 	table.insert(_q, {walk.walk, {138, 7, 2}})
 	table.insert(_q, {walk.walk, {44, 8, 4}})
+	table.insert(_q, {walk.interact, {}})
+end
+
+local function _sequence_dark_elf()
+	-- Fly to Toroia and visit Edward.
+	table.insert(_q, {walk.walk, {nil, 36, 83}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 36, 82}})
+	table.insert(_q, {walk.walk, {nil, 35, 82}})
+	table.insert(_q, {walk.walk, {39, 16, 10}})
+	table.insert(_q, {walk.walk, {85, 9, 7}})
+	table.insert(_q, {walk.walk, {85, 2, 7}})
+	table.insert(_q, {walk.walk, {85, 2, 10}})
+	table.insert(_q, {walk.walk, {39, 6, 5}})
+	table.insert(_q, {walk.walk, {39, 6, 12}})
+	table.insert(_q, {walk.walk, {39, 9, 12}})
+	table.insert(_q, {walk.walk, {39, 9, 11}})
+	table.insert(_q, {walk.walk, {88, 3, 5}})
+	table.insert(_q, {walk.walk, {88, 3, 3}})
+	table.insert(_q, {walk.walk, {88, 8, 3}})
+	table.insert(_q, {walk.walk, {88, 8, 4}})
+
+	-- Cast Exit, get a black chocobo, and fly to Cave Magnes.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.item.open, {}})
+	table.insert(_q, {menu.field.item.select, {game.ITEM.ITEM.ETHER1}})
+	table.insert(_q, {menu.field.item.select, {game.ITEM.ITEM.ETHER1}})
+	table.insert(_q, {menu.field.item.select_character, {game.CHARACTER.TELLAH}})
+	table.insert(_q, {menu.field.item.close, {}})
+	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.TELLAH}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {walk.walk, {nil, 35, 70}})
+	table.insert(_q, {walk.walk, {nil, 43, 70}})
+	table.insert(_q, {walk.walk, {nil, 43, 54}})
+	table.insert(_q, {walk.walk, {nil, 41, 54}})
+	table.insert(_q, {walk.walk, {nil, 41, 53}})
+	table.insert(_q, {walk.walk, {33, 8, 28}})
+	table.insert(_q, {walk.walk, {33, 9, 28}})
+	table.insert(_q, {walk.walk, {33, 9, 27}})
+	table.insert(_q, {walk.walk, {33, 10, 27}})
+	table.insert(_q, {walk.walk, {33, 10, 23}})
+	table.insert(_q, {walk.chase, {33, {10, 11}}})
+	table.insert(_q, {walk.walk, {nil, 41, 61}})
+	table.insert(_q, {walk.walk, {nil, 68, 61}})
+	table.insert(_q, {walk.walk, {nil, 68, 56}})
+	table.insert(_q, {walk.walk, {nil, 74, 56}})
+	table.insert(_q, {walk.walk, {nil, 74, 55}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 74, 53}})
+
+	-- Walk to the crystal room.
+	table.insert(_q, {walk.walk, {140, 5, 8}})
+	table.insert(_q, {walk.walk, {140, 9, 8}})
+	table.insert(_q, {walk.walk, {140, 9, 5}})
+	table.insert(_q, {walk.walk, {140, 16, 5}})
+	table.insert(_q, {walk.walk, {140, 16, 14}})
+	table.insert(_q, {walk.walk, {140, 24, 14}})
+	table.insert(_q, {walk.walk, {140, 24, 26}})
+	table.insert(_q, {walk.walk, {140, 10, 26}})
+	table.insert(_q, {walk.walk, {140, 10, 18}})
+	table.insert(_q, {walk.walk, {140, 6, 18}})
+	table.insert(_q, {walk.walk, {140, 6, 19}})
+	table.insert(_q, {walk.walk, {141, 27, 27}})
+	table.insert(_q, {walk.walk, {141, 18, 27}})
+	table.insert(_q, {walk.walk, {141, 18, 18}})
+	table.insert(_q, {walk.walk, {141, 13, 18}})
+	table.insert(_q, {walk.walk, {141, 13, 9}})
+	table.insert(_q, {walk.walk, {141, 5, 9}})
+	table.insert(_q, {walk.walk, {141, 5, 10}})
+	table.insert(_q, {walk.walk, {143, 27, 9}})
+	table.insert(_q, {walk.walk, {143, 22, 9}})
+	table.insert(_q, {walk.walk, {143, 22, 16}})
+	table.insert(_q, {walk.walk, {143, 29, 16}})
+	table.insert(_q, {walk.walk, {143, 29, 20}})
+	table.insert(_q, {walk.walk, {143, 21, 20}})
+	table.insert(_q, {walk.walk, {143, 21, 25}})
+	table.insert(_q, {walk.walk, {143, 8, 25}})
+	table.insert(_q, {walk.walk, {143, 8, 5}})
+	table.insert(_q, {walk.walk, {145, 14, 12}})
+	table.insert(_q, {walk.walk, {145, 5, 12}})
+	table.insert(_q, {walk.walk, {145, 5, 14}})
+	table.insert(_q, {walk.walk, {147, 22, 28}})
+	table.insert(_q, {walk.walk, {147, 20, 28}})
+	table.insert(_q, {walk.walk, {147, 20, 27}})
+	table.insert(_q, {walk.walk, {147, 19, 27}})
+	table.insert(_q, {walk.walk, {147, 19, 25}})
+	table.insert(_q, {walk.walk, {147, 13, 25}})
+	table.insert(_q, {walk.walk, {147, 13, 7}})
+	table.insert(_q, {walk.walk, {148, 11, 12}})
+
+	-- Equip Cid and engage the Dark Elf.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CID}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.HEADBAND}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.KARATE}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.ARMS.IRON}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.close, {}})
+	table.insert(_q, {menu.wait, {16}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {menu.wait, {16}})
+	table.insert(_q, {walk.walk, {148, 11, 13}})
+	table.insert(_q, {walk.walk, {148, 11, 12}})
 	table.insert(_q, {walk.interact, {}})
 end
 
@@ -1244,6 +1357,7 @@ local _sequences = {
 	{title = "Karate",   f = _sequence_karate,   map_area = 3, map_id = 135, map_x = 6,   map_y = 10},
 	{title = "Baigan",   f = _sequence_baigan,   map_area = 3, map_id = 11,  map_x = 14,  map_y = 15},
 	{title = "Kainazzo", f = _sequence_kainazzo, map_area = 3, map_id = 42,  map_x = 8,   map_y = 4},
+	{title = "Dark Elf", f = _sequence_dark_elf, map_area = 0, map_id = nil, map_x = 102, map_y = 155},
 }
 
 --------------------------------------------------------------------------------

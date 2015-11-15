@@ -88,6 +88,7 @@ _M.ITEM = {
 		KARATE   = 0x98,
 	},
 	ARMS = {
+		IRON     = 0x9C,
 		PALADIN  = 0xA0,
 	},
 	CLAW = {
@@ -132,6 +133,8 @@ _M.MAGIC = {
 		PIGGY = 0x1A,
 		LIT1  = 0x23,
 		LIT3  = 0x25,
+		VIRUS = 0x26,
+		WEAK  = 0x27,
 		STOP  = 0x2C,
 		METEO = 0x2F,
 	},
@@ -140,8 +143,13 @@ _M.MAGIC = {
 		CURE2 = 0x0F,
 		CURE4 = 0x11,
 		LIFE1 = 0x13,
+		EXIT  = 0x16,
 		SIGHT = 0x17,
 	},
+}
+
+_M.STATUS = {
+	PIG = 0x08000000,
 }
 
 --------------------------------------------------------------------------------
@@ -238,6 +246,10 @@ end
 
 function _M.character.get_stat(character, stat)
 	return memory.read("character", stat, _M.character.get_slot(character))
+end
+
+function _M.character.is_status(character, status)
+	return bit.band(memory.read("character", "status", _M.character.get_slot(character)), status) > 0
 end
 
 function _M.character.get_equipment(slot, location)

@@ -43,6 +43,7 @@ _M.FORMATION = {
 	MILON_Z  = 227,
 	BAIGAN   = 228,
 	KAINAZZO = 229,
+	DARK_ELF = 231,
 	GIRL     = 236,
 	OFFICER  = 237,
 	WATERHAG = 239,
@@ -299,6 +300,49 @@ local function _battle_d_mist(character, turn)
 				_command_duplicate(game.EQUIP.L_HAND)
 			end
 
+			_command_fight()
+		end
+	end
+end
+
+local function _battle_dark_elf(character, turn)
+	local elf_hp = game.enemy.get_stat(0, "hp")
+	local dragon_hp = game.enemy.get_stat(1, "hp")
+
+	if turn == 1 then
+		if character == game.CHARACTER.TELLAH then
+			_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.CID)
+		else
+			_command_fight()
+		end
+	elseif turn == 2 and character == game.CHARACTER.TELLAH then
+		if game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.PIG) then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		else
+			if dragon_hp == 0 then
+				_command_wait_text("Da")
+			end
+
+			_command_black(game.MAGIC.BLACK.WEAK)
+		end
+	elseif dragon_hp > 0 and dragon_hp < 50 then
+		if character == game.CHARACTER.YANG and game.character.get_stat(game.CHARACTER.YANG, "hp") < 50 then
+			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+		else
+			_command_fight()
+		end
+	else
+		local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp")
+
+		if game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.PIG) then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		elseif tellah_hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		elseif tellah_hp < 200 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		elseif character == game.CHARACTER.TELLAH and dragon_hp > 50 then
+			_command_black(game.MAGIC.BLACK.WEAK)
+		else
 			_command_fight()
 		end
 	end
@@ -565,6 +609,7 @@ local _formations = {
 	[_M.FORMATION.BAIGAN]   = {title = "Baigan",              f = _battle_baigan,   split = true},
 	[_M.FORMATION.D_KNIGHT] = {title = "D.Knight",            f = _battle_d_knight, split = false},
 	[_M.FORMATION.D_MIST]   = {title = "D.Mist",              f = _battle_d_mist,   split = true},
+	[_M.FORMATION.DARK_ELF] = {title = "Dark Elf",            f = _battle_dark_elf, split = true},
 	[_M.FORMATION.DRAGOON]  = {title = "Dragoon",             f = _battle_dragoon,  split = true},
 	[_M.FORMATION.GARGOYLE] = {title = "Gargoyle",            f = _battle_gargoyle, split = false},
 	[_M.FORMATION.GENERAL]  = {title = "General/Fighters",    f = _battle_general,  split = false},

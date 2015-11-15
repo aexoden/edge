@@ -39,7 +39,9 @@ _M.DIRECTION = {
 _M.VEHICLE = {
 	NONE = 0,
 	CHOCOBO = 1,
+	BLACK_CHOCOBO = 2,
 	HOVERCRAFT = 3,
+	AIRSHIP = 4,
 }
 
 --------------------------------------------------------------------------------
@@ -58,6 +60,10 @@ function _M.is_mid_tile()
 
 	if vehicle == _M.VEHICLE.CHOCOBO or vehicle == _M.VEHICLE.HOVERCRAFT then
 		frames = 8
+	elseif vehicle == _M.VEHICLE.BLACK_CHOCOBO then
+		frames = 4
+	elseif vehicle == _M.VEHICLE.AIRSHIP then
+		frames = 2
 	end
 
 	return memory.read("walk", "frames") % frames ~= 0

@@ -376,6 +376,7 @@ function _M.field.change()
 	end
 
 	if memory.read("party", "formation") ~= _state.formation then
+		_state.formation = nil
 		return true
 	else
 		_M.field.select(_M.field.CHOICE.CHANGE)
