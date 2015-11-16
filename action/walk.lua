@@ -130,6 +130,10 @@ function _M.chase(target_map_id, npcs, shop)
 	local current_y = memory.read("walk", "y")
 	local current_direction = memory.read("walk", "direction")
 
+	if memory.read("dialog", "height") > 0 then
+		return true
+	end
+
 	if _M.is_mid_tile() or not _M.is_ready() then
 		return false
 	elseif current_map_id ~= target_map_id then
@@ -165,8 +169,9 @@ function _M.chase(target_map_id, npcs, shop)
 				return false
 			end
 
-			input.press({"P1 A"}, input.DELAY.MASH)
-			return true
+			local result = input.press({"P1 A"}, input.DELAY.MASH)
+
+			return shop and result
 		else
 			local distance = math.abs(dx) + math.abs(dy)
 

@@ -54,6 +54,7 @@ _M.FORMATION = {
 	WEEPER   = 248,
 	GARGOYLE = 249,
 	GUARDS   = 250,
+	FLAMEDOG = 451,
 }
 
 --------------------------------------------------------------------------------
@@ -352,6 +353,17 @@ local function _battle_dragoon(character, turn)
 	_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 end
 
+local function _battle_flamedog(character, turn)
+	if character == game.CHARACTER.TELLAH then
+		_command_black(game.MAGIC.BLACK.ICE1)
+	elseif character == game.CHARACTER.CECIL and turn == 1 then
+		_command_run_buffer()
+		_command_fight()
+	else
+		_command_fight()
+	end
+end
+
 local function _battle_gargoyle(character, turn)
 	if character == game.CHARACTER.CECIL then
 		_command_fight()
@@ -611,6 +623,7 @@ local _formations = {
 	[_M.FORMATION.D_MIST]   = {title = "D.Mist",              f = _battle_d_mist,   split = true},
 	[_M.FORMATION.DARK_ELF] = {title = "Dark Elf",            f = _battle_dark_elf, split = true},
 	[_M.FORMATION.DRAGOON]  = {title = "Dragoon",             f = _battle_dragoon,  split = true},
+	[_M.FORMATION.FLAMEDOG] = {title = "FlameDog",            f = _battle_flamedog, split = true},
 	[_M.FORMATION.GARGOYLE] = {title = "Gargoyle",            f = _battle_gargoyle, split = false},
 	[_M.FORMATION.GENERAL]  = {title = "General/Fighters",    f = _battle_general,  split = false},
 	[_M.FORMATION.GIRL]     = {title = "Girl",                f = _battle_girl,     split = true},

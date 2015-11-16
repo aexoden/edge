@@ -70,8 +70,9 @@ local function _is_dialog()
 	local dialog_height = memory.read("dialog", "height")
 	local dialog_state = memory.read("dialog", "state")
 	local dialog_prompt = memory.read("dialog", "prompt")
+	local spoils = memory.read("dialog", "spoils_state") > 0
 
-	return battle_dialog_state == 1 or dialog_height == 7 or (dialog_height > 0 and (dialog_state == 0 or dialog_prompt == 0))
+	return battle_dialog_state == 1 or spoils or dialog_height == 7 or (dialog_height > 0 and (dialog_state == 0 or dialog_prompt == 0))
 end
 
 --------------------------------------------------------------------------------

@@ -156,6 +156,7 @@ local _addresses = {
 		height_lower        = {f = mainmemory.read_u8,     address = 0x0006DA, record_size = {0x01, 0x01}},
 		item_id             = {f = mainmemory.read_u8,     address = 0x000712, record_size = {0x02, 0x01}},
 		item_count          = {f = mainmemory.read_u8,     address = 0x000713, record_size = {0x02, 0x01}},
+		spoils_state        = {f = mainmemory.read_u8,     address = 0x001BC6, record_size = {0x01, 0x01}},
 		text                = {f = _read_character,        address = 0x000774, record_size = {0x01, 0x01}},
 	},
 	enemy = {
@@ -173,6 +174,7 @@ local _addresses = {
 		selected            = {f = mainmemory.read_u8,     address = 0x001A77, record_size = {0x01, 0x01}},
 		state               = {f = mainmemory.read_u8,     address = 0x000500, record_size = {0x01, 0x01}},
 		subcursor_state     = {f = mainmemory.read_u8,     address = 0x000312, record_size = {0x01, 0x01}},
+		submenu_open        = {f = mainmemory.read_u8,     address = 0x0002F0, record_size = {0x01, 0x01}},
 		cursor3_state       = {f = mainmemory.read_u8,     address = 0x00031E, record_size = {0x01, 0x01}},
 		active              = {f = mainmemory.read_u8,     address = 0x001BAD, record_size = {0x01, 0x01}},
 	},

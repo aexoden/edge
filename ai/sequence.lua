@@ -77,7 +77,7 @@ local function _log_seed()
 	return log.log(string.format("New Seed: %d", memory.read("walk", "seed")))
 end
 
-local function _restore_party(characters)
+local function _restore_party(characters, open_menu)
 	local revive = {}
 	local cure = {}
 	local ether = {}
@@ -106,6 +106,10 @@ local function _restore_party(characters)
 	local stack = {}
 
 	if #revive + #cure + #ether > 0 then
+		if open_menu then
+			table.insert(stack, {menu.field.open, {}})
+		end
+
 		table.insert(stack, {menu.field.item.open, {}})
 
 		for _, character in pairs(revive) do
@@ -127,6 +131,10 @@ local function _restore_party(characters)
 		end
 
 		table.insert(stack, {menu.field.item.close, {}})
+
+		if open_menu then
+			table.insert(stack, {menu.field.close, {}})
+		end
 	end
 
 	while #stack > 0 do
@@ -1338,26 +1346,83 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.interact, {}})
 end
 
+local function _sequence_flamedog()
+	-- Collect the crystal and return to the Clerics.
+	table.insert(_q, {walk.walk, {148, 11, 9}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {148, 11, 26}})
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.TELLAH] = _RESTORE.REVIVE}}})
+	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.TELLAH}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {walk.walk, {nil, 74, 55}})
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {33, 8, 28}})
+	table.insert(_q, {walk.walk, {33, 9, 28}})
+	table.insert(_q, {walk.walk, {33, 9, 27}})
+	table.insert(_q, {walk.walk, {33, 10, 27}})
+	table.insert(_q, {walk.walk, {33, 10, 23}})
+	table.insert(_q, {walk.chase, {33, {6, 7, 8, 10, 11}}})
+	table.insert(_q, {walk.walk, {nil, 41, 61}})
+	table.insert(_q, {walk.walk, {nil, 43, 61}})
+	table.insert(_q, {walk.walk, {nil, 43, 81}})
+	table.insert(_q, {walk.walk, {nil, 36, 81}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 35, 81}})
+	table.insert(_q, {walk.walk, {39, 16, 10}})
+	table.insert(_q, {walk.walk, {85, 9, 0, true}})
+	table.insert(_q, {walk.walk, {86, 5, 15}})
+
+	-- Leave the castle and walk to the Fire sword chest.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.TELLAH}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {walk.walk, {nil, 35, 83}})
+	table.insert(_q, {walk.walk, {nil, 36, 83}})
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {152, 17, 24}})
+	table.insert(_q, {walk.walk, {152, 17, 26}})
+	table.insert(_q, {walk.walk, {152, 28, 26}})
+	table.insert(_q, {walk.walk, {152, 28, 5}})
+	table.insert(_q, {walk.walk, {152, 26, 5}})
+	table.insert(_q, {walk.walk, {152, 26, 4}})
+	table.insert(_q, {walk.walk, {153, 26, 14}})
+	table.insert(_q, {walk.walk, {153, 19, 14}})
+	table.insert(_q, {walk.walk, {153, 19, 21}})
+	table.insert(_q, {walk.walk, {153, 17, 21}})
+	table.insert(_q, {walk.walk, {153, 17, 27}})
+	table.insert(_q, {walk.walk, {153, 8, 27}})
+	table.insert(_q, {walk.walk, {153, 8, 15}})
+
+	-- Heal, turn to the chest, and engage FlameDog.
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.CURE, [game.CHARACTER.YANG] = _RESTORE.CURE, [game.CHARACTER.TELLAH] = _RESTORE.CURE}, true}})
+	table.insert(_q, {walk.step, {walk.DIRECTION.LEFT}})
+	table.insert(_q, {walk.interact, {}})
+end
+
 local _sequences = {
-	{title = "Prologue", f = _sequence_prologue, map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
-	{title = "D.Mist",   f = _sequence_d_mist,   map_area = 0, map_id = nil, map_x = 102, map_y = 158},
-	{title = "Girl",     f = _sequence_girl,     map_area = 0, map_id = nil, map_x = 84,  map_y = 120},
-	{title = "Officer",  f = _sequence_officer,  map_area = 0, map_id = nil, map_x = 103, map_y = 119},
-	{title = "Tellah",   f = _sequence_tellah,   map_area = 3, map_id = 16,  map_x = 14,  map_y = 12},
-	{title = "Octomamm", f = _sequence_octomamm, map_area = 3, map_id = 111, map_x = 7,   map_y = 13},
-	{title = "Edward",   f = _sequence_edward,   map_area = 0, map_id = nil, map_x = 125, map_y = 67},
-	{title = "Antlion",  f = _sequence_antlion,  map_area = 0, map_id = nil, map_x = 117, map_y = 57},
-	{title = "WaterHag", f = _sequence_waterhag, map_area = 3, map_id = 121, map_x = 14,  map_y = 20},
-	{title = "MomBomb",  f = _sequence_mombomb,  map_area = 3, map_id = 18,  map_x = 4,   map_y = 5},
-	{title = "Dragoon",  f = _sequence_dragoon,  map_area = 3, map_id = 127, map_x = 21,  map_y = 14},
-	{title = "Twins",    f = _sequence_twins,    map_area = 3, map_id = 74,  map_x = 12,  map_y = 15},
-	{title = "Milon",    f = _sequence_milon,    map_area = 3, map_id = 22,  map_x = 14,  map_y = 7},
-	{title = "Milon Z.", f = _sequence_milon_z,  map_area = 3, map_id = 135, map_x = 14,  map_y = 10},
-	{title = "Paladin",  f = _sequence_paladin,  map_area = 3, map_id = 135, map_x = 9,   map_y = 10},
-	{title = "Karate",   f = _sequence_karate,   map_area = 3, map_id = 135, map_x = 6,   map_y = 10},
-	{title = "Baigan",   f = _sequence_baigan,   map_area = 3, map_id = 11,  map_x = 14,  map_y = 15},
-	{title = "Kainazzo", f = _sequence_kainazzo, map_area = 3, map_id = 42,  map_x = 8,   map_y = 4},
-	{title = "Dark Elf", f = _sequence_dark_elf, map_area = 0, map_id = nil, map_x = 102, map_y = 155},
+	{title = "Prologue",      f = _sequence_prologue,      map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
+	{title = "D.Mist",        f = _sequence_d_mist,        map_area = 0, map_id = nil, map_x = 102, map_y = 158},
+	{title = "Girl",          f = _sequence_girl,          map_area = 0, map_id = nil, map_x = 84,  map_y = 120},
+	{title = "Officer",       f = _sequence_officer,       map_area = 0, map_id = nil, map_x = 103, map_y = 119},
+	{title = "Tellah",        f = _sequence_tellah,        map_area = 3, map_id = 16,  map_x = 14,  map_y = 12},
+	{title = "Octomamm",      f = _sequence_octomamm,      map_area = 3, map_id = 111, map_x = 7,   map_y = 13},
+	{title = "Edward",        f = _sequence_edward,        map_area = 0, map_id = nil, map_x = 125, map_y = 67},
+	{title = "Antlion",       f = _sequence_antlion,       map_area = 0, map_id = nil, map_x = 117, map_y = 57},
+	{title = "WaterHag",      f = _sequence_waterhag,      map_area = 3, map_id = 121, map_x = 14,  map_y = 20},
+	{title = "MomBomb",       f = _sequence_mombomb,       map_area = 3, map_id = 18,  map_x = 4,   map_y = 5},
+	{title = "Dragoon",       f = _sequence_dragoon,       map_area = 3, map_id = 127, map_x = 21,  map_y = 14},
+	{title = "Twins",         f = _sequence_twins,         map_area = 3, map_id = 74,  map_x = 12,  map_y = 15},
+	{title = "Milon",         f = _sequence_milon,         map_area = 3, map_id = 22,  map_x = 14,  map_y = 7},
+	{title = "Milon Z.",      f = _sequence_milon_z,       map_area = 3, map_id = 135, map_x = 14,  map_y = 10},
+	{title = "Paladin",       f = _sequence_paladin,       map_area = 3, map_id = 135, map_x = 9,   map_y = 10},
+	{title = "Karate",        f = _sequence_karate,        map_area = 3, map_id = 135, map_x = 6,   map_y = 10},
+	{title = "Baigan",        f = _sequence_baigan,        map_area = 3, map_id = 11,  map_x = 14,  map_y = 15},
+	{title = "Kainazzo",      f = _sequence_kainazzo,      map_area = 3, map_id = 42,  map_x = 8,   map_y = 4},
+	{title = "Dark Elf",      f = _sequence_dark_elf,      map_area = 0, map_id = nil, map_x = 102, map_y = 155},
+	{title = "FlameDog",      f = _sequence_flamedog,      map_area = 3, map_id = 148, map_x = 11,  map_y = 12},
 }
 
 --------------------------------------------------------------------------------

@@ -131,6 +131,7 @@ _M.ITEM = {
 _M.MAGIC = {
 	BLACK = {
 		PIGGY = 0x1A,
+		ICE1  = 0x20,
 		LIT1  = 0x23,
 		LIT3  = 0x25,
 		VIRUS = 0x26,

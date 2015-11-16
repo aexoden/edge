@@ -252,7 +252,7 @@ function _M.field.item.is_open()
 end
 
 function _M.field.magic.is_open()
-	return memory.read("menu", "selected") == _M.field.CHOICE.MAGIC
+	return memory.read("menu", "selected") == _M.field.CHOICE.MAGIC and memory.read("menu", "submenu_open") == 118
 end
 
 function _M.field.magic.is_not_closed()
