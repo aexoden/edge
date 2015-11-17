@@ -130,21 +130,6 @@ local _addresses = {
 		target_default_down = {f = mainmemory.read_u8,     address = 0x00F34B, record_size = {0x01, 0x01}},
 		target_default_up   = {f = mainmemory.read_u8,     address = 0x00F343, record_size = {0x01, 0x01}},
 	},
-	character = {
-		id                  = {f = mainmemory.read_u8,     address = 0x001000, record_size = {0x40, 0x01}},
-		hp                  = {f = mainmemory.read_u16_le, address = 0x002007, record_size = {0x80, 0x01}},
-		hp_max              = {f = mainmemory.read_u16_le, address = 0x002009, record_size = {0x80, 0x01}},
-		mp                  = {f = mainmemory.read_u16_le, address = 0x00200B, record_size = {0x80, 0x01}},
-		mp_max              = {f = mainmemory.read_u16_le, address = 0x00200D, record_size = {0x80, 0x01}},
-		status              = {f = mainmemory.read_u32_be, address = 0x002003, record_size = {0x80, 0x01}},
-		r_hand              = {f = mainmemory.read_u8,     address = 0x002033, record_size = {0x80, 0x01}},
-		r_hand_count        = {f = mainmemory.read_u8,     address = 0x002034, record_size = {0x80, 0x01}},
-		l_hand              = {f = mainmemory.read_u8,     address = 0x002035, record_size = {0x80, 0x01}},
-		l_hand_count        = {f = mainmemory.read_u8,     address = 0x002036, record_size = {0x80, 0x01}},
-		head                = {f = mainmemory.read_u8,     address = 0x002030, record_size = {0x80, 0x01}},
-		body                = {f = mainmemory.read_u8,     address = 0x002031, record_size = {0x80, 0x01}},
-		arms                = {f = mainmemory.read_u8,     address = 0x002032, record_size = {0x80, 0x01}},
-	},
 	dialog = {
 		height              = {f = mainmemory.read_u8,     address = 0x0006DF, record_size = {0x01, 0x01}},
 		prompt              = {f = mainmemory.read_u8,     address = 0x000654, record_size = {0x01, 0x01}},
@@ -160,7 +145,6 @@ local _addresses = {
 		text                = {f = _read_character,        address = 0x000774, record_size = {0x01, 0x01}},
 	},
 	enemy = {
-		hp                  = {f = mainmemory.read_u16_le, address = 0x002287, record_size = {0x80, 0x01}},
 		type                = {f = mainmemory.read_u8,     address = 0x0029B5, record_size = {0x01, 0x01}},
 		id                  = {f = mainmemory.read_u8,     address = 0x0029AD, record_size = {0x01, 0x01}},
 	},
@@ -254,6 +238,23 @@ local _addresses = {
 	}
 }
 
+local _stats = {
+	id              = {f = mainmemory.read_u8,     address = 0x000000},
+	status          = {f = mainmemory.read_u32_be, address = 0x000003},
+	hp              = {f = mainmemory.read_u16_le, address = 0x000007},
+	hp_max          = {f = mainmemory.read_u16_le, address = 0x000009},
+	mp              = {f = mainmemory.read_u16_le, address = 0x00000B},
+	mp_max          = {f = mainmemory.read_u16_le, address = 0x00000D},
+	head            = {f = mainmemory.read_u8,     address = 0x000030},
+	body            = {f = mainmemory.read_u8,     address = 0x000031},
+	arms            = {f = mainmemory.read_u8,     address = 0x000032},
+	r_hand          = {f = mainmemory.read_u8,     address = 0x000033},
+	r_hand_count    = {f = mainmemory.read_u8,     address = 0x000034},
+	l_hand          = {f = mainmemory.read_u8,     address = 0x000035},
+	l_hand_count    = {f = mainmemory.read_u8,     address = 0x000036},
+	exp             = {f = mainmemory.read_u24_le, address = 0x000037},
+}
+
 --------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
@@ -276,6 +277,22 @@ function _M.read(category, key, index, subindex)
 
 		return 0
 	end
+end
+
+function _M.read_stat(index, stat, battle)
+	if _stats[stat] then
+		local var = _stats[stat]
+
+		if battle then
+			return var.f(0x002000 + var.address + index * 0x80)
+		else
+			return var.f(0x001000 + var.address + index * 0x40)
+		end
+	else
+		log.error(string.format("Attempted to read invalid stat: %s", stat))
+	end
+
+	return 0
 end
 
 return _M

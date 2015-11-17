@@ -195,7 +195,7 @@ end
 --------------------------------------------------------------------------------
 
 local function _get_character_id(slot)
-	return bit.band(memory.read("character", "id", slot), 0x1F)
+	return bit.band(memory.read_stat(slot, "id", false), 0x1F)
 end
 
 --------------------------------------------------------------------------------
@@ -224,7 +224,7 @@ function _M.character.get_character(slot)
 end
 
 function _M.character.get_slot(character)
-	for i = 0, 4 do
+	for i = 0, 9 do
 		if _CHARACTER_IDS[character][_get_character_id(i)] then
 			return i
 		end
@@ -245,8 +245,8 @@ function _M.character.get_index(slot)
 	end
 end
 
-function _M.character.get_stat(character, stat)
-	return memory.read("character", stat, _M.character.get_slot(character))
+function _M.character.get_stat(character, stat, battle)
+	return memory.read_stat(_M.character.get_slot(character), stat, battle)
 end
 
 function _M.character.is_status(character, status)
@@ -293,7 +293,7 @@ function _M.enemy.get_id(index)
 end
 
 function _M.enemy.get_stat(index, stat)
-	return memory.read("enemy", stat, index)
+	return memory.read_stat(index + 5, stat, true)
 end
 
 function _M.enemy.get_closest(enemy)

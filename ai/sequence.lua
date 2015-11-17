@@ -83,15 +83,15 @@ local function _restore_party(characters, open_menu)
 	local ether = {}
 
 	for slot = 0, 4 do
-		local hp = memory.read("character", "hp", slot)
+		local hp = memory.read_stat(slot, "hp")
 		local character = game.character.get_character(slot)
 
 		if not characters or characters[character] == _RESTORE.CURE then
-			if hp < memory.read("character", "hp_max", slot) then
+			if hp < memory.read_stat(slot, "hp_max") then
 				cure[#cure + 1] = character
 			end
 
-			if memory.read("character", "mp", slot) < memory.read("character", "mp_max", slot) then
+			if memory.read_stat(slot, "mp") < memory.read_stat(slot, "mp_max") then
 				ether[#ether + 1] = character
 			end
 		end
@@ -1402,6 +1402,71 @@ local function _sequence_flamedog()
 	table.insert(_q, {walk.interact, {}})
 end
 
+local function _sequence_magus_sisters()
+	-- Walk to the top floor of the tower.
+	table.insert(_q, {walk.walk, {153, 8, 20}})
+	table.insert(_q, {walk.walk, {153, 2, 20}})
+	table.insert(_q, {walk.walk, {153, 2, 13}})
+	table.insert(_q, {walk.walk, {154, 1, 14}})
+	table.insert(_q, {walk.walk, {154, 1, 22}})
+	table.insert(_q, {walk.walk, {154, 5, 22}})
+	table.insert(_q, {walk.walk, {154, 5, 26}})
+	table.insert(_q, {walk.walk, {154, 12, 26}})
+	table.insert(_q, {walk.walk, {154, 12, 24}})
+	table.insert(_q, {walk.walk, {154, 18, 24}})
+	table.insert(_q, {walk.walk, {154, 18, 25}})
+	table.insert(_q, {walk.walk, {154, 22, 25}})
+	table.insert(_q, {walk.walk, {154, 22, 24}})
+	table.insert(_q, {walk.walk, {154, 23, 24}})
+	table.insert(_q, {walk.walk, {154, 23, 22}})
+	table.insert(_q, {walk.walk, {154, 24, 22}})
+	table.insert(_q, {walk.walk, {154, 24, 9}})
+	table.insert(_q, {walk.walk, {154, 22, 9}})
+	table.insert(_q, {walk.walk, {154, 22, 7}})
+	table.insert(_q, {walk.walk, {154, 21, 7}})
+	table.insert(_q, {walk.walk, {154, 21, 5}})
+	table.insert(_q, {walk.walk, {154, 20, 5}})
+	table.insert(_q, {walk.walk, {154, 20, 4}})
+	table.insert(_q, {walk.walk, {154, 5, 4}})
+	table.insert(_q, {walk.walk, {154, 5, 8}})
+	table.insert(_q, {walk.walk, {154, 2, 8}})
+	table.insert(_q, {walk.walk, {154, 2, 7}})
+	table.insert(_q, {walk.walk, {156, 4, 5}})
+	table.insert(_q, {walk.walk, {156, 4, 8}})
+	table.insert(_q, {walk.walk, {156, 1, 8}})
+	table.insert(_q, {walk.walk, {156, 1, 21}})
+	table.insert(_q, {walk.walk, {156, 2, 21}})
+	table.insert(_q, {walk.walk, {156, 2, 22}})
+	table.insert(_q, {walk.walk, {156, 3, 22}})
+	table.insert(_q, {walk.walk, {156, 3, 23}})
+	table.insert(_q, {walk.walk, {156, 4, 23}})
+	table.insert(_q, {walk.walk, {156, 4, 24}})
+	table.insert(_q, {walk.walk, {156, 5, 24}})
+	table.insert(_q, {walk.walk, {156, 5, 25}})
+	table.insert(_q, {walk.walk, {156, 12, 25}})
+	table.insert(_q, {walk.walk, {156, 12, 23}})
+	table.insert(_q, {walk.walk, {156, 20, 23}})
+	table.insert(_q, {walk.walk, {156, 20, 25}})
+	table.insert(_q, {walk.walk, {156, 24, 25}})
+	table.insert(_q, {walk.walk, {156, 24, 15}})
+	table.insert(_q, {walk.walk, {157, 25, 14}})
+	table.insert(_q, {walk.walk, {157, 25, 22}})
+	table.insert(_q, {walk.walk, {157, 19, 22}})
+	table.insert(_q, {walk.walk, {157, 19, 19}})
+	table.insert(_q, {walk.walk, {157, 15, 19}})
+
+	-- Prepare the party for battle.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.CURE, [game.CHARACTER.TELLAH] = _RESTORE.CURE, [game.CHARACTER.YANG] = _RESTORE.REVIVE}}})
+	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.TELLAH}})
+	table.insert(_q, {_underflow_mp, {game.CHARACTER.TELLAH}})
+	table.insert(_q, {menu.field.magic.close, {}})
+	table.insert(_q, {menu.field.close, {}})
+
+	-- Engage the sisters.
+	table.insert(_q, {walk.walk, {157, 15, 17}})
+end
+
 local _sequences = {
 	{title = "Prologue",      f = _sequence_prologue,      map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",        f = _sequence_d_mist,        map_area = 0, map_id = nil, map_x = 102, map_y = 158},
@@ -1423,6 +1488,7 @@ local _sequences = {
 	{title = "Kainazzo",      f = _sequence_kainazzo,      map_area = 3, map_id = 42,  map_x = 8,   map_y = 4},
 	{title = "Dark Elf",      f = _sequence_dark_elf,      map_area = 0, map_id = nil, map_x = 102, map_y = 155},
 	{title = "FlameDog",      f = _sequence_flamedog,      map_area = 3, map_id = 148, map_x = 11,  map_y = 12},
+	{title = "Magus Sisters", f = _sequence_magus_sisters, map_area = 3, map_id = 153, map_x = 8,   map_y = 15},
 }
 
 --------------------------------------------------------------------------------

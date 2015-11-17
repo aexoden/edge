@@ -44,6 +44,7 @@ _M.FORMATION = {
 	BAIGAN   = 228,
 	KAINAZZO = 229,
 	DARK_ELF = 231,
+    SISTERS  = 232,
 	GIRL     = 236,
 	OFFICER  = 237,
 	WATERHAG = 239,
@@ -211,7 +212,7 @@ end
 
 local function _battle_antlion(character, turn)
 	if character == game.CHARACTER.CECIL then
-		if game.character.get_stat(game.CHARACTER.RYDIA, "hp") == 0 and game.item.get_index(game.ITEM.ITEM.LIFE, 0, game.INVENTORY.BATTLE) then
+		if game.character.get_stat(game.CHARACTER.RYDIA, "hp", true) == 0 and game.item.get_index(game.ITEM.ITEM.LIFE, 0, game.INVENTORY.BATTLE) then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
 		else
 			_command_parry()
@@ -229,9 +230,9 @@ local function _battle_baigan(character, turn)
 			_command_run_buffer()
 			_command_cover(game.CHARACTER.TELLAH)
 		elseif turn == 2 then
-			if game.character.get_stat(game.CHARACTER.POROM, "hp") > 0 then
+			if game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
-			elseif game.character.get_stat(game.CHARACTER.PALOM, "hp") > 0 then
+			elseif game.character.get_stat(game.CHARACTER.PALOM, "hp", true) > 0 then
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
 			else
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
@@ -241,17 +242,17 @@ local function _battle_baigan(character, turn)
 			_command_equip(character, game.ITEM.WEAPON.LEGEND)
 		end
 	elseif character == game.CHARACTER.PALOM then
-		if game.character.get_stat(game.CHARACTER.YANG, "hp") > 0 then
+		if game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 then
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
-		elseif game.character.get_stat(game.CHARACTER.POROM, "hp") > 0 then
+		elseif game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 		else
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
 		end
 	elseif character == game.CHARACTER.YANG then
-		if game.character.get_stat(game.CHARACTER.POROM, "hp") > 0 then
+		if game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
 			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
-		elseif game.character.get_stat(game.CHARACTER.PALOM, "hp") > 0 then
+		elseif game.character.get_stat(game.CHARACTER.PALOM, "hp", true) > 0 then
 			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
 		else
 			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
@@ -327,13 +328,13 @@ local function _battle_dark_elf(character, turn)
 			_command_black(game.MAGIC.BLACK.WEAK)
 		end
 	elseif dragon_hp > 0 and dragon_hp < 50 then
-		if character == game.CHARACTER.YANG and game.character.get_stat(game.CHARACTER.YANG, "hp") < 50 then
+		if character == game.CHARACTER.YANG and game.character.get_stat(game.CHARACTER.YANG, "hp", true) < 50 then
 			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		else
 			_command_fight()
 		end
 	else
-		local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp")
+		local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp", true)
 
 		if game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.PIG) then
 			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
@@ -419,7 +420,7 @@ local function _battle_kainazzo(character, turn)
 	if character == game.CHARACTER.CECIL or character == game.CHARACTER.YANG then
 		if turn == 1 then
 			_command_fight()
-		elseif game.character.get_stat(game.CHARACTER.TELLAH, "hp") < 200 then
+		elseif game.character.get_stat(game.CHARACTER.TELLAH, "hp", true) < 200 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 		else
 			_command_parry()
@@ -441,8 +442,8 @@ local function _battle_karate(character, turn)
 end
 
 local function _battle_milon(character, turn)
-	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp")
-	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp")
+	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
+	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
 
 	local worst_twin = nil
 
@@ -504,7 +505,7 @@ local function _battle_milon_z(character, turn)
 end
 
 local function _battle_mombomb(character, turn)
-	if memory.read("enemy", "hp", 0) > 10000 then
+	if game.enemy.get_stat(0, "hp") > 10000 then
 		if character == game.CHARACTER.CECIL or character == game.CHARACTER.YANG then
 			_command_fight()
 		elseif character == game.CHARACTER.EDWARD or character == game.CHARACTER.RYDIA then
@@ -513,7 +514,7 @@ local function _battle_mombomb(character, turn)
 			local count = 0, last
 
 			for i = 0, 4 do
-				if memory.read("character", "hp", i) < memory.read("character", "hp_max", i) * 0.8 then
+				if memory.read_stat(i, "hp", true) < memory.read_stat(i, "hp_max", true) * 0.8 then
 					count = count + 1
 					last = i
 				end
@@ -527,7 +528,7 @@ local function _battle_mombomb(character, turn)
 				_command_parry()
 			end
 		end
-	elseif memory.read("enemy", "hp", 0) > 0 then
+	elseif game.enemy.get_stat(0, "hp") > 0 then
 		if character == game.CHARACTER.YANG then
 			_command_wait_text("Ex")
 			_command_wait_frames(60)
@@ -562,11 +563,11 @@ local function _battle_octomamm(character, turn)
 			_command_equip(character, game.ITEM.WEAPON.CHANGE)
 		end
 
-		local rydia_hp = game.character.get_stat(game.CHARACTER.RYDIA, "hp")
+		local rydia_hp = game.character.get_stat(game.CHARACTER.RYDIA, "hp", true)
 
 		if rydia_hp == 0 then
 			_command_white(game.MAGIC.WHITE.LIFE1, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
-		elseif rydia_hp < 15 or game.character.get_stat(game.CHARACTER.CECIL, "hp") < 100 then
+		elseif rydia_hp < 15 or game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 100 then
 			_command_white(game.MAGIC.WHITE.CURE2, menu.battle.TARGET.PARTY_ALL)
 		elseif game.enemy.get_stat(0, "hp") < 1200 then
 			if not _state.duplicated_change then
@@ -587,6 +588,43 @@ local function _battle_officer(character, turn)
 	if turn <= 3 then
 		_command_run_buffer()
 		_command_fight()
+	end
+end
+
+local function _battle_sisters(character, turn)
+	local fight_yang = game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 and game.character.get_stat(game.CHARACTER.KAIN, "exp") < 17154
+
+	if character == game.CHARACTER.CECIL then
+		if turn == 1 then
+			_command_run_buffer()
+			_command_cover(game.CHARACTER.TELLAH)
+		else
+			if turn == 2 and not _state.duplicated then
+				_command_duplicate(game.EQUIP.R_HAND, true)
+				_state.duplicated = true
+				return true
+			end
+
+			if game.character.get_stat(game.CHARACTER.TELLAH, "hp", true) < 200 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+			elseif fight_yang then
+				_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+			else
+				return true
+			end
+		end
+	elseif character == game.CHARACTER.YANG then
+		if turn == 1 then
+			_command_duplicate(game.EQUIP.L_HAND)
+		end
+
+		if fight_yang then
+			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+		else
+			_command_parry()
+		end
+	else
+		_command_black(game.MAGIC.BLACK.METEO)
 	end
 end
 
@@ -635,6 +673,7 @@ local _formations = {
 	[_M.FORMATION.MOMBOMB]  = {title = "MomBomb",             f = _battle_mombomb,  split = true},
 	[_M.FORMATION.OCTOMAMM] = {title = "Octomamm",            f = _battle_octomamm, split = true},
 	[_M.FORMATION.OFFICER]  = {title = "Officer/Soldiers",    f = _battle_officer,  split = true},
+	[_M.FORMATION.SISTERS]  = {title = "Magus Sisters",       f = _battle_sisters,  split = true},
 	[_M.FORMATION.WATERHAG] = {title = "WaterHag",            f = _battle_waterhag, split = true},
 	[_M.FORMATION.WEEPER]   = {title = "Weeper/WaterHag/Imp", f = _battle_weeper,   split = false},
 }
@@ -694,11 +733,14 @@ function _M.cycle()
 			end
 
 			if open and memory.read("battle_menu", "menu") ~= menu.battle.MENU.NONE then
-			 	if not _state.queued then
-					_state.turns[slot] = _state.turns[slot] + 1
-					formation.f(game.character.get_character(slot), _state.turns[slot])
-					_state.queued = true
-				elseif #_state.q > 0 then
+			 	if #_state.q == 0 and not _state.queued then
+					if not formation.f(game.character.get_character(slot), _state.turns[slot] + 1) then
+						_state.turns[slot] = _state.turns[slot] + 1
+						_state.queued = true
+					end
+				end
+
+				if #_state.q > 0 then
 					local command = _state.q[1]
 
 					if command then
