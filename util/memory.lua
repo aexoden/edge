@@ -240,6 +240,7 @@ local _addresses = {
 
 local _stats = {
 	id              = {f = mainmemory.read_u8,     address = 0x000000},
+	level           = {f = mainmemory.read_u8,     address = 0x000002},
 	status          = {f = mainmemory.read_u32_be, address = 0x000003},
 	hp              = {f = mainmemory.read_u16_le, address = 0x000007},
 	hp_max          = {f = mainmemory.read_u16_le, address = 0x000009},

@@ -1467,6 +1467,45 @@ local function _sequence_magus_sisters()
 	table.insert(_q, {walk.walk, {157, 15, 17}})
 end
 
+local function _sequence_valvalis()
+	-- Walk to the Golbez cut scene.
+	table.insert(_q, {walk.walk, {157, 15, 15}})
+	table.insert(_q, {walk.walk, {158, 10, 16}})
+	table.insert(_q, {walk.walk, {158, 10, 10}})
+	table.insert(_q, {walk.walk, {158, 7, 10}})
+	table.insert(_q, {walk.walk, {158, 7, 9}})
+
+	-- Talk to Kain
+	table.insert(_q, {walk.walk, {158, 5, 6}})
+	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+	table.insert(_q, {walk.interact, {}})
+
+	-- Complete the pre-Valvalis menu.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.ROSA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.FIRE}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.HEADBAND}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.KARATE}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.KAIN, game.CHARACTER.CID, game.FORMATION.THREE_FRONT}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.CECIL, game.CHARACTER.ROSA}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.YANG, game.CHARACTER.CECIL}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.REVIVE, [game.CHARACTER.YANG] = _RESTORE.REVIVE, [game.CHARACTER.CID] = _RESTORE.REVIVE}}})
+	table.insert(_q, {menu.field.close, {}})
+
+	-- Engage Valvalis
+	table.insert(_q, {walk.walk, {159, 7, 10}})
+end
+
 local _sequences = {
 	{title = "Prologue",      f = _sequence_prologue,      map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",        f = _sequence_d_mist,        map_area = 0, map_id = nil, map_x = 102, map_y = 158},
@@ -1489,6 +1528,7 @@ local _sequences = {
 	{title = "Dark Elf",      f = _sequence_dark_elf,      map_area = 0, map_id = nil, map_x = 102, map_y = 155},
 	{title = "FlameDog",      f = _sequence_flamedog,      map_area = 3, map_id = 148, map_x = 11,  map_y = 12},
 	{title = "Magus Sisters", f = _sequence_magus_sisters, map_area = 3, map_id = 153, map_x = 8,   map_y = 15},
+	{title = "Valvalis",      f = _sequence_valvalis,      map_area = 3, map_id = 157, map_x = 15,  map_y = 17},
 }
 
 --------------------------------------------------------------------------------

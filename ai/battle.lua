@@ -45,6 +45,7 @@ _M.FORMATION = {
 	KAINAZZO = 229,
 	DARK_ELF = 231,
     SISTERS  = 232,
+	VALVALIS = 234,
 	GIRL     = 236,
 	OFFICER  = 237,
 	WATERHAG = 239,
@@ -138,7 +139,7 @@ local function _command_duplicate(hand, single)
 end
 
 local function _command_equip(character, target_weapon)
-	local hand, current_weapon = game.character.get_weapon(character)
+	local hand, current_weapon = game.character.get_weapon(character, true)
 
 	if current_weapon ~= target_weapon then
 		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
@@ -186,7 +187,7 @@ end
 local function _command_use_weapon(character, target_weapon, target_type, target)
 	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
 
-	local hand, current_weapon = game.character.get_weapon(character)
+	local hand, current_weapon = game.character.get_weapon(character, true)
 
 	if current_weapon ~= target_weapon then
 		table.insert(_state.q, {menu.battle.item.select, {target_weapon}})
@@ -628,6 +629,48 @@ local function _battle_sisters(character, turn)
 	end
 end
 
+local function _battle_valvalis(character, turn)
+	if character == game.CHARACTER.CECIL then
+		if turn == 1 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		else
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+		end
+	elseif character == game.CHARACTER.CID then
+		_command_fight()
+	elseif character == game.CHARACTER.KAIN then
+		if turn == 1 then
+			_command_run_buffer()
+		end
+
+		if game.character.get_stat(game.CHARACTER.KAIN, "level", true) < 19 and turn > 2 and turn % 2 == 1 then
+			_command_fight()
+		else
+			_command_jump()
+		end
+	elseif character == game.CHARACTER.ROSA then
+		if turn <= 2 then
+			_command_white(game.MAGIC.WHITE.SLOW)
+		else
+			if game.character.is_status(game.CHARACTER.CECIL, game.STATUS.STONE) then
+				_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			elseif game.character.is_status(game.CHARACTER.KAIN, game.STATUS.STONE) then
+				_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+			elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 300 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			else
+				_command_parry()
+			end
+		end
+	elseif character == game.CHARACTER.YANG then
+		if turn == 1 then
+			_command_parry()
+		else
+			_command_fight()
+		end
+	end
+end
+
 local function _battle_waterhag(character, turn)
 	_command_fight()
 end
@@ -674,6 +717,7 @@ local _formations = {
 	[_M.FORMATION.OCTOMAMM] = {title = "Octomamm",            f = _battle_octomamm, split = true},
 	[_M.FORMATION.OFFICER]  = {title = "Officer/Soldiers",    f = _battle_officer,  split = true},
 	[_M.FORMATION.SISTERS]  = {title = "Magus Sisters",       f = _battle_sisters,  split = true},
+	[_M.FORMATION.VALVALIS] = {title = "Valvalis",            f = _battle_valvalis, split = true},
 	[_M.FORMATION.WATERHAG] = {title = "WaterHag",            f = _battle_waterhag, split = true},
 	[_M.FORMATION.WEEPER]   = {title = "Weeper/WaterHag/Imp", f = _battle_weeper,   split = false},
 }

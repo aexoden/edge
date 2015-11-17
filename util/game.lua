@@ -122,6 +122,7 @@ _M.ITEM = {
 		CHANGE   = 0x0B,
 		DANCING  = 0x3C,
 		DARKNESS = 0x17,
+		FIRE     = 0x1C,
 		LEGEND   = 0x19,
 		STAFF    = 0x0F,
 		THUNDER  = 0x0A,
@@ -140,6 +141,7 @@ _M.MAGIC = {
 		METEO = 0x2F,
 	},
 	WHITE = {
+		SLOW  = 0x07,
 		CURE1 = 0x0E,
 		CURE2 = 0x0F,
 		CURE4 = 0x11,
@@ -150,7 +152,8 @@ _M.MAGIC = {
 }
 
 _M.STATUS = {
-	PIG = 0x08000000,
+	PIG   = 0x08000000,
+	STONE = 0x40000000,
 }
 
 --------------------------------------------------------------------------------
@@ -250,31 +253,31 @@ function _M.character.get_stat(character, stat, battle)
 end
 
 function _M.character.is_status(character, status)
-	return bit.band(memory.read("character", "status", _M.character.get_slot(character)), status) > 0
+	return bit.band(memory.read_stat(_M.character.get_slot(character), "status", true), status) > 0
 end
 
-function _M.character.get_equipment(slot, location)
+function _M.character.get_equipment(slot, location, battle)
 	if location == _M.EQUIP.R_HAND then
-		return memory.read("character", "r_hand", slot), memory.read("character", "r_hand_count", slot)
+		return memory.read_stat(slot, "r_hand", battle), memory.read_stat(slot, "r_hand_count", battle)
 	elseif location == _M.EQUIP.L_HAND then
-		return memory.read("character", "l_hand", slot), memory.read("character", "l_hand_count", slot)
+		return memory.read_stat(slot, "l_hand", battle), memory.read_stat(slot, "l_hand_count", battle)
 	elseif location == _M.EQUIP.HEAD then
-		return memory.read("character", "head", slot), 1
+		return memory.read_stat(slot, "head", battle), 1
 	elseif location == _M.EQUIP.BODY then
-		return memory.read("character", "body", slot), 1
+		return memory.read_stat(slot, "body", battle), 1
 	elseif location == _M.EQUIP.ARMS then
-		return memory.read("character", "arms", slot), 1
+		return memory.read_stat(slot, "arms", battle), 1
 	end
 end
 
-function _M.character.get_weapon(character)
+function _M.character.get_weapon(character, battle)
 	local slot = _M.character.get_slot(character)
 	local hand, weapon
 
-	if bit.band(memory.read("character", "id", slot), 0x40) > 0 then
-		return _M.EQUIP.L_HAND, memory.read("character", "l_hand", slot)
+	if bit.band(memory.read_stat(slot, "id", battle), 0x40) > 0 then
+		return _M.EQUIP.L_HAND, memory.read_stat(slot, "l_hand", battle)
 	else
-		return _M.EQUIP.R_HAND, memory.read("character", "r_hand", slot)
+		return _M.EQUIP.R_HAND, memory.read_stat(slot, "r_hand", battle)
 	end
 end
 
