@@ -56,6 +56,7 @@ _M.FORMATION = {
 	WEEPER   = 248,
 	GARGOYLE = 249,
 	GUARDS   = 250,
+	DARK_IMP = 256,
 	CALBRENA = 423,
 	LUGAE1   = 425,
 	LUGAE2   = 437,
@@ -405,6 +406,14 @@ local function _battle_dark_elf(character, turn)
 		else
 			_command_fight()
 		end
+	end
+end
+
+local function _battle_dark_imp(character, turn)
+	if character == game.CHARACTER.RYDIA then
+		_command_black(game.MAGIC.BLACK.ICE1)
+	else
+		_command_fight()
 	end
 end
 
@@ -859,6 +868,7 @@ local _formations = {
 	[_M.FORMATION.D_KNIGHT] = {title = "D.Knight",            f = _battle_d_knight, split = false},
 	[_M.FORMATION.D_MIST]   = {title = "D.Mist",              f = _battle_d_mist,   split = true},
 	[_M.FORMATION.DARK_ELF] = {title = "Dark Elf",            f = _battle_dark_elf, split = true},
+	[_M.FORMATION.DARK_IMP] = {title = "Dark Imps",           f = _battle_dark_imp, split = true},
 	[_M.FORMATION.DRAGOON]  = {title = "Dragoon",             f = _battle_dragoon,  split = true},
 	[_M.FORMATION.FLAMEDOG] = {title = "FlameDog",            f = _battle_flamedog, split = true},
 	[_M.FORMATION.GARGOYLE] = {title = "Gargoyle",            f = _battle_gargoyle, split = false},

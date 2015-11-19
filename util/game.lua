@@ -112,6 +112,7 @@ _M.ITEM = {
 		MAGMA    = 0xF2,
 		SANDRUBY = 0xF0,
 		TENT     = 0xE2,
+		TOWER    = 0xFA,
 	},
 	RING = {
 		RUNE     = 0xAB,

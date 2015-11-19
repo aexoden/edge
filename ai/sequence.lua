@@ -1739,10 +1739,43 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {menu.field.equip.close, {}})
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.KAIN, game.CHARACTER.YANG}})
 	table.insert(_q, {_restore_party, {}})
-	table.insert(_q, {menu.field.close, {}})	
+	table.insert(_q, {menu.field.close, {}})
 
 	-- Advance on Dr.Lugae.
 	table.insert(_q, {walk.walk, {296, 16, 20}})
+end
+
+local function _sequence_dark_imps()
+	-- Walk to the Dark Imps.
+	table.insert(_q, {walk.walk, {296, 16, 25}})
+	table.insert(_q, {walk.walk, {296, 28, 25}})
+	table.insert(_q, {walk.walk, {296, 28, 17}})
+	table.insert(_q, {walk.walk, {296, 29, 17}})
+	table.insert(_q, {walk.walk, {296, 29, 16}})
+	table.insert(_q, {walk.walk, {295, 29, 19}})
+	table.insert(_q, {walk.walk, {295, 26, 19}})
+	table.insert(_q, {walk.walk, {295, 26, 25}})
+	table.insert(_q, {walk.walk, {295, 21, 25}})
+	table.insert(_q, {walk.walk, {295, 21, 14}})
+	table.insert(_q, {walk.walk, {295, 17, 14}})
+	table.insert(_q, {walk.walk, {295, 17, 5}})
+	table.insert(_q, {walk.walk, {295, 14, 5}})
+	table.insert(_q, {walk.walk, {295, 14, 4}})
+	table.insert(_q, {walk.walk, {294, 14, 6}})
+	table.insert(_q, {walk.walk, {294, 25, 6}})
+	table.insert(_q, {walk.walk, {294, 25, 5}})
+	table.insert(_q, {walk.walk, {293, 25, 22}})
+	table.insert(_q, {walk.walk, {293, 23, 22}})
+	table.insert(_q, {walk.walk, {293, 23, 24}})
+	table.insert(_q, {walk.walk, {293, 16, 24}})
+	table.insert(_q, {walk.walk, {293, 16, 10}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.TOWER}})
+	table.insert(_q, {walk.walk, {293, 16, 9}})
+	table.insert(_q, {_restore_party, {nil, true}})
+	table.insert(_q, {walk.walk, {301, 5, 10}})
+
+
 end
 
 local _sequences = {
@@ -1770,6 +1803,7 @@ local _sequences = {
 	{title = "Valvalis",      f = _sequence_valvalis,      map_area = 3, map_id = 157, map_x = 15,  map_y = 17},
 	{title = "Calbrena",      f = _sequence_calbrena,      map_area = 3, map_id = 52,  map_x = 6,   map_y = 4},
 	{title = "Dr.Lugae",      f = _sequence_dr_lugae,      map_area = 3, map_id = 265, map_x = 10,  map_y = 8},
+	{title = "Dark Imps",     f = _sequence_dark_imps,     map_area = 3, map_id = 296, map_x = 16,  map_y = 19},
 }
 
 --------------------------------------------------------------------------------
