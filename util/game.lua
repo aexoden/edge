@@ -86,12 +86,14 @@ _M.ITEM = {
 	ARMOR = {
 		GAEA     = 0x8F,
 		KARATE   = 0x98,
+		PRISONER = 0x96,
 	},
 	ARMS = {
 		IRON     = 0x9C,
 		PALADIN  = 0xA0,
 	},
 	CLAW = {
+		CATCLAW  = 0x06,
 		ICECLAW  = 0x02,
 		THUNDER  = 0x03,
 	},
@@ -112,7 +114,9 @@ _M.ITEM = {
 		TENT     = 0xE2,
 	},
 	RING = {
+		RUNE     = 0xAB,
 		SILVER   = 0xA9,
+		STRENGTH = 0xAA,
 	},
 	SHIELD = {
 		PALADIN  = 0x64,
@@ -133,6 +137,7 @@ _M.ITEM = {
 _M.MAGIC = {
 	BLACK = {
 		PIGGY = 0x1A,
+		WARP  = 0x1B,
 		ICE1  = 0x20,
 		LIT1  = 0x23,
 		LIT3  = 0x25,
@@ -140,6 +145,9 @@ _M.MAGIC = {
 		WEAK  = 0x27,
 		STOP  = 0x2C,
 		METEO = 0x2F,
+	},
+	CALL = {
+		TITAN = 0x39,
 	},
 	WHITE = {
 		MUTE  = 0x02,
@@ -154,8 +162,9 @@ _M.MAGIC = {
 }
 
 _M.STATUS = {
-	PIG   = 0x08000000,
-	STONE = 0x40000000,
+	CRITICAL = 0x00000001,
+	PIG      = 0x08000000,
+	STONE    = 0x40000000,
 }
 
 --------------------------------------------------------------------------------

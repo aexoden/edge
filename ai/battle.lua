@@ -57,6 +57,8 @@ _M.FORMATION = {
 	GARGOYLE = 249,
 	GUARDS   = 250,
 	CALBRENA = 423,
+	LUGAE1   = 425,
+	LUGAE2   = 437,
 	GOLBEZ   = 438,
 	FLAMEDOG = 451,
 }
@@ -110,6 +112,10 @@ end
 
 local function _command_black(spell, target_type, target)
 	_command_magic(menu.battle.COMMAND.BLACK, spell, target_type, target)
+end
+
+local function _command_call(spell, target_type, target)
+	_command_magic(menu.battle.COMMAND.CALL, spell, target_type, target)
 end
 
 local function _command_white(spell, target_type, target)
@@ -279,7 +285,7 @@ local function _battle_calbrena(character, turn)
 		elseif character == game.CHARACTER.KAIN then
 			_command_jump()
 		elseif character == game.CHARACTER.CECIL then
-			if game.character.get_stat(game.CHARACTER.KAIN, "hp") == 0 then
+			if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
 			else
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
@@ -309,7 +315,7 @@ local function _battle_calbrena(character, turn)
 				_command_white(game.MAGIC.WHITE.SLOW, menu.battle.TARGET.ENEMY_ALL)
 			elseif turn == 2 then
 				_command_white(game.MAGIC.WHITE.MUTE, menu.battle.TARGET.PARTY_ALL)
-			elseif game.character.get_stat(game.CHARACTER.CECIL, "hp") < 650 then
+			elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 650 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 			else
 				_command_parry()
@@ -510,6 +516,84 @@ local function _battle_karate(character, turn)
 		_command_fight()
 	else
 		_command_parry()
+	end
+end
+
+local function _battle_lugae1(character, turn)
+	if character == game.CHARACTER.CECIL then
+		if turn == 2 then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 1)
+		else
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 0)
+		end
+	elseif character == game.CHARACTER.KAIN then
+		_command_jump(menu.battle.TARGET.ENEMY, 0)
+	elseif character == game.CHARACTER.ROSA then
+		local index = nil
+
+		for i = 0, 4 do
+			if memory.read_stat(i, "hp", true) < memory.read_stat(i, "hp_max", true) and bit.band(memory.read_stat(i, "status", true), game.STATUS.CRITICAL) == 0 then
+				index = i
+			end
+		end
+
+		if index then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.PARTY, index)
+		elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 650 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGEt.CHARACTER, game.CHARACTER.CECIL)
+		else
+			_command_parry()
+		end
+	elseif character == game.CHARACTER.RYDIA then
+		_command_call(game.MAGIC.CALL.TITAN)
+	else
+		if turn == 2 then
+			_command_fight(menu.battle.TARGET.ENEMY, 0)
+		else
+			_command_fight(menu.battle.TARGET.ENEMY, 1)
+		end
+	end
+end
+
+local function _battle_lugae2(character, turn)
+	if character == game.CHARACTER.CECIL then
+		if game.character.get_stat(game.CHARACTER.ROSA, "hp", true) == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		else
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+		end
+	elseif character == game.CHARACTER.KAIN then
+		_command_jump()
+	elseif character == game.CHARACTER.ROSA then
+		if turn == 1 and not _state.waited then
+			-- TODO: Wait for Laser
+			_command_wait_frames(300)
+			_state.waited = true
+			return true
+		end
+
+		local lowest = {nil, 99999}
+
+		for i = 0, 4 do
+			local hp = memory.read_stat(i, "hp", true)
+
+			if hp == 0 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, i)
+				break
+			elseif hp < memory.read_stat(i, "hp_max", true) and hp < lowest[2] then
+				lowest = {i, hp}
+			end
+		end
+
+		if lowest[1] then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.PARTY, lowest[1])
+		else
+			_command_parry()
+		end
+	elseif character == game.CHARACTER.RYDIA then
+		_command_call(game.MAGIC.CALL.TITAN)
+	elseif character == game.CHARACTER.YANG then
+		_command_fight()
 	end
 end
 
@@ -784,6 +868,8 @@ local _formations = {
 	[_M.FORMATION.GUARDS]   = {title = "Guards",              f = _battle_guards,   split = false},
 	[_M.FORMATION.KAINAZZO] = {title = "Kainazzo",            f = _battle_kainazzo, split = true},
 	[_M.FORMATION.KARATE]   = {title = "Karate",              f = _battle_karate,   split = true},
+	[_M.FORMATION.LUGAE1]   = {title = "Dr.Lugae/Balnab",     f = _battle_lugae1,   split = true},
+	[_M.FORMATION.LUGAE2]   = {title = "Dr.Lugae",            f = _battle_lugae2,   split = true},
 	[_M.FORMATION.MILON]    = {title = "Milon",               f = _battle_milon,    split = true},
 	[_M.FORMATION.MILON_Z]  = {title = "Milon Z.",            f = _battle_milon_z,  split = true},
 	[_M.FORMATION.MOMBOMB]  = {title = "MomBomb",             f = _battle_mombomb,  split = true},

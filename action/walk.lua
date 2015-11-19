@@ -227,23 +227,29 @@ function _M.walk(target_map_id, target_x, target_y, npc_safe)
 		return false
 	end
 
+	local dx = target_x - current_x
+	local dy = target_y - current_y
+
+	-- The current implementation of this function always moves horizontally
+	-- until it is in the same column, and then moves vertically. The NPC safe
+	-- walking code exploits this fact.
 	if npc_safe then
 		for i = 0, 11 do
 			local npc_x = memory.read("npc", "x", i)
 			local npc_y = memory.read("npc", "y", i)
 
+			local npc_dx = target_x - npc_x
+			local npc_dy = target_y - npc_y
+
 			if memory.read("npc", "visible", i) > 0 then
-				if npc_x == current_x and ((npc_y >= current_y and npc_y <= target_y) or (npc_y <= current_y and npc_y >= target_y)) then
+				if npc_y == current_y and ((dx <= 0 and npc_dx <= 0 and npc_dx > dx) or (dx >= 0 and npc_dx >= 0 and npc_dx < dx)) then
 					return false
-				elseif npc_y == current_y and ((npc_x >= current_x and npc_x <= target_x) or (npc_x <= current_x and npc_x >= target_x)) then
+				elseif npc_x == target_x and ((dy <= 0 and npc_dy <= 0 and npc_dy > dy) or (dy >= 0 and npc_dy >= 0 and npc_dy < dy)) then
 					return false
 				end
 			end
 		end
 	end
-
-	local dx = target_x - current_x
-	local dy = target_y - current_y
 
 	if dx > 0 then
 		input.press({"P1 Right"}, input.DELAY.NONE)
