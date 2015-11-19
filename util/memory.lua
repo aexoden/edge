@@ -222,6 +222,7 @@ local _addresses = {
 	},
 	party = {
 		formation           = {f = mainmemory.read_u8,     address = 0x0016A8, record_size = {0x01, 0x01}},
+		formation_battle    = {f = mainmemory.read_u8,     address = 0x00F014, record_size = {0x01, 0x01}},
 		gp                  = {f = mainmemory.read_u24_le, address = 0x0016A0, record_size = {0x01, 0x01}},
 	},
 	walk = {

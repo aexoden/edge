@@ -928,11 +928,13 @@ function _M.battle.target(target, index)
 			index = game.character.get_slot(index) + _M.battle.TARGET.PARTY
 		elseif target == _M.battle.TARGET.PARTY then
 			index = index + _M.battle.TARGET.PARTY
-		elseif target == _M.battle.TARGET.ENEMY and not index then
-			for i = 0, 7 do
-				if _M.battle.is_target_valid(i) then
-					index = i
-					break
+		elseif target == _M.battle.TARGET.ENEMY then
+			if not index or not _M.battle.is_target_valid(index) then
+				for i = 0, 7 do
+					if _M.battle.is_target_valid(i) then
+						index = i
+						break
+					end
 				end
 			end
 		elseif target == _M.battle.TARGET.ENEMY_ALL or target == _M.battle.TARGET.PARTY_ALL then
@@ -942,7 +944,7 @@ function _M.battle.target(target, index)
 		if not index or cursor == index then
 			return input.press({"P1 A"}, input.DELAY.MASH)
 		else
-			if index == _M.battle.TARGET.PARTY_ALL or (cursor < _M.battle.TARGET.PARTY and index >= _M.battle.TARGET.PARTY) then
+			if index == _M.battle.TARGET.PARTY_ALL or (cursor < _M.battle.TARGET.PARTY and index >= _M.battle.TARGET.PARTY and index < _M.battle.TARGET.PARTY_ALL) then
 				input.press(right, input.DELAY.MASH)
 			elseif index == _M.battle.TARGET.ENEMY_ALL or (cursor >= _M.battle.TARGET.PARTY and index < _M.battle.TARGET.PARTY) then
 				input.press(left, input.DELAY.MASH)

@@ -1506,6 +1506,54 @@ local function _sequence_valvalis()
 	table.insert(_q, {walk.walk, {159, 7, 10}})
 end
 
+local function _sequence_calbrena()
+	-- Leave the castle and board the airship.
+	table.insert(_q, {walk.walk, {52, 9, 4}})
+	table.insert(_q, {walk.walk, {51, 5, 4}})
+	table.insert(_q, {walk.walk, {50, 5, 9}})
+	table.insert(_q, {walk.walk, {36, 6, 18}})
+	table.insert(_q, {walk.walk, {36, 8, 18}})
+	table.insert(_q, {walk.walk, {36, 8, 17}})
+	table.insert(_q, {walk.walk, {45, 2, 2}})
+	table.insert(_q, {walk.walk, {36, 12, 13}})
+	table.insert(_q, {walk.walk, {42, 1, 10}})
+	table.insert(_q, {walk.walk, {42, 8, 10}})
+	table.insert(_q, {walk.walk, {42, 8, 15}})
+	table.insert(_q, {walk.walk, {36, 15, 31}})
+	table.insert(_q, {walk.board, {}})
+
+	-- Fly to Agart and use the Magma stone.
+	table.insert(_q, {walk.walk, {nil, 105, 215}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 104, 215}})
+	table.insert(_q, {walk.walk, {6, 16, 22}})
+	table.insert(_q, {walk.walk, {6, 15, 22}})
+	table.insert(_q, {walk.walk, {6, 15, 21}})
+	table.insert(_q, {walk.walk, {139, 9, 10}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.MAGMA}})
+
+	-- Leave Agart and fly to the underground.
+	table.insert(_q, {walk.walk, {139, 9, 14}})
+	table.insert(_q, {walk.walk, {6, 15, 31}})
+	table.insert(_q, {walk.walk, {nil, 105, 215}})
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {nil, 105, 212}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 100, 82}})
+	table.insert(_q, {walk.walk, {263, 15, 19}})
+	table.insert(_q, {walk.walk, {264, 11, 1, true}})
+
+	-- Swap party formation.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.CID, game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.ROSA, game.CHARACTER.CID}})
+	table.insert(_q, {menu.field.close, {}})
+
+	-- Talk to King Giott.
+	table.insert(_q, {walk.walk, {265, 10, 11}})
+end
+
 local _sequences = {
 	{title = "Prologue",      f = _sequence_prologue,      map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",        f = _sequence_d_mist,        map_area = 0, map_id = nil, map_x = 102, map_y = 158},
@@ -1529,6 +1577,7 @@ local _sequences = {
 	{title = "FlameDog",      f = _sequence_flamedog,      map_area = 3, map_id = 148, map_x = 11,  map_y = 12},
 	{title = "Magus Sisters", f = _sequence_magus_sisters, map_area = 3, map_id = 153, map_x = 8,   map_y = 15},
 	{title = "Valvalis",      f = _sequence_valvalis,      map_area = 3, map_id = 157, map_x = 15,  map_y = 17},
+	{title = "Calbrena",      f = _sequence_calbrena,      map_area = 3, map_id = 52,  map_x = 6,   map_y = 4},
 }
 
 --------------------------------------------------------------------------------

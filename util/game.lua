@@ -107,6 +107,7 @@ _M.ITEM = {
 		ETHER1   = 0xD1,
 		HEAL     = 0xDD,
 		LIFE     = 0xD4,
+		MAGMA    = 0xF2,
 		SANDRUBY = 0xF0,
 		TENT     = 0xE2,
 	},
@@ -141,6 +142,7 @@ _M.MAGIC = {
 		METEO = 0x2F,
 	},
 	WHITE = {
+		MUTE  = 0x02,
 		SLOW  = 0x07,
 		CURE1 = 0x0E,
 		CURE2 = 0x0F,

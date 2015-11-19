@@ -56,6 +56,8 @@ _M.FORMATION = {
 	WEEPER   = 248,
 	GARGOYLE = 249,
 	GUARDS   = 250,
+	CALBRENA = 423,
+	GOLBEZ   = 438,
 	FLAMEDOG = 451,
 }
 
@@ -269,6 +271,55 @@ local function _battle_baigan(character, turn)
 	end
 end
 
+local function _battle_calbrena(character, turn)
+	if turn > 1 and game.enemy.get_stat(6, "hp") > 0 then
+		if not _state.changed then
+			_command_change()
+			_state.changed = true
+		elseif character == game.CHARACTER.KAIN then
+			_command_jump()
+		elseif character == game.CHARACTER.CECIL then
+			if game.character.get_stat(game.CHARACTER.KAIN, "hp") == 0 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+			else
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			end
+		else
+			_command_parry()
+		end
+	else
+		if character == game.CHARACTER.CECIL then
+			if turn == 1 then
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 3)
+			elseif turn == 2 then
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 4)
+			elseif turn == 3 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			else
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 5)
+			end
+		elseif character == game.CHARACTER.KAIN then
+			if turn <= 3 then
+				_command_jump(menu.battle.TARGET.ENEMY, turn - 1)
+			else
+				_command_fight()
+			end
+		elseif character == game.CHARACTER.ROSA then
+			if turn == 1 then
+				_command_white(game.MAGIC.WHITE.SLOW, menu.battle.TARGET.ENEMY_ALL)
+			elseif turn == 2 then
+				_command_white(game.MAGIC.WHITE.MUTE, menu.battle.TARGET.PARTY_ALL)
+			elseif game.character.get_stat(game.CHARACTER.CECIL, "hp") < 650 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			else
+				_command_parry()
+			end
+		else
+			_command_kick()
+		end
+	end
+end
+
 local function _battle_d_knight(character, turn)
 	if turn == 3 then
 		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
@@ -406,6 +457,26 @@ local function _battle_girl(character, turn)
 	if character == game.CHARACTER.CECIL then
 		_command_wait_frames(300)
 		_command_change()
+	end
+end
+
+local function _battle_golbez(character, turn)
+	if character == game.CHARACTER.CECIL then
+		if turn == 1 then
+			_command_equip(character, game.ITEM.WEAPON.FIRE)
+			_command_wait_text("Golbez:An")
+		end
+
+		_command_fight()
+	elseif character == game.CHARACTER.KAIN then
+		if turn == 1 then
+			_command_run_buffer()
+			_command_jump()
+		else
+			_command_fight()
+		end
+	else
+		_command_fight()
 	end
 end
 
@@ -700,6 +771,7 @@ end
 local _formations = {
 	[_M.FORMATION.ANTLION]  = {title = "Antlion",             f = _battle_antlion,  split = true},
 	[_M.FORMATION.BAIGAN]   = {title = "Baigan",              f = _battle_baigan,   split = true},
+	[_M.FORMATION.CALBRENA] = {title = "Calbrena",            f = _battle_calbrena, split = true},
 	[_M.FORMATION.D_KNIGHT] = {title = "D.Knight",            f = _battle_d_knight, split = false},
 	[_M.FORMATION.D_MIST]   = {title = "D.Mist",              f = _battle_d_mist,   split = true},
 	[_M.FORMATION.DARK_ELF] = {title = "Dark Elf",            f = _battle_dark_elf, split = true},
@@ -708,6 +780,7 @@ local _formations = {
 	[_M.FORMATION.GARGOYLE] = {title = "Gargoyle",            f = _battle_gargoyle, split = false},
 	[_M.FORMATION.GENERAL]  = {title = "General/Fighters",    f = _battle_general,  split = false},
 	[_M.FORMATION.GIRL]     = {title = "Girl",                f = _battle_girl,     split = true},
+	[_M.FORMATION.GOLBEZ]   = {title = "Golbez",              f = _battle_golbez,   split = true},
 	[_M.FORMATION.GUARDS]   = {title = "Guards",              f = _battle_guards,   split = false},
 	[_M.FORMATION.KAINAZZO] = {title = "Kainazzo",            f = _battle_kainazzo, split = true},
 	[_M.FORMATION.KARATE]   = {title = "Karate",              f = _battle_karate,   split = true},
