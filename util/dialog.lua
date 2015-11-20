@@ -42,6 +42,7 @@ local _splits = {
 	["Palom th"] = {message = "Twins", done = false},
 	["Cecil be"] = {message = "Paladin", done = false},
 	["Ninja Ed"] = {message = "Edge", done = false},
+	[" The Big"] = {message = "Big Whale", done = false},
 }
 
 --------------------------------------------------------------------------------

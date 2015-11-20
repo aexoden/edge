@@ -110,6 +110,7 @@ _M.ITEM = {
 		HEAL     = 0xDD,
 		LIFE     = 0xD4,
 		MAGMA    = 0xF2,
+		RAT      = 0xF6,
 		SANDRUBY = 0xF0,
 		TENT     = 0xE2,
 		TOWER    = 0xFA,

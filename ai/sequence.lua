@@ -2172,6 +2172,67 @@ local function _sequence_dark_crystal()
 	table.insert(_q, {walk.walk, {324, 4, 4}})
 end
 
+local function _sequence_big_whale()
+	-- Visit King Giott.
+	table.insert(_q, {walk.walk, {324, 4, 11}})
+	table.insert(_q, {walk.walk, {nil, 46, 110}})
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {nil, 75, 94}})
+	table.insert(_q, {walk.walk, {nil, 100, 83}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 100, 82}})
+	table.insert(_q, {walk.walk, {263, 15, 19}})
+	table.insert(_q, {walk.walk, {264, 11, 1}})
+	table.insert(_q, {walk.walk, {265, 10, 11}})
+
+	-- Cast Exit, fly to the overworld and go to the Grotto Adamant.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {walk.walk, {nil, 100, 83}})
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {nil, 112, 17}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 36, 237}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 35, 237}})
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {nil, 24, 232}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 211, 132}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 210, 132}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 211, 132}})
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {nil, 211, 134}})
+	table.insert(_q, {walk.walk, {nil, 215, 134}})
+	table.insert(_q, {walk.walk, {nil, 215, 136}})
+	table.insert(_q, {walk.walk, {nil, 218, 136}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 219, 136}})
+
+	-- Collect the Adamant and head to Mysidia.
+	table.insert(_q, {walk.walk, {160, 7, 13}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.RAT}})
+	table.insert(_q, {walk.walk, {160, 7, 21}})
+	table.insert(_q, {walk.walk, {nil, 218, 136}})
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {nil, 214, 136}})
+	table.insert(_q, {walk.walk, {nil, 214, 134}})
+	table.insert(_q, {walk.walk, {nil, 211, 134}})
+	table.insert(_q, {walk.walk, {nil, 211, 132}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 210, 132}})
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {nil, 153, 199}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 154, 199}})
+	table.insert(_q, {walk.walk, {3, 16, 28}})
+end
+
 local _sequences = {
 	{title = "Prologue",      f = _sequence_prologue,      map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",        f = _sequence_d_mist,        map_area = 0, map_id = nil, map_x = 102, map_y = 158},
@@ -2202,6 +2263,7 @@ local _sequences = {
 	{title = "Rubicant",      f = _sequence_rubicant,      map_area = 3, map_id = 202, map_x = 22,  map_y = 6},
 	{title = "Monsters",      f = _sequence_monsters,      map_area = 3, map_id = 172, map_x = 14,  map_y = 17},
 	{title = "Dark Crystal",  f = _sequence_dark_crystal,  map_area = 1, map_id = nil, map_x = 27,  map_y = 87},
+	{title = "Big Whale",     f = _sequence_big_whale,     map_area = 3, map_id = 324, map_x = 4,   map_y = 8},
 }
 
 --------------------------------------------------------------------------------
