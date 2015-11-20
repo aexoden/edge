@@ -2046,6 +2046,132 @@ local function _sequence_rubicant()
 	table.insert(_q, {walk.interact, {"Rubicant:Now"}})
 end
 
+local function _sequence_monsters()
+	-- Exit the Tower of Bab-il.
+	table.insert(_q, {_restore_party, {nil, true}})
+	table.insert(_q, {walk.walk, {172, 14, 15}})
+	table.insert(_q, {walk.walk, {171, 16, 20}})
+	table.insert(_q, {walk.walk, {171, 16, 20}})
+	table.insert(_q, {walk.walk, {285, 6, 21}})
+	table.insert(_q, {walk.walk, {285, 2, 21}})
+	table.insert(_q, {walk.walk, {285, 2, 20}})
+	table.insert(_q, {walk.walk, {286, 7, 21}})
+	table.insert(_q, {walk.walk, {286, 7, 12}})
+	table.insert(_q, {walk.walk, {286, 10, 12}})
+	table.insert(_q, {walk.walk, {286, 10, 4}})
+	table.insert(_q, {walk.walk, {287, 10, 10}})
+	table.insert(_q, {walk.walk, {287, 12, 10}})
+	table.insert(_q, {walk.walk, {287, 12, 11}})
+	table.insert(_q, {walk.walk, {287, 16, 11}})
+	table.insert(_q, {walk.walk, {287, 16, 12}})
+	table.insert(_q, {walk.walk, {287, 19, 12}})
+	table.insert(_q, {walk.walk, {287, 19, 13}})
+	table.insert(_q, {walk.walk, {287, 21, 13}})
+	table.insert(_q, {walk.walk, {287, 21, 27}})
+	table.insert(_q, {walk.walk, {287, 9, 27}})
+	table.insert(_q, {walk.walk, {287, 9, 21}})
+
+	-- Fly to the Castle of Dwarves and get the airship upgraded.
+	table.insert(_q, {walk.walk, {nil, 48, 62}})
+	table.insert(_q, {walk.walk, {nil, 55, 76}})
+	table.insert(_q, {walk.walk, {nil, 86, 82}})
+	table.insert(_q, {walk.walk, {nil, 98, 82}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 99, 82}})
+	table.insert(_q, {walk.walk, {263, 15, 19}})
+	table.insert(_q, {walk.walk, {264, 11, 8, true}})
+	table.insert(_q, {walk.walk, {264, 1, 6, true}})
+	table.insert(_q, {walk.walk, {273, 16, 3, true}})
+	table.insert(_q, {walk.walk, {266, 6, 8}})
+	table.insert(_q, {walk.walk, {266, 6, 7}})
+	table.insert(_q, {walk.walk, {274, 9, 5}})
+	table.insert(_q, {walk.walk, {274, 5, 5}})
+
+	-- Remove the Strength ring from Kain and cast Exit.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+
+	-- Board the airship and fly to just outside the Land of Monsters.
+	table.insert(_q, {walk.walk, {nil, 98, 82}})
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {nil, 27, 87}})
+	table.insert(_q, {walk.interact, {}})
+
+	-- Make a safety save.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.save.save, {1}})
+	table.insert(_q, {menu.field.close, {}})
+end
+
+local function _sequence_dark_crystal()
+	-- Attempt to walk through the Land of Monsters.
+	table.insert(_q, {walk.walk, {nil, 27, 86}})
+	table.insert(_q, {walk.walk, {310, 17, 22}})
+	table.insert(_q, {walk.walk, {310, 11, 22}})
+	table.insert(_q, {walk.walk, {310, 11, 21}})
+	table.insert(_q, {walk.walk, {310, 10, 21}})
+	table.insert(_q, {walk.walk, {310, 10, 14}})
+	table.insert(_q, {walk.walk, {310, 3, 14}})
+	table.insert(_q, {walk.walk, {310, 3, 17}})
+	table.insert(_q, {walk.walk, {311, 4, 23}})
+	table.insert(_q, {walk.walk, {311, 8, 23}})
+	table.insert(_q, {walk.walk, {311, 8, 22}})
+	table.insert(_q, {walk.walk, {311, 9, 22}})
+	table.insert(_q, {walk.walk, {311, 9, 20}})
+	table.insert(_q, {walk.walk, {311, 13, 20}})
+	table.insert(_q, {walk.walk, {311, 13, 19}})
+	table.insert(_q, {walk.walk, {311, 14, 19}})
+	table.insert(_q, {walk.walk, {311, 14, 11}})
+	table.insert(_q, {walk.walk, {311, 20, 11}})
+	table.insert(_q, {walk.walk, {311, 20, 12}})
+	table.insert(_q, {walk.walk, {311, 24, 12}})
+	table.insert(_q, {walk.walk, {311, 24, 13}})
+	table.insert(_q, {walk.walk, {311, 27, 13}})
+	table.insert(_q, {walk.walk, {311, 27, 14}})
+	table.insert(_q, {walk.walk, {311, 28, 14}})
+	table.insert(_q, {walk.walk, {311, 28, 16}})
+	table.insert(_q, {walk.walk, {312, 11, 6}})
+	table.insert(_q, {walk.walk, {312, 4, 6}})
+	table.insert(_q, {walk.walk, {312, 4, 14}})
+	table.insert(_q, {walk.walk, {312, 0, 14}})
+	table.insert(_q, {walk.walk, {312, 0, 26}})
+	table.insert(_q, {walk.walk, {312, 29, 26}})
+	table.insert(_q, {walk.walk, {312, 29, 14}})
+	table.insert(_q, {walk.walk, {312, 18, 14}})
+
+	-- Walk to the Rat tail chest.
+	table.insert(_q, {walk.walk, {314, 9, 14, true}})
+	table.insert(_q, {walk.walk, {314, 9, 11, true}})
+	table.insert(_q, {walk.walk, {314, 4, 5, true}})
+	table.insert(_q, {walk.walk, {314, 6, 4, true}})
+	table.insert(_q, {walk.walk, {314, 7, 3, true}})
+	table.insert(_q, {walk.walk, {314, 14, 4, true}})
+	table.insert(_q, {walk.walk, {316, 28, 12}})
+	table.insert(_q, {walk.walk, {316, 28, 11}})
+	table.insert(_q, {walk.walk, {314, 14, 6}})
+	table.insert(_q, {walk.walk, {314, 20, 6}})
+	table.insert(_q, {walk.walk, {314, 20, 7}})
+	table.insert(_q, {walk.interact, {}})
+
+	-- Cast Exit and head to the Sealed Cave.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {_restore_party, {}})
+	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {walk.walk, {nil, 27, 87}})
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {nil, 46, 110}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 46, 109}})
+	table.insert(_q, {walk.walk, {324, 4, 4}})
+end
+
 local _sequences = {
 	{title = "Prologue",      f = _sequence_prologue,      map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",        f = _sequence_d_mist,        map_area = 0, map_id = nil, map_x = 102, map_y = 158},
@@ -2074,6 +2200,8 @@ local _sequences = {
 	{title = "Dark Imps",     f = _sequence_dark_imps,     map_area = 3, map_id = 296, map_x = 16,  map_y = 19},
 	{title = "Edge",          f = _sequence_edge,          map_area = 3, map_id = 293, map_x = 16,  map_y = 10},
 	{title = "Rubicant",      f = _sequence_rubicant,      map_area = 3, map_id = 202, map_x = 22,  map_y = 6},
+	{title = "Monsters",      f = _sequence_monsters,      map_area = 3, map_id = 172, map_x = 14,  map_y = 17},
+	{title = "Dark Crystal",  f = _sequence_dark_crystal,  map_area = 1, map_id = nil, map_x = 27,  map_y = 87},
 }
 
 --------------------------------------------------------------------------------

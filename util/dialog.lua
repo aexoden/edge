@@ -41,6 +41,7 @@ local _splits = {
 	["Prince E"] = {message = "Edward", done = false},
 	["Palom th"] = {message = "Twins", done = false},
 	["Cecil be"] = {message = "Paladin", done = false},
+	["Ninja Ed"] = {message = "Edge", done = false},
 }
 
 --------------------------------------------------------------------------------

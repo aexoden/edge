@@ -42,7 +42,8 @@ _M.VEHICLE = {
 	CHOCOBO = 1,
 	BLACK_CHOCOBO = 2,
 	HOVERCRAFT = 3,
-	AIRSHIP = 4,
+	ENTERPRISE = 4,
+	FALCON = 5,
 }
 
 --------------------------------------------------------------------------------
@@ -63,7 +64,7 @@ function _M.is_mid_tile()
 		frames = 8
 	elseif vehicle == _M.VEHICLE.BLACK_CHOCOBO then
 		frames = 4
-	elseif vehicle == _M.VEHICLE.AIRSHIP then
+	elseif vehicle == _M.VEHICLE.ENTERPRISE or vehicle == _M.VEHICLE.FALCON then
 		frames = 2
 	end
 
