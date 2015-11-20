@@ -2233,6 +2233,116 @@ local function _sequence_big_whale()
 	table.insert(_q, {walk.walk, {3, 16, 28}})
 end
 
+local function _sequence_fusoya()
+	-- Get the Excalbur.
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {nil, 106, 211}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 106, 122}})
+	table.insert(_q, {walk.walk, {nil, 104, 122}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 104, 123}})
+	table.insert(_q, {walk.walk, {256, 6, 6}})
+	table.insert(_q, {walk.walk, {258, 11, 14}})
+	table.insert(_q, {walk.walk, {258, 11, 11}})
+	table.insert(_q, {walk.walk, {258, 14, 11}})
+	table.insert(_q, {walk.walk, {258, 14, 5}})
+	table.insert(_q, {walk.walk, {259, 3, 4}})
+	table.insert(_q, {walk.walk, {259, 3, 5}})
+	table.insert(_q, {walk.walk, {259, 2, 5}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.ADAMANT}})
+	table.insert(_q, {walk.walk, {259, 2, 4}})
+	table.insert(_q, {walk.walk, {259, 9, 4}})
+	table.insert(_q, {walk.walk, {258, 14, 10}})
+	table.insert(_q, {walk.walk, {258, 11, 10}})
+	table.insert(_q, {walk.walk, {258, 11, 9}})
+	table.insert(_q, {walk.walk, {258, 7, 9}})
+	table.insert(_q, {walk.step, {walk.DIRECTION.DOWN}})
+	table.insert(_q, {walk.interact, {}})
+
+	-- Return to the overworld and board the Big Whale.
+	table.insert(_q, {walk.walk, {258, 11, 9}})
+	table.insert(_q, {walk.walk, {258, 11, 14}})
+	table.insert(_q, {walk.walk, {258, 7, 14}})
+	table.insert(_q, {walk.walk, {258, 7, 17}})
+	table.insert(_q, {walk.walk, {256, 6, 12}})
+	table.insert(_q, {walk.walk, {nil, 104, 122}})
+	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {walk.walk, {nil, 112, 17}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 149, 199}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 150, 199}})
+	table.insert(_q, {walk.interact, {}})
+
+	-- Fly to the Moon and head to the Hummingway Cave.
+	table.insert(_q, {walk.walk, {303, 7, 13}})
+	table.insert(_q, {walk.walk, {303, 7, 11}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 33, 40}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {303, 5, 7}})
+	table.insert(_q, {walk.walk, {303, 5, 13}})
+	table.insert(_q, {walk.walk, {303, 2, 13}})
+	table.insert(_q, {walk.walk, {nil, 33, 39}})
+
+	-- Catch the shop NPC and purchase Elixirs.
+	table.insert(_q, {walk.chase, {357, {8}}})
+	table.insert(_q, {menu.shop.buy.open, {55}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.ELIXIR}})
+	table.insert(_q, {menu.shop.buy.close, {}})
+	table.insert(_q, {menu.shop.close, {}})
+
+	-- Leave the cave, board the Big Whale, and head to the Lunar Path.
+	table.insert(_q, {walk.walk, {357, 10, 17}})
+	table.insert(_q, {walk.walk, {nil, 33, 40}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {303, 5, 13}})
+	table.insert(_q, {walk.walk, {303, 5, 7}})
+	table.insert(_q, {walk.walk, {303, 7, 7}})
+	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {nil, 21, 19}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {303, 5, 7}})
+	table.insert(_q, {walk.walk, {303, 5, 13}})
+	table.insert(_q, {walk.walk, {303, 2, 13}})
+
+	-- Walk to the Crystal Palace.
+	table.insert(_q, {walk.walk, {nil, 21, 21}})
+	table.insert(_q, {walk.walk, {nil, 18, 21}})
+	table.insert(_q, {walk.walk, {nil, 18, 20}})
+	table.insert(_q, {walk.walk, {355, 12, 29}})
+	table.insert(_q, {walk.walk, {355, 14, 29}})
+	table.insert(_q, {walk.walk, {355, 14, 23}})
+	table.insert(_q, {walk.walk, {355, 11, 23}})
+	table.insert(_q, {walk.walk, {355, 11, 15}})
+	table.insert(_q, {walk.walk, {355, 14, 15}})
+	table.insert(_q, {walk.walk, {355, 14, 10}})
+	table.insert(_q, {walk.walk, {355, 19, 10}})
+	table.insert(_q, {walk.walk, {355, 19, 4}})
+	table.insert(_q, {walk.walk, {nil, 23, 15}})
+	table.insert(_q, {walk.walk, {nil, 23, 14}})
+	table.insert(_q, {walk.walk, {nil, 33, 14}})
+	table.insert(_q, {walk.walk, {nil, 33, 16}})
+	table.insert(_q, {walk.walk, {nil, 37, 16}})
+	table.insert(_q, {walk.walk, {nil, 37, 25}})
+	table.insert(_q, {walk.walk, {nil, 41, 25}})
+	table.insert(_q, {walk.walk, {nil, 41, 24}})
+	table.insert(_q, {walk.walk, {356, 14, 6}})
+	table.insert(_q, {walk.walk, {356, 14, 19}})
+	table.insert(_q, {walk.walk, {356, 9, 19}})
+	table.insert(_q, {walk.walk, {356, 9, 26}})
+	table.insert(_q, {walk.walk, {nil, 37, 29}})
+	table.insert(_q, {walk.walk, {nil, 37, 30}})
+	table.insert(_q, {walk.walk, {nil, 33, 30}})
+	table.insert(_q, {walk.walk, {nil, 33, 28}})
+	table.insert(_q, {walk.walk, {nil, 28, 28}})
+	table.insert(_q, {walk.walk, {nil, 28, 25}})
+	table.insert(_q, {walk.walk, {352, 16, 21}})
+end
+
 local _sequences = {
 	{title = "Prologue",      f = _sequence_prologue,      map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",        f = _sequence_d_mist,        map_area = 0, map_id = nil, map_x = 102, map_y = 158},
@@ -2264,6 +2374,7 @@ local _sequences = {
 	{title = "Monsters",      f = _sequence_monsters,      map_area = 3, map_id = 172, map_x = 14,  map_y = 17},
 	{title = "Dark Crystal",  f = _sequence_dark_crystal,  map_area = 1, map_id = nil, map_x = 27,  map_y = 87},
 	{title = "Big Whale",     f = _sequence_big_whale,     map_area = 3, map_id = 324, map_x = 4,   map_y = 8},
+	{title = "FuSoYa",        f = _sequence_fusoya,        map_area = 0, map_id = nil, map_x = 153, map_y = 199},
 }
 
 --------------------------------------------------------------------------------

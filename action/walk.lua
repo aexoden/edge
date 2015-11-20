@@ -44,6 +44,7 @@ _M.VEHICLE = {
 	HOVERCRAFT = 3,
 	ENTERPRISE = 4,
 	FALCON = 5,
+	BIG_WHALE = 6,
 }
 
 --------------------------------------------------------------------------------
@@ -64,7 +65,7 @@ function _M.is_mid_tile()
 		frames = 8
 	elseif vehicle == _M.VEHICLE.BLACK_CHOCOBO then
 		frames = 4
-	elseif vehicle == _M.VEHICLE.ENTERPRISE or vehicle == _M.VEHICLE.FALCON then
+	elseif vehicle >= _M.VEHICLE.ENTERPRISE then
 		frames = 2
 	end
 
@@ -132,7 +133,7 @@ function _M.chase(target_map_id, npcs, shop)
 	local current_y = memory.read("walk", "y")
 	local current_direction = memory.read("walk", "direction")
 
-	if memory.read("dialog", "height") > 0 then
+	if memory.read("dialog", "height") > 0 or memory.read("menu", "state") > 0 then
 		return true
 	end
 

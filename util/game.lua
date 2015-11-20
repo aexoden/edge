@@ -104,8 +104,10 @@ _M.ITEM = {
 		TIARA    = 0x7B,
 	},
 	ITEM = {
+		ADAMANT  = 0xF7,
 		BARON    = 0xEF,
 		CURE2    = 0xCF,
+		ELIXIR   = 0xD3,
 		ETHER1   = 0xD1,
 		HEAL     = 0xDD,
 		LIFE     = 0xD4,
