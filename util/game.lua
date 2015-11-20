@@ -120,15 +120,18 @@ _M.ITEM = {
 		STRENGTH = 0xAA,
 	},
 	SHIELD = {
+		ICE      = 0x67,
 		PALADIN  = 0x64,
 		SHADOW   = 0x62,
 	},
 	WEAPON = {
 		BLACK    = 0x18,
+		BLIZZARD = 0x26,
 		CHANGE   = 0x0B,
 		DANCING  = 0x3C,
 		DARKNESS = 0x17,
 		FIRE     = 0x1C,
+		ICEBRAND = 0x1D,
 		LEGEND   = 0x19,
 		STAFF    = 0x0F,
 		THUNDER  = 0x0A,
