@@ -22,6 +22,7 @@
 
 local _M = {}
 
+local dialog = require "util.dialog"
 local input = require "util.input"
 local memory = require "util.memory"
 
@@ -206,12 +207,22 @@ function _M.chase(target_map_id, npcs, shop)
 	return false
 end
 
-function _M.interact()
+function _M.interact(dialog_text)
+	if dialog_text and dialog.get_text(#dialog_text) == dialog_text then
+		return true
+	end
+
 	if _M.is_mid_tile() or not _M.is_ready() then
 		return false
 	end
 
-	return input.press({"P1 A"}, input.DELAY.MASH)
+	local result = input.press({"P1 A"}, input.DELAY.MASH)
+
+	if dialog_text then
+		return false
+	else
+		return result
+	end
 end
 
 function _M.walk(target_map_id, target_x, target_y, npc_safe)

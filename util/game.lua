@@ -143,6 +143,7 @@ _M.MAGIC = {
 		PIGGY = 0x1A,
 		WARP  = 0x1B,
 		ICE1  = 0x20,
+		ICE2  = 0x21,
 		LIT1  = 0x23,
 		LIT3  = 0x25,
 		VIRUS = 0x26,
@@ -151,7 +152,11 @@ _M.MAGIC = {
 		METEO = 0x2F,
 	},
 	CALL = {
+		SHIVA = 0x36,
 		TITAN = 0x39,
+	},
+	NINJA = {
+		FLOOD = 0x43,
 	},
 	WHITE = {
 		MUTE  = 0x02,

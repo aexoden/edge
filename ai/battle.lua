@@ -56,6 +56,8 @@ _M.FORMATION = {
 	WEEPER   = 248,
 	GARGOYLE = 249,
 	GUARDS   = 250,
+	EBLAN    = 254,
+	RUBICANT = 255,
 	DARK_IMP = 256,
 	CALBRENA = 423,
 	LUGAE1   = 425,
@@ -121,6 +123,10 @@ end
 
 local function _command_white(spell, target_type, target)
 	_command_magic(menu.battle.COMMAND.WHITE, spell, target_type, target)
+end
+
+local function _command_ninja(spell, target_type, target)
+	_command_magic(menu.battle.COMMAND.NINJA, spell, target_type, target)
 end
 
 local function _command_change()
@@ -419,6 +425,23 @@ end
 
 local function _battle_dragoon(character, turn)
 	_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+end
+
+local function _battle_eblan(character, turn)
+	if character == game.CHARACTER.KAIN and turn == 1 then
+		_command_equip(character, game.ITEM.WEAPON.BLIZZARD)
+		_command_parry()
+	elseif character == game.CHARACTER.CECIL and turn == 1 then
+		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.SHIELD.ICE}})
+		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.L_HAND, input.DELAY.MASH}})
+		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND, input.DELAY.MASH}})
+		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.WEAPON.ICEBRAND}})
+		table.insert(_state.q, {menu.battle.item.close, {}})
+		_command_parry()
+	elseif turn == 1 then
+		_command_parry()
+	end
 end
 
 local function _battle_flamedog(character, turn)
@@ -756,6 +779,36 @@ local function _battle_officer(character, turn)
 	end
 end
 
+local function _battle_rubicant(character, turn)
+	if character == game.CHARACTER.CECIL then
+		_command_fight()
+	elseif character == game.CHARACTER.EDGE then
+		if game.character.get_stat(game.CHARACTER.EDGE, "mp", true) >= 20 then
+			_command_ninja(game.MAGIC.NINJA.FLOOD)
+		else
+			_command_parry()
+		end
+	elseif character == game.CHARACTER.KAIN then
+		if turn == 1 then
+			_command_run_buffer()
+		end
+
+		_command_jump()
+	elseif character == game.CHARACTER.ROSA then
+		if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		else
+			_command_parry()
+		end
+	elseif character == game.CHARACTER.RYDIA then
+		if turn == 1 then
+			_command_black(game.MAGIC.BLACK.ICE2)
+		else
+			_command_call(game.MAGIC.CALL.SHIVA)
+		end
+	end
+end
+
 local function _battle_sisters(character, turn)
 	local fight_yang = game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 and game.character.get_stat(game.CHARACTER.KAIN, "exp") < 17154
 
@@ -870,6 +923,7 @@ local _formations = {
 	[_M.FORMATION.DARK_ELF] = {title = "Dark Elf",            f = _battle_dark_elf, split = true},
 	[_M.FORMATION.DARK_IMP] = {title = "Dark Imps",           f = _battle_dark_imp, split = true},
 	[_M.FORMATION.DRAGOON]  = {title = "Dragoon",             f = _battle_dragoon,  split = true},
+	[_M.FORMATION.EBLAN]    = {title = "K.Eblan/Q.Eblan",     f = _battle_eblan,    split = true},
 	[_M.FORMATION.FLAMEDOG] = {title = "FlameDog",            f = _battle_flamedog, split = true},
 	[_M.FORMATION.GARGOYLE] = {title = "Gargoyle",            f = _battle_gargoyle, split = false},
 	[_M.FORMATION.GENERAL]  = {title = "General/Fighters",    f = _battle_general,  split = false},
@@ -885,6 +939,7 @@ local _formations = {
 	[_M.FORMATION.MOMBOMB]  = {title = "MomBomb",             f = _battle_mombomb,  split = true},
 	[_M.FORMATION.OCTOMAMM] = {title = "Octomamm",            f = _battle_octomamm, split = true},
 	[_M.FORMATION.OFFICER]  = {title = "Officer/Soldiers",    f = _battle_officer,  split = true},
+	[_M.FORMATION.RUBICANT] = {title = "Rubicant",            f = _battle_rubicant, split = true},
 	[_M.FORMATION.SISTERS]  = {title = "Magus Sisters",       f = _battle_sisters,  split = true},
 	[_M.FORMATION.VALVALIS] = {title = "Valvalis",            f = _battle_valvalis, split = true},
 	[_M.FORMATION.WATERHAG] = {title = "WaterHag",            f = _battle_waterhag, split = true},
