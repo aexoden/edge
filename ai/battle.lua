@@ -37,6 +37,7 @@ local sequence = require "ai.sequence"
 
 _M.FORMATION = {
 	GRIND    = 200,
+	ELEMENTS = 220,
 	D_MIST   = 222,
 	OCTOMAMM = 223,
 	ANTLION  = 224,
@@ -138,6 +139,12 @@ end
 local function _command_cover(target)
 	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.COVER}})
 	table.insert(_state.q, {menu.battle.target, {menu.battle.TARGET.CHARACTER, target}})
+end
+
+local function _command_dart(item, target_type, target)
+	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.DART}})
+	table.insert(_state.q, {menu.battle.item.select, {item}})
+	table.insert(_state.q, {menu.battle.target, {target_type, target}})
 end
 
 local function _command_duplicate(hand, single)
@@ -451,6 +458,52 @@ local function _battle_eblan(character, turn)
 	end
 end
 
+local function _battle_elements(character, turn)
+	local weakest = {nil, 99999}
+
+	for i = 0, 4 do
+		local character = game.character.get_character(i)
+
+		if character ~= game.CHARACTER.ROSA and character ~= game.CHARACTER.RYDIA then
+			local hp = game.character.get_stat(character, "hp", true)
+
+			if hp < weakest[2] then
+				weakest = {i, hp}
+			end
+		end
+	end
+
+	if character == game.CHARACTER.CECIL then
+		if turn == 1 then
+			_command_cover(game.CHARACTER.ROSA)
+		else
+			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.PARTY, weakest[1])
+		end
+	elseif character == game.CHARACTER.EDGE then
+		if turn == 5 then
+			_command_wait_text(" Ice-3")
+		end
+
+		_command_dart(game.ITEM.WEAPON.EXCALBUR)
+	elseif character == game.CHARACTER.FUSOYA then
+		if turn == 1 then
+			_command_black(game.MAGIC.BLACK.FIRE3)
+		elseif turn == 2 then
+			_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+		else
+			_command_black(game.MAGIC.BLACK.ICE3, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+		end
+	elseif character == game.CHARACTER.ROSA then
+		if turn == 1 then
+			_command_white(game.MAGIC.WHITE.SLOW)
+		else
+			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+		end
+	elseif character == game.CHARACTER.RYDIA then
+		_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+	end
+end
+
 local function _battle_flamedog(character, turn)
 	if character == game.CHARACTER.TELLAH then
 		_command_black(game.MAGIC.BLACK.ICE1)
@@ -573,24 +626,18 @@ local function _battle_grind(character, turn)
 		-- Change phases on FuSoYa's turn or at the end of the cycle if he's dead.
 		if _state.phase == PHASE.SETUP and _state.character_index == 0 and _state.setup_complete then
 			_state.phase = PHASE.GRIND
-			print("Changing to Grind")
 		elseif _state.phase == PHASE.GRIND and (weakest[2] == 0 or fusoya_hp <= 760) then
 			_state.phase = PHASE.HEAL
 			_state.dragon_hp = dragon_hp
 			_state.waited = nil
-			print("Changing to heal")
 		elseif _state.phase == PHASE.HEAL and _state.character_index == 4 and _state.cured and _state.casted then
 			_state.cured = nil
 			_state.casted = nil
 			_state.phase = PHASE.GRIND
-			print("Changing to Grind")
 		elseif _state.phase == PHASE.GRIND and _state.character_index == 4 and dragon_hp == 0 and dragon_kills >= 15 then
 			_state.waited = nil
 			_state.phase = PHASE.END
-			print("Changing to end")
 		end
-
-		print(_state.character_index, dragon_hp, _state.dragon_hp, _state.phase)
 
 		if _state.phase == PHASE.SETUP then
 			local type = game.battle.get_type()
@@ -672,12 +719,18 @@ local function _battle_grind(character, turn)
 				end
 			end
 		elseif _state.phase == PHASE.HEAL then
+			if _state.dragon_character and game.get_stat(_state.dragon_character, "hp", true) == 0 then
+				_state.dragon_hp = _state.dragon_hp + 1
+			end
+
 			if dragon_hp > 0 and dragon_hp < 50 and dragon_hp < _state.dragon_hp then
 				_command_fight()
 				_state.dragon_hp = dragon_hp
+				_state.dragon_character = character
 			elseif dragon_hp > 50 and character == game.CHARACTER.FUSOYA then
 				_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1)
 				_state.dragon_hp = dragon_hp
+				_state.dragon_character = character
 			elseif dragon_hp > 0 and fusoya_hp == 0 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 			elseif dragon_hp > 0 and fusoya_hp < 1000 then
@@ -1172,6 +1225,7 @@ local _formations = {
 	[_M.FORMATION.DARK_IMP] = {title = "Dark Imps",           f = _battle_dark_imp, split = true},
 	[_M.FORMATION.DRAGOON]  = {title = "Dragoon",             f = _battle_dragoon,  split = true},
 	[_M.FORMATION.EBLAN]    = {title = "K.Eblan/Q.Eblan",     f = _battle_eblan,    split = true},
+	[_M.FORMATION.ELEMENTS] = {title = "Elements",            f = _battle_elements, split = true},
 	[_M.FORMATION.FLAMEDOG] = {title = "FlameDog",            f = _battle_flamedog, split = true},
 	[_M.FORMATION.GARGOYLE] = {title = "Gargoyle",            f = _battle_gargoyle, split = false},
 	[_M.FORMATION.GENERAL]  = {title = "General/Fighters",    f = _battle_general,  split = false},

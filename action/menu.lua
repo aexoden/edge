@@ -484,7 +484,10 @@ end
 
 function _M.field.item.select(item, index)
 	local cursor = _M.field.item.get_cursor()
-	local index = game.item.get_index(item, index)
+
+	if item then
+		index = game.item.get_index(item, index)
+	end
 
 	if cursor then
 		if cursor == index then
@@ -1080,7 +1083,7 @@ function _M.battle.item.select(item, index)
 	local index = game.item.get_index(item, index, game.INVENTORY.BATTLE)
 
 	if _M.battle.is_open() then
-		if _state.item_selected ~= nil and memory.read("battle_menu", "item_selected") ~= _state.item_selected then
+		if _M.battle.is_target() or (_state.item_selected ~= nil and memory.read("battle_menu", "item_selected") ~= _state.item_selected) then
 			_state.item_selected = nil
 			return true
 		elseif menu == _M.battle.MENU.EQUIP then
