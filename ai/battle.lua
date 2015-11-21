@@ -23,6 +23,7 @@
 local _M = {}
 
 local bridge = require "util.bridge"
+local dialog = require "util.dialog"
 local game = require "util.game"
 local input = require "util.input"
 local log = require "util.log"
@@ -35,6 +36,7 @@ local sequence = require "ai.sequence"
 --------------------------------------------------------------------------------
 
 _M.FORMATION = {
+	GRIND    = 200,
 	D_MIST   = 222,
 	OCTOMAMM = 223,
 	ANTLION  = 224,
@@ -107,26 +109,26 @@ local function _command_aim(target_type, target)
 	table.insert(_state.q, {menu.battle.target, {target_type, target}})
 end
 
-local function _command_magic(type, spell, target_type, target)
+local function _command_magic(type, spell, target_type, target, wait)
 	table.insert(_state.q, {menu.battle.command.select, {type}})
 	table.insert(_state.q, {menu.battle.magic.select, {spell}})
-	table.insert(_state.q, {menu.battle.target, {target_type, target}})
+	table.insert(_state.q, {menu.battle.target, {target_type, target, wait}})
 end
 
-local function _command_black(spell, target_type, target)
-	_command_magic(menu.battle.COMMAND.BLACK, spell, target_type, target)
+local function _command_black(spell, target_type, target, wait)
+	_command_magic(menu.battle.COMMAND.BLACK, spell, target_type, target, wait)
 end
 
-local function _command_call(spell, target_type, target)
-	_command_magic(menu.battle.COMMAND.CALL, spell, target_type, target)
+local function _command_call(spell, target_type, target, wait)
+	_command_magic(menu.battle.COMMAND.CALL, spell, target_type, target, wait)
 end
 
-local function _command_white(spell, target_type, target)
-	_command_magic(menu.battle.COMMAND.WHITE, spell, target_type, target)
+local function _command_white(spell, target_type, target, wait)
+	_command_magic(menu.battle.COMMAND.WHITE, spell, target_type, target, wait)
 end
 
 local function _command_ninja(spell, target_type, target)
-	_command_magic(menu.battle.COMMAND.NINJA, spell, target_type, target)
+	_command_magic(menu.battle.COMMAND.NINJA, spell, target_type, target, wait)
 end
 
 local function _command_change()
@@ -183,6 +185,11 @@ local function _command_parry()
 	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.PARRY}})
 end
 
+local function _command_run()
+	table.insert(_state.q, {input.press, {{"P1 L", "P1 R"}, input.DELAY.NONE}})
+	return true
+end
+
 local function _command_run_buffer()
 	table.insert(_state.q, {menu.battle.run_buffer, {}})
 end
@@ -218,8 +225,8 @@ local function _command_wait_frames(frames)
 	table.insert(_state.q, {menu.wait, {frames}})
 end
 
-local function _command_wait_text(text)
-	table.insert(_state.q, {menu.battle.dialog.wait, {text}})
+local function _command_wait_text(text, limit)
+	table.insert(_state.q, {menu.battle.dialog.wait, {text, limit}})
 end
 
 --------------------------------------------------------------------------------
@@ -515,6 +522,247 @@ local function _battle_golbez(character, turn)
 		end
 	else
 		_command_fight()
+	end
+end
+
+local function _battle_grind(character, turn)
+	if game.character.get_stat(game.CHARACTER.EDGE, "level", true) > 45 then
+		return _command_run()
+	else
+		local PHASE = {
+			SETUP = 0,
+			GRIND = 1,
+			HEAL  = 2,
+			END   = 3,
+		}
+
+		-- Initialization on first run
+		if not _state.phase then
+			_state.phase = PHASE.SETUP
+			_state.last_character = nil
+
+			if character == game.CHARACTER.EDGE then
+				_state.character_index = -2
+			else
+				_state.character_index = -1
+			end
+		end
+
+		-- Set the character index, resetting each time we reach FuSoYa.
+		if character == game.CHARACTER.FUSOYA then
+			_state.character_index = 0
+		elseif not _state.waited then
+			_state.character_index = _state.character_index + 1
+		end
+
+		-- Read various useful memory values.
+		local dragon_kills = memory.read("enemy", "kills", 1)
+		local dragon_hp = game.enemy.get_stat(1, "hp")
+		local fusoya_hp = game.character.get_stat(game.CHARACTER.FUSOYA, "hp", true)
+
+		local weakest = {nil, 99999}
+
+		for i = 0, 4 do
+			local hp = memory.read_stat(i, "hp", true)
+
+			if hp < memory.read_stat(i, "hp_max", true) and hp < weakest[2] then
+				weakest = {i, hp}
+			end
+		end
+
+		-- Change phases on FuSoYa's turn or at the end of the cycle if he's dead.
+		if _state.phase == PHASE.SETUP and _state.character_index == 0 and _state.setup_complete then
+			_state.phase = PHASE.GRIND
+			print("Changing to Grind")
+		elseif _state.phase == PHASE.GRIND and (weakest[2] == 0 or fusoya_hp <= 760) then
+			_state.phase = PHASE.HEAL
+			_state.dragon_hp = dragon_hp
+			_state.waited = nil
+			print("Changing to heal")
+		elseif _state.phase == PHASE.HEAL and _state.character_index == 4 and _state.cured and _state.casted then
+			_state.cured = nil
+			_state.casted = nil
+			_state.phase = PHASE.GRIND
+			print("Changing to Grind")
+		elseif _state.phase == PHASE.GRIND and _state.character_index == 4 and dragon_hp == 0 and dragon_kills >= 15 then
+			_state.waited = nil
+			_state.phase = PHASE.END
+			print("Changing to end")
+		end
+
+		print(_state.character_index, dragon_hp, _state.dragon_hp, _state.phase)
+
+		if _state.phase == PHASE.SETUP then
+			local type = game.battle.get_type()
+
+			if type == game.battle.TYPE.NORMAL then
+				if character == game.CHARACTER.FUSOYA then
+					_command_black(game.MAGIC.BLACK.QUAKE)
+				elseif character == game.CHARACTER.RYDIA then
+					_command_wait_text(" Quake")
+					_command_parry()
+					_state.setup_complete = true
+				else
+					_command_parry()
+				end
+			elseif type == game.battle.TYPE.SURPRISED or type == game.battle.TYPE.BACK_ATTACK then
+				if character == game.CHARACTER.EDGE and turn == 1 then
+					_command_ninja(game.MAGIC.NINJA.FLOOD)
+				elseif character == game.CHARACTER.FUSOYA then
+					_command_wait_text("Flood ")
+					_command_black(game.MAGIC.BLACK.QUAKE)
+				elseif character == game.CHARACTER.RYDIA then
+					_command_wait_text(" Quake")
+					_command_parry()
+					_state.setup_complete = true
+				else
+					_command_parry()
+				end
+			elseif type == game.battle.TYPE.STRIKE_FIRST then
+				if character == game.CHARACTER.FUSOYA then
+					if turn == 1 then
+						_command_black(game.MAGIC.BLACK.LIT3, 3)
+					elseif turn == 2 then
+						_command_black(game.MAGIC.BLACK.QUAKE)
+					end
+				elseif character == game.CHARACTER.RYDIA then
+					if turn == 1 then
+						_command_wait_text(" Lit-3")
+						_command_parry()
+					elseif turn == 2 then
+						_command_wait_text(" Quake")
+						_command_parry()
+						_state.setup_complete = true
+					end
+				else
+					_command_parry()
+				end
+			end
+		elseif _state.phase == PHASE.GRIND then
+			if _state.character_index == 0 then
+				-- TODO: What if no dragon is coming?
+				_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1, true)
+			elseif _state.character_index == 1 then
+				_command_wait_text(" ..Id", 15)
+				_command_fight()
+			elseif _state.character_index == 2 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.ENEMY, 1)
+			elseif _state.character_index == 3 then
+				if dragon_hp > 50 and dragon_hp < 15000 then
+					_command_fight()
+				else
+					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.ENEMY, 1)
+				end
+			elseif _state.character_index == 4 then
+				if _state.waited then
+					_command_fight()
+					_state.waited = nil
+				else
+					_command_wait_text("Life", 60)
+					_state.waited = true
+					return true
+				end
+			else
+				if dragon_hp > 0 and dragon_hp < 50 then
+					_command_fight()
+				elseif dragon_hp > 0 and fusoya_hp == 0 then
+					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+				else
+					_command_parry()
+				end
+			end
+		elseif _state.phase == PHASE.HEAL then
+			if dragon_hp > 0 and dragon_hp < 50 and dragon_hp < _state.dragon_hp then
+				_command_fight()
+				_state.dragon_hp = dragon_hp
+			elseif dragon_hp > 50 and character == game.CHARACTER.FUSOYA then
+				_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1)
+				_state.dragon_hp = dragon_hp
+			elseif dragon_hp > 0 and fusoya_hp == 0 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+			elseif dragon_hp > 0 and fusoya_hp < 1000 then
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+			elseif game.character.get_stat(game.CHARACTER.FUSOYA, "mp") < 100 then
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+			elseif game.enemy.get_stat(0, "hp") < 600 then
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.ENEMY, 0)
+			elseif weakest[1] and weakest[2] == 0 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, weakest[1])
+			elseif character == game.CHARACTER.FUSOYA and not _state.casted then
+				_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.PARTY_ALL)
+				_state.casted = true
+			elseif not _state.cured then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+				_state.cured = true
+			else
+				_command_parry()
+			end
+		elseif _state.phase == PHASE.END then
+			local strongest = {nil, 0}
+
+			for i = 0, 4 do
+				if game.character.get_character(i) ~= game.CHARACTER.EDGE then
+					local hp = memory.read_stat(i, "hp", true)
+
+					if hp > strongest[2] then
+						strongest = {i, hp}
+					end
+				end
+			end
+
+			if _state.waited then
+				if not _state.revived and weakest[1] and weakest[2] == 0 then
+					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, weakest[1])
+				else
+					_state.revived = true
+
+					if character == game.CHARACTER.CECIL then
+						if not _state.duplicated then
+							_command_duplicate(game.EQUIP.R_HAND)
+							_state.duplicated = true
+						end
+
+						_command_parry()
+					elseif character == game.CHARACTER.EDGE then
+						if strongest[1] and (_state.virus or strongest[2] > 400) then
+							_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
+						else
+							_command_equip(character, game.ITEM.CLAW.CATCLAW)
+							_command_fight()
+						end
+					elseif character == game.CHARACTER.FUSOYA then
+						if game.enemy.get_stat(0, "hp") > 50 then
+							_command_black(game.MAGIC.BLACK.WEAK)
+						elseif _state.duplicated then
+							_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.PARTY_ALL)
+							_state.virus = true
+						else
+							_command_parry()
+						end
+					elseif character == game.CHARACTER.ROSA then
+						if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) < 600 then
+							_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+						else
+							_command_parry()
+						end
+					elseif character == game.CHARACTER.RYDIA then
+						if strongest[1] and strongest[2] > 400 then
+							_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
+						else
+							_command_parry()
+						end
+					end
+				end
+
+				_state.waited = nil
+			else
+				_command_wait_frames(60)
+				_state.waited = true
+				return true
+			end
+		end
+
+		_state.last_character = character
 	end
 end
 
@@ -929,6 +1177,7 @@ local _formations = {
 	[_M.FORMATION.GENERAL]  = {title = "General/Fighters",    f = _battle_general,  split = false},
 	[_M.FORMATION.GIRL]     = {title = "Girl",                f = _battle_girl,     split = true},
 	[_M.FORMATION.GOLBEZ]   = {title = "Golbez",              f = _battle_golbez,   split = true},
+	[_M.FORMATION.GRIND]    = {title = "Grind Fight",         f = _battle_grind,    split = true},
 	[_M.FORMATION.GUARDS]   = {title = "Guards",              f = _battle_guards,   split = false},
 	[_M.FORMATION.KAINAZZO] = {title = "Kainazzo",            f = _battle_kainazzo, split = true},
 	[_M.FORMATION.KARATE]   = {title = "Karate",              f = _battle_karate,   split = true},

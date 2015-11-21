@@ -912,7 +912,7 @@ end
 -- Battle Menu External Functions
 --------------------------------------------------------------------------------
 
-function _M.battle.target(target, index)
+function _M.battle.target(target, index, wait)
 	if _M.battle.is_open() and _M.battle.is_target() then
 		local cursor = memory.read("battle_menu", "target")
 
@@ -922,6 +922,10 @@ function _M.battle.target(target, index)
 		if game.battle.get_type() == game.battle.TYPE.BACK_ATTACK then
 			left = {"P1 Right"}
 			right = {"P1 Left"}
+		end
+
+		if wait and not _M.battle.is_target_valid(index) then
+			return false
 		end
 
 		if target == _M.battle.TARGET.CHARACTER then
@@ -1115,8 +1119,19 @@ function _M.battle.magic.select(spell)
 	return false
 end
 
-function _M.battle.dialog.wait(text)
-	return dialog.get_battle_text(#text) == text
+function _M.battle.dialog.wait(text, limit)
+	if limit and _M.wait(limit) then
+		return true
+	else
+		local result = dialog.get_battle_text(#text) == text or dialog.get_battle_spell() == text
+
+		if result then
+			_wait_frame = nil
+			return result
+		end
+	end
+
+	return false
 end
 
 function _M.battle.run_buffer()

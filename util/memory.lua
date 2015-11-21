@@ -31,6 +31,7 @@ memory.usememorydomain("CARTROM")
 --------------------------------------------------------------------------------
 
 local _characters = {
+	[0x3F] = " ",
 	[0x42] = "A",
 	[0x43] = "B",
 	[0x44] = "C",
@@ -83,6 +84,7 @@ local _characters = {
 	[0x73] = "x",
 	[0x74] = "y",
 	[0x75] = "z",
+	[0xC3] = ".",
 	[0xC8] = ":",
 	[0xFF] = " ",
 }
@@ -109,7 +111,7 @@ local _addresses = {
 	},
 	battle_dialog = {
 		state               = {f = mainmemory.read_u8,     address = 0x00F43A, record_size = {0x01, 0x01}},
-		text                = {f = _read_character,        address = 0x00DB6E, record_size = {0x02, 0x01}},
+		text                = {f = _read_character,        address = 0x00DB6C, record_size = {0x02, 0x01}},
 	},
 	battle_menu = {
 		command             = {f = mainmemory.read_u8,     address = 0x003303, record_size = {0x1C, 0x04}},
@@ -147,6 +149,7 @@ local _addresses = {
 	enemy = {
 		type                = {f = mainmemory.read_u8,     address = 0x0029B5, record_size = {0x01, 0x01}},
 		id                  = {f = mainmemory.read_u8,     address = 0x0029AD, record_size = {0x01, 0x01}},
+		kills               = {f = mainmemory.read_u8,     address = 0x003585, record_size = {0x01, 0x01}},
 	},
 	game = {
 		counter             = {f = mainmemory.read_u8,     address = 0x000FFF, record_size = {0x01, 0x01}},

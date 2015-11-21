@@ -158,17 +158,41 @@ local function _underflow_mp(character)
 	local stack = {}
 
 	local mp = game.character.get_stat(character, "mp")
-	local casts = math.floor(mp / 40)
+
+	if character == game.CHARACTER.FUSOYA then
+		for i = 0, 4 do
+			if mp > 55 and memory.read_stat(i, "hp") == 0 then
+				table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.LIFE2}})
+				table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.LIFE2}})
+				table.insert(stack, {menu.field.magic.select_character, {game.character.get_character(i)}})
+
+				mp = mp - 52
+			end
+		end
+	end
+
+	local casts = math.floor((mp - 3) / 40)
 
 	for i = 0, casts - 1 do
 		table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE4}})
 		table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE4}})
-		table.insert(stack, {menu.field.magic.select_character, {character}})
+
+		if character == game.CHARACTER.TELLAH then
+			table.insert(stack, {menu.field.magic.select_character, {character}})
+		else
+			table.insert(stack, {menu.field.magic.select_character, {nil, true}})
+		end
 	end
 
 	table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE4}})
-	table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.SIGHT, "P1 Up"}})
-	table.insert(stack, {menu.field.magic.select_character, {character}})
+
+	if character == game.CHARACTER.TELLAH then
+		table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.SIGHT, "P1 Up"}})
+		table.insert(stack, {menu.field.magic.select_character, {character}})
+	else
+		table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE1, "P1 Down"}})
+		table.insert(stack, {menu.field.magic.select_character, {nil, true}})
+	end
 
 	while #stack > 0 do
 		table.insert(_q, 2, table.remove(stack))
@@ -2343,6 +2367,152 @@ local function _sequence_fusoya()
 	table.insert(_q, {walk.walk, {352, 16, 21}})
 end
 
+local function _sequence_grind_start()
+	-- Walk back to the Big Whale.
+	table.insert(_q, {walk.walk, {352, 16, 29}})
+	table.insert(_q, {walk.walk, {nil, 28, 29}})
+	table.insert(_q, {walk.walk, {nil, 34, 29}})
+	table.insert(_q, {walk.walk, {nil, 34, 30}})
+	table.insert(_q, {walk.walk, {nil, 37, 30}})
+	table.insert(_q, {walk.walk, {nil, 37, 29}})
+	table.insert(_q, {walk.walk, {nil, 40, 29}})
+	table.insert(_q, {walk.walk, {nil, 40, 28}})
+	table.insert(_q, {walk.walk, {356, 9, 18}})
+	table.insert(_q, {walk.walk, {356, 14, 18}})
+	table.insert(_q, {walk.walk, {356, 14, 6}})
+	table.insert(_q, {walk.walk, {356, 21, 6}})
+	table.insert(_q, {walk.walk, {356, 21, 5}})
+	table.insert(_q, {walk.walk, {nil, 37, 25}})
+	table.insert(_q, {walk.walk, {nil, 37, 16}})
+	table.insert(_q, {walk.walk, {nil, 33, 16}})
+	table.insert(_q, {walk.walk, {nil, 33, 14}})
+	table.insert(_q, {walk.walk, {nil, 22, 14}})
+	table.insert(_q, {walk.walk, {nil, 22, 15}})
+	table.insert(_q, {walk.walk, {nil, 18, 15}})
+	table.insert(_q, {walk.walk, {nil, 18, 14}})
+	table.insert(_q, {walk.walk, {355, 19, 10}})
+	table.insert(_q, {walk.walk, {355, 12, 10}})
+	table.insert(_q, {walk.walk, {355, 12, 15}})
+	table.insert(_q, {walk.walk, {355, 11, 15}})
+	table.insert(_q, {walk.walk, {355, 11, 23}})
+	table.insert(_q, {walk.walk, {355, 14, 23}})
+	table.insert(_q, {walk.walk, {355, 14, 29}})
+	table.insert(_q, {walk.walk, {355, 12, 29}})
+	table.insert(_q, {walk.walk, {355, 12, 31}})
+	table.insert(_q, {walk.walk, {nil, 21, 21}})
+	table.insert(_q, {walk.walk, {nil, 21, 19}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {303, 7, 13}})
+	table.insert(_q, {walk.walk, {303, 7, 11}})
+	table.insert(_q, {walk.interact, {}})
+
+	-- Walk to the Passage.
+	table.insert(_q, {walk.walk, {181, 9, 20}})
+	table.insert(_q, {walk.walk, {181, 9, 15}})
+	table.insert(_q, {walk.walk, {181, 10, 15}})
+	table.insert(_q, {walk.walk, {181, 10, 10}})
+	table.insert(_q, {walk.walk, {181, 11, 10}})
+	table.insert(_q, {walk.walk, {181, 11, 9}})
+	table.insert(_q, {walk.walk, {181, 12, 9}})
+	table.insert(_q, {walk.walk, {181, 12, 6}})
+	table.insert(_q, {walk.walk, {181, 11, 6}})
+	table.insert(_q, {walk.walk, {181, 11, 5}})
+	table.insert(_q, {walk.walk, {181, 9, 5}})
+	table.insert(_q, {walk.walk, {181, 9, 7}})
+	table.insert(_q, {walk.walk, {182, 7, 7}})
+	table.insert(_q, {walk.walk, {183, 14, 9}})
+	table.insert(_q, {walk.walk, {183, 13, 9}})
+	table.insert(_q, {walk.walk, {183, 13, 10}})
+	table.insert(_q, {walk.walk, {183, 9, 10}})
+	table.insert(_q, {walk.walk, {183, 9, 16}})
+	table.insert(_q, {walk.walk, {183, 6, 16}})
+	table.insert(_q, {walk.walk, {183, 6, 15}})
+	table.insert(_q, {walk.walk, {183, 5, 15}})
+	table.insert(_q, {walk.walk, {183, 5, 11}})
+	table.insert(_q, {walk.walk, {183, 2, 11}})
+	table.insert(_q, {walk.walk, {183, 2, 19}})
+	table.insert(_q, {walk.walk, {183, 3, 19}})
+	table.insert(_q, {walk.walk, {183, 3, 22}})
+	table.insert(_q, {walk.walk, {183, 5, 22}})
+	table.insert(_q, {walk.walk, {183, 5, 25}})
+	table.insert(_q, {walk.walk, {183, 9, 25}})
+	table.insert(_q, {walk.walk, {183, 9, 21}})
+	table.insert(_q, {walk.walk, {183, 14, 21}})
+	table.insert(_q, {walk.walk, {183, 14, 25}})
+	table.insert(_q, {walk.walk, {183, 17, 25}})
+	table.insert(_q, {walk.walk, {183, 17, 26}})
+	table.insert(_q, {walk.walk, {183, 24, 26}})
+	table.insert(_q, {walk.walk, {183, 24, 18}})
+	table.insert(_q, {walk.walk, {183, 23, 18}})
+	table.insert(_q, {walk.walk, {183, 23, 15}})
+	table.insert(_q, {walk.walk, {183, 19, 15}})
+	table.insert(_q, {walk.walk, {183, 19, 9}})
+	table.insert(_q, {walk.walk, {183, 18, 9}})
+	table.insert(_q, {walk.walk, {185, 22, 20}})
+	table.insert(_q, {walk.walk, {185, 22, 19}})
+	table.insert(_q, {walk.walk, {185, 23, 19}})
+	table.insert(_q, {walk.walk, {185, 23, 6}})
+	table.insert(_q, {walk.walk, {185, 21, 6}})
+	table.insert(_q, {walk.walk, {185, 21, 5}})
+	table.insert(_q, {walk.walk, {185, 14, 5}})
+	table.insert(_q, {walk.walk, {185, 14, 8}})
+	table.insert(_q, {walk.walk, {185, 11, 8}})
+	table.insert(_q, {walk.walk, {185, 11, 10}})
+	table.insert(_q, {walk.walk, {185, 5, 10}})
+	table.insert(_q, {walk.walk, {185, 5, 6}})
+	table.insert(_q, {walk.walk, {185, 3, 6}})
+	table.insert(_q, {walk.walk, {185, 3, 4}})
+
+	-- Do the pre-grind fight menu.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.FUSOYA}})
+	table.insert(_q, {_underflow_mp, {game.CHARACTER.FUSOYA}})
+	table.insert(_q, {menu.field.magic.close, {}})
+	table.insert(_q, {_restore_party, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.RYDIA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.FUSOYA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.ROSA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.LUNAR}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.WIZARD}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.CECIL, game.CHARACTER.EDGE}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.RYDIA, game.CHARACTER.FUSOYA}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.RYDIA, game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.close, {}})
+
+	-- Walk to just before the elements battle.
+	table.insert(_q, {walk.walk, {186, 3, 23}})
+	table.insert(_q, {walk.walk, {186, 4, 23}})
+	table.insert(_q, {walk.walk, {186, 4, 25}})
+	table.insert(_q, {walk.walk, {186, 6, 25}})
+	table.insert(_q, {walk.walk, {186, 6, 26}})
+	table.insert(_q, {walk.walk, {186, 11, 26}})
+	table.insert(_q, {walk.walk, {186, 11, 25}})
+	table.insert(_q, {walk.walk, {186, 17, 25}})
+	table.insert(_q, {walk.walk, {186, 17, 26}})
+	table.insert(_q, {walk.walk, {186, 24, 26}})
+	table.insert(_q, {walk.walk, {186, 24, 23}})
+	table.insert(_q, {walk.walk, {186, 25, 23}})
+	table.insert(_q, {walk.walk, {186, 25, 15}})
+	table.insert(_q, {walk.walk, {186, 21, 15}})
+	table.insert(_q, {walk.walk, {186, 21, 4}})
+	table.insert(_q, {walk.walk, {188, 15, 16}})
+end
+
+local function _sequence_elements()
+	if game.character.get_stat(game.CHARACTER.EDGE, "level") < 45 then
+		table.insert(_q, {walk.walk, {188, 15, 17}})
+		table.insert(_q, {walk.walk, {188, 15, 16}})
+	else
+		table.insert(_q, {walk.walk, {188, 15, 15}})
+	end
+end
+
 local _sequences = {
 	{title = "Prologue",      f = _sequence_prologue,      map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",        f = _sequence_d_mist,        map_area = 0, map_id = nil, map_x = 102, map_y = 158},
@@ -2375,6 +2545,8 @@ local _sequences = {
 	{title = "Dark Crystal",  f = _sequence_dark_crystal,  map_area = 1, map_id = nil, map_x = 27,  map_y = 87},
 	{title = "Big Whale",     f = _sequence_big_whale,     map_area = 3, map_id = 324, map_x = 4,   map_y = 8},
 	{title = "FuSoYa",        f = _sequence_fusoya,        map_area = 0, map_id = nil, map_x = 153, map_y = 199},
+	{title = "Grind Start",   f = _sequence_grind_start,   map_area = 3, map_id = 352, map_x = 16,  map_y = 15},
+	{title = "Elements",      f = _sequence_elements,      map_area = 3, map_id = 188, map_x = 15,  map_y = 16},
 }
 
 --------------------------------------------------------------------------------

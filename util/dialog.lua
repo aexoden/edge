@@ -23,6 +23,7 @@
 local _M = {}
 
 local bridge = require "util.bridge"
+local game = require "util.game"
 local input = require "util.input"
 local memory = require "util.memory"
 
@@ -49,14 +50,14 @@ local _splits = {
 -- Private Functions
 --------------------------------------------------------------------------------
 
-local function _get_text(category, key, characters)
+local function _get_text(category, key, base, characters)
 	local text = ""
 
 	if not characters then
 		characters = 24
 	end
 
-	for i = 0, characters - 1 do
+	for i = base, base + characters - 1 do
 		local character = memory.read(category, key, i)
 
 		if character then
@@ -98,8 +99,16 @@ function _M.cycle()
 	return false
 end
 
+function _M.get_battle_spell()
+	if game.battle.get_type() == game.battle.TYPE.BACK_ATTACK then
+		return _get_text("battle_dialog", "text", 0, 6)
+	else
+		return _get_text("battle_dialog", "text", 18, 6)
+	end
+end
+
 function _M.get_battle_text(characters)
-	return _get_text("battle_dialog", "text", characters)
+	return _get_text("battle_dialog", "text", 1, characters)
 end
 
 function _M.get_text(characters)
