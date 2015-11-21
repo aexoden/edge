@@ -2742,7 +2742,82 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {365, 21, 9}})
 	table.insert(_q, {walk.walk, {365, 17, 9}})
 	table.insert(_q, {walk.walk, {365, 17, 7}})
+end
 
+local function _sequence_zemus()
+	-- Split in a full run.
+	if not TEST_MODE then
+		table.insert(_q, {bridge.split, {"Lunar Core"}})
+	end
+
+	-- Walk to the Zemus battle.
+	table.insert(_q, {walk.walk, {366, 17, 9}})
+	table.insert(_q, {walk.walk, {366, 24, 9}})
+	table.insert(_q, {walk.walk, {366, 24, 12}})
+	table.insert(_q, {walk.walk, {366, 26, 12}})
+	table.insert(_q, {walk.walk, {366, 26, 16}})
+	table.insert(_q, {walk.walk, {366, 24, 16}})
+	table.insert(_q, {walk.walk, {366, 24, 15}})
+	table.insert(_q, {walk.walk, {366, 23, 15}})
+	table.insert(_q, {walk.walk, {366, 23, 14}})
+	table.insert(_q, {walk.walk, {366, 21, 14}})
+	table.insert(_q, {walk.walk, {366, 21, 13}})
+	table.insert(_q, {walk.walk, {366, 13, 13}})
+	table.insert(_q, {walk.walk, {366, 13, 15}})
+	table.insert(_q, {walk.walk, {366, 9, 15}})
+	table.insert(_q, {walk.walk, {366, 9, 20}})
+	table.insert(_q, {walk.walk, {366, 12, 20}})
+	table.insert(_q, {walk.walk, {366, 12, 19}})
+	table.insert(_q, {walk.walk, {366, 14, 19}})
+	table.insert(_q, {walk.walk, {366, 14, 20}})
+	table.insert(_q, {walk.walk, {366, 15, 20}})
+	table.insert(_q, {walk.walk, {366, 15, 21}})
+	table.insert(_q, {walk.walk, {366, 19, 21}})
+	table.insert(_q, {walk.walk, {366, 19, 20}})
+	table.insert(_q, {walk.walk, {366, 20, 20}})
+	table.insert(_q, {walk.walk, {366, 20, 16}})
+	table.insert(_q, {walk.walk, {366, 17, 16}})
+	table.insert(_q, {walk.walk, {366, 17, 19}})
+	table.insert(_q, {walk.walk, {367, 15, 11}})
+	table.insert(_q, {walk.walk, {367, 17, 11}})
+	table.insert(_q, {walk.walk, {367, 17, 15}})
+	table.insert(_q, {walk.walk, {367, 21, 15}})
+	table.insert(_q, {walk.walk, {367, 21, 18}})
+	table.insert(_q, {walk.walk, {367, 13, 18}})
+	table.insert(_q, {walk.walk, {367, 13, 16}})
+	table.insert(_q, {walk.walk, {367, 9, 16}})
+	table.insert(_q, {walk.walk, {367, 9, 15}})
+	table.insert(_q, {walk.walk, {367, 7, 15}})
+	table.insert(_q, {walk.walk, {367, 7, 22}})
+	table.insert(_q, {walk.walk, {367, 22, 22}})
+	table.insert(_q, {walk.walk, {367, 22, 23}})
+	table.insert(_q, {walk.walk, {368, 21, 9}})
+	table.insert(_q, {walk.walk, {368, 14, 9}})
+	table.insert(_q, {walk.walk, {368, 14, 12}})
+	table.insert(_q, {walk.walk, {368, 17, 12}})
+	table.insert(_q, {walk.walk, {368, 17, 11}})
+	table.insert(_q, {walk.walk, {368, 19, 11}})
+	table.insert(_q, {walk.walk, {368, 19, 12}})
+	table.insert(_q, {walk.walk, {368, 22, 12}})
+	table.insert(_q, {walk.walk, {368, 22, 15}})
+	table.insert(_q, {walk.walk, {368, 13, 15}})
+	table.insert(_q, {walk.walk, {368, 13, 18}})
+	table.insert(_q, {walk.walk, {368, 14, 18}})
+	table.insert(_q, {walk.walk, {368, 14, 19}})
+	table.insert(_q, {walk.walk, {368, 16, 19}})
+	table.insert(_q, {walk.walk, {368, 16, 20}})
+	table.insert(_q, {walk.walk, {368, 23, 20}})
+	table.insert(_q, {walk.walk, {368, 23, 24}})
+	table.insert(_q, {walk.walk, {369, 6, 8}})
+	table.insert(_q, {walk.walk, {369, 6, 15}})
+	table.insert(_q, {walk.walk, {369, 25, 15}})
+	table.insert(_q, {walk.walk, {369, 25, 20}})
+	table.insert(_q, {walk.walk, {369, 9, 20}})
+	table.insert(_q, {walk.walk, {369, 9, 19}})
+	table.insert(_q, {walk.walk, {369, 7, 19}})
+	table.insert(_q, {walk.walk, {369, 7, 20}})
+	table.insert(_q, {walk.walk, {369, 6, 20}})
+	table.insert(_q, {walk.walk, {370, 15, 15}})
 end
 
 local _sequences = {
@@ -2782,6 +2857,7 @@ local _sequences = {
 	{title = "CPU",           f = _sequence_cpu,           map_area = 3, map_id = 188, map_x = 15,  map_y = 15},
 	{title = "Subterrane",    f = _sequence_subterrane,    map_area = 2, map_id = nil, map_x = 19,  map_y = 39},
 	{title = "Lunar Core",    f = _sequence_core,          map_area = 3, map_id = 359, map_x = 13,  map_y = 13},
+	{title = "Zemus",         f = _sequence_zemus,         map_area = 3, map_id = 366, map_x = 17,  map_y = 8},
 }
 
 --------------------------------------------------------------------------------

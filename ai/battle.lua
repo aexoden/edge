@@ -65,8 +65,10 @@ _M.FORMATION = {
 	DARK_IMP = 256,
 	CALBRENA = 423,
 	LUGAE1   = 425,
+	ZEMUS    = 435,
 	LUGAE2   = 437,
 	GOLBEZ   = 438,
+	ZEROMUS  = 439,
 	FLAMEDOG = 451,
 }
 
@@ -1228,6 +1230,66 @@ local function _battle_weeper(character, turn)
 	end
 end
 
+local function _battle_zeromus(character, turn)
+	if not _state.cecil_nuke then
+		if character == game.CHARACTER.CECIL then
+			if turn == 1 then
+				_command_use_item(game.ITEM.ITEM.CRYSTAL)
+			end
+		elseif character == game.CHARACTER.EDGE then
+			if turn == 10 or turn == 11 and game.character.get_stat(game.CHARACTER.EDGE, "hp", true) < 2000 then
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+			else
+				_command_dart(game.ITEM.WEAPON.EXCALBUR)
+			end
+		elseif character == game.CHARACTER.KAIN then
+			if turn <= 3 or turn == 6 or turn == 7 then
+				_command_fight()
+			elseif turn == 4 or turn == 8 or turn >= 10 then
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+			elseif turn == 5 or turn == 9 then
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+			end
+		elseif character == game.CHARACTER.ROSA then
+			if turn == 1 then
+				_command_white(game.MAGIC.WHITE.BERSK)
+			elseif turn == 2 then
+				if _state.waited then
+					local nuke_target = memory.read("battle", "enemy_target")
+					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.PARTY, nuke_target)
+					_state.waited = nil
+					_state.cecil_nuke = nuke_target == 0
+				else
+					_command_wait_text(" Nuke ")
+					_state.waited = true
+					return true
+				end
+			end
+		elseif character == game.CHARACTER.RYDIA then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+		end
+	else
+		if character == game.CHARACTER.EDGE then
+			if turn == 7 or turn == 11 then
+				_command_run_buffer()
+			end
+
+			_command_dart(game.ITEM.WEAPON.EXCALBUR)
+		elseif character == game.CHARACTER.KAIN then
+			if turn == 3 or turn == 5 or turn == 8 or turn >= 12 then
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+			elseif turn == 4 or turn == 6 or turn == 9 then
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+			elseif turn == 10 then
+				local nuke_target = memory.read("battle", "enemy_target")
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.PARTY, nuke_target)
+			elseif turn == 7 or turn == 11 then
+				_command_fight()
+			end
+		end
+	end
+end
+
 local _formations = {
 	[_M.FORMATION.ANTLION]  = {title = "Antlion",             f = _battle_antlion,  split = true},
 	[_M.FORMATION.BAIGAN]   = {title = "Baigan",              f = _battle_baigan,   split = true},
@@ -1261,6 +1323,8 @@ local _formations = {
 	[_M.FORMATION.VALVALIS] = {title = "Valvalis",            f = _battle_valvalis, split = true},
 	[_M.FORMATION.WATERHAG] = {title = "WaterHag",            f = _battle_waterhag, split = true},
 	[_M.FORMATION.WEEPER]   = {title = "Weeper/WaterHag/Imp", f = _battle_weeper,   split = false},
+	[_M.FORMATION.ZEMUS]    = {title = "Zemus",               f = nil,              split = true},
+	[_M.FORMATION.ZEROMUS]  = {title = "Zeromus",             f = _battle_zeromus,  split = false},
 }
 
 --------------------------------------------------------------------------------
