@@ -1231,7 +1231,7 @@ local _formations = {
 	[_M.FORMATION.GENERAL]  = {title = "General/Fighters",    f = _battle_general,  split = false},
 	[_M.FORMATION.GIRL]     = {title = "Girl",                f = _battle_girl,     split = true},
 	[_M.FORMATION.GOLBEZ]   = {title = "Golbez",              f = _battle_golbez,   split = true},
-	[_M.FORMATION.GRIND]    = {title = "Grind Fight",         f = _battle_grind,    split = true},
+	[_M.FORMATION.GRIND]    = {title = "Grind Fight",         f = _battle_grind,    split = true,  presplit = true},
 	[_M.FORMATION.GUARDS]   = {title = "Guards",              f = _battle_guards,   split = false},
 	[_M.FORMATION.KAINAZZO] = {title = "Kainazzo",            f = _battle_kainazzo, split = true},
 	[_M.FORMATION.KARATE]   = {title = "Karate",              f = _battle_karate,   split = true},
@@ -1287,6 +1287,10 @@ function _M.cycle()
 			end
 
 			log.log(string.format("Battle Start: %s (%s)", formation.title, stats))
+
+			if _state.formation.presplit then
+				bridge.split(_state.formation.title .. " (start)")
+			end
 		end
 
 		if formation.f then
@@ -1341,6 +1345,9 @@ function _M.cycle()
 			if _state.formation.split then
 				bridge.split(_state.formation.title)
 			end
+
+			_formations[_state.index].presplit = false
+			_formations[_state.index].split = false
 
 			_reset_state()
 		end

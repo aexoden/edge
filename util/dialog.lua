@@ -44,6 +44,8 @@ local _splits = {
 	["Cecil be"] = {message = "Paladin", done = false},
 	["Ninja Ed"] = {message = "Edge", done = false},
 	[" The Big"] = {message = "Big Whale", done = false},
+	["Lost the"] = {message = "Lost the Dark Crystal!", done = false},
+	["Lunarian"] = {message = "FuSoYa", done = false},
 }
 
 --------------------------------------------------------------------------------
