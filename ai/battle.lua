@@ -38,6 +38,7 @@ local sequence = require "ai.sequence"
 _M.FORMATION = {
 	GRIND    = 200,
 	ELEMENTS = 220,
+	CPU      = 221,
 	D_MIST   = 222,
 	OCTOMAMM = 223,
 	ANTLION  = 224,
@@ -344,6 +345,18 @@ local function _battle_calbrena(character, turn)
 		else
 			_command_kick()
 		end
+	end
+end
+
+local function _battle_cpu(character, turn)
+	if character == game.CHARACTER.EDGE then
+		_command_dart(game.ITEM.WEAPON.EXCALBUR, menu.battle.TARGET.ENEMY, 0)
+	elseif character == game.CHARACTER.CECIL then
+		_command_fight(menu.battle.TARGET.ENEMY, 0)
+	elseif character == game.CHARACTER.FUSOYA then
+		_command_black(game.MAGIC.BLACK.QUAKE)
+	else
+		_command_parry()
 	end
 end
 
@@ -1219,6 +1232,7 @@ local _formations = {
 	[_M.FORMATION.ANTLION]  = {title = "Antlion",             f = _battle_antlion,  split = true},
 	[_M.FORMATION.BAIGAN]   = {title = "Baigan",              f = _battle_baigan,   split = true},
 	[_M.FORMATION.CALBRENA] = {title = "Calbrena",            f = _battle_calbrena, split = true},
+	[_M.FORMATION.CPU]      = {title = "CPU",                 f = _battle_cpu,      split = true},
 	[_M.FORMATION.D_KNIGHT] = {title = "D.Knight",            f = _battle_d_knight, split = false},
 	[_M.FORMATION.D_MIST]   = {title = "D.Mist",              f = _battle_d_mist,   split = true},
 	[_M.FORMATION.DARK_ELF] = {title = "Dark Elf",            f = _battle_dark_elf, split = true},

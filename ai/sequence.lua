@@ -38,6 +38,7 @@ local walk = require "action.walk"
 _RESTORE = {
 	REVIVE = 0,
 	CURE = 1,
+	ELIXIR = 2,
 }
 
 --------------------------------------------------------------------------------
@@ -81,6 +82,7 @@ local function _restore_party(characters, open_menu)
 	local revive = {}
 	local cure = {}
 	local ether = {}
+	local elixir = {}
 
 	for slot = 0, 4 do
 		local hp = memory.read_stat(slot, "hp")
@@ -96,7 +98,13 @@ local function _restore_party(characters, open_menu)
 			end
 		end
 
-		if not characters or characters[character] == _RESTORE.REVIVE or characters[character] == _RESTORE.CURE then
+		if not characters or characters[character] == _RESTORE.ELIXIR then
+			if hp < memory.read_stat(slot, "hp_max") then
+				elixir[#elixir + 1] = character
+			end
+		end
+
+		if not characters or characters[character] then
 			if hp == 0 then
 				revive[#revive + 1] = character
 			end
@@ -105,7 +113,7 @@ local function _restore_party(characters, open_menu)
 
 	local stack = {}
 
-	if #revive + #cure + #ether > 0 then
+	if #revive + #cure + #ether + #elixir > 0 then
 		if open_menu then
 			table.insert(stack, {menu.field.open, {}})
 		end
@@ -127,6 +135,12 @@ local function _restore_party(characters, open_menu)
 		for _, character in pairs(ether) do
 			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ETHER1}})
 			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ETHER1}})
+			table.insert(stack, {menu.field.item.select_character, {character}})
+		end
+
+		for _, character in pairs(elixir) do
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
 			table.insert(stack, {menu.field.item.select_character, {character}})
 		end
 
@@ -2526,6 +2540,19 @@ local function _sequence_elements()
 	end
 end
 
+local function _sequence_cpu()
+	-- Do the post-battle menu.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.ELIXIR, [game.CHARACTER.FUSOYA] = _RESTORE.ELIXIR, [game.CHARACTER.EDGE] = _RESTORE.ELIXIR}}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.FUSOYA, game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.close, {}})
+
+	-- Walk to the CPU battle.
+	table.insert(_q, {walk.walk, {188, 15, 4}})
+	table.insert(_q, {walk.walk, {189, 9, 18}})
+	table.insert(_q, {walk.walk, {189, 9, 13}})
+end
+
 local _sequences = {
 	{title = "Prologue",      f = _sequence_prologue,      map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",        f = _sequence_d_mist,        map_area = 0, map_id = nil, map_x = 102, map_y = 158},
@@ -2560,6 +2587,7 @@ local _sequences = {
 	{title = "FuSoYa",        f = _sequence_fusoya,        map_area = 0, map_id = nil, map_x = 153, map_y = 199},
 	{title = "Grind Start",   f = _sequence_grind_start,   map_area = 3, map_id = 352, map_x = 16,  map_y = 15},
 	{title = "Elements",      f = _sequence_elements,      map_area = 3, map_id = 188, map_x = 15,  map_y = 16},
+	{title = "CPU",           f = _sequence_cpu,           map_area = 3, map_id = 188, map_x = 15,  map_y = 15},
 }
 
 --------------------------------------------------------------------------------
