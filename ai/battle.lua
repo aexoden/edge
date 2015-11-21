@@ -1360,8 +1360,10 @@ function _M.cycle()
 				bridge.split(_state.formation.title)
 			end
 
-			_formations[_state.index].presplit = false
-			_formations[_state.index].split = false
+			if _formations[_state.index] then
+				_formations[_state.index].presplit = false
+				_formations[_state.index].split = false
+			end
 
 			_reset_state()
 		end

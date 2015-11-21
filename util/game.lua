@@ -83,10 +83,13 @@ _M.INVENTORY = {
 
 _M.ITEM = {
 	NONE         = 0x00,
+	SORT         = 0xFE,
 	ARMOR = {
+		BL_BELT  = 0x99,
 		GAEA     = 0x8F,
 		KARATE   = 0x98,
 		PRISONER = 0x96,
+		SAMURAI  = 0x8A,
 	},
 	ARMS = {
 		IRON     = 0x9C,
@@ -98,9 +101,11 @@ _M.ITEM = {
 		THUNDER  = 0x03,
 	},
 	HELM = {
+		BANDANNA = 0x7E,
 		CAP      = 0x77,
 		GAEA     = 0x79,
 		HEADBAND = 0x7D,
+		SAMURAI  = 0x74,
 		TIARA    = 0x7B,
 		WIZARD   = 0x7A,
 	},
@@ -119,6 +124,7 @@ _M.ITEM = {
 		TOWER    = 0xFA,
 	},
 	RING = {
+		PROTECT  = 0xAE,
 		RUNE     = 0xAB,
 		SILVER   = 0xA9,
 		STRENGTH = 0xAA,
