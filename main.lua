@@ -74,7 +74,6 @@ local function _reset()
 		math.random()
 	end
 
-
 	sequence.reset(not TEST_MODE)
 end
 

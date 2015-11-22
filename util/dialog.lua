@@ -113,8 +113,12 @@ function _M.get_battle_text(characters)
 	return _get_text("battle_dialog", "text", 1, characters)
 end
 
+function _M.get_save_text(characters)
+	return _get_text("menu_save", "text", 0, characters)
+end
+
 function _M.get_text(characters)
-	return _get_text("dialog", "text", characters)
+	return _get_text("dialog", "text", 0, characters)
 end
 
 function _M.reset()

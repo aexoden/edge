@@ -63,6 +63,10 @@ _M.FORMATION = {
 	EBLAN    = 254,
 	RUBICANT = 255,
 	DARK_IMP = 256,
+	RED_D_1  = 409,
+	RED_D_2  = 410,
+	RED_D_B  = 411,
+	RED_D_3  = 415,
 	CALBRENA = 423,
 	LUGAE1   = 425,
 	ZEMUS    = 435,
@@ -1095,6 +1099,14 @@ local function _battle_officer(character, turn)
 	end
 end
 
+local function _battle_red_d(character, turn)
+	if character == game.CHARACTER.EDGE then
+		_command_ninja(game.MAGIC.NINJA.SMOKE)
+	else
+		_command_parry()
+	end
+end
+
 local function _battle_rubicant(character, turn)
 	if character == game.CHARACTER.CECIL then
 		_command_fight()
@@ -1237,7 +1249,7 @@ local function _battle_zeromus(character, turn)
 				_command_use_item(game.ITEM.ITEM.CRYSTAL)
 			end
 		elseif character == game.CHARACTER.EDGE then
-			if turn == 10 or turn == 11 and game.character.get_stat(game.CHARACTER.EDGE, "hp", true) < 2000 then
+			if (turn == 10 or turn == 11) and game.character.get_stat(game.CHARACTER.EDGE, "hp", true) < 2000 and game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
 				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
 			else
 				_command_dart(game.ITEM.WEAPON.EXCALBUR)
@@ -1245,9 +1257,9 @@ local function _battle_zeromus(character, turn)
 		elseif character == game.CHARACTER.KAIN then
 			if turn <= 3 or turn == 6 or turn == 7 then
 				_command_fight()
-			elseif turn == 4 or turn == 8 or turn >= 10 then
+			elseif turn == 4 or turn == 8 or turn >= 9 then
 				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
-			elseif turn == 5 or turn == 9 then
+			elseif turn == 5 then
 				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
 			end
 		elseif character == game.CHARACTER.ROSA then
@@ -1270,7 +1282,7 @@ local function _battle_zeromus(character, turn)
 		end
 	else
 		if character == game.CHARACTER.EDGE then
-			if turn == 7 or turn == 11 then
+			if turn == 7 or turn == 8 or turn == 11 then
 				_command_run_buffer()
 			end
 
@@ -1284,7 +1296,8 @@ local function _battle_zeromus(character, turn)
 				local nuke_target = memory.read("battle", "enemy_target")
 				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.PARTY, nuke_target)
 			elseif turn == 7 or turn == 11 then
-				_command_fight()
+				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
+				table.insert(_state.q, {menu.battle.target, {target_type, target, nil, input.DELAY.NONE}})
 			end
 		end
 	end
@@ -1318,6 +1331,10 @@ local _formations = {
 	[_M.FORMATION.MOMBOMB]  = {title = "MomBomb",             f = _battle_mombomb,  split = true},
 	[_M.FORMATION.OCTOMAMM] = {title = "Octomamm",            f = _battle_octomamm, split = true},
 	[_M.FORMATION.OFFICER]  = {title = "Officer/Soldiers",    f = _battle_officer,  split = true},
+	[_M.FORMATION.RED_D_1]  = {title = "Red D. x1",           f = _battle_red_d,    split = false},
+	[_M.FORMATION.RED_D_2]  = {title = "Red D. x2",           f = _battle_red_d,    split = false},
+	[_M.FORMATION.RED_D_B]  = {title = "Red D. x1, Behemoth x1", f = _battle_red_d,    split = false},
+	[_M.FORMATION.RED_D_3]  = {title = "Red D. x3",           f = _battle_red_d,    split = false},
 	[_M.FORMATION.RUBICANT] = {title = "Rubicant",            f = _battle_rubicant, split = true},
 	[_M.FORMATION.SISTERS]  = {title = "Magus Sisters",       f = _battle_sisters,  split = true},
 	[_M.FORMATION.VALVALIS] = {title = "Valvalis",            f = _battle_valvalis, split = true},
@@ -1369,6 +1386,11 @@ function _M.cycle()
 			if _state.formation.presplit then
 				bridge.split(_state.formation.title .. " (start)")
 			end
+		end
+
+		if index == _M.FORMATION.ZEROMUS and memory.read("battle", "flash") == 3 and not _state.flash_split then
+			_state.flash_split = true
+			bridge.split("Zeromus Death")
 		end
 
 		if formation.f then

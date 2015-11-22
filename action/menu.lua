@@ -915,7 +915,7 @@ end
 -- Battle Menu External Functions
 --------------------------------------------------------------------------------
 
-function _M.battle.target(target, index, wait)
+function _M.battle.target(target, index, wait, delay)
 	if _M.battle.is_open() and _M.battle.is_target() then
 		local cursor = memory.read("battle_menu", "target")
 
@@ -925,6 +925,10 @@ function _M.battle.target(target, index, wait)
 		if game.battle.get_type() == game.battle.TYPE.BACK_ATTACK then
 			left = {"P1 Right"}
 			right = {"P1 Left"}
+		end
+
+		if not delay then
+			delay = input.DELAY.MASH
 		end
 
 		if wait and not _M.battle.is_target_valid(index) then
@@ -949,12 +953,12 @@ function _M.battle.target(target, index, wait)
 		end
 
 		if not index or cursor == index then
-			return input.press({"P1 A"}, input.DELAY.MASH)
+			return input.press({"P1 A"}, delay)
 		else
 			if index == _M.battle.TARGET.PARTY_ALL or (cursor < _M.battle.TARGET.PARTY and index >= _M.battle.TARGET.PARTY and index < _M.battle.TARGET.PARTY_ALL) then
-				input.press(right, input.DELAY.MASH)
+				input.press(right, delay)
 			elseif index == _M.battle.TARGET.ENEMY_ALL or (cursor >= _M.battle.TARGET.PARTY and index < _M.battle.TARGET.PARTY) then
-				input.press(left, input.DELAY.MASH)
+				input.press(left, delay)
 			else
 				if index >= _M.battle.TARGET.PARTY then
 					local index_map = {
@@ -970,13 +974,13 @@ function _M.battle.target(target, index, wait)
 					local direction = _M.battle.get_target_direction(cursor, index)
 
 					if direction == walk.DIRECTION.UP then
-						input.press({"P1 Up"}, input.DELAY.MASH)
+						input.press({"P1 Up"}, delay)
 					elseif direction == walk.DIRECTION.LEFT then
-						input.press(left, input.DELAY.MASH)
+						input.press(left, delay)
 					elseif direction == walk.DIRECTION.DOWN then
-						input.press({"P1 Down"}, input.DELAY.MASH)
+						input.press({"P1 Down"}, delay)
 					elseif direction == walk.DIRECTION.RIGHT then
-						input.press(right, input.DELAY.MASH)
+						input.press(right, delay)
 					end
 				end
 			end
@@ -1000,8 +1004,12 @@ function _M.battle.command.has_command(target_command)
 	return false
 end
 
-function _M.battle.command.select(target_command)
+function _M.battle.command.select(target_command, delay)
 	if _M.battle.is_open() then
+		if not delay then
+			delay = input.DELAY.MASH
+		end
+
 		if not _M.battle.command.is_open() then
 			return true
 		else
@@ -1023,13 +1031,13 @@ function _M.battle.command.select(target_command)
 			end
 
 			if cursor == index then
-				input.press({"P1 A"}, input.DELAY.MASH)
+				input.press({"P1 A"}, delay)
 			elseif index == 5 then
-				input.press({"P1 Left"}, input.DELAY.MASH)
+				input.press({"P1 Left"}, delay)
 			elseif index == 6 then
-				input.press({"P1 Right"}, input.DELAY.MASH)
+				input.press({"P1 Right"}, delay)
 			else
-				_select_vertical(cursor, index, math.floor(entries / 2), input.DELAY.MASH)
+				_select_vertical(cursor, index, math.floor(entries / 2), delay)
 			end
 		end
 	end

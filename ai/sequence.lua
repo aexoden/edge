@@ -98,7 +98,7 @@ local function _restore_party(characters, open_menu)
 			end
 		end
 
-		if not characters or characters[character] == _RESTORE.ELIXIR then
+		if characters and characters[character] == _RESTORE.ELIXIR then
 			if hp < memory.read_stat(slot, "hp_max") then
 				elixir[#elixir + 1] = character
 			end
@@ -154,6 +154,12 @@ local function _restore_party(characters, open_menu)
 	while #stack > 0 do
 		table.insert(_q, 2, table.remove(stack))
 	end
+
+	return true
+end
+
+local function _state_set(key, value)
+	_state[key] = value
 
 	return true
 end
@@ -2148,6 +2154,7 @@ end
 
 local function _sequence_dark_crystal()
 	-- Attempt to walk through the Land of Monsters.
+	table.insert(_q, {_state_set, {"auto_reload", true}})
 	table.insert(_q, {walk.walk, {nil, 27, 86}})
 	table.insert(_q, {walk.walk, {310, 17, 22}})
 	table.insert(_q, {walk.walk, {310, 11, 22}})
@@ -2181,6 +2188,7 @@ local function _sequence_dark_crystal()
 	table.insert(_q, {walk.walk, {312, 29, 26}})
 	table.insert(_q, {walk.walk, {312, 29, 14}})
 	table.insert(_q, {walk.walk, {312, 18, 14}})
+	table.insert(_q, {_state_set, {"auto_reload", false}})
 
 	-- Walk to the Rat tail chest.
 	table.insert(_q, {walk.walk, {314, 9, 14, true}})
@@ -2864,6 +2872,22 @@ local _sequences = {
 -- Private Functions
 --------------------------------------------------------------------------------
 
+local function _check_autoreload()
+	if _state.auto_reload and dialog.get_save_text(3) == "New" then
+		_q = {}
+
+		log.log("Load game screen detected: auto-reloading")
+
+		table.insert(_q, {menu.wait, {132}})
+		table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
+		table.insert(_q, {menu.wait, {132}})
+		table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
+		table.insert(_q, {menu.confirm, {}})
+
+		_state.auto_reload = false
+	end
+end
+
 local function _check_sequence()
 	if #_q == 0 and walk.is_ready() and not walk.is_mid_tile() and not walk.is_transition() then
 		local map_area = memory.read("walk", "map_area")
@@ -2886,6 +2910,7 @@ end
 
 function _M.cycle()
 	while true do
+		_check_autoreload()
 		_check_sequence()
 
 		local command = _q[1]
