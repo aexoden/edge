@@ -434,14 +434,20 @@ local function _battle_dark_elf(character, turn)
 	else
 		local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp", true)
 
-		if game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.PIG) then
-			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-		elseif tellah_hp == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-		elseif tellah_hp < 200 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-		elseif character == game.CHARACTER.TELLAH and dragon_hp > 50 then
-			_command_black(game.MAGIC.BLACK.WEAK)
+		if dragon_hp > 0 then
+			if game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.PIG) then
+				_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+			elseif tellah_hp == 0 and character == game.CHARACTER.CECIL then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+			elseif tellah_hp < 200 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+			elseif character == game.CHARACTER.TELLAH and dragon_hp > 50 then
+				_command_black(game.MAGIC.BLACK.WEAK)
+			elseif character == game.CHARACTER.YANG and game.character.get_stat(game.CHARACTER.YANG, "hp", true) < 50 then
+				_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+			else
+				_command_fight()
+			end
 		else
 			_command_fight()
 		end
@@ -461,10 +467,16 @@ local function _battle_dragoon(character, turn)
 end
 
 local function _battle_eblan(character, turn)
-	if character == game.CHARACTER.KAIN and turn == 1 then
+	local _, kain_weapon = game.character.get_weapon(game.CHARACTER.KAIN, true)
+	local _, cecil_weapon = game.character.get_weapon(game.CHARACTER.CECIL, true)
+
+	local kain_equipped = kain_weapon == game.ITEM.WEAPON.BLIZZARD
+	local cecil_equipped = cecil_weapon == game.ITEM.WEAPON.ICEBRAND
+
+	if character == game.CHARACTER.KAIN and not kain_equipped then
 		_command_equip(character, game.ITEM.WEAPON.BLIZZARD)
 		_command_parry()
-	elseif character == game.CHARACTER.CECIL and turn == 1 then
+	elseif character == game.CHARACTER.CECIL and not cecil_equipped then
 		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
 		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.SHIELD.ICE}})
 		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.L_HAND, input.DELAY.MASH}})
@@ -472,7 +484,11 @@ local function _battle_eblan(character, turn)
 		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.WEAPON.ICEBRAND}})
 		table.insert(_state.q, {menu.battle.item.close, {}})
 		_command_parry()
-	elseif turn == 1 then
+	elseif not kain_equipped and game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
+		_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+	elseif not cecil_equipped and game.character.get_stat(game.CHARACTER.CECIL, "hp", true) == 0 then
+		_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+	elseif not cecil_equipped or not kain_equipped then
 		_command_parry()
 	end
 end
@@ -1181,34 +1197,33 @@ local function _battle_valvalis(character, turn)
 		else
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 		end
-	elseif character == game.CHARACTER.CID then
-		_command_fight()
 	elseif character == game.CHARACTER.KAIN then
 		if turn == 1 then
 			_command_run_buffer()
 		end
 
-		if game.character.get_stat(game.CHARACTER.KAIN, "level", true) < 19 and turn > 2 and turn % 2 == 1 then
+		if game.character.get_stat(game.CHARACTER.KAIN, "level", true) < 19 and turn > 3 and turn % 2 == 0 then
 			_command_fight()
 		else
 			_command_jump()
 		end
-	elseif character == game.CHARACTER.ROSA then
-		if turn <= 2 then
+	else
+		local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
+		local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp", true)
+
+		if character == game.CHARACTER.ROSA and game.enemy.get_stat(0, "speed_modifier") < 32 then
 			_command_white(game.MAGIC.WHITE.SLOW)
-		else
-			if game.character.is_status(game.CHARACTER.CECIL, game.STATUS.STONE) then
-				_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-			elseif game.character.is_status(game.CHARACTER.KAIN, game.STATUS.STONE) then
-				_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
-			elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 300 then
-				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-			else
-				_command_parry()
-			end
-		end
-	elseif character == game.CHARACTER.YANG then
-		if turn == 1 then
+		elseif kain_hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		elseif cecil_hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		elseif game.character.is_status(game.CHARACTER.KAIN, game.STATUS.STONE) then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		elseif game.character.is_status(game.CHARACTER.CECIL, game.STATUS.STONE) then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		elseif cecil_hp < 650 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		elseif character == game.CHARACTER.ROSA or (character == game.CHARACTER.YANG and turn == 1) then
 			_command_parry()
 		else
 			_command_fight()

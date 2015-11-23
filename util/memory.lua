@@ -272,6 +272,7 @@ local _stats = {
 	l_hand          = {f = mainmemory.read_u8,     address = 0x000035},
 	l_hand_count    = {f = mainmemory.read_u8,     address = 0x000036},
 	exp             = {f = mainmemory.read_u24_le, address = 0x000037},
+	speed_modifier  = {f = mainmemory.read_u8,     address = 0x00003B},
 }
 
 --------------------------------------------------------------------------------
