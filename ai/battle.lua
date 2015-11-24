@@ -1262,6 +1262,8 @@ local function _battle_zeromus(character, turn)
 		if character == game.CHARACTER.CECIL then
 			if turn == 1 then
 				_command_use_item(game.ITEM.ITEM.CRYSTAL)
+			else
+				_command_fight()
 			end
 		elseif character == game.CHARACTER.EDGE then
 			if (turn == 10 or turn == 11) and game.character.get_stat(game.CHARACTER.EDGE, "hp", true) < 2000 and game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
