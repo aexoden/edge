@@ -1237,6 +1237,7 @@ local function _sequence_baigan()
 
 	-- Do the pre-Baigan menu.
 	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.TELLAH] = _RESTORE.REVIVE}}})
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.TELLAH}})
 	table.insert(_q, {_underflow_mp, {game.CHARACTER.TELLAH}})
 	table.insert(_q, {menu.field.magic.close, {}})
