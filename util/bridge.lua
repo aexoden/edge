@@ -64,7 +64,12 @@ function _M.send(message)
 end
 
 function _M.split(message)
+	if message == "Start" then
+		log.start()
+	end
+
 	log.log("Split: " .. message)
+
 	return _M.send("startorsplit")
 end
 

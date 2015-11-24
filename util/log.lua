@@ -27,13 +27,20 @@ local _M = {}
 --------------------------------------------------------------------------------
 
 local _file = nil
+local _base_frame = nil
 
 --------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
 
+local function _get_time()
+	local time = (emu.framecount() - _base_frame) / 60.0988
+
+	return string.format("%s:%05.2f", os.date("!%H:%M", time), time % 60)
+end
+
 local function _log(message)
-	message = string.format("%s :: %s", os.date("!%Y-%m-%d %X+0000"), message)
+	message = string.format("%s :: %s :: %s", os.date("!%Y-%m-%d %X+0000"), _get_time(), message)
 	console.log(message)
 
 	if _file then
@@ -61,6 +68,10 @@ function _M.log(message)
 	return _log(message)
 end
 
+function _M.start()
+	_base_frame = emu.framecount()
+end
+
 function _M.reset()
 	if _file then
 		_file:close()
@@ -68,6 +79,7 @@ function _M.reset()
 	end
 
 	_file, err = io.open(string.format("edge-%s.log", os.date("!%Y%m%d%H%M%S")), "w")
+	_base_frame = emu.framecount()
 end
 
 return _M
