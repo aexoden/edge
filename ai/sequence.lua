@@ -2336,7 +2336,7 @@ local function _sequence_fusoya()
 
 	-- Catch the shop NPC and purchase Elixirs.
 	table.insert(_q, {walk.chase, {357, {8}}})
-	table.insert(_q, {menu.shop.buy.open, {55}})
+	table.insert(_q, {menu.shop.buy.open, {50}})
 	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.ELIXIR}})
 	table.insert(_q, {menu.shop.buy.close, {}})
 	table.insert(_q, {menu.shop.close, {}})
