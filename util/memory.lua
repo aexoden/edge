@@ -202,6 +202,7 @@ local _addresses = {
 		item_id             = {f = mainmemory.read_u8,     address = 0x001440, record_size = {0x02, 0x01}},
 		item_count          = {f = mainmemory.read_u8,     address = 0x001441, record_size = {0x02, 0x01}},
 		scroll              = {f = mainmemory.read_u8,     address = 0x001B1A, record_size = {0x01, 0x01}},
+		selectable          = {f = mainmemory.read_u8,     address = 0x0002ED, record_size = {0x01, 0x01}},
 		selected            = {f = mainmemory.read_u8,     address = 0x001B19, record_size = {0x01, 0x01}},
 		state               = {f = mainmemory.read_u8,     address = 0x001BC9, record_size = {0x01, 0x01}},
 	},

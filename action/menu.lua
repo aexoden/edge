@@ -491,7 +491,11 @@ function _M.field.item.select(item, index)
 
 	if cursor then
 		if cursor == index then
-			return input.press({"P1 A"}, input.DELAY.NORMAL)
+			if memory.read("menu_item", "selectable") == 159 then
+				return input.press({"P1 A"}, input.DELAY.NORMAL)
+			else
+				return false
+			end
 		else
 			_select_multi_column(cursor, index, 2)
 		end
