@@ -2550,9 +2550,17 @@ local function _sequence_elements()
 end
 
 local function _sequence_cpu()
+	table.insert(_q, {walk.walk, {188, 15, 14}})
+
 	-- Do the post-battle menu.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.ELIXIR, [game.CHARACTER.FUSOYA] = _RESTORE.ELIXIR, [game.CHARACTER.EDGE] = _RESTORE.ELIXIR}}})
+
+	if game.character.get_stat(game.CHARACTER.ROSA, "level") < 20 then
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.ELIXIR, [game.CHARACTER.FUSOYA] = _RESTORE.ELIXIR, [game.CHARACTER.EDGE] = _RESTORE.ELIXIR, [game.CHARACTER.ROSA] = _RESTORE.ELIXIR}}})
+	else
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.ELIXIR, [game.CHARACTER.FUSOYA] = _RESTORE.ELIXIR, [game.CHARACTER.EDGE] = _RESTORE.ELIXIR}}})
+	end
+
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.FUSOYA, game.CHARACTER.CECIL}})
 	table.insert(_q, {menu.field.close, {}})
 
