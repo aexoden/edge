@@ -285,11 +285,11 @@ function _M.walk(target_map_id, target_x, target_y, npc_safe)
 
 	if dx > 0 then
 		input.press({"P1 Right"}, input.DELAY.NONE)
-	elseif dx ~= 0 then
+	elseif dx < 0 then
 		input.press({"P1 Left"}, input.DELAY.NONE)
 	elseif dy > 0 or (map_area == 0 and dy < -128) or (map_area == 2 and dy < -32) then
 		input.press({"P1 Down"}, input.DELAY.NONE)
-	elseif dy ~= 0 then
+	elseif dy < 0 then
 		input.press({"P1 Up"}, input.DELAY.NONE)
 	end
 

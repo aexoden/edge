@@ -219,6 +219,29 @@ local function _select_multi_column(current, target, columns)
 	end
 end
 
+local function _select_magic(current, target)
+	local dx = (target - current) % 3
+	local dy = math.floor(target / 3) - math.floor(current / 3)
+
+	if dx > 1 or dx < -1 then
+		dx = dx * -1
+	end
+
+	if dy > 4 or dy < -4 then
+		dy = dy * -1
+	end
+
+	if dx > 0 then
+		input.press({"P1 Right"}, input.DELAY.NORMAL)
+	elseif dx < 0 then
+		input.press({"P1 Left"}, input.DELAY.NORMAL)
+	elseif dy > 0 then
+		input.press({"P1 Down"}, input.DELAY.NORMAL)
+	elseif dy < 0 then
+		input.press({"P1 Up"}, input.DELAY.NORMAL)
+	end
+end
+
 --------------------------------------------------------------------------------
 -- Field Menu State Functions
 --------------------------------------------------------------------------------
@@ -540,7 +563,7 @@ function _M.field.magic.select(spell, extra_button)
 		if cursor == index then
 			return input.press({"P1 A", extra_button}, input.DELAY.NORMAL)
 		else
-			_select_multi_column(cursor, index, 3, true)
+			_select_magic(cursor, index)
 		end
 	else
 		local cursor = memory.read("menu_magic", "cursor")
