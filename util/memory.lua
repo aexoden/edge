@@ -234,6 +234,7 @@ local _addresses = {
 		sell_state          = {f = mainmemory.read_u8,     address = 0x00B79A, record_size = {0x01, 0x01}},
 	},
 	npc = {
+		count               = {f = mainmemory.read_u8,     address = 0x0008FE, record_size = {0x01, 0x01}},
 		visible             = {f = mainmemory.read_u8,     address = 0x00090B, record_size = {0x0F, 0x01}},
 		x                   = {f = mainmemory.read_u8,     address = 0x000904, record_size = {0x0F, 0x01}},
 		y                   = {f = mainmemory.read_u8,     address = 0x000906, record_size = {0x0F, 0x01}},

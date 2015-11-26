@@ -247,7 +247,7 @@ function _M.walk(target_map_id, target_x, target_y, npc_safe)
 	-- until it is in the same column, and then moves vertically. The NPC safe
 	-- walking code exploits this fact.
 	if npc_safe then
-		for i = 0, 11 do
+		for i = 0, memory.read("npc", "count") - 1 do
 			local npc_x = memory.read("npc", "x", i)
 			local npc_y = memory.read("npc", "y", i)
 
