@@ -117,7 +117,7 @@ function _M.board()
 		_state.vehicle = memory.read("walk", "vehicle")
 	end
 
-	if memory.read("walk", "vehicle") ~= _state.vehicle then
+	if memory.read("walk", "vehicle") ~= _state.vehicle or memory.read("walk", "map_id") == 303 then
 		_state.vehicle = nil
 		return true
 	else
