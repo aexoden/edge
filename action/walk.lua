@@ -242,6 +242,7 @@ function _M.walk(target_map_id, target_x, target_y, npc_safe)
 
 	local dx = target_x - current_x
 	local dy = target_y - current_y
+	local map_area = memory.read("walk", "map_area")
 
 	-- The current implementation of this function always moves horizontally
 	-- until it is in the same column, and then moves vertically. The NPC safe
@@ -264,13 +265,31 @@ function _M.walk(target_map_id, target_x, target_y, npc_safe)
 		end
 	end
 
+	local delta_limit
+
+	if map_area == 0 then
+		delta_limit = 128
+	elseif map_area == 2 then
+		delta_limit = 32
+	end
+
+	if delta_limit then
+		if math.abs(dx) > delta_limit then
+			dx = dx * -1
+		end
+
+		if math.abs(dy) > delta_limit then
+			dy = dy * -1
+		end
+	end
+
 	if dx > 0 then
 		input.press({"P1 Right"}, input.DELAY.NONE)
-	elseif dx < 0 then
+	elseif dx ~= 0 then
 		input.press({"P1 Left"}, input.DELAY.NONE)
-	elseif dy > 0 then
+	elseif dy > 0 or (map_area == 0 and dy < -128) or (map_area == 2 and dy < -32) then
 		input.press({"P1 Down"}, input.DELAY.NONE)
-	elseif dy < 0 then
+	elseif dy ~= 0 then
 		input.press({"P1 Up"}, input.DELAY.NONE)
 	end
 
