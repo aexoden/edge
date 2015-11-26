@@ -691,7 +691,7 @@ local function _battle_grind(character, turn)
 				if character == game.CHARACTER.EDGE and turn == 1 then
 					_command_ninja(game.MAGIC.NINJA.FLOOD)
 				elseif character == game.CHARACTER.FUSOYA then
-					_command_wait_text("Flood ")
+					_command_wait_text(" Flood")
 					_command_black(game.MAGIC.BLACK.QUAKE)
 				elseif character == game.CHARACTER.RYDIA then
 					_command_wait_text(" Quake")
@@ -722,11 +722,32 @@ local function _battle_grind(character, turn)
 			end
 		elseif _state.phase == PHASE.GRIND then
 			if _state.character_index == 0 then
-				-- TODO: What if no dragon is coming?
-				_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1, true)
+				if not _state.searcher_hp or _state.waited then
+					if game.enemy.get_stat(0, "hp") == _state.searcher_hp then
+						_command_parry()
+					else
+						_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1, true)
+					end
+
+					_state.waited = nil
+				else
+					_command_wait_frames(30)
+					_state.waited = true
+					return true
+				end
 			elseif _state.character_index == 1 then
-				_command_wait_text(" ..Id", 15)
-				_command_fight()
+				if _state.waited then
+					if dialog.get_battle_text(5) == " ..Id" then
+						--_command_wait_frames(30)
+					end
+
+					_command_fight()
+					_state.waited = nil
+				else
+					_command_wait_text(" ..Id", 15)
+					_state.waited = true
+					return true
+				end
 			elseif _state.character_index == 2 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.ENEMY, 1)
 			elseif _state.character_index == 3 then
@@ -738,6 +759,7 @@ local function _battle_grind(character, turn)
 			elseif _state.character_index == 4 then
 				if _state.waited then
 					_command_fight()
+					_state.searcher_hp = game.enemy.get_stat(0, "hp")
 					_state.waited = nil
 				else
 					_command_wait_text("Life", 60)
@@ -754,7 +776,7 @@ local function _battle_grind(character, turn)
 				end
 			end
 		elseif _state.phase == PHASE.HEAL then
-			if _state.dragon_character and game.get_stat(_state.dragon_character, "hp", true) == 0 then
+			if _state.dragon_character and game.character.get_stat(_state.dragon_character, "hp", true) == 0 then
 				_state.dragon_hp = _state.dragon_hp + 1
 			end
 
@@ -768,7 +790,7 @@ local function _battle_grind(character, turn)
 				_state.dragon_character = character
 			elseif dragon_hp > 0 and fusoya_hp == 0 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
-			elseif dragon_hp > 0 and fusoya_hp < 1000 then
+			elseif dragon_hp > 0 and fusoya_hp < 760 then
 				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 			elseif game.character.get_stat(game.CHARACTER.FUSOYA, "mp") < 100 then
 				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
@@ -819,10 +841,25 @@ local function _battle_grind(character, turn)
 							_command_fight()
 						end
 					elseif character == game.CHARACTER.FUSOYA then
-						if game.enemy.get_stat(0, "hp") > 50 then
+						if game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 45 then
+							_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+						elseif game.enemy.get_stat(0, "hp") > 50 then
 							_command_black(game.MAGIC.BLACK.WEAK)
 						elseif _state.duplicated then
-							_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.PARTY_ALL)
+							local alive = true
+
+							for i = 0, 4 do
+								if memory.read_stat(i, "hp", true) == 0 then
+									alive = false
+								end
+							end
+
+							if alive then
+								_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.PARTY_ALL)
+							else
+								_command_parry()
+							end
+
 							_state.virus = true
 						else
 							_command_parry()
