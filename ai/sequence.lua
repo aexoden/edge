@@ -226,7 +226,7 @@ end
 --------------------------------------------------------------------------------
 
 local function _sequence_new_game()
-	table.insert(_q, {input.press, {{"Reset"}, input.DELAY.NORMAL}})
+	table.insert(_q, {input.press, {{"Power"}, input.DELAY.NORMAL}})
 	table.insert(_q, {_set_initial_seed, {}})
 	table.insert(_q, {menu.wait, {132}})
 	table.insert(_q, {bridge.split, {"Start"}})
