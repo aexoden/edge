@@ -792,7 +792,7 @@ local function _battle_grind(character, turn)
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 			elseif dragon_hp > 0 and fusoya_hp < 760 then
 				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
-			elseif game.character.get_stat(game.CHARACTER.FUSOYA, "mp") < 100 then
+			elseif game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 100 then
 				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 			elseif game.enemy.get_stat(0, "hp") < 600 then
 				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.ENEMY, 0)
