@@ -1507,6 +1507,8 @@ function _M.cycle()
 				_formations[_state.index].split = false
 			end
 
+			sequence.set_healing_check()
+
 			_reset_state()
 		end
 

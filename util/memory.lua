@@ -266,6 +266,8 @@ local _stats = {
 	hp_max          = {f = mainmemory.read_u16_le, address = 0x000009},
 	mp              = {f = mainmemory.read_u16_le, address = 0x00000B},
 	mp_max          = {f = mainmemory.read_u16_le, address = 0x00000D},
+	stamina         = {f = mainmemory.read_u8,     address = 0x000016},
+	will            = {f = mainmemory.read_u8,     address = 0x000018},
 	head            = {f = mainmemory.read_u8,     address = 0x000030},
 	body            = {f = mainmemory.read_u8,     address = 0x000031},
 	arms            = {f = mainmemory.read_u8,     address = 0x000032},

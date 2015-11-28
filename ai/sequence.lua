@@ -36,9 +36,10 @@ local walk = require "action.walk"
 --------------------------------------------------------------------------------
 
 _RESTORE = {
-	REVIVE = 0,
-	CURE = 1,
-	ELIXIR = 2,
+	LIFE   = 0x1,
+	HP     = 0x3,
+	MP     = 0x5,
+	ALL    = 0x7,
 }
 
 --------------------------------------------------------------------------------
@@ -55,6 +56,16 @@ local _state = {}
 --------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
+
+local function _count_entries(table)
+	local count = 0
+
+	for key, value in pairs(table) do
+		count = count + 1
+	end
+
+	return count
+end
 
 local function _log_prologue()
 	if not _state.count then
@@ -78,81 +89,251 @@ local function _log_seed()
 	return log.log(string.format("New Seed: %d", memory.read("walk", "seed")))
 end
 
-local function _restore_party(characters, open_menu)
-	local revive = {}
-	local cure = {}
-	local ether = {}
-	local elixir = {}
+local function _restore_party(characters, underflow_target, open_menu, immediate)
+	local stack = {}
+	local cure_count = 0
+	local max_count = 0
+	local life = {}
+	local target_hp = {}
+	local target_mp = {}
+	local close_menu = false
 
+	-- Determine which characters need which healing.
 	for slot = 0, 4 do
-		local hp = memory.read_stat(slot, "hp")
 		local character = game.character.get_character(slot)
+		local hp = memory.read_stat(slot, "hp")
+		local mp = memory.read_stat(slot, "mp")
 
-		if not characters or characters[character] == _RESTORE.CURE then
-			if hp < memory.read_stat(slot, "hp_max") then
-				cure[#cure + 1] = character
-			end
+		if character then
+			max_count = max_count + 1
 
-			if memory.read_stat(slot, "mp") < memory.read_stat(slot, "mp_max") then
-				ether[#ether + 1] = character
-			end
-		end
+			if characters[character] then
+				if bit.band(characters[character], _RESTORE.HP) == _RESTORE.HP then
+					cure_count = cure_count + 1
+					target_hp[character] = memory.read_stat(slot, "hp_max") - hp
 
-		if characters and characters[character] == _RESTORE.ELIXIR then
-			if hp < memory.read_stat(slot, "hp_max") then
-				elixir[#elixir + 1] = character
-			end
-		end
+					if target_hp[character] <= 0 then
+						target_hp[character] = nil
+					end
 
-		if not characters or characters[character] then
-			if hp == 0 then
-				revive[#revive + 1] = character
+					if hp == 0 then
+						life[character] = true
+					end
+				elseif bit.band(characters[character], _RESTORE.LIFE) == _RESTORE.LIFE and hp == 0 then
+					target_hp[character] = memory.read_stat(slot, "stamina") * 5
+					life[character] = true
+				end
+
+				if bit.band(characters[character], _RESTORE.MP) == _RESTORE.MP then
+					target_mp[character] = memory.read_stat(slot, "mp_max") - mp
+
+					if target_mp[character] <= 0 then
+						target_mp[character] = nil
+					end
+				end
 			end
 		end
 	end
 
-	local stack = {}
+	-- Open the menu if necessary.
+	if open_menu and _count_entries(life) + _count_entries(target_hp) + _count_entries(target_mp) > 0 then
+		table.insert(stack, {menu.field.open, {}})
+		close_menu = true
+	end
 
-	if #revive + #cure + #ether + #elixir > 0 then
-		if open_menu then
-			table.insert(stack, {menu.field.open, {}})
+	-- Handle the underflow.
+	if underflow_target then
+		local underflow_target_hp = game.character.get_stat(underflow_target, "hp")
+		local underflow_target_mp = game.character.get_stat(underflow_target, "mp")
+
+		if undertarget_target_mp < 1000 then
+			-- Ensure the underflow target has at least 3 MP.
+		 	if underflow_target_hp == 0 or underflow_target_mp < 3 then
+				table.insert(stack, {menu.field.item.open, {}})
+
+				if underflow_target_hp == 0 then
+					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
+					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
+					table.insert(stack, {menu.field.item.select_character, {underflow_target}})
+
+					life[underflow_target] = nil
+
+					if target_hp[underflow_target] then
+						target_hp[underflow_target] = target_hp[underflow_target] - game.character.get_stat(underflow_target, "stamina") * 5
+
+						if target_hp[underflow_target] <= 0 then
+							target_hp[underflow_target] = nil
+						end
+					end
+				end
+
+				if underflow_target_mp < 3 then
+					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ETHER1}})
+					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ETHER1}})
+					table.insert(stack, {menu.field.item.select_character, {underflow_target}})
+
+					underflow_target_mp = math.min(underflow_target_mp + 48, game.character.get_stat(underflow_target, "mp_max"))
+				end
+
+				table.insert(stack, {menu.field.item.close, {}})
+			end
+
+			table.insert(stack, {menu.field.magic.open, {underflow_target}})
+
+			if underflow_target == game.CHARACTER.FUSOYA or underflow_target == game.CHARACTER.TELLAH then
+				for character, hp in pairs(target_hp) do
+					if underflow_target_mp > 55 and life[character] and hp > game.character.get_stat(character, "stamina") * 5 then
+						table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.LIFE2}})
+						table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.LIFE2}})
+						table.insert(stack, {menu.field.magic.select_character, {character}})
+
+						life[character] = nil
+						target_hp[character] = nil
+						underflow_target_mp = underflow_target_mp - 52
+					end
+				end
+			end
+
+			local will = game.character.get_stat(underflow_target, "will")
+			local healing = (math.floor(will / 8) + 2) * (math.floor(will / 2) + 288)
+
+			while underflow_target_mp > 0 do
+				table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE4}})
+
+				if underflow_target_mp >= 40 then
+					table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE4}})
+				elseif underflow_target == game.CHARACTER.TELLAH then
+					table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.SIGHT, "P1 Up"}})
+				elseif underflow_target == game.CHARACTER.FUSOYA then
+					table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE1, "P1 Down"}})
+				end
+
+				local target = {nil, true}
+
+				if cure_count < max_count then
+					local highest = {underflow_target, -1}
+
+					for character, hp in pairs(target_hp) do
+						if hp > highest[2] then
+							highest = {character, hp}
+						end
+					end
+
+					target = {highest[1]}
+				end
+
+				table.insert(stack, {menu.field.magic.select_character, target})
+
+				if cure_count < max_count then
+					if target_hp[target[1]] then
+						target_hp[target[1]] = target_hp[target[1]] - healing
+
+						if target_hp[target[1]] and target_hp[target[1]] <= 0 then
+							target_hp[target[1]] = nil
+						end
+					end
+				else
+					for character, hp in pairs(target_hp) do
+						target_hp[character] = target_hp[character] - math.floor(healing / max_count)
+
+						if target_hp[character] <= 0 then
+							target_hp[character] = nil
+						end
+					end
+				end
+
+				underflow_target_mp = underflow_target_mp - 40
+			end
+
+			table.insert(stack, {menu.field.magic.close, {}})
 		end
+	end
 
+	-- If anyone still needs any healing, heal with items.
+	if _count_entries(life) + _count_entries(target_hp) + _count_entries(target_mp) > 0 then
 		table.insert(stack, {menu.field.item.open, {}})
 
-		for _, character in pairs(revive) do
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
-			table.insert(stack, {menu.field.item.select_character, {character}})
+		-- Use Life items on anyone dead.
+		for character, hp in pairs(target_hp) do
+			if life[character] then
+				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
+				table.insert(stack, {menu.field.item.select_character, {character}})
+
+				life[character] = nil
+				target_hp[character] = target_hp[character] - game.character.get_stat(character, "stamina") * 5
+
+				if target_hp[character] <= 0 then
+					target_hp[character] = nil
+				end
+			end
 		end
 
-		for _, character in pairs(cure) do
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
-			table.insert(stack, {menu.field.item.select_character, {character}})
+		-- Use Elixirs (if available) to restore designated characters.
+		if game.item.get_index(game.ITEM.ITEM.ELIXIR, 0, game.INVENTORY.FIELD) then
+			for character, hp in pairs(target_hp) do
+				if character ~= underflow_target then
+					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
+					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
+					table.insert(stack, {menu.field.item.select_character, {character}})
+
+					target_hp[character] = nil
+					target_mp[character] = nil
+				end
+			end
 		end
 
-		for _, character in pairs(ether) do
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ETHER1}})
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ETHER1}})
-			table.insert(stack, {menu.field.item.select_character, {character}})
+		-- Use Cure2 items on anyone else who needs HP.
+		if game.item.get_index(game.ITEM.ITEM.CURE2, 0, game.INVENTORY.FIELD) then
+			for character, hp in pairs(target_hp) do
+				while target_hp[character] do
+					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
+					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
+					table.insert(stack, {menu.field.item.select_character, {character}})
+
+					target_hp[character] = target_hp[character] - 480
+
+					if target_hp[character] <= 0 then
+						target_hp[character] = nil
+					end
+				end
+			end
 		end
 
-		for _, character in pairs(elixir) do
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
-			table.insert(stack, {menu.field.item.select_character, {character}})
+		-- Use Ether1 items on anyone who needs MP.
+		if game.item.get_index(game.ITEM.ITEM.ETHER1, 0, game.INVENTORY.FIELD) then
+			for character, mp in pairs(target_mp) do
+				if character ~= underflow_target then
+					while target_mp[character] do
+						table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ETHER1}})
+						table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ETHER1}})
+						table.insert(stack, {menu.field.item.select_character, {character}})
+
+						target_mp[character] = target_mp[character] - 48
+
+						if target_mp[character] <= 0 then
+							target_mp[character] = nil
+						end
+					end
+				end
+			end
 		end
 
 		table.insert(stack, {menu.field.item.close, {}})
-
-		if open_menu then
-			table.insert(stack, {menu.field.close, {}})
-		end
 	end
 
+	-- Close the menu if we opened it.
+	if close_menu then
+		table.insert(stack, {menu.field.close, {}})
+	end
+
+	-- Add the queued commands to the primary command queue.
 	while #stack > 0 do
-		table.insert(_q, 2, table.remove(stack))
+		if immediate then
+			table.insert(_q, 1, table.remove(stack))
+		else
+			table.insert(_q, 2, table.remove(stack))
+		end
 	end
 
 	return true
@@ -168,54 +349,48 @@ local function _set_initial_seed()
 	local seed = memory.read("game", "counter")
 
 	if seed == 59 then
+		log.log("Setting Initial Seed to 92")
+		log.start()
 		return input.press({"P1 A"}, input.DELAY.NONE)
 	end
 
 	return false
 end
 
-local function _underflow_mp(character)
-	local stack = {}
+--------------------------------------------------------------------------------
+-- Healing Strategies
+--------------------------------------------------------------------------------
 
-	local mp = game.character.get_stat(character, "mp")
+local function _healing_grind()
+	for i = 0, 4 do
+		local hp = memory.read_stat(i, "hp")
 
-	if character == game.CHARACTER.FUSOYA then
-		for i = 0, 4 do
-			if mp > 55 and memory.read_stat(i, "hp") == 0 then
-				table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.LIFE2}})
-				table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.LIFE2}})
-				table.insert(stack, {menu.field.magic.select_character, {game.character.get_character(i)}})
-
-				mp = mp - 52
-			end
+		if memory.read_stat(i, "hp") < memory.read_stat(i, "hp_max") * 0.8 then
+			_restore_party({
+				[game.CHARACTER.CECIL] = _RESTORE.HP,
+				[game.CHARACTER.EDGE] = _RESTORE.HP,
+				[game.CHARACTER.FUSOYA] = _RESTORE.HP,
+				[game.CHARACTER.ROSA] = _RESTORE.HP,
+				[game.CHARACTER.RYDIA] = _RESTORE.HP,
+			}, game.CHARACTER.FUSOYA, true, true)
+			
+			return true
 		end
 	end
 
-	local casts = math.floor((mp - 3) / 40)
+	return true
+end
 
-	for i = 0, casts - 1 do
-		table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE4}})
-		table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE4}})
+local function _healing_zot()
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp")
+	local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp")
 
-		if character == game.CHARACTER.TELLAH then
-			table.insert(stack, {menu.field.magic.select_character, {character}})
-		else
-			table.insert(stack, {menu.field.magic.select_character, {nil, true}})
-		end
-	end
-
-	table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE4}})
-
-	if character == game.CHARACTER.TELLAH then
-		table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.SIGHT, "P1 Up"}})
-		table.insert(stack, {menu.field.magic.select_character, {character}})
-	else
-		table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE1, "P1 Down"}})
-		table.insert(stack, {menu.field.magic.select_character, {nil, true}})
-	end
-
-	while #stack > 0 do
-		table.insert(_q, 2, table.remove(stack))
+	if cecil_hp == 0 or cecil_hp + yang_hp < 1000 then
+		_restore_party({
+			[game.CHARACTER.CECIL] = _RESTORE.HP,
+			[game.CHARACTER.TELLAH] = _RESTORE.HP,
+			[game.CHARACTER.YANG] = _RESTORE.LIFE,
+		}, game.CHARACTER.TELLAH, true, true)
 	end
 
 	return true
@@ -999,7 +1174,7 @@ local function _sequence_milon()
 
 	-- Heal and equip.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.ALL, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.POROM}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.TIARA}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
@@ -1029,7 +1204,7 @@ end
 local function _sequence_milon_z()
 	-- Heal and prepare the party.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.ALL, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.PALOM}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
@@ -1235,11 +1410,7 @@ local function _sequence_baigan()
 
 	-- Do the pre-Baigan menu.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.TELLAH] = _RESTORE.REVIVE}}})
-	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.TELLAH}})
-	table.insert(_q, {_underflow_mp, {game.CHARACTER.TELLAH}})
-	table.insert(_q, {menu.field.magic.close, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = true, [game.CHARACTER.TELLAH] = true}}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.POROM}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
 	table.insert(_q, {menu.field.equip.close, {}})
@@ -1264,7 +1435,7 @@ end
 local function _sequence_kainazzo()
 	-- Heal the party as needed.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.CURE, [game.CHARACTER.TELLAH] = _RESTORE.CURE, [game.CHARACTER.YANG] = _RESTORE.REVIVE}}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.LIFE}}})
 	table.insert(_q, {menu.field.change, {}})
 
 	if not _M.state.multi_change then
@@ -1395,7 +1566,7 @@ local function _sequence_flamedog()
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {148, 11, 26}})
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.TELLAH] = _RESTORE.REVIVE}}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.TELLAH] = _RESTORE.LIFE}}})
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.TELLAH}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
@@ -1425,6 +1596,7 @@ local function _sequence_flamedog()
 	table.insert(_q, {walk.walk, {nil, 35, 83}})
 	table.insert(_q, {walk.walk, {nil, 36, 83}})
 	table.insert(_q, {walk.board, {}})
+	table.insert(_q, {_state_set, {"healing", _healing_zot}})
 	table.insert(_q, {walk.walk, {152, 17, 24}})
 	table.insert(_q, {walk.walk, {152, 17, 26}})
 	table.insert(_q, {walk.walk, {152, 28, 26}})
@@ -1440,13 +1612,14 @@ local function _sequence_flamedog()
 	table.insert(_q, {walk.walk, {153, 8, 15}})
 
 	-- Heal, turn to the chest, and engage FlameDog.
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.CURE, [game.CHARACTER.YANG] = _RESTORE.CURE, [game.CHARACTER.TELLAH] = _RESTORE.CURE}, true}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, nil, true}})
 	table.insert(_q, {walk.step, {walk.DIRECTION.LEFT}})
 	table.insert(_q, {walk.interact, {}})
 end
 
 local function _sequence_magus_sisters()
 	-- Walk to the top floor of the tower.
+	table.insert(_q, {_state_set, {"healing", _healing_zot}})
 	table.insert(_q, {walk.walk, {153, 8, 20}})
 	table.insert(_q, {walk.walk, {153, 2, 20}})
 	table.insert(_q, {walk.walk, {153, 2, 13}})
@@ -1499,12 +1672,8 @@ local function _sequence_magus_sisters()
 	table.insert(_q, {walk.walk, {157, 15, 19}})
 
 	-- Prepare the party for battle.
-	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.CURE, [game.CHARACTER.TELLAH] = _RESTORE.CURE, [game.CHARACTER.YANG] = _RESTORE.REVIVE}}})
-	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.TELLAH}})
-	table.insert(_q, {_underflow_mp, {game.CHARACTER.TELLAH}})
-	table.insert(_q, {menu.field.magic.close, {}})
-	table.insert(_q, {menu.field.close, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.LIFE}, game.CHARACTER.TELLAH, true}})
+	table.insert(_q, {_state_set, {"healing", nil}})
 
 	-- Engage the sisters.
 	table.insert(_q, {walk.walk, {157, 15, 17}})
@@ -1542,7 +1711,7 @@ local function _sequence_valvalis()
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.KAIN, game.CHARACTER.CID, game.FORMATION.THREE_FRONT}})
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.CECIL, game.CHARACTER.ROSA}})
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.YANG, game.CHARACTER.CECIL}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.REVIVE, [game.CHARACTER.YANG] = _RESTORE.REVIVE, [game.CHARACTER.CID] = _RESTORE.REVIVE}}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.LIFE, [game.CHARACTER.YANG] = _RESTORE.LIFE, [game.CHARACTER.CID] = _RESTORE.LIFE}}})
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Engage Valvalis
@@ -1781,7 +1950,7 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.RUNE}})
 	table.insert(_q, {menu.field.equip.close, {}})
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.KAIN, game.CHARACTER.YANG}})
-	table.insert(_q, {_restore_party, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.KAIN] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.ALL, [game.CHARACTER.YANG] = _RESTORE.HP}}})
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Advance on Dr.Lugae.
@@ -1815,7 +1984,13 @@ local function _sequence_dark_imps()
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.TOWER}})
 	table.insert(_q, {walk.walk, {293, 16, 9}})
-	table.insert(_q, {_restore_party, {nil, true}})
+
+	if game.character.get_stat(game.CHARACTER.ROSA, "level") < 20 then
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.LIFE, [game.CHARACTER.KAIN] = _RESTORE.LIFE, [game.CHARACTER.ROSA] = _RESTORE.LIFE, [game.CHARACTER.YANG] = _RESTORE.LIFE}, nil, true}})
+	else
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.LIFE, [game.CHARACTER.KAIN] = _RESTORE.LIFE, [game.CHARACTER.YANG] = _RESTORE.LIFE}, nil, true}})
+	end
+
 	table.insert(_q, {walk.walk, {301, 5, 10}})
 end
 
@@ -2091,7 +2266,8 @@ end
 
 local function _sequence_monsters()
 	-- Exit the Tower of Bab-il.
-	table.insert(_q, {_restore_party, {nil, true}})
+	-- TODO: Replace this with a healing strategy.
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.KAIN] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP}, nil, true}})
 	table.insert(_q, {walk.walk, {172, 14, 15}})
 	table.insert(_q, {walk.walk, {171, 16, 20}})
 	table.insert(_q, {walk.walk, {171, 16, 20}})
@@ -2205,7 +2381,7 @@ local function _sequence_dark_crystal()
 
 	-- Cast Exit and head to the Sealed Cave.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP}}})
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.CECIL}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
@@ -2486,10 +2662,7 @@ local function _sequence_grind_start()
 
 	-- Do the pre-grind fight menu.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.FUSOYA}})
-	table.insert(_q, {_underflow_mp, {game.CHARACTER.FUSOYA}})
-	table.insert(_q, {menu.field.magic.close, {}})
-	table.insert(_q, {_restore_party, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP}, game.CHARACTER.FUSOYA}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.RYDIA}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
 	table.insert(_q, {menu.field.equip.close, {}})
@@ -2507,6 +2680,7 @@ local function _sequence_grind_start()
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Walk to just before the elements battle.
+	table.insert(_q, {_state_set, {"healing", _healing_grind}})
 	table.insert(_q, {walk.walk, {186, 3, 23}})
 	table.insert(_q, {walk.walk, {186, 4, 23}})
 	table.insert(_q, {walk.walk, {186, 4, 25}})
@@ -2543,6 +2717,7 @@ local function _sequence_elements()
 		table.insert(_q, {menu.field.item.select, {nil, 1}})
 		table.insert(_q, {menu.field.item.close, {}})
 		table.insert(_q, {menu.field.close, {}})
+		table.insert(_q, {_state_set, {"healing", nil}})
 		table.insert(_q, {walk.walk, {188, 15, 15}})
 	end
 end
@@ -2554,9 +2729,9 @@ local function _sequence_cpu()
 	table.insert(_q, {menu.field.open, {}})
 
 	if game.character.get_stat(game.CHARACTER.ROSA, "level") < 20 then
-		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.ELIXIR, [game.CHARACTER.FUSOYA] = _RESTORE.ELIXIR, [game.CHARACTER.EDGE] = _RESTORE.ELIXIR, [game.CHARACTER.ROSA] = _RESTORE.ELIXIR}}})
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.ALL, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP}}})
 	else
-		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.ELIXIR, [game.CHARACTER.FUSOYA] = _RESTORE.ELIXIR, [game.CHARACTER.EDGE] = _RESTORE.ELIXIR}}})
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.ALL, [game.CHARACTER.EDGE] = _RESTORE.HP}}})
 	end
 
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.FUSOYA, game.CHARACTER.CECIL}})
@@ -2915,12 +3090,17 @@ function _M.cycle()
 		local command = _q[1]
 
 		if command then
-			local result = command[1](unpack(command[2]))
-
-			if result then
-				table.remove(_q, 1)
+			if _state.check_healing and _state.healing and command[1] == walk.walk then
+				_state.healing()
+				_state.check_healing = false
 			else
-				return true
+				local result = command[1](unpack(command[2]))
+
+				if result then
+					table.remove(_q, 1)
+				else
+					return true
+				end
 			end
 		else
 			return true
@@ -2928,11 +3108,16 @@ function _M.cycle()
 	end
 end
 
-function _M.reset(full_reset)
+function _M.set_healing_check()
+	_state.check_healing = true
+end
+
+function _M.reset()
 	_q = {}
 
 	_state = {
-		multi_change = false
+		check_healing = false,
+		multi_change = false,
 	}
 
 	if FULL_RUN then
