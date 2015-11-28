@@ -836,6 +836,8 @@ local function _battle_grind(character, turn)
 					elseif character == game.CHARACTER.EDGE then
 						if strongest[1] and (_state.virus or strongest[2] > 400) then
 							_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
+						elseif strongest[1] then
+							_command_parry()
 						else
 							_command_equip(character, game.ITEM.CLAW.CATCLAW)
 							_command_fight()
