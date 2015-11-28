@@ -226,11 +226,8 @@ end
 --------------------------------------------------------------------------------
 
 local function _sequence_new_game()
-	table.insert(_q, {input.press, {{"Power"}, input.DELAY.NORMAL}})
 	table.insert(_q, {_set_initial_seed, {}})
-	table.insert(_q, {menu.wait, {132}})
 	table.insert(_q, {bridge.split, {"Start"}})
-	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
 end
 
 local function _sequence_prologue()
@@ -2632,12 +2629,8 @@ local function _sequence_subterrane()
 end
 
 local function _sequence_core()
-	-- Split in a full run.
-	if not TEST_MODE then
-		table.insert(_q, {bridge.split, {"Lunar Subterrane"}})
-	end
-
 	-- Walk to the Protect ring chest.
+	table.insert(_q, {bridge.split, {"Lunar Subterrane"}})
 	table.insert(_q, {walk.walk, {359, 13, 8}})
 	table.insert(_q, {walk.walk, {359, 17, 8}})
 	table.insert(_q, {walk.walk, {359, 17, 19}})
@@ -2763,12 +2756,8 @@ local function _sequence_core()
 end
 
 local function _sequence_zemus()
-	-- Split in a full run.
-	if not TEST_MODE then
-		table.insert(_q, {bridge.split, {"Lunar Core"}})
-	end
-
 	-- Walk to the Zemus battle.
+	table.insert(_q, {bridge.split, {"Lunar Core"}})
 	table.insert(_q, {walk.walk, {366, 17, 9}})
 	table.insert(_q, {walk.walk, {366, 24, 9}})
 	table.insert(_q, {walk.walk, {366, 24, 12}})
@@ -2946,7 +2935,7 @@ function _M.reset(full_reset)
 		multi_change = false
 	}
 
-	if full_reset then
+	if FULL_RUN then
 		_sequence_new_game(seed)
 	end
 end

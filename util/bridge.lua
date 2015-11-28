@@ -53,7 +53,7 @@ end
 --------------------------------------------------------------------------------
 
 function _M.send(message)
-	if not _socket and not TEST_MODE then
+	if not _socket and FULL_RUN then
 		_connect()
 	end
 
@@ -64,10 +64,6 @@ function _M.send(message)
 end
 
 function _M.split(message)
-	if message == "Start" then
-		log.start()
-	end
-
 	log.log("Split: " .. message)
 
 	return _M.send("startorsplit")

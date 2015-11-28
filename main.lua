@@ -34,20 +34,45 @@ local walk = require "action.walk"
 -- Configuration
 --------------------------------------------------------------------------------
 
-TEST_MODE = false
+FULL_RUN = emu.framecount() == 1
 
-local SEED = nil
+local SEED = 0
 
 --------------------------------------------------------------------------------
 -- Functions
 --------------------------------------------------------------------------------
+
+local function _set_seed()
+	local seed = SEED
+
+	if not seed then
+		math.randomseed(os.time())
+		math.random()
+		math.random()
+		math.random()
+		seed = math.random(0, 2147483646)
+	end
+
+	math.randomseed(seed)
+	math.random()
+	math.random()
+	math.random()
+
+	return seed
+end
 
 local function _reset()
 	log.reset()
 
 	log.log("Edge Final Fantasy IV Speed Run Bot")
 	log.log("-----------------------------------")
-	log.log("Beginning New Run")
+
+	if FULL_RUN then
+		log.log("Beginning Full Run")
+		log.log(string.format("RNG Seed: %d", _set_seed()))
+	else
+		log.log("Beginning Test Mode")
+	end
 
 	bridge.reset()
 	menu.reset()
@@ -56,25 +81,7 @@ local function _reset()
 	dialog.reset()
 	battle.reset()
 
-	if not TEST_MODE then
-		local seed = SEED
-
-		if not seed then
-			math.randomseed(os.time())
-			math.random()
-			math.random()
-			math.random()
-			seed = math.random(0, 2147483646)
-		end
-
-		log.log(string.format("RNG Seed: %d", seed))
-		math.randomseed(seed)
-		math.random()
-		math.random()
-		math.random()
-	end
-
-	sequence.reset(not TEST_MODE)
+	sequence.reset()
 end
 
 --------------------------------------------------------------------------------

@@ -34,13 +34,17 @@ local _base_frame = nil
 --------------------------------------------------------------------------------
 
 local function _get_time()
-	local time = (emu.framecount() - _base_frame) / 60.0988
+	if _base_frame then
+		local time = (emu.framecount() - _base_frame) / 60.0988
 
-	return string.format("%s:%05.2f", os.date("!%H:%M", time), time % 60)
+		return string.format("%s:%05.2f", os.date("!%H:%M", time), time % 60)
+	else
+		return string.format("%11s", "-")
+	end
 end
 
 local function _log(message)
-	message = string.format("%s :: %s :: %s", os.date("!%Y-%m-%d %X+0000"), _get_time(), message)
+	message = string.format("%s :: %6s :: %s :: %s", os.date("!%Y-%m-%d %X+0000"), emu.framecount(), _get_time(), message)
 	console.log(message)
 
 	if _file then
@@ -78,8 +82,9 @@ function _M.reset()
 		_file = nil
 	end
 
-	_file, err = io.open(string.format("edge-%s.log", os.date("!%Y%m%d%H%M%S")), "w")
-	_base_frame = emu.framecount()
+	if FULL_RUN then
+		_file, err = io.open(string.format("edge-%s.log", os.date("!%Y%m%d%H%M%S")), "w")
+	end
 end
 
 return _M
