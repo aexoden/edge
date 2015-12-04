@@ -146,7 +146,7 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 		local underflow_target_hp = game.character.get_stat(underflow_target, "hp")
 		local underflow_target_mp = game.character.get_stat(underflow_target, "mp")
 
-		if undertarget_target_mp < 1000 then
+		if underflow_target_mp < 1000 then
 			-- Ensure the underflow target has at least 3 MP.
 		 	if underflow_target_hp == 0 or underflow_target_mp < 3 then
 				table.insert(stack, {menu.field.item.open, {}})
@@ -339,10 +339,64 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 	return true
 end
 
+local function _post_grind_menu()
+	local stack = {}
+	local heal = false
+	local duplicate = false
+
+	if game.character.get_stat(game.CHARACTER.EDGE, "hp") < 500 then
+		heal = true
+	end
+
+	if game.item.get_count(game.ITEM.WEAPON.EXCALBUR) <= 1 then
+		duplicate = true
+	end
+
+	if heal or duplicate then
+		table.insert(stack, {menu.field.open, {}})
+
+		if duplicate then
+			table.insert(stack, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.EXCALBUR}})
+			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.NONE}})
+			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.EXCALBUR}})
+			table.insert(stack, {menu.field.equip.close, {}})
+		end
+
+		table.insert(stack, {menu.field.item.open, {}})
+
+		if duplicate then
+			table.insert(stack, {menu.field.item.select, {nil, 0}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.WEAPON.EXCALBUR}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
+			table.insert(stack, {menu.field.item.select, {nil, 1}})
+		end
+
+		if heal then
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
+			table.insert(stack, {menu.field.item.select_character, {game.CHARACTER.EDGE}})
+		end
+
+		table.insert(stack, {menu.field.item.close, {}})
+		table.insert(stack, {menu.field.close, {}})
+	end
+
+	-- Add the queued commands to the primary command queue.
+	while #stack > 0 do
+		table.insert(_q, 1, table.remove(stack))
+	end
+end
+
 local function _state_set(key, value)
 	_state[key] = value
 
 	return true
+end
+
+local function _set_healing(f)
+	_state.check_healing = true
+	return _state_set("healing", f)
 end
 
 local function _set_initial_seed()
@@ -361,19 +415,32 @@ end
 -- Healing Strategies
 --------------------------------------------------------------------------------
 
-local function _healing_grind()
+local function _healing_baigan()
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp")
+	local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp")
+
+	if cecil_hp == 0 or cecil_hp + tellah_hp < 400 then
+		_restore_party({
+			[game.CHARACTER.CECIL] = _RESTORE.HP,
+			[game.CHARACTER.TELLAH] = _RESTORE.HP,
+		}, game.CHARACTER.TELLAH, true, true)
+	end
+
+	return true
+end
+
+local function _healing_calbrena()
 	for i = 0, 4 do
 		local hp = memory.read_stat(i, "hp")
 
-		if memory.read_stat(i, "hp") < memory.read_stat(i, "hp_max") * 0.8 then
+		if game.character.get_character(i) ~= game.CHARACTER.CID and memory.read_stat(i, "hp") < memory.read_stat(i, "hp_max") * 0.8 then
 			_restore_party({
 				[game.CHARACTER.CECIL] = _RESTORE.HP,
-				[game.CHARACTER.EDGE] = _RESTORE.HP,
-				[game.CHARACTER.FUSOYA] = _RESTORE.HP,
+				[game.CHARACTER.KAIN] = _RESTORE.HP,
 				[game.CHARACTER.ROSA] = _RESTORE.HP,
-				[game.CHARACTER.RYDIA] = _RESTORE.HP,
-			}, game.CHARACTER.FUSOYA, true, true)
-			
+				[game.CHARACTER.YANG] = _RESTORE.HP,
+			}, nil, true, true)
+
 			return true
 		end
 	end
@@ -381,16 +448,230 @@ local function _healing_grind()
 	return true
 end
 
-local function _healing_zot()
+local function _healing_dark_elf()
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp")
+	local cid_hp = game.character.get_stat(game.CHARACTER.CID, "hp")
+	local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp")
+
+	if cid_hp < 300 or cecil_hp + yang_hp + cid_hp < 1000 then
+		_restore_party({
+			[game.CHARACTER.CECIL] = _RESTORE.HP,
+			[game.CHARACTER.CID] = _RESTORE.HP,
+		}, nil, true, true)
+	end
+
+	return true
+end
+
+local function _healing_dr_lugae()
 	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp")
 	local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp")
 
-	if cecil_hp == 0 or cecil_hp + yang_hp < 1000 then
+	if cecil_hp == 0 or cecil_hp + yang_hp < 800 then
+		_restore_party({
+			[game.CHARACTER.CECIL] = _RESTORE.HP,
+			[game.CHARACTER.KAIN] = _RESTORE.HP,
+			[game.CHARACTER.ROSA] = _RESTORE.HP,
+			[game.CHARACTER.RYDIA] = _RESTORE.ALL,
+			[game.CHARACTER.YANG] = _RESTORE.HP,
+		}, nil, true, true)
+	end
+
+	return true
+end
+
+local function _healing_edge()
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp")
+	local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp")
+
+	if cecil_hp == 0 or cecil_hp + kain_hp < 800 then
+		_restore_party({
+			[game.CHARACTER.CECIL] = _RESTORE.HP,
+			[game.CHARACTER.KAIN] = _RESTORE.HP,
+			[game.CHARACTER.ROSA] = _RESTORE.HP,
+			[game.CHARACTER.RYDIA] = _RESTORE.HP,
+		}, nil, true, true)
+	end
+
+	return true
+end
+
+local function _healing_flamedog()
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp")
+	local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp")
+
+	if cecil_hp == 0 or cecil_hp + yang_hp < 600 then
 		_restore_party({
 			[game.CHARACTER.CECIL] = _RESTORE.HP,
 			[game.CHARACTER.TELLAH] = _RESTORE.HP,
 			[game.CHARACTER.YANG] = _RESTORE.LIFE,
 		}, game.CHARACTER.TELLAH, true, true)
+	end
+
+	return true
+end
+
+local function _healing_fusoya()
+	for i = 0, 4 do
+		local character = game.character.get_character(i)
+		local hp = memory.read_stat(i, "hp")
+
+		if character and hp < memory.read_stat(i, "hp_max") * 0.8 then
+			_restore_party({
+				[game.CHARACTER.CECIL] = _RESTORE.HP,
+				[game.CHARACTER.EDGE] = _RESTORE.HP,
+				[game.CHARACTER.ROSA] = _RESTORE.HP,
+				[game.CHARACTER.YANG] = _RESTORE.HP,
+			}, nil, true, true)
+
+			return true
+		end
+	end
+
+	return true
+end
+
+local function _healing_grind_start_1()
+	for i = 0, 4 do
+		local hp = memory.read_stat(i, "hp")
+
+		if hp < memory.read_stat(i, "hp_max") * 0.5 then
+			_restore_party({
+				[game.CHARACTER.CECIL] = _RESTORE.HP,
+				[game.CHARACTER.EDGE] = _RESTORE.HP,
+				[game.CHARACTER.FUSOYA] = _RESTORE.HP,
+				[game.CHARACTER.ROSA] = _RESTORE.HP,
+				[game.CHARACTER.YANG] = _RESTORE.HP,
+			}, game.CHARACTER.FUSOYA, true, true)
+
+			return true
+		end
+	end
+
+	return true
+end
+
+local function _healing_grind_start_2()
+	if game.character.get_stat(game.CHARACTER.EDGE, "level") >= 45 then
+		_post_grind_menu()
+	else
+		for i = 0, 4 do
+			local hp = memory.read_stat(i, "hp")
+
+			if hp < memory.read_stat(i, "hp_max") * 0.9 then
+				_restore_party({
+					[game.CHARACTER.CECIL] = _RESTORE.HP,
+					[game.CHARACTER.EDGE] = _RESTORE.HP,
+					[game.CHARACTER.FUSOYA] = _RESTORE.HP,
+					[game.CHARACTER.ROSA] = _RESTORE.HP,
+					[game.CHARACTER.RYDIA] = _RESTORE.HP,
+				}, game.CHARACTER.FUSOYA, true, true)
+
+				return true
+			end
+		end
+	end
+
+	return true
+end
+
+local function _healing_karate()
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp")
+	local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp")
+
+	if cecil_hp < 500 then
+		_restore_party({
+			[game.CHARACTER.CECIL] = _RESTORE.HP,
+			[game.CHARACTER.PALOM] = _RESTORE.HP,
+			[game.CHARACTER.POROM] = _RESTORE.HP,
+			[game.CHARACTER.TELLAH] = _RESTORE.HP,
+		}, nil, true, true)
+	end
+
+	return true
+end
+
+local function _healing_milon_1()
+	if game.character.get_stat(game.CHARACTER.CECIL, "hp") < 150 then
+		_restore_party({
+			[game.CHARACTER.CECIL] = _RESTORE.HP,
+			[game.CHARACTER.PALOM] = _RESTORE.ALL,
+			[game.CHARACTER.POROM] = _RESTORE.ALL,
+		}, nil, true, true)
+	end
+
+	return true
+end
+
+local function _healing_milon_2()
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp")
+	local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp")
+
+	if cecil_hp == 0 or cecil_hp + tellah_hp < 300 then
+		_restore_party({
+			[game.CHARACTER.CECIL] = _RESTORE.HP,
+			[game.CHARACTER.PALOM] = _RESTORE.ALL,
+			[game.CHARACTER.POROM] = _RESTORE.ALL,
+			[game.CHARACTER.TELLAH] = _RESTORE.HP,
+		}, nil, true, true)
+	end
+
+	return true
+end
+
+local function _healing_monsters()
+	for i = 0, 4 do
+		local hp = memory.read_stat(i, "hp")
+
+		if hp == 0 then
+			_restore_party({
+				[game.CHARACTER.CECIL] = _RESTORE.LIFE,
+				[game.CHARACTER.EDGE] = _RESTORE.HP,
+				[game.CHARACTER.KAIN] = _RESTORE.LIFE,
+				[game.CHARACTER.ROSA] = _RESTORE.LIFE,
+				[game.CHARACTER.RYDIA] = _RESTORE.LIFE,
+			}, nil, true, true)
+
+			return true
+		end
+	end
+
+	return true
+end
+
+local function _healing_rubicant()
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp")
+	local edge_hp = game.character.get_stat(game.CHARACTER.EDGE, "hp")
+
+	if edge_hp == 0 or cecil_hp < 400 then
+		_restore_party({
+			[game.CHARACTER.CECIL] = _RESTORE.HP,
+			[game.CHARACTER.EDGE] = _RESTORE.HP,
+			[game.CHARACTER.KAIN] = _RESTORE.HP,
+			[game.CHARACTER.ROSA] = _RESTORE.HP,
+			[game.CHARACTER.RYDIA] = _RESTORE.HP,
+		}, nil, true, true)
+	end
+
+	return true
+end
+
+local function _healing_subterrane()
+	for i = 0, 4 do
+		local character = game.character.get_character(i)
+		local hp = memory.read_stat(i, "hp")
+
+		if character == game.CHARACTER.EDGE and hp < 2000 or hp == 0 then
+			_restore_party({
+				[game.CHARACTER.CECIL] = _RESTORE.HP,
+				[game.CHARACTER.EDGE] = _RESTORE.HP,
+				[game.CHARACTER.KAIN] = _RESTORE.HP,
+				[game.CHARACTER.ROSA] = _RESTORE.HP,
+				[game.CHARACTER.RYDIA] = _RESTORE.HP,
+			}, nil, true, true)
+
+			return true
+		end
 	end
 
 	return true
@@ -1123,6 +1404,7 @@ end
 
 local function _sequence_milon()
 	-- Walk to Mt.Ordeals.
+	table.insert(_q, {_set_healing, {_healing_milon_1}})
 	table.insert(_q, {walk.walk, {22, 14, 12, true}})
 	table.insert(_q, {walk.walk, {3, 16, 31, true}})
 	table.insert(_q, {walk.walk, {nil, 157, 200}})
@@ -1156,6 +1438,7 @@ local function _sequence_milon()
 	table.insert(_q, {walk.walk, {133, 18, 8}})
 	table.insert(_q, {walk.walk, {133, 21, 8}})
 	table.insert(_q, {walk.walk, {133, 21, 7}})
+	table.insert(_q, {_set_healing, {_healing_milon_2}})
 	table.insert(_q, {walk.walk, {134, 23, 25}})
 	table.insert(_q, {walk.walk, {134, 19, 25}})
 	table.insert(_q, {walk.walk, {134, 19, 23}})
@@ -1203,6 +1486,7 @@ end
 
 local function _sequence_milon_z()
 	-- Heal and prepare the party.
+	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.ALL, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.PALOM}})
@@ -1227,6 +1511,7 @@ end
 local function _sequence_karate()
 	-- Leave Mt.Ordeals.
 	table.insert(_q, {walk.walk, {135, 6, 11}})
+	table.insert(_q, {_set_healing, {_healing_karate}})
 	table.insert(_q, {walk.walk, {135, 9, 11}})
 	table.insert(_q, {walk.walk, {135, 9, 10}})
 	table.insert(_q, {walk.walk, {135, 16, 10}})
@@ -1313,6 +1598,7 @@ end
 
 local function _sequence_baigan()
 	-- Walk to the Weapon/Armor shop and begin shopping.
+	table.insert(_q, {_set_healing, {_healing_baigan}})
 	table.insert(_q, {walk.walk, {11, 14, 21, true}})
 	table.insert(_q, {walk.walk, {0, 20, 27, true}})
 	table.insert(_q, {walk.walk, {0, 17, 27, true}})
@@ -1434,6 +1720,7 @@ end
 
 local function _sequence_kainazzo()
 	-- Heal the party as needed.
+	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.LIFE}}})
 	table.insert(_q, {menu.field.change, {}})
@@ -1458,6 +1745,7 @@ end
 
 local function _sequence_dark_elf()
 	-- Fly to Toroia and visit Edward.
+	table.insert(_q, {_set_healing, {_healing_dark_elf}})
 	table.insert(_q, {walk.walk, {nil, 36, 83}})
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {nil, 36, 82}})
@@ -1485,6 +1773,7 @@ local function _sequence_dark_elf()
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.TELLAH}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {menu.field.close, {}})
 	table.insert(_q, {walk.walk, {nil, 35, 70}})
 	table.insert(_q, {walk.walk, {nil, 43, 70}})
 	table.insert(_q, {walk.walk, {nil, 43, 54}})
@@ -1562,6 +1851,7 @@ end
 
 local function _sequence_flamedog()
 	-- Collect the crystal and return to the Clerics.
+	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {walk.walk, {148, 11, 9}})
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {148, 11, 26}})
@@ -1570,6 +1860,7 @@ local function _sequence_flamedog()
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.TELLAH}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {menu.field.close, {}})
 	table.insert(_q, {walk.walk, {nil, 74, 55}})
 	table.insert(_q, {walk.board, {}})
 	table.insert(_q, {walk.walk, {33, 8, 28}})
@@ -1593,10 +1884,11 @@ local function _sequence_flamedog()
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.TELLAH}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {menu.field.close, {}})
 	table.insert(_q, {walk.walk, {nil, 35, 83}})
+	table.insert(_q, {_set_healing, {_healing_flamedog}})
 	table.insert(_q, {walk.walk, {nil, 36, 83}})
 	table.insert(_q, {walk.board, {}})
-	table.insert(_q, {_state_set, {"healing", _healing_zot}})
 	table.insert(_q, {walk.walk, {152, 17, 24}})
 	table.insert(_q, {walk.walk, {152, 17, 26}})
 	table.insert(_q, {walk.walk, {152, 28, 26}})
@@ -1619,7 +1911,6 @@ end
 
 local function _sequence_magus_sisters()
 	-- Walk to the top floor of the tower.
-	table.insert(_q, {_state_set, {"healing", _healing_zot}})
 	table.insert(_q, {walk.walk, {153, 8, 20}})
 	table.insert(_q, {walk.walk, {153, 2, 20}})
 	table.insert(_q, {walk.walk, {153, 2, 13}})
@@ -1673,7 +1964,6 @@ local function _sequence_magus_sisters()
 
 	-- Prepare the party for battle.
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.LIFE}, game.CHARACTER.TELLAH, true}})
-	table.insert(_q, {_state_set, {"healing", nil}})
 
 	-- Engage the sisters.
 	table.insert(_q, {walk.walk, {157, 15, 17}})
@@ -1681,6 +1971,7 @@ end
 
 local function _sequence_valvalis()
 	-- Walk to the Golbez cut scene.
+	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {walk.walk, {157, 15, 15}})
 	table.insert(_q, {walk.walk, {158, 10, 16}})
 	table.insert(_q, {walk.walk, {158, 10, 10}})
@@ -1720,6 +2011,7 @@ end
 
 local function _sequence_calbrena()
 	-- Leave the castle and board the airship.
+	table.insert(_q, {_set_healing, {_healing_calbrena}})
 	table.insert(_q, {walk.walk, {52, 9, 4}})
 	table.insert(_q, {walk.walk, {51, 5, 4}})
 	table.insert(_q, {walk.walk, {50, 5, 9}})
@@ -1772,7 +2064,9 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+	table.insert(_q, {menu.field.close, {}})
 	table.insert(_q, {walk.walk, {269, 9, 8}})
+	table.insert(_q, {_set_healing, {_healing_dr_lugae}})
 	table.insert(_q, {walk.interact, {}})
 
 	-- Walk to the right tower and collect the Strength ring.
@@ -1996,6 +2290,7 @@ end
 
 local function _sequence_edge()
 	-- Leave the Tower of Bab-il.
+	table.insert(_q, {_set_healing, {_healing_edge}})
 	table.insert(_q, {walk.walk, {293, 16, 24}})
 	table.insert(_q, {walk.walk, {293, 7, 24}})
 	table.insert(_q, {walk.walk, {293, 7, 22}})
@@ -2173,6 +2468,7 @@ end
 
 local function _sequence_rubicant()
 	-- Equip the CatClaws on Edge and change party formation.
+	table.insert(_q, {_set_healing, {_healing_rubicant}})
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.EDGE}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.CLAW.CATCLAW}})
@@ -2266,8 +2562,6 @@ end
 
 local function _sequence_monsters()
 	-- Exit the Tower of Bab-il.
-	-- TODO: Replace this with a healing strategy.
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.KAIN] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP}, nil, true}})
 	table.insert(_q, {walk.walk, {172, 14, 15}})
 	table.insert(_q, {walk.walk, {171, 16, 20}})
 	table.insert(_q, {walk.walk, {171, 16, 20}})
@@ -2314,6 +2608,7 @@ local function _sequence_monsters()
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.CECIL}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {menu.field.close, {}})
 
 	-- Board the airship and fly to just outside the Land of Monsters.
 	table.insert(_q, {walk.walk, {nil, 98, 82}})
@@ -2329,6 +2624,7 @@ end
 
 local function _sequence_dark_crystal()
 	-- Attempt to walk through the Land of Monsters.
+	table.insert(_q, {_set_healing, {_healing_monsters}})
 	table.insert(_q, {_state_set, {"auto_reload", true}})
 	table.insert(_q, {walk.walk, {nil, 27, 86}})
 	table.insert(_q, {walk.walk, {310, 17, 22}})
@@ -2385,6 +2681,7 @@ local function _sequence_dark_crystal()
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.CECIL}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {menu.field.close, {}})
 	table.insert(_q, {walk.walk, {nil, 27, 87}})
 	table.insert(_q, {walk.board, {}})
 	table.insert(_q, {walk.walk, {nil, 46, 110}})
@@ -2411,6 +2708,7 @@ local function _sequence_big_whale()
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.CECIL}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
+	table.insert(_q, {menu.field.close, {}})
 	table.insert(_q, {walk.walk, {nil, 100, 83}})
 	table.insert(_q, {walk.board, {}})
 	table.insert(_q, {walk.walk, {nil, 112, 17}})
@@ -2456,6 +2754,7 @@ end
 
 local function _sequence_fusoya()
 	-- Get the Excalbur.
+	table.insert(_q, {_set_healing, {_healing_fusoya}})
 	table.insert(_q, {walk.board, {}})
 	table.insert(_q, {walk.walk, {nil, 106, 211}})
 	table.insert(_q, {walk.interact, {}})
@@ -2566,6 +2865,7 @@ end
 
 local function _sequence_grind_start()
 	-- Walk back to the Big Whale.
+	table.insert(_q, {_set_healing, {_healing_grind_start_1}})
 	table.insert(_q, {walk.walk, {352, 16, 29}})
 	table.insert(_q, {walk.walk, {nil, 28, 29}})
 	table.insert(_q, {walk.walk, {nil, 34, 29}})
@@ -2680,7 +2980,7 @@ local function _sequence_grind_start()
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Walk to just before the elements battle.
-	table.insert(_q, {_state_set, {"healing", _healing_grind}})
+	table.insert(_q, {_set_healing, {_healing_grind_start_2}})
 	table.insert(_q, {walk.walk, {186, 3, 23}})
 	table.insert(_q, {walk.walk, {186, 4, 23}})
 	table.insert(_q, {walk.walk, {186, 4, 25}})
@@ -2704,25 +3004,13 @@ local function _sequence_elements()
 		table.insert(_q, {walk.walk, {188, 15, 17}})
 		table.insert(_q, {walk.walk, {188, 15, 16}})
 	else
-		table.insert(_q, {menu.field.open, {}})
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.EXCALBUR}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.NONE}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.EXCALBUR}})
-		table.insert(_q, {menu.field.equip.close, {}})
-		table.insert(_q, {menu.field.item.open, {}})
-		table.insert(_q, {menu.field.item.select, {nil, 0}})
-		table.insert(_q, {menu.field.item.select, {game.ITEM.WEAPON.EXCALBUR}})
-		table.insert(_q, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
-		table.insert(_q, {menu.field.item.select, {nil, 1}})
-		table.insert(_q, {menu.field.item.close, {}})
-		table.insert(_q, {menu.field.close, {}})
-		table.insert(_q, {_state_set, {"healing", nil}})
+		_post_grind_menu()
 		table.insert(_q, {walk.walk, {188, 15, 15}})
 	end
 end
 
 local function _sequence_cpu()
+	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {walk.walk, {188, 15, 14}})
 
 	-- Do the post-battle menu.
@@ -2745,6 +3033,7 @@ end
 
 local function _sequence_subterrane()
 	-- Fly to the Lunar Path.
+	table.insert(_q, {_set_healing, {_healing_subterrane}})
 	table.insert(_q, {walk.board, {}})
 	table.insert(_q, {walk.walk, {303, 5, 13}})
 	table.insert(_q, {walk.walk, {303, 5, 7}})
@@ -3073,6 +3362,7 @@ local function _check_sequence()
 			if map_area == sequence.map_area and (not sequence.map_id or map_id == sequence.map_id) and map_x == sequence.map_x and map_y == sequence.map_y then
 				log.log(string.format("Sequence: %s", sequence.title))
 				sequence.f()
+				_state.check_healing = true
 			end
 		end
 	end
@@ -3090,7 +3380,7 @@ function _M.cycle()
 		local command = _q[1]
 
 		if command then
-			if _state.check_healing and _state.healing and command[1] == walk.walk then
+			if _state.check_healing and _state.healing and command[1] == walk.walk and not walk.is_mid_tile() and walk.is_ready() then
 				_state.healing()
 				_state.check_healing = false
 			else

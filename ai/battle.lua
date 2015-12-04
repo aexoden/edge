@@ -661,7 +661,7 @@ local function _battle_grind(character, turn)
 		-- Change phases on FuSoYa's turn or at the end of the cycle if he's dead.
 		if _state.phase == PHASE.SETUP and _state.character_index == 0 and _state.setup_complete then
 			_state.phase = PHASE.GRIND
-		elseif _state.phase == PHASE.GRIND and (weakest[2] == 0 or fusoya_hp <= 760) then
+		elseif _state.phase == PHASE.GRIND and (weakest[2] == 0 or fusoya_hp <= 760 or game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 25) then
 			_state.phase = PHASE.HEAL
 			_state.dragon_hp = dragon_hp
 			_state.waited = nil
@@ -681,8 +681,13 @@ local function _battle_grind(character, turn)
 				if character == game.CHARACTER.FUSOYA then
 					_command_black(game.MAGIC.BLACK.QUAKE)
 				elseif character == game.CHARACTER.RYDIA then
-					_command_wait_text(" Quake")
-					_command_parry()
+					if game.enemy.get_stat(2, "hp") == 0 then
+						_command_parry()
+					else
+						_command_wait_text(" Quake")
+						_command_parry()
+					end
+
 					_state.setup_complete = true
 				else
 					_command_parry()
@@ -703,7 +708,7 @@ local function _battle_grind(character, turn)
 			elseif type == game.battle.TYPE.STRIKE_FIRST then
 				if character == game.CHARACTER.FUSOYA then
 					if turn == 1 then
-						_command_black(game.MAGIC.BLACK.LIT3, 3)
+						_command_black(game.MAGIC.BLACK.LIT3, menu.battle.TARGET.ENEMY, 3)
 					elseif turn == 2 then
 						_command_black(game.MAGIC.BLACK.QUAKE)
 					end
@@ -736,18 +741,18 @@ local function _battle_grind(character, turn)
 					return true
 				end
 			elseif _state.character_index == 1 then
-				if _state.waited then
-					if dialog.get_battle_text(5) == " ..Id" then
+				--if _state.waited then
+				--	if dialog.get_battle_text(5) == " ..Id" then
 						--_command_wait_frames(30)
-					end
+				--	end
 
 					_command_fight()
-					_state.waited = nil
-				else
-					_command_wait_text(" ..Id", 15)
-					_state.waited = true
-					return true
-				end
+				--	_state.waited = nil
+				--else
+				--	_command_wait_text(" ..Id", 15)
+				--	_state.waited = true
+				--	return true
+				--end
 			elseif _state.character_index == 2 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.ENEMY, 1)
 			elseif _state.character_index == 3 then
@@ -937,17 +942,25 @@ local function _battle_lugae1(character, turn)
 		_command_jump(menu.battle.TARGET.ENEMY, 0)
 	elseif character == game.CHARACTER.ROSA then
 		local index = nil
+		local dead = false
 
 		for i = 0, 4 do
-			if memory.read_stat(i, "hp", true) < memory.read_stat(i, "hp_max", true) and bit.band(memory.read_stat(i, "status", true), game.STATUS.CRITICAL) == 0 then
+			if memory.read_stat(i, "hp", true) == 0 then
+				index = i
+				dead = true
+			elseif memory.read_stat(i, "hp", true) < memory.read_stat(i, "hp_max", true) and bit.band(memory.read_stat(i, "status", true), game.STATUS.CRITICAL) == 0 then
 				index = i
 			end
 		end
 
 		if index then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.PARTY, index)
+			if dead then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, index)
+			else
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.PARTY, index)
+			end
 		elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 650 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGEt.CHARACTER, game.CHARACTER.CECIL)
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 		else
 			_command_parry()
 		end
@@ -963,9 +976,19 @@ local function _battle_lugae1(character, turn)
 end
 
 local function _battle_lugae2(character, turn)
+	local lowest = {nil, 99999}
+
+	for i = 0, 4 do
+		local hp = memory.read_stat(i, "hp", true)
+
+		if hp < memory.read_stat(i, "hp_max", true) and hp < lowest[2] then
+			lowest = {i, hp}
+		end
+	end
+
 	if character == game.CHARACTER.CECIL then
-		if game.character.get_stat(game.CHARACTER.ROSA, "hp", true) == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		if lowest[2] == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
 		else
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 		end
@@ -979,21 +1002,12 @@ local function _battle_lugae2(character, turn)
 			return true
 		end
 
-		local lowest = {nil, 99999}
-
-		for i = 0, 4 do
-			local hp = memory.read_stat(i, "hp", true)
-
-			if hp == 0 then
-				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, i)
-				break
-			elseif hp < memory.read_stat(i, "hp_max", true) and hp < lowest[2] then
-				lowest = {i, hp}
-			end
-		end
-
 		if lowest[1] then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.PARTY, lowest[1])
+			if lowest[2] == 0 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
+			else
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.PARTY, lowest[1])
+			end
 		else
 			_command_parry()
 		end

@@ -363,6 +363,28 @@ function _M.enemy.get_weakest(enemy)
 	return weakest[1]
 end
 
+function _M.item.get_count(item, inventory)
+	local category
+
+	if inventory == _M.INVENTORY.BATTLE then
+		category = "battle_menu"
+	elseif inventory == _M.INVENTORY.DIALOG then
+		category = "dialog"
+	else
+		category = "menu_item"
+	end
+
+	local count = 0
+
+	for i = 0, 47 do
+		if memory.read(category, "item_id", i) == item then
+			count = count + memory.read(category, "item_count")
+		end
+	end
+
+	return count
+end
+
 function _M.item.get_index(item, index, inventory)
 	local category, key
 
