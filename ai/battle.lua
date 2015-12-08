@@ -36,6 +36,7 @@ local sequence = require "ai.sequence"
 --------------------------------------------------------------------------------
 
 _M.FORMATION = {
+	MAGE     = 96,
 	GRIND    = 200,
 	ELEMENTS = 220,
 	CPU      = 221,
@@ -1018,6 +1019,12 @@ local function _battle_lugae2(character, turn)
 	end
 end
 
+local function _battle_mages(character, turn)
+	if not game.character.is_status(game.CHARACTER.CID, game.STATUS.PARALYZE) then
+		return _command_run()
+	end
+end
+
 local function _battle_milon(character, turn)
 	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
 	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
@@ -1396,6 +1403,7 @@ local _formations = {
 	[_M.FORMATION.KARATE]   = {title = "Karate",              f = _battle_karate,   split = true},
 	[_M.FORMATION.LUGAE1]   = {title = "Dr.Lugae/Balnab",     f = _battle_lugae1,   split = true},
 	[_M.FORMATION.LUGAE2]   = {title = "Dr.Lugae",            f = _battle_lugae2,   split = true},
+	[_M.FORMATION.MAGE]     = {title = "Mages",               f = _battle_mages,    split = false},
 	[_M.FORMATION.MILON]    = {title = "Milon",               f = _battle_milon,    split = true},
 	[_M.FORMATION.MILON_Z]  = {title = "Milon Z.",            f = _battle_milon_z,  split = true},
 	[_M.FORMATION.MOMBOMB]  = {title = "MomBomb",             f = _battle_mombomb,  split = true},
