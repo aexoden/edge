@@ -538,7 +538,7 @@ local function _healing_grind_start_1()
 		if hp < memory.read_stat(i, "hp_max") * 0.5 then
 			_restore_party({
 				[game.CHARACTER.CECIL] = _RESTORE.HP,
-				[game.CHARACTER.EDGE] = _RESTORE.HP,
+				[game.CHARACTER.EDGE] = _RESTORE.ALL,
 				[game.CHARACTER.FUSOYA] = _RESTORE.HP,
 				[game.CHARACTER.ROSA] = _RESTORE.HP,
 				[game.CHARACTER.YANG] = _RESTORE.HP,
@@ -561,7 +561,7 @@ local function _healing_grind_start_2()
 			if hp < memory.read_stat(i, "hp_max") * 0.9 then
 				_restore_party({
 					[game.CHARACTER.CECIL] = _RESTORE.HP,
-					[game.CHARACTER.EDGE] = _RESTORE.HP,
+					[game.CHARACTER.EDGE] = _RESTORE.ALL,
 					[game.CHARACTER.FUSOYA] = _RESTORE.HP,
 					[game.CHARACTER.ROSA] = _RESTORE.HP,
 					[game.CHARACTER.RYDIA] = _RESTORE.HP,
@@ -2962,7 +2962,7 @@ local function _sequence_grind_start()
 
 	-- Do the pre-grind fight menu.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP}, game.CHARACTER.FUSOYA}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.ALL, [game.CHARACTER.FUSOYA] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP}, game.CHARACTER.FUSOYA}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.RYDIA}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
 	table.insert(_q, {menu.field.equip.close, {}})

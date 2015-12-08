@@ -247,7 +247,7 @@ end
 --------------------------------------------------------------------------------
 
 function _M.field.is_open()
-	return memory.read("menu", "state") == 170
+	return memory.read("menu", "state") == 170 and not dialog.is_dialog()
 end
 
 function _M.field.custom.is_open()

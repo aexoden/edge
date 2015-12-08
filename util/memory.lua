@@ -156,6 +156,7 @@ local _addresses = {
 		height_lower        = {f = mainmemory.read_u8,     address = 0x0006DA, record_size = {0x01, 0x01}},
 		item_id             = {f = mainmemory.read_u8,     address = 0x000712, record_size = {0x02, 0x01}},
 		item_count          = {f = mainmemory.read_u8,     address = 0x000713, record_size = {0x02, 0x01}},
+		spoils_item         = {f = mainmemory.read_u8,     address = 0x001804, record_size = {0x01, 0x01}},
 		spoils_state        = {f = mainmemory.read_u8,     address = 0x001BC6, record_size = {0x01, 0x01}},
 		text                = {f = _read_character,        address = 0x000774, record_size = {0x01, 0x01}},
 	},

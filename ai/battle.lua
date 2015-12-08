@@ -1508,6 +1508,10 @@ function _M.cycle()
 				gp = memory.read("battle", "dropped_gp")
 			end
 
+			if memory.read("dialog", "spoils_item", 0) ~= game.ITEM.NONE then
+				dialog.set_pending_spoils()
+			end
+
 			local stats = string.format("%d/%d frames/%d GP dropped", _state.index, emu.framecount() - _state.frame, gp)
 
 			log.log(string.format("Battle Complete: %s (%s)", _state.formation.title, stats))

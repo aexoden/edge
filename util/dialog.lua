@@ -32,6 +32,7 @@ local memory = require "util.memory"
 --------------------------------------------------------------------------------
 
 local _mash_button = "P1 A"
+local _pending_spoils
 
 --------------------------------------------------------------------------------
 -- Dialog Splits
@@ -70,22 +71,28 @@ local function _get_text(category, key, base, characters)
 	return text
 end
 
-local function _is_dialog()
+--------------------------------------------------------------------------------
+-- Public Functions
+--------------------------------------------------------------------------------
+
+function _M.is_dialog()
 	local battle_dialog_state = memory.read("battle_dialog", "state")
 	local dialog_height = memory.read("dialog", "height")
 	local dialog_state = memory.read("dialog", "state")
 	local dialog_prompt = memory.read("dialog", "prompt")
 	local spoils = memory.read("dialog", "spoils_state") > 0
 
-	return battle_dialog_state == 1 or spoils or dialog_height == 7 or (dialog_height > 0 and (dialog_state == 0 or dialog_prompt == 0))
+	if _pending_spoils == 1 and spoils then
+		_pending_spoils = 2
+	elseif _pending_spoils == 2 and memory.read("menu", "state") == 0 then
+		_pending_spoils = nil
+	end
+
+	return battle_dialog_state == 1 or spoils or _pending_spoils or dialog_height == 7 or (dialog_height > 0 and (dialog_state == 0 or dialog_prompt == 0))
 end
 
---------------------------------------------------------------------------------
--- Public Functions
---------------------------------------------------------------------------------
-
 function _M.cycle()
-	if _is_dialog() then
+	if _M.is_dialog() then
 		local text = _M.get_text(8)
 
 		if _splits[text] and not _splits[text].done then
@@ -130,6 +137,10 @@ end
 function _M.set_mash_button(mash_button)
 	_mash_button = mash_button
 	return true
+end
+
+function _M.set_pending_spoils()
+	_pending_spoils = 1
 end
 
 return _M
