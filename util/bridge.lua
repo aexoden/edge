@@ -23,7 +23,10 @@
 local _M = {}
 
 local log = require "util.log"
-local socket = require "socket"
+
+if LIVESPLIT then
+	local socket = require "socket"
+end
 
 --------------------------------------------------------------------------------
 -- Variables
@@ -53,13 +56,15 @@ end
 --------------------------------------------------------------------------------
 
 function _M.send(message)
-	if not _socket and FULL_RUN then
+	if not _socket and FULL_RUN and LIVESPLIT then
 		_connect()
 	end
 
 	if _socket then
 		_socket:send(message .. "\r\n")
 		return true
+	else
+		return not (LIVESPLIT and FULL_RUN)
 	end
 end
 

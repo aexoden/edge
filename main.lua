@@ -20,6 +20,20 @@
 -- THE SOFTWARE.
 --------------------------------------------------------------------------------
 
+--------------------------------------------------------------------------------
+-- Configuration
+--------------------------------------------------------------------------------
+
+-- Specify a number to do a specific run. Set this value to nil to do random runs.
+SEED = nil
+
+-- Enable/Disable LiveSplit integration (requires luasocket and LiveSplit)
+LIVESPLIT = false
+
+--------------------------------------------------------------------------------
+-- Setup
+--------------------------------------------------------------------------------
+
 local battle = require "ai.battle"
 local bridge = require "util.bridge"
 local dialog = require "util.dialog"
@@ -30,13 +44,7 @@ local menu = require "action.menu"
 local sequence = require "ai.sequence"
 local walk = require "action.walk"
 
---------------------------------------------------------------------------------
--- Configuration
---------------------------------------------------------------------------------
-
 FULL_RUN = emu.framecount() == 1
-
-local SEED = 0
 
 --------------------------------------------------------------------------------
 -- Functions
