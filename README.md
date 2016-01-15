@@ -33,11 +33,11 @@ EXACT SETUP.
 
 ## Usage
 
-1) Ensure the SRAM file is cleared. (The easiest way to do this is to load the
+1. Ensure the SRAM file is cleared. (The easiest way to do this is to load the
    Final Fantasy II ROM image, right click on the display, and choose "Close and
    Clear SRAM".)
-2) Open the Final Fantasy II ROM image.
-3) Ensure the emulator is not paused.
-3) Open the BizHawk Lua Console, and load main.lua.
-4) From BizHawk's "Emulation" menu, choose "Reboot Core". The script should
+2. Open the Final Fantasy II ROM image.
+3. Ensure the emulator is not paused.
+4. Open the BizHawk Lua Console, and load main.lua.
+5. From BizHawk's "Emulation" menu, choose "Reboot Core". The script should
    begin a run from the beginning.
