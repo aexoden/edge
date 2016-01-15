@@ -511,7 +511,11 @@ local function _battle_elements(character, turn)
 
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
-			_command_cover(game.CHARACTER.ROSA)
+			if weakest[1] ~= game.CHARACTER.CECIL and weakest[2] < 1300 then
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.PARTY, weakest[1])
+			else
+				_command_cover(game.CHARACTER.ROSA)
+			end
 		else
 			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.PARTY, weakest[1])
 		end
