@@ -94,6 +94,7 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 	local cure_count = 0
 	local max_count = 0
 	local life = {}
+	local heal = {}
 	local target_hp = {}
 	local target_mp = {}
 	local close_menu = false
@@ -130,6 +131,10 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 					if target_mp[character] <= 0 then
 						target_mp[character] = nil
 					end
+				end
+
+				if game.character.is_status(character, game.STATUS.POISON) then
+					heal[character] = true
 				end
 			end
 		end
@@ -266,6 +271,17 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 				if target_hp[character] <= 0 then
 					target_hp[character] = nil
 				end
+			end
+		end
+
+		-- Use Heal items on anyone selected for healing.
+		for character, hp in pairs(target_hp) do
+			if heal[character] then
+				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.HEAL}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.HEAL}})
+				table.insert(stack, {menu.field.item.select_character, {character}})
+
+				heal[character] = nil
 			end
 		end
 
