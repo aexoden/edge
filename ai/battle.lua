@@ -1101,7 +1101,9 @@ local function _battle_mombomb(character, turn)
 			local count = 0, last
 
 			for i = 0, 4 do
-				if memory.read_stat(i, "hp", true) < memory.read_stat(i, "hp_max", true) * 0.8 then
+				local hp = memory.read_stat(i, "hp", true)
+
+				if hp < memory.read_stat(i, "hp_max", true) and hp < 150 then
 					count = count + 1
 					last = i
 				end
