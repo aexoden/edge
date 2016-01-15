@@ -1090,6 +1090,8 @@ local function _battle_milon_z(character, turn)
 end
 
 local function _battle_mombomb(character, turn)
+	local kicked = false
+
 	if game.enemy.get_stat(0, "hp") > 10000 then
 		if character == game.CHARACTER.CECIL or character == game.CHARACTER.YANG then
 			_command_fight()
@@ -1113,11 +1115,12 @@ local function _battle_mombomb(character, turn)
 				_command_parry()
 			end
 		end
-	elseif game.enemy.get_stat(0, "hp") > 0 then
+	elseif not kicked and game.enemy.get_stat(0, "hp") > 0 then
 		if character == game.CHARACTER.YANG then
 			_command_wait_text("Ex")
 			_command_wait_frames(60)
 			_command_kick()
+			kicked = true
 		else
 			_command_parry()
 		end
