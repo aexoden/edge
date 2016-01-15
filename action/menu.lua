@@ -182,15 +182,15 @@ end
 local function _select_single_column(current, target, midpoint, buttons)
 	if target < current then
 		if current - target <= midpoint then
-			input.press({buttons[1]}, input.DELAY.NORMAL)
+			input.press({buttons[1]}, input.DELAY.MASH)
 		else
-			input.press({buttons[2]}, input.DELAY.NORMAL)
+			input.press({buttons[2]}, input.DELAY.MASH)
 		end
 	elseif target > current then
 		if target - current <= midpoint then
-			input.press({buttons[2]}, input.DELAY.NORMAL)
+			input.press({buttons[2]}, input.DELAY.MASH)
 		else
-			input.press({buttons[1]}, input.DELAY.NORMAL)
+			input.press({buttons[1]}, input.DELAY.MASH)
 		end
 	end
 end
@@ -206,15 +206,15 @@ end
 local function _select_multi_column(current, target, columns)
 	if target < current then
 		if (current - target) % columns ~= 0 then
-			input.press({"P1 Left"}, input.DELAY.NORMAL)
+			input.press({"P1 Left"}, input.DELAY.MASH)
 		else
-			input.press({"P1 Up"}, input.DELAY.NORMAL)
+			input.press({"P1 Up"}, input.DELAY.MASH)
 		end
 	elseif target > current then
 		if (target - current) % columns ~= 0 then
-			input.press({"P1 Right"}, input.DELAY.NORMAL)
+			input.press({"P1 Right"}, input.DELAY.MASH)
 		else
-			input.press({"P1 Down"}, input.DELAY.NORMAL)
+			input.press({"P1 Down"}, input.DELAY.MASH)
 		end
 	end
 end
@@ -232,13 +232,13 @@ local function _select_magic(current, target)
 	end
 
 	if dx > 0 then
-		input.press({"P1 Right"}, input.DELAY.NORMAL)
+		input.press({"P1 Right"}, input.DELAY.MASH)
 	elseif dx < 0 then
-		input.press({"P1 Left"}, input.DELAY.NORMAL)
+		input.press({"P1 Left"}, input.DELAY.MASH)
 	elseif dy > 0 then
-		input.press({"P1 Down"}, input.DELAY.NORMAL)
+		input.press({"P1 Down"}, input.DELAY.MASH)
 	elseif dy < 0 then
-		input.press({"P1 Up"}, input.DELAY.NORMAL)
+		input.press({"P1 Up"}, input.DELAY.MASH)
 	end
 end
 
