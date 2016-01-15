@@ -2066,13 +2066,13 @@ end
 
 local function _sequence_dr_lugae()
 	-- Cast Warp and get the crystal.
+	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 	table.insert(_q, {menu.field.close, {}})
 	table.insert(_q, {walk.walk, {269, 9, 8}})
-	table.insert(_q, {_set_healing, {_healing_dr_lugae}})
 	table.insert(_q, {walk.interact, {}})
 
 	-- Walk to the right tower and collect the Strength ring.
@@ -2143,6 +2143,7 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.step, {walk.DIRECTION.LEFT}})
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {271, 3, 14}})
+	table.insert(_q, {_set_healing, {_healing_dr_lugae}})
 
 	-- Walk to the Tower of Bab-il
 	table.insert(_q, {walk.walk, {nil, 91, 85}})
