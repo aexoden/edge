@@ -2682,7 +2682,7 @@ local function _sequence_dark_crystal()
 	table.insert(_q, {walk.walk, {312, 29, 26}})
 	table.insert(_q, {walk.walk, {312, 29, 14}})
 	table.insert(_q, {walk.walk, {312, 18, 14}})
-	table.insert(_q, {_state_set, {"auto_reload", false}})
+	table.insert(_q, {_state_set, {"auto_reload", nil}})
 
 	-- Walk to the Rat tail chest.
 	table.insert(_q, {walk.walk, {314, 9, 14, true}})
@@ -3370,7 +3370,7 @@ local function _check_autoreload()
 		table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
 		table.insert(_q, {menu.confirm, {}})
 
-		_state.auto_reload = false
+		_state.auto_reload = nil
 	end
 end
 
