@@ -2908,7 +2908,8 @@ local function _sequence_edge()
 	-- Fly to Castle Baron and get the hook installed.
 	table.insert(_q, {walk.walk, {nil, 102, 158}})
 	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {menu.wait, {180}})
+	-- TODO: See if there's a better way to do this.
+	table.insert(_q, {menu.wait, {240}})
 	table.insert(_q, {walk.walk, {nil, 102, 157}})
 	table.insert(_q, {walk.walk, {36, 16, 29}})
 	table.insert(_q, {walk.walk, {36, 14, 29}})
