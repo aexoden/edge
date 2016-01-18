@@ -980,7 +980,9 @@ function _M.battle.target(target, index, wait, delay)
 		end
 
 		if not index or cursor == index then
-			return input.press({"P1 A"}, delay)
+			input.press({"P1 A"}, delay)
+
+			_state.pressed = true
 		else
 			if index == _M.battle.TARGET.PARTY_ALL or (cursor < _M.battle.TARGET.PARTY and index >= _M.battle.TARGET.PARTY and index < _M.battle.TARGET.PARTY_ALL) then
 				input.press(right, delay)
@@ -1012,6 +1014,9 @@ function _M.battle.target(target, index, wait, delay)
 				end
 			end
 		end
+	elseif _state.pressed then
+		_state.pressed = nil
+		return true
 	end
 
 	return false
