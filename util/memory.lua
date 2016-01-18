@@ -248,6 +248,7 @@ local _addresses = {
 	walk = {
 		direction           = {f = mainmemory.read_u8,     address = 0x001705, record_size = {0x01, 0x01}},
 		frames              = {f = mainmemory.read_u8,     address = 0x00067B, record_size = {0x01, 0x01}},
+		index               = {f = mainmemory.read_u8,     address = 0x000686, record_size = {0x01, 0x01}},
 		map_area            = {f = mainmemory.read_u8,     address = 0x001700, record_size = {0x01, 0x01}},
 		map_id              = {f = mainmemory.read_u16_be, address = 0x001701, record_size = {0x01, 0x01}},
 		seed                = {f = mainmemory.read_u8,     address = 0x0017EF, record_size = {0x01, 0x01}},

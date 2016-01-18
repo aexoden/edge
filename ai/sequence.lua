@@ -29,6 +29,7 @@ local input = require "util.input"
 local log = require "util.log"
 local memory = require "util.memory"
 local menu = require "action.menu"
+local route = require "util.route"
 local walk = require "action.walk"
 
 --------------------------------------------------------------------------------
@@ -51,7 +52,12 @@ _M.state = {
 }
 
 local _q = nil
+local _route = {}
 local _state = {}
+
+for i = 0, 56 do
+	_route[i] = 0
+end
 
 --------------------------------------------------------------------------------
 -- Private Functions
@@ -86,7 +92,47 @@ local function _log_prologue()
 end
 
 local function _log_seed()
-	return log.log(string.format("New Seed: %d", memory.read("walk", "seed")))
+	local seed = memory.read("walk", "seed")
+
+	_route = route.routes.no64.excalbur[seed]
+
+	for i = 0, 56 do
+		if not _route[i] then
+			_route[i] = 0
+		end
+	end
+
+	return log.log(string.format("New Seed: %d", seed))
+end
+
+local function _hummingway_start()
+	_state.target_index = (memory.read("walk", "index") + 16 + _route[42]) % 256
+
+	return true
+end
+
+local function _hummingway_finish()
+	local stack = {}
+	local index = memory.read("walk", "index")
+
+	while index ~= _state.target_index and index ~= _state.target_index - 1 do
+		table.insert(stack, {walk.walk, {357, 11, 16}})
+		table.insert(stack, {walk.walk, {357, 10, 16}})
+		index = (index + 2) % 256
+	end
+
+	_state.target_index = nil
+
+	-- Add the queued commands to the primary command queue.
+	while #stack > 0 do
+		if immediate then
+			table.insert(_q, 1, table.remove(stack))
+		else
+			table.insert(_q, 2, table.remove(stack))
+		end
+	end
+
+	return true
 end
 
 local function _restore_party(characters, underflow_target, open_menu, immediate)
@@ -992,6 +1038,19 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {112, 2, 17}})
 	table.insert(_q, {walk.walk, {84, 4, 10}})
 
+	-- Step Route: Watery Pass-South Save Room
+	if _route[0] % 2 == 1 then
+		table.insert(_q, {walk.walk, {84, 4, 6}})
+		table.insert(_q, {walk.walk, {84, 4, 7}})
+	end
+
+	table.insert(_q, {walk.walk, {84, 4, 4}})
+
+	for i = 1, _route[0] / 2 do
+		table.insert(_q, {walk.walk, {84, 5, 4}})
+		table.insert(_q, {walk.walk, {84, 4, 4}})
+	end
+
 	-- Walk to the Darkness sword chest.
 	table.insert(_q, {walk.walk, {84, 4, 2}})
 	table.insert(_q, {walk.walk, {112, 2, 8}})
@@ -1012,6 +1071,13 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {113, 7, 18}})
 	table.insert(_q, {walk.walk, {113, 7, 17}})
 	table.insert(_q, {walk.walk, {113, 6, 17}})
+
+	-- Step Route: Watery Pass-South B3F
+	for i = 1, _route[1] / 2 do
+		table.insert(_q, {walk.walk, {113, 5, 17}})
+		table.insert(_q, {walk.walk, {113, 6, 17}})
+	end
+
 	table.insert(_q, {walk.walk, {113, 6, 9}})
 	table.insert(_q, {walk.walk, {114, 13, 17}})
 	table.insert(_q, {walk.walk, {114, 11, 17}})
@@ -1041,6 +1107,13 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {nil, 135, 73}})
 	table.insert(_q, {walk.walk, {nil, 134, 73}})
 	table.insert(_q, {walk.walk, {nil, 134, 72}})
+
+	-- Step Route: Waterfalls B1F
+	for i = 1, _route[2] / 2 do
+		table.insert(_q, {walk.walk, {116, 17, 9}})
+		table.insert(_q, {walk.walk, {116, 16, 9}})
+	end
+
 	table.insert(_q, {walk.walk, {116, 16, 11}})
 	table.insert(_q, {walk.walk, {117, 18, 7}})
 	table.insert(_q, {walk.walk, {117, 18, 5}})
@@ -1097,10 +1170,25 @@ local function _sequence_edward()
 	table.insert(_q, {walk.walk, {nil, 119, 64}})
 	table.insert(_q, {walk.walk, {nil, 119, 58}})
 	table.insert(_q, {walk.walk, {37, 16, 11}})
+	table.insert(_q, {walk.walk, {63, 8, 13}})
+
+	-- Step Route: Damcyan
+	for i = 1, _route[3] / 2 do
+		table.insert(_q, {walk.walk, {63, 9, 13}})
+		table.insert(_q, {walk.walk, {63, 8, 13}})
+	end
+
 	table.insert(_q, {walk.walk, {63, 8, 7}})
 	table.insert(_q, {walk.walk, {64, 8, 10}})
-	table.insert(_q, {walk.walk, {64, 7, 10}})
-	table.insert(_q, {walk.walk, {64, 7, 13}})
+
+	if _route[3] % 2 == 1 then
+		table.insert(_q, {walk.walk, {64, 9, 10}})
+		table.insert(_q, {walk.walk, {64, 9, 13}})
+	else
+		table.insert(_q, {walk.walk, {64, 7, 10}})
+		table.insert(_q, {walk.walk, {64, 7, 13}})
+	end
+
 	table.insert(_q, {walk.walk, {64, 8, 13}})
 	table.insert(_q, {walk.walk, {65, 13, 11}})
 end
@@ -1146,6 +1234,20 @@ local function _sequence_antlion()
 	-- Walk to Antlion.
 	table.insert(_q, {walk.walk, {120, 29, 26}})
 	table.insert(_q, {walk.walk, {120, 25, 26}})
+
+	-- Step Route: Antlion B2F Inward
+	if _route[4] == 1 then
+		table.insert(_q, {walk.walk, {120, 25, 23}})
+
+		for i = 1, _route[5] / 2 do
+			table.insert(_q, {walk.walk, {123, 4, 11}})
+			table.insert(_q, {walk.walk, {123, 4, 12}})
+		end
+
+		table.insert(_q, {walk.walk, {123, 4, 13}})
+		table.insert(_q, {walk.walk, {120, 25, 26}})
+	end
+
 	table.insert(_q, {walk.walk, {120, 25, 28}})
 	table.insert(_q, {walk.walk, {120, 22, 28}})
 	table.insert(_q, {walk.walk, {120, 22, 31}})
@@ -1166,6 +1268,20 @@ local function _sequence_waterhag()
 	table.insert(_q, {walk.walk, {120, 22, 28}})
 	table.insert(_q, {walk.walk, {120, 25, 28}})
 	table.insert(_q, {walk.walk, {120, 25, 26}})
+
+	-- Step Route: Antlion B2F Outward
+	if _route[6] == 1 then
+		table.insert(_q, {walk.walk, {120, 25, 23}})
+
+		for i = 1, _route[7] / 2 do
+			table.insert(_q, {walk.walk, {123, 4, 11}})
+			table.insert(_q, {walk.walk, {123, 4, 12}})
+		end
+
+		table.insert(_q, {walk.walk, {123, 4, 13}})
+		table.insert(_q, {walk.walk, {120, 25, 26}})
+	end
+
 	table.insert(_q, {walk.walk, {120, 29, 26}})
 	table.insert(_q, {walk.walk, {120, 29, 24}})
 	table.insert(_q, {walk.walk, {120, 28, 24}})
@@ -1284,6 +1400,20 @@ local function _sequence_dragoon()
 	-- Leave Mt.Hobs.
 	table.insert(_q, {walk.walk, {127, 19, 14}})
 	table.insert(_q, {walk.walk, {127, 19, 9}})
+
+	-- Step Route: Mt.Hobs-East
+	for i = 1, _route[8] / 2 do
+		table.insert(_q, {walk.walk, {128, 7, 11}})
+		table.insert(_q, {walk.walk, {128, 7, 10}})
+	end
+
+	table.insert(_q, {walk.walk, {128, 11, 10}})
+
+	if _route[8] % 2 == 1 then
+		table.insert(_q, {walk.walk, {128, 10, 10}})
+		table.insert(_q, {walk.walk, {128, 11, 10}})
+	end
+
 	table.insert(_q, {walk.walk, {128, 20, 10}})
 	table.insert(_q, {walk.walk, {128, 20, 14}})
 	table.insert(_q, {walk.walk, {128, 14, 14}})
@@ -1322,15 +1452,69 @@ local function _sequence_twins()
 	table.insert(_q, {walk.walk, {74, 11, 15}})
 	table.insert(_q, {walk.walk, {74, 11, 26}})
 	table.insert(_q, {walk.walk, {73, 4, 7}})
-	table.insert(_q, {walk.walk, {73, 8, 7}})
+
+	-- Step Route: Fabul
+	if _route[9] >= 6 then
+		table.insert(_q, {walk.walk, {73, 4, 11}})
+		_route[9] = _route[9] - 6
+	else
+		if _route[9] == 5 then
+			table.insert(_q, {walk.walk, {73, 4, 9}})
+			table.insert(_q, {walk.walk, {73, 5, 9}})
+			table.insert(_q, {walk.walk, {73, 5, 11}})
+		elseif _route[9] == 4 then
+			table.insert(_q, {walk.walk, {73, 4, 9}})
+			table.insert(_q, {walk.walk, {73, 6, 9}})
+			table.insert(_q, {walk.walk, {73, 6, 11}})
+		elseif _route[9] == 3 then
+			table.insert(_q, {walk.walk, {73, 4, 8}})
+			table.insert(_q, {walk.walk, {73, 6, 8}})
+			table.insert(_q, {walk.walk, {73, 6, 11}})
+		elseif _route[9] == 2 then
+			table.insert(_q, {walk.walk, {73, 4, 8}})
+			table.insert(_q, {walk.walk, {73, 7, 8}})
+			table.insert(_q, {walk.walk, {73, 7, 11}})
+		elseif _route[9] == 1 then
+			table.insert(_q, {walk.walk, {73, 4, 8}})
+			table.insert(_q, {walk.walk, {73, 8, 8}})
+		else
+			table.insert(_q, {walk.walk, {73, 8, 7}})
+		end
+
+		_route[9] = 0
+	end
+
+	table.insert(_q, {walk.walk, {73, 8, 11}})
 	table.insert(_q, {walk.walk, {73, 8, 14}})
 	table.insert(_q, {walk.walk, {72, 4, 9}})
 	table.insert(_q, {walk.walk, {71, 11, 11}})
 	table.insert(_q, {walk.walk, {71, 6, 11}})
-	table.insert(_q, {walk.walk, {71, 6, 10}})
+
+	-- Step Route: Fabul
+	if _route[9] > 0 then
+		table.insert(_q, {walk.walk, {71, 5, 11}})
+		_route[9] = _route[9] - 1
+	else
+		table.insert(_q, {walk.walk, {71, 6, 10}})
+	end
+
 	table.insert(_q, {walk.walk, {71, 5, 10}})
 	table.insert(_q, {walk.walk, {71, 5, 7}})
-	table.insert(_q, {walk.walk, {76, 20, 5}})
+
+	-- Step Route: Fabul
+	if _route[9] >= 2 then
+		table.insert(_q, {walk.walk, {76, 18, 7}})
+		table.insert(_q, {walk.walk, {76, 18, 5}})
+		_route[9] = _route[9] - 2
+	elseif _route[9] == 1 then
+		table.insert(_q, {walk.walk, {76, 20, 6}})
+		table.insert(_q, {walk.walk, {76, 19, 6}})
+		table.insert(_q, {walk.walk, {76, 19, 5}})
+		_route[9] = _route[9] - 1
+	else
+		table.insert(_q, {walk.walk, {76, 20, 5}})
+	end
+
 	table.insert(_q, {walk.walk, {76, 17, 5}})
 
 	-- Remove the Tiara and equip the Black sword.
@@ -1344,8 +1528,20 @@ local function _sequence_twins()
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Head to the boat.
-	table.insert(_q, {walk.walk, {79, 5, 5}})
+	if _route[9] % 2 == 1 then
+		table.insert(_q, {walk.walk, {79, 3, 4}})
+		table.insert(_q, {walk.walk, {79, 3, 5}})
+	else
+		table.insert(_q, {walk.walk, {79, 5, 5}})
+	end
+
 	table.insert(_q, {walk.walk, {79, 1, 5}})
+
+	for i = 1, _route[9] / 2 do
+		table.insert(_q, {walk.walk, {79, 1, 4}})
+		table.insert(_q, {walk.walk, {79, 1, 5}})
+	end
+
 	table.insert(_q, {walk.walk, {79, 1, 6}})
 	table.insert(_q, {walk.walk, {78, 1, 6}})
 	table.insert(_q, {walk.walk, {77, 1, 6}})
@@ -1425,6 +1621,13 @@ local function _sequence_milon()
 	table.insert(_q, {walk.walk, {3, 16, 31, true}})
 	table.insert(_q, {walk.walk, {nil, 157, 200}})
 	table.insert(_q, {walk.walk, {nil, 157, 205}})
+
+	-- Step Route: World Map (Mysidia)
+	for i = 1, _route[10] / 2 do
+		table.insert(_q, {walk.walk, {nil, 157, 204}})
+		table.insert(_q, {walk.walk, {nil, 157, 205}})
+	end
+
 	table.insert(_q, {walk.walk, {nil, 175, 205}})
 	table.insert(_q, {walk.walk, {nil, 175, 211}})
 	table.insert(_q, {walk.walk, {nil, 182, 211}})
@@ -1467,7 +1670,16 @@ local function _sequence_milon()
 	table.insert(_q, {walk.walk, {135, 15, 23}})
 	table.insert(_q, {walk.walk, {135, 18, 23}})
 	table.insert(_q, {walk.walk, {135, 18, 16}})
-	table.insert(_q, {walk.walk, {135, 16, 16}})
+	table.insert(_q, {walk.walk, {135, 17, 16}})
+
+	-- Step Route: Mt.Ordeals Summit
+	if _route[11] > 0 then
+		table.insert(_q, {walk.walk, {135, 17, 15}})
+	else
+		table.insert(_q, {walk.walk, {135, 16, 16}})
+	end
+
+	table.insert(_q, {walk.walk, {135, 16, 15}})
 	table.insert(_q, {walk.walk, {135, 16, 10}})
 	table.insert(_q, {walk.walk, {135, 15, 10}})
 
@@ -1537,7 +1749,16 @@ local function _sequence_karate()
 	table.insert(_q, {walk.walk, {135, 9, 11}})
 	table.insert(_q, {walk.walk, {135, 9, 10}})
 	table.insert(_q, {walk.walk, {135, 16, 10}})
-	table.insert(_q, {walk.walk, {135, 16, 16}})
+	table.insert(_q, {walk.walk, {135, 16, 15}})
+
+	-- Step Route: Mt.Ordeals Summit
+	if _route[12] > 0 then
+		table.insert(_q, {walk.walk, {135, 17, 15}})
+	else
+		table.insert(_q, {walk.walk, {135, 16, 16}})
+	end
+
+	table.insert(_q, {walk.walk, {135, 17, 16}})
 	table.insert(_q, {walk.walk, {135, 18, 16}})
 	table.insert(_q, {walk.walk, {135, 18, 23}})
 	table.insert(_q, {walk.walk, {135, 15, 23}})
@@ -1565,6 +1786,18 @@ local function _sequence_karate()
 	table.insert(_q, {walk.walk, {132, 11, 24}})
 	table.insert(_q, {walk.walk, {132, 10, 24}})
 	table.insert(_q, {walk.walk, {132, 10, 28}})
+
+	-- Step Route: Mt.Ordeals
+	for i = 1, _route[13] / 2 do
+		table.insert(_q, {walk.walk, {132, 9, 28}})
+		table.insert(_q, {walk.walk, {132, 10, 28}})
+	end
+
+	if _route[13] % 2 == 1 then
+		table.insert(_q, {walk.walk, {132, 11, 28}})
+		table.insert(_q, {walk.walk, {132, 10, 28}})
+	end
+
 	table.insert(_q, {walk.walk, {132, 17, 28}})
 	table.insert(_q, {walk.walk, {132, 17, 30}})
 	table.insert(_q, {walk.walk, {132, 20, 30}})
@@ -1606,6 +1839,19 @@ local function _sequence_karate()
 	-- Walk to Yang.
 	-- TODO: Fix the second and third to last steps. They currently go one step
 	--       too far to the left to avoid a potential trap.
+	table.insert(_q, {walk.walk, {151, 5, 10}})
+
+	-- Step Route: Serpent Road
+	for i = 1, _route[14] / 2 do
+		table.insert(_q, {walk.walk, {151, 6, 10}})
+		table.insert(_q, {walk.walk, {151, 5, 10}})
+	end
+
+	if _route[14] % 2 == 1 then
+		table.insert(_q, {walk.walk, {151, 5, 9}})
+		table.insert(_q, {walk.walk, {151, 5, 10}})
+	end
+
 	table.insert(_q, {walk.walk, {151, 5, 14}})
 	table.insert(_q, {walk.walk, {0, 20, 27}})
 	table.insert(_q, {walk.walk, {0, 20, 26}})
@@ -1700,6 +1946,24 @@ local function _sequence_baigan()
 	table.insert(_q, {walk.walk, {62, 8, 23}})
 	table.insert(_q, {walk.walk, {62, 8, 5}})
 	table.insert(_q, {walk.walk, {60, 6, 12}})
+
+	-- Step Route: Castle Baron B1F
+	if _route[15] == 1 then
+		table.insert(_q, {walk.walk, {60, 6, 11}})
+		table.insert(_q, {walk.walk, {60, 2, 11}})
+		table.insert(_q, {walk.walk, {60, 2, 9}})
+
+		for i = 1, _route[16] / 2 do
+			table.insert(_q, {walk.walk, {61, 4, 10}})
+			table.insert(_q, {walk.walk, {61, 4, 11}})
+		end
+
+		table.insert(_q, {walk.walk, {61, 4, 12}})
+		table.insert(_q, {walk.walk, {60, 2, 11}})
+		table.insert(_q, {walk.walk, {60, 6, 11}})
+		table.insert(_q, {walk.walk, {60, 6, 12}})
+	end
+
 	table.insert(_q, {walk.walk, {60, 12, 12}})
 	table.insert(_q, {walk.walk, {60, 12, 10}})
 	table.insert(_q, {walk.walk, {60, 14, 10}})
@@ -1757,6 +2021,19 @@ local function _sequence_kainazzo()
 
 	table.insert(_q, {menu.field.close, {}})
 
+	-- Step Route: Castle Baron
+	for i = 1, _route[17] / 2 do
+		table.insert(_q, {walk.walk, {42, 9, 4}})
+		table.insert(_q, {walk.walk, {42, 8, 4}})
+	end
+
+	table.insert(_q, {walk.walk, {42, 8, 3}})
+
+	if _route[17] % 2 == 1 then
+		table.insert(_q, {walk.walk, {42, 9, 3}})
+		table.insert(_q, {walk.walk, {42, 8, 3}})
+	end
+
 	-- Walk to Kainazzo.
 	table.insert(_q, {walk.walk, {42, 8, 0}})
 	table.insert(_q, {walk.walk, {43, 14, 2}})
@@ -1773,7 +2050,31 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {nil, 36, 82}})
 	table.insert(_q, {walk.walk, {nil, 35, 82}})
 	table.insert(_q, {walk.walk, {39, 16, 10}})
-	table.insert(_q, {walk.walk, {85, 9, 7}})
+	table.insert(_q, {walk.walk, {85, 9, 10}})
+
+	-- Step Route: Toroian Castle
+	if _route[18] >= 3 and _route[18] % 2 == 1 then
+		table.insert(_q, {walk.walk, {85, 7, 10}})
+		_route[18] = _route[18] - 3
+	elseif _route[18] >= 2 then
+		table.insert(_q, {walk.walk, {85, 9, 9}})
+		table.insert(_q, {walk.walk, {85, 7, 9}})
+		_route[18] = _route[18] - 2
+	elseif _route[18] == 1 then
+		table.insert(_q, {walk.walk, {85, 9, 8}})
+		table.insert(_q, {walk.walk, {85, 7, 8}})
+		_route[18] = _route[18] - 1
+	else
+		table.insert(_q, {walk.walk, {85, 9, 7}})
+	end
+
+	table.insert(_q, {walk.walk, {85, 7, 7}})
+
+	for i = 1, _route[18] / 2 do
+		table.insert(_q, {walk.walk, {85, 7, 8}})
+		table.insert(_q, {walk.walk, {85, 7, 7}})
+	end
+
 	table.insert(_q, {walk.walk, {85, 2, 7}})
 	table.insert(_q, {walk.walk, {85, 2, 10}})
 	table.insert(_q, {walk.walk, {39, 6, 5}})
@@ -1796,7 +2097,15 @@ local function _sequence_dark_elf()
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.close, {}})
-	table.insert(_q, {walk.walk, {nil, 35, 70}})
+
+	-- Step Route: World Map (Toroia)
+	if _route[19] > 0 then
+		table.insert(_q, {walk.walk, {nil, 36, 82}})
+	else
+		table.insert(_q, {walk.walk, {nil, 35, 70}})
+	end
+
+	table.insert(_q, {walk.walk, {nil, 36, 70}})
 	table.insert(_q, {walk.walk, {nil, 43, 70}})
 	table.insert(_q, {walk.walk, {nil, 43, 54}})
 	table.insert(_q, {walk.walk, {nil, 41, 54}})
@@ -1836,6 +2145,20 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {141, 5, 10}})
 	table.insert(_q, {walk.walk, {143, 27, 9}})
 	table.insert(_q, {walk.walk, {143, 22, 9}})
+
+	-- Step Route: Cave Magnes B3F
+	if _route[20] == 1 then
+		table.insert(_q, {walk.walk, {143, 21, 9}})
+
+		for i = 1, _route[21] / 2 do
+			table.insert(_q, {walk.walk, {146, 6, 11}})
+			table.insert(_q, {walk.walk, {146, 6, 12}})
+		end
+
+		table.insert(_q, {walk.walk, {146, 6, 13}})
+		table.insert(_q, {walk.walk, {143, 22, 9}})
+	end
+
 	table.insert(_q, {walk.walk, {143, 22, 16}})
 	table.insert(_q, {walk.walk, {143, 29, 16}})
 	table.insert(_q, {walk.walk, {143, 29, 20}})
@@ -1852,6 +2175,32 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {147, 19, 27}})
 	table.insert(_q, {walk.walk, {147, 19, 25}})
 	table.insert(_q, {walk.walk, {147, 13, 25}})
+	table.insert(_q, {walk.walk, {147, 13, 15}})
+
+	-- Step Route: Cave Magnes B4F
+	if _route[22] == 1 then
+		table.insert(_q, {walk.walk, {147, 24, 15}})
+		table.insert(_q, {walk.walk, {147, 24, 16}})
+		table.insert(_q, {walk.walk, {147, 27, 16}})
+		table.insert(_q, {walk.walk, {147, 27, 15}})
+
+		for i = 1, _route[23] / 2 do
+			table.insert(_q, {walk.walk, {161, 6, 11}})
+			table.insert(_q, {walk.walk, {161, 6, 12}})
+		end
+
+		table.insert(_q, {walk.walk, {161, 6, 13}})
+		table.insert(_q, {walk.walk, {147, 27, 16}})
+		table.insert(_q, {walk.walk, {147, 24, 16}})
+		table.insert(_q, {walk.walk, {147, 24, 15}})
+		table.insert(_q, {walk.walk, {147, 13, 15}})
+	end
+
+	for i = 1, _route[24] / 2 do
+		table.insert(_q, {walk.walk, {147, 12, 15}})
+		table.insert(_q, {walk.walk, {147, 13, 15}})
+	end
+
 	table.insert(_q, {walk.walk, {147, 13, 7}})
 	table.insert(_q, {walk.walk, {148, 11, 12}})
 
@@ -1898,6 +2247,35 @@ local function _sequence_flamedog()
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {nil, 35, 81}})
 	table.insert(_q, {walk.walk, {39, 16, 10}})
+	table.insert(_q, {walk.walk, {85, 9, 10, true}})
+
+	-- Step Route: Toroian Castle 1F
+	if _route[25] == 1 then
+		if _route[26] >= 3 and _route[26] % 2 == 1 then
+			table.insert(_q, {walk.walk, {85, 7, 10, true}})
+			_route[26] = _route[26] - 3
+		elseif _route[26] >= 2 then
+			table.insert(_q, {walk.walk, {85, 9, 9, true}})
+			table.insert(_q, {walk.walk, {85, 7, 9, true}})
+			_route[26] = _route[26] - 2
+		elseif _route[26] == 1 then
+			table.insert(_q, {walk.walk, {85, 9, 8, true}})
+			table.insert(_q, {walk.walk, {85, 7, 8, true}})
+			_route[26] = _route[26] - 1
+		else
+			table.insert(_q, {walk.walk, {85, 9, 7, true}})
+		end
+
+		table.insert(_q, {walk.walk, {85, 7, 7, true}})
+
+		for i = 1, _route[26] / 2 do
+			table.insert(_q, {walk.walk, {85, 6, 7}})
+			table.insert(_q, {walk.walk, {85, 7, 7}})
+		end
+
+		table.insert(_q, {walk.walk, {85, 9, 7, true}})
+	end
+
 	table.insert(_q, {walk.walk, {85, 9, 0, true}})
 	table.insert(_q, {walk.walk, {86, 5, 15}})
 
@@ -1907,7 +2285,17 @@ local function _sequence_flamedog()
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.close, {}})
-	table.insert(_q, {walk.walk, {nil, 35, 83}})
+
+	-- Step Route: World Map (Toroia)
+	if _route[27] == 2 then
+		table.insert(_q, {walk.walk, {nil, 36, 81}})
+	elseif _route[27] == 1 then
+		table.insert(_q, {walk.walk, {nil, 35, 82}})
+		table.insert(_q, {walk.walk, {nil, 36, 82}})
+	else
+		table.insert(_q, {walk.walk, {nil, 35, 83}})
+	end
+
 	table.insert(_q, {_set_healing, {_healing_flamedog}})
 	table.insert(_q, {walk.walk, {nil, 36, 83}})
 	table.insert(_q, {walk.board, {}})
@@ -2034,6 +2422,26 @@ end
 local function _sequence_calbrena()
 	-- Leave the castle and board the airship.
 	table.insert(_q, {_set_healing, {_healing_calbrena}})
+
+	-- Step Route: Castle Baron (after Valvalis)
+	while _route[28] > 0 do
+		if _route[28] == 3 then
+			table.insert(_q, {walk.walk, {52, 6, 5}})
+			table.insert(_q, {walk.walk, {52, 8, 5}})
+			table.insert(_q, {walk.walk, {52, 8, 4}})
+			_route[28] = 0
+		elseif _route[28] >= 2 then
+			table.insert(_q, {walk.walk, {52, 5, 4}})
+			table.insert(_q, {walk.walk, {52, 6, 4}})
+			_route[28] = _route[28] - 2
+		elseif _route[28] == 1 then
+			table.insert(_q, {walk.walk, {52, 7, 4}})
+			table.insert(_q, {walk.walk, {52, 7, 5}})
+			table.insert(_q, {walk.walk, {52, 7, 4}})
+			_route[28] = 0
+		end
+	end
+
 	table.insert(_q, {walk.walk, {52, 9, 4}})
 	table.insert(_q, {walk.walk, {51, 5, 4}})
 	table.insert(_q, {walk.walk, {50, 5, 9}})
@@ -2095,17 +2503,91 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.walk, {269, 9, 20}})
 	table.insert(_q, {walk.walk, {265, 8, 1}})
 	table.insert(_q, {walk.walk, {265, 8, 6}})
-	table.insert(_q, {walk.walk, {265, 10, 6}})
+
+	-- Step Route: Castle of Dwarves A
+	if _route[29] >= 2 then
+		table.insert(_q, {walk.walk, {265, 8, 10}})
+		_route[29] = _route[29] - 2
+	elseif _route[29] == 1 then
+		table.insert(_q, {walk.walk, {265, 9, 6}})
+		table.insert(_q, {walk.walk, {265, 9, 10}})
+		_route[29] = _route[29] - 1
+	else
+		table.insert(_q, {walk.walk, {265, 10, 6}})
+	end
+
+	table.insert(_q, {walk.walk, {265, 10, 10}})
 	table.insert(_q, {walk.walk, {265, 10, 15}})
-	table.insert(_q, {walk.walk, {264, 11, 8, true}})
+	table.insert(_q, {walk.walk, {264, 11, 7}})
+
+	-- Step Route: Castle of Dwarves B
+	if _route[29] >= 1 then
+		table.insert(_q, {walk.walk, {264, 16, 7, true}})
+		_route[29] = _route[29] - 1
+	else
+		table.insert(_q, {walk.walk, {264, 11, 8, true}})
+	end
+
+	table.insert(_q, {walk.walk, {264, 16, 8, true}})
 	table.insert(_q, {walk.walk, {264, 21, 6, true}})
 	table.insert(_q, {walk.walk, {270, 1, 9, true}})
-	table.insert(_q, {walk.walk, {270, 4, 9, true}})
-	table.insert(_q, {walk.walk, {270, 4, 6, true}})
-	table.insert(_q, {walk.walk, {270, 11, 6, true}})
+	table.insert(_q, {walk.walk, {270, 3, 9, true}})
+
+	-- Step Route: Castle of Dwarves C
+	if _route[29] >= 10 then
+		table.insert(_q, {walk.walk, {270, 11, 9, true}})
+		table.insert(_q, {walk.walk, {270, 11, 7, true}})
+		_route[29] = _route[29] - 10
+	else
+		if _route[29] == 9 then
+			-- 9 steps is the default if we don't reposition.
+		elseif _route[29] == 8 then
+			table.insert(_q, {walk.walk, {270, 12, 9, true}})
+			table.insert(_q, {walk.walk, {270, 12, 8, true}})
+		elseif _route[29] == 7 then
+			table.insert(_q, {walk.walk, {270, 10, 9, true}})
+			table.insert(_q, {walk.walk, {270, 10, 6, true}})
+		elseif _route[29] == 6 then
+			table.insert(_q, {walk.walk, {270, 9, 9, true}})
+			table.insert(_q, {walk.walk, {270, 9, 6, true}})
+		elseif _route[29] == 5 then
+			table.insert(_q, {walk.walk, {270, 3, 7, true}})
+			table.insert(_q, {walk.walk, {270, 7, 7, true}})
+			table.insert(_q, {walk.walk, {270, 7, 6, true}})
+		elseif _route[29] == 4 then
+			table.insert(_q, {walk.walk, {270, 7, 9, true}})
+			table.insert(_q, {walk.walk, {270, 7, 6, true}})
+		elseif _route[29] == 3 then
+			table.insert(_q, {walk.walk, {270, 6, 9, true}})
+			table.insert(_q, {walk.walk, {270, 6, 6, true}})
+		elseif _route[29] == 2 then
+			table.insert(_q, {walk.walk, {270, 5, 9, true}})
+			table.insert(_q, {walk.walk, {270, 5, 6, true}})
+		elseif _route[29] == 1 then
+			table.insert(_q, {walk.walk, {270, 3, 8, true}})
+			table.insert(_q, {walk.walk, {270, 4, 8, true}})
+			table.insert(_q, {walk.walk, {270, 4, 6, true}})
+		else
+			table.insert(_q, {walk.walk, {270, 4, 9, true}})
+			table.insert(_q, {walk.walk, {270, 4, 6, true}})
+		end
+
+		_route[29] = 0
+	end
+
 	table.insert(_q, {walk.walk, {270, 13, 4, true}})
 	table.insert(_q, {walk.walk, {272, 10, 8}})
-	table.insert(_q, {walk.walk, {272, 6, 8}})
+	table.insert(_q, {walk.walk, {272, 8, 8}})
+
+	-- Step Route: Castle of Dwarves D
+	if _route[29] >= 1 then
+		table.insert(_q, {walk.walk, {272, 8, 7}})
+		_route[29] = _route[29] - 1
+	else
+		table.insert(_q, {walk.walk, {272, 6, 8}})
+	end
+
+	table.insert(_q, {walk.walk, {272, 6, 7}})
 	table.insert(_q, {walk.walk, {272, 6, 5}})
 	table.insert(_q, {walk.walk, {283, 24, 23}})
 	table.insert(_q, {walk.walk, {281, 6, 4}})
@@ -2114,7 +2596,17 @@ local function _sequence_dr_lugae()
 	-- Walk back to the shop and purchase Rune rings.
 	table.insert(_q, {walk.walk, {281, 6, 7}})
 	table.insert(_q, {walk.walk, {283, 24, 21}})
-	table.insert(_q, {walk.walk, {272, 6, 8}})
+	table.insert(_q, {walk.walk, {272, 6, 7}})
+
+	-- Step Route: Castle of Dwarves E
+	if _route[29] >= 1 then
+		table.insert(_q, {walk.walk, {272, 8, 7}})
+		_route[29] = _route[29] - 1
+	else
+		table.insert(_q, {walk.walk, {272, 6, 8}})
+	end
+
+	table.insert(_q, {walk.walk, {272, 8, 8}})
 	table.insert(_q, {walk.walk, {272, 10, 8}})
 	table.insert(_q, {walk.walk, {272, 10, 10}})
 	table.insert(_q, {walk.walk, {270, 13, 6}})
@@ -2127,7 +2619,16 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {menu.shop.close, {}})
 
 	-- Exit the dwarf castle.
-	table.insert(_q, {walk.walk, {270, 1, 6, true}})
+	table.insert(_q, {walk.walk, {270, 2, 6, true}})
+
+	-- Step Route: Castle of Dwarves F
+	if _route[29] >= 1 then
+		table.insert(_q, {walk.walk, {270, 2, 5, true}})
+		_route[29] = _route[29] - 1
+	else
+		table.insert(_q, {walk.walk, {270, 1, 6, true}})
+	end
+
 	table.insert(_q, {walk.walk, {270, 1, 4, true}})
 	table.insert(_q, {walk.walk, {266, 15, 8}})
 	table.insert(_q, {walk.walk, {266, 15, 4}})
@@ -2143,21 +2644,63 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.walk, {267, 23, 10}})
 	table.insert(_q, {walk.walk, {267, 22, 10}})
 	table.insert(_q, {walk.walk, {267, 22, 11}})
-	table.insert(_q, {walk.walk, {267, 10, 11}})
-	table.insert(_q, {walk.walk, {267, 10, 17}})
+	table.insert(_q, {walk.walk, {267, 11, 11}})
+
+	-- Step Route: Castle of Dwarves G
+	if _route[29] >= 1 then
+		table.insert(_q, {walk.walk, {267, 11, 12}})
+		_route[29] = _route[29] - 1
+	else
+		table.insert(_q, {walk.walk, {267, 10, 11}})
+	end
+
+	table.insert(_q, {walk.walk, {267, 10, 12}})
+	table.insert(_q, {walk.walk, {267, 10, 14}})
+
+	if _route[29] >= 1 then
+		table.insert(_q, {walk.walk, {267, 11, 14}})
+		_route[29] = _route[29] - 1
+	else
+		table.insert(_q, {walk.walk, {267, 10, 17}})
+	end
+
 	table.insert(_q, {walk.walk, {267, 11, 17}})
 	table.insert(_q, {walk.walk, {267, 11, 26}})
 	table.insert(_q, {walk.walk, {267, 5, 26}})
 	table.insert(_q, {walk.walk, {267, 5, 27}})
 	table.insert(_q, {walk.walk, {267, 2, 27}})
-	table.insert(_q, {walk.walk, {271, 28, 5}})
-	table.insert(_q, {walk.walk, {271, 28, 8}})
-	table.insert(_q, {walk.walk, {271, 5, 8}})
-	table.insert(_q, {walk.walk, {271, 5, 12}})
+
+	-- Step Route: Castle of Dwarves H
+	if _route[29] >= 1 then
+		table.insert(_q, {walk.walk, {271, 29, 6}})
+		_route[29] = _route[29] - 1
+	else
+		table.insert(_q, {walk.walk, {271, 28, 5}})
+	end
+
+	table.insert(_q, {walk.walk, {271, 28, 6}})
+
+	if _route[29] % 2 == 1 then
+		table.insert(_q, {walk.walk, {271, 27, 6}})
+		table.insert(_q, {walk.walk, {271, 27, 8}})
+		_route[29] = _route[29] - 1
+	else
+		table.insert(_q, {walk.walk, {271, 28, 8}})
+	end
+
+	table.insert(_q, {walk.walk, {271, 26, 8}})
+	table.insert(_q, {walk.walk, {271, 10, 8}})
+	table.insert(_q, {walk.walk, {271, 10, 12}})
 	table.insert(_q, {walk.walk, {271, 3, 12}})
 	table.insert(_q, {walk.walk, {271, 3, 7}})
 	table.insert(_q, {walk.step, {walk.DIRECTION.LEFT}})
 	table.insert(_q, {walk.interact, {}})
+
+	for i = 1, _route[29] / 2 do
+		table.insert(_q, {walk.walk, {271, 3, 6}})
+		table.insert(_q, {walk.walk, {271, 3, 7}})
+	end
+
 	table.insert(_q, {walk.walk, {271, 3, 14}})
 	table.insert(_q, {_set_healing, {_healing_dr_lugae}})
 
@@ -2375,6 +2918,17 @@ local function _sequence_edge()
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {36, 15, 18}})
 	table.insert(_q, {walk.walk, {36, 15, 15}})
+
+	-- Step Route: Castle of Baron (airship hook)
+	for i = 1, _route[30] / 2 do
+		table.insert(_q, {walk.walk, {42, 9, 12}})
+		table.insert(_q, {walk.walk, {42, 8, 12}})
+	end
+
+	if _route[30] % 2 == 1 then
+		table.insert(_q, {walk.walk, {42, 8, 13}})
+	end
+
 	table.insert(_q, {walk.walk, {42, 8, 10}})
 	table.insert(_q, {walk.walk, {42, 16, 10}})
 	table.insert(_q, {walk.walk, {36, 23, 13}})
@@ -2434,8 +2988,26 @@ local function _sequence_edge()
 	table.insert(_q, {menu.shop.buy.close, {}})
 	table.insert(_q, {menu.shop.close, {}})
 
+	-- Step Route: Cave Eblana B2F
+	if _route[31] % 2 == 1 then
+		table.insert(_q, {walk.walk, {204, 8, 5}})
+		table.insert(_q, {walk.walk, {204, 8, 9}})
+		_route[31] = _route[31] - 1
+	elseif _route[31] >= 2 then
+		table.insert(_q, {walk.walk, {204, 7, 9}})
+		_route[31] = _route[31] - 2
+	else
+		table.insert(_q, {walk.walk, {204, 9, 5}})
+	end
+
+	table.insert(_q, {walk.walk, {204, 9, 9}})
+
+	for i = 1, _route[31] / 2 do
+		table.insert(_q, {walk.walk, {204, 8, 9}})
+		table.insert(_q, {walk.walk, {204, 9, 9}})
+	end
+
 	-- Continue walking to the meeting with Edge.
-	table.insert(_q, {walk.walk, {204, 9, 5}})
 	table.insert(_q, {walk.walk, {204, 9, 14}})
 	table.insert(_q, {walk.walk, {200, 17, 13}})
 	table.insert(_q, {walk.walk, {200, 13, 13}})
@@ -2481,6 +3053,22 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {201, 25, 3}})
 	table.insert(_q, {walk.walk, {202, 26, 24}})
 	table.insert(_q, {walk.walk, {202, 27, 24}})
+
+	-- Step Route: Pass to Bab-il 2
+	if _route[32] == 1 then
+		table.insert(_q, {walk.walk, {202, 29, 24}})
+		table.insert(_q, {walk.walk, {202, 29, 23}})
+
+		for i = 1, _route[33] / 2 do
+			table.insert(_q, {walk.walk, {205, 4, 10}})
+			table.insert(_q, {walk.walk, {205, 4, 11}})
+		end
+
+		table.insert(_q, {walk.walk, {205, 4, 12}})
+		table.insert(_q, {walk.walk, {202, 29, 24}})
+		table.insert(_q, {walk.walk, {202, 27, 24}})
+	end
+
 	table.insert(_q, {walk.walk, {202, 27, 18}})
 	table.insert(_q, {walk.walk, {202, 26, 18}})
 	table.insert(_q, {walk.walk, {202, 26, 12}})
@@ -2615,7 +3203,36 @@ local function _sequence_monsters()
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {nil, 99, 82}})
 	table.insert(_q, {walk.walk, {263, 15, 19}})
-	table.insert(_q, {walk.walk, {264, 11, 8, true}})
+
+	-- Step Route: Castle of Dwarves (visiting Cid)
+	if _route[34] >= 4 and _route[34] % 2 == 0 then
+		table.insert(_q, {walk.walk, {264, 6, 11, true}})
+		_route[34] = _route[34] - 4
+	elseif _route[34] >= 3 and _route[34] % 2 == 1 then
+		table.insert(_q, {walk.walk, {264, 8, 11, true}})
+		table.insert(_q, {walk.walk, {264, 8, 8, true}})
+		_route[34] = _route[34] - 3
+	elseif _route[34] == 2 then
+		table.insert(_q, {walk.walk, {264, 11, 10, true}})
+		table.insert(_q, {walk.walk, {264, 8, 10, true}})
+		table.insert(_q, {walk.walk, {264, 8, 8, true}})
+		_route[34] = _route[34] - 2
+	elseif _route[34] == 1 then
+		table.insert(_q, {walk.walk, {264, 11, 9, true}})
+		table.insert(_q, {walk.walk, {264, 8, 9, true}})
+		table.insert(_q, {walk.walk, {264, 8, 8, true}})
+		_route[34] = _route[34] - 1
+	else
+		table.insert(_q, {walk.walk, {264, 11, 8, true}})
+	end
+
+	table.insert(_q, {walk.walk, {264, 6, 8, true}})
+
+	for i = 1, _route[34] / 2 do
+		table.insert(_q, {walk.walk, {264, 6, 7, true}})
+		table.insert(_q, {walk.walk, {264, 6, 8, true}})
+	end
+
 	table.insert(_q, {walk.walk, {264, 1, 6, true}})
 	table.insert(_q, {walk.walk, {273, 16, 3, true}})
 	table.insert(_q, {walk.walk, {266, 6, 8}})
@@ -2638,6 +3255,12 @@ local function _sequence_monsters()
 	table.insert(_q, {walk.board, {}})
 	table.insert(_q, {walk.walk, {nil, 27, 87}})
 	table.insert(_q, {walk.interact, {}})
+
+	-- Step Route: Underworld Map
+	for i = 1, _route[35] / 2 do
+		table.insert(_q, {walk.walk, {nil, 28, 87}})
+		table.insert(_q, {walk.walk, {nil, 27, 87}})
+	end
 
 	-- Make a safety save.
 	table.insert(_q, {menu.field.open, {}})
@@ -2677,10 +3300,25 @@ local function _sequence_dark_crystal()
 	table.insert(_q, {walk.walk, {312, 11, 6}})
 	table.insert(_q, {walk.walk, {312, 4, 6}})
 	table.insert(_q, {walk.walk, {312, 4, 14}})
-	table.insert(_q, {walk.walk, {312, 0, 14}})
-	table.insert(_q, {walk.walk, {312, 0, 26}})
-	table.insert(_q, {walk.walk, {312, 29, 26}})
-	table.insert(_q, {walk.walk, {312, 29, 14}})
+
+	-- Step Route: Land of Monsters B3F
+	if _route[36] == 2 then
+		table.insert(_q, {walk.walk, {312, 0, 14}})
+		table.insert(_q, {walk.walk, {312, 0, 26}})
+		table.insert(_q, {walk.walk, {312, 29, 26}})
+		table.insert(_q, {walk.walk, {312, 29, 14}})
+	elseif _route[36] == 1 then
+		table.insert(_q, {walk.walk, {312, 0, 14}})
+		table.insert(_q, {walk.walk, {312, 0, 26}})
+		table.insert(_q, {walk.walk, {312, 29, 26}})
+		table.insert(_q, {walk.walk, {312, 29, 22}})
+		table.insert(_q, {walk.walk, {312, 18, 22}})
+	else
+		table.insert(_q, {walk.walk, {312, 11, 14}})
+		table.insert(_q, {walk.walk, {312, 11, 22}})
+		table.insert(_q, {walk.walk, {312, 18, 22}})
+	end
+
 	table.insert(_q, {walk.walk, {312, 18, 14}})
 	table.insert(_q, {_state_set, {"auto_reload", nil}})
 
@@ -2710,6 +3348,13 @@ local function _sequence_dark_crystal()
 	table.insert(_q, {walk.walk, {nil, 46, 110}})
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {nil, 46, 109}})
+
+	-- Step Route: Sealed Cave
+	for i = 1, _route[37] / 2 do
+		table.insert(_q, {walk.walk, {324, 4, 9}})
+		table.insert(_q, {walk.walk, {324, 4, 10}})
+	end
+
 	table.insert(_q, {walk.walk, {324, 4, 4}})
 end
 
@@ -2724,6 +3369,17 @@ local function _sequence_big_whale()
 	table.insert(_q, {walk.walk, {nil, 100, 82}})
 	table.insert(_q, {walk.walk, {263, 15, 19}})
 	table.insert(_q, {walk.walk, {264, 11, 1}})
+
+	-- Step Route: Castle of Dwarves (King's Room)
+	for i = 1, _route[38] / 2 do
+		table.insert(_q, {walk.walk, {265, 10, 12}})
+		table.insert(_q, {walk.walk, {265, 10, 13}})
+	end
+
+	if _route[38] % 2 == 1 then
+		table.insert(_q, {walk.walk, {265, 10, 14}})
+	end
+
 	table.insert(_q, {walk.walk, {265, 10, 11}})
 
 	-- Cast Exit, fly to the overworld and go to the Grotto Adamant.
@@ -2739,6 +3395,13 @@ local function _sequence_big_whale()
 	table.insert(_q, {walk.walk, {nil, 36, 237}})
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {nil, 35, 237}})
+
+	-- Step Route: World Map (Eblan)
+	for i = 1, _route[39] / 2 do
+		table.insert(_q, {walk.walk, {nil, 35, 236}})
+		table.insert(_q, {walk.walk, {nil, 35, 237}})
+	end
+
 	table.insert(_q, {walk.board, {}})
 	table.insert(_q, {walk.walk, {nil, 24, 232}})
 	table.insert(_q, {walk.interact, {}})
@@ -2754,6 +3417,14 @@ local function _sequence_big_whale()
 	table.insert(_q, {walk.walk, {nil, 218, 136}})
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {nil, 219, 136}})
+
+	-- Step Route: Grotto Adamant
+	table.insert(_q, {walk.walk, {160, 7, 19}})
+
+	for i = 1, _route[40] / 2 do
+		table.insert(_q, {walk.walk, {160, 8, 19}})
+		table.insert(_q, {walk.walk, {160, 7, 19}})
+	end
 
 	-- Collect the Adamant and head to Mysidia.
 	table.insert(_q, {walk.walk, {160, 7, 13}})
@@ -2773,6 +3444,115 @@ local function _sequence_big_whale()
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {nil, 154, 199}})
 	table.insert(_q, {walk.walk, {3, 16, 28}})
+end
+
+local function _sequence_fusoya_hummingway()
+	-- Fly to the Hummingway Cave
+	table.insert(_q, {walk.walk, {nil, 33, 40}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {303, 5, 7}})
+	table.insert(_q, {walk.walk, {303, 5, 13}})
+	table.insert(_q, {walk.walk, {303, 2, 13}})
+	table.insert(_q, {walk.walk, {nil, 33, 39}})
+
+	-- Catch the shop NPC and purchase Elixirs.
+	table.insert(_q, {_hummingway_start, {}})
+	table.insert(_q, {walk.chase, {357, {8}}})
+	table.insert(_q, {menu.shop.buy.open, {50}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.ELIXIR}})
+	table.insert(_q, {menu.shop.buy.close, {}})
+	table.insert(_q, {menu.shop.close, {}})
+
+	-- Leave the cave and board the Big Whale.
+	table.insert(_q, {walk.walk, {357, 10, 16}})
+	table.insert(_q, {_hummingway_finish, {}})
+	table.insert(_q, {walk.walk, {357, 10, 17}})
+	table.insert(_q, {walk.walk, {nil, 33, 40}})
+	table.insert(_q, {walk.board, {}})
+end
+
+local function _sequence_fusoya_fusoya()
+	table.insert(_q, {walk.walk, {nil, 21, 19}})
+	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.walk, {303, 5, 7}})
+	table.insert(_q, {walk.walk, {303, 5, 13}})
+	table.insert(_q, {walk.walk, {303, 2, 13}})
+
+	-- Walk to the Crystal Palace.
+	table.insert(_q, {walk.walk, {nil, 21, 21}})
+	table.insert(_q, {walk.walk, {nil, 18, 21}})
+	table.insert(_q, {walk.walk, {nil, 18, 20}})
+	table.insert(_q, {walk.walk, {355, 12, 29}})
+	table.insert(_q, {walk.walk, {355, 14, 29}})
+	table.insert(_q, {walk.walk, {355, 14, 23}})
+	table.insert(_q, {walk.walk, {355, 11, 23}})
+	table.insert(_q, {walk.walk, {355, 11, 15}})
+	table.insert(_q, {walk.walk, {355, 14, 15}})
+	table.insert(_q, {walk.walk, {355, 14, 10}})
+	table.insert(_q, {walk.walk, {355, 19, 10}})
+	table.insert(_q, {walk.walk, {355, 19, 4}})
+	table.insert(_q, {walk.walk, {nil, 23, 15}})
+	table.insert(_q, {walk.walk, {nil, 23, 14}})
+	table.insert(_q, {walk.walk, {nil, 33, 14}})
+	table.insert(_q, {walk.walk, {nil, 33, 16}})
+	table.insert(_q, {walk.walk, {nil, 37, 16}})
+	table.insert(_q, {walk.walk, {nil, 37, 25}})
+	table.insert(_q, {walk.walk, {nil, 41, 25}})
+	table.insert(_q, {walk.walk, {nil, 41, 24}})
+	table.insert(_q, {walk.walk, {356, 14, 6}})
+	table.insert(_q, {walk.walk, {356, 14, 19}})
+	table.insert(_q, {walk.walk, {356, 9, 19}})
+	table.insert(_q, {walk.walk, {356, 9, 26}})
+	table.insert(_q, {walk.walk, {nil, 37, 29}})
+	table.insert(_q, {walk.walk, {nil, 37, 30}})
+	table.insert(_q, {walk.walk, {nil, 33, 30}})
+	table.insert(_q, {walk.walk, {nil, 33, 28}})
+	table.insert(_q, {walk.walk, {nil, 28, 28}})
+	table.insert(_q, {walk.walk, {nil, 28, 25}})
+	table.insert(_q, {walk.walk, {352, 16, 21}})
+
+	-- Walk back to the Big Whale.
+	table.insert(_q, {walk.walk, {352, 16, 29}})
+	table.insert(_q, {_set_healing, {_healing_grind_start_1}})
+	table.insert(_q, {walk.walk, {nil, 28, 29}})
+	table.insert(_q, {walk.walk, {nil, 34, 29}})
+	table.insert(_q, {walk.walk, {nil, 34, 30}})
+	table.insert(_q, {walk.walk, {nil, 37, 30}})
+	table.insert(_q, {walk.walk, {nil, 37, 29}})
+	table.insert(_q, {walk.walk, {nil, 40, 29}})
+	table.insert(_q, {walk.walk, {nil, 40, 28}})
+	table.insert(_q, {walk.walk, {356, 9, 18}})
+	table.insert(_q, {walk.walk, {356, 14, 18}})
+	table.insert(_q, {walk.walk, {356, 14, 6}})
+	table.insert(_q, {walk.walk, {356, 21, 6}})
+	table.insert(_q, {walk.walk, {356, 21, 5}})
+	table.insert(_q, {walk.walk, {nil, 37, 25}})
+	table.insert(_q, {walk.walk, {nil, 37, 16}})
+	table.insert(_q, {walk.walk, {nil, 33, 16}})
+	table.insert(_q, {walk.walk, {nil, 33, 14}})
+	table.insert(_q, {walk.walk, {nil, 22, 14}})
+	table.insert(_q, {walk.walk, {nil, 22, 15}})
+	table.insert(_q, {walk.walk, {nil, 18, 15}})
+	table.insert(_q, {walk.walk, {nil, 18, 14}})
+	table.insert(_q, {walk.walk, {355, 19, 10}})
+	table.insert(_q, {walk.walk, {355, 12, 10}})
+	table.insert(_q, {walk.walk, {355, 12, 15}})
+	table.insert(_q, {walk.walk, {355, 11, 15}})
+	table.insert(_q, {walk.walk, {355, 11, 23}})
+	table.insert(_q, {walk.walk, {355, 14, 23}})
+	table.insert(_q, {walk.walk, {355, 14, 29}})
+	table.insert(_q, {walk.walk, {355, 12, 29}})
+	table.insert(_q, {walk.walk, {355, 12, 31}})
+	table.insert(_q, {walk.walk, {nil, 21, 21}})
+	table.insert(_q, {walk.walk, {nil, 21, 19}})
+
+	-- Step Route: Lunar World Map
+	for i = 1, _route[43] / 2 do
+		table.insert(_q, {walk.walk, {nil, 21, 20}})
+		table.insert(_q, {walk.walk, {nil, 21, 19}})
+	end
+
+	table.insert(_q, {walk.board, {}})
 end
 
 local function _sequence_fusoya()
@@ -2823,112 +3603,44 @@ local function _sequence_fusoya()
 	table.insert(_q, {walk.walk, {303, 7, 13}})
 	table.insert(_q, {walk.walk, {303, 7, 11}})
 	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {nil, 33, 40}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {303, 5, 7}})
-	table.insert(_q, {walk.walk, {303, 5, 13}})
-	table.insert(_q, {walk.walk, {303, 2, 13}})
-	table.insert(_q, {walk.walk, {nil, 33, 39}})
 
-	-- Catch the shop NPC and purchase Elixirs.
-	table.insert(_q, {walk.chase, {357, {8}}})
-	table.insert(_q, {menu.shop.buy.open, {50}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.ELIXIR}})
-	table.insert(_q, {menu.shop.buy.close, {}})
-	table.insert(_q, {menu.shop.close, {}})
-
-	-- Leave the cave, board the Big Whale, and head to the Lunar Path.
-	table.insert(_q, {walk.walk, {357, 10, 17}})
-	table.insert(_q, {walk.walk, {nil, 33, 40}})
-	table.insert(_q, {walk.board, {}})
-	table.insert(_q, {walk.walk, {303, 5, 13}})
-	table.insert(_q, {walk.walk, {303, 5, 7}})
-	table.insert(_q, {walk.walk, {303, 7, 7}})
-	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {nil, 21, 19}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {303, 5, 7}})
-	table.insert(_q, {walk.walk, {303, 5, 13}})
-	table.insert(_q, {walk.walk, {303, 2, 13}})
-
-	-- Walk to the Crystal Palace.
-	table.insert(_q, {walk.walk, {nil, 21, 21}})
-	table.insert(_q, {walk.walk, {nil, 18, 21}})
-	table.insert(_q, {walk.walk, {nil, 18, 20}})
-	table.insert(_q, {walk.walk, {355, 12, 29}})
-	table.insert(_q, {walk.walk, {355, 14, 29}})
-	table.insert(_q, {walk.walk, {355, 14, 23}})
-	table.insert(_q, {walk.walk, {355, 11, 23}})
-	table.insert(_q, {walk.walk, {355, 11, 15}})
-	table.insert(_q, {walk.walk, {355, 14, 15}})
-	table.insert(_q, {walk.walk, {355, 14, 10}})
-	table.insert(_q, {walk.walk, {355, 19, 10}})
-	table.insert(_q, {walk.walk, {355, 19, 4}})
-	table.insert(_q, {walk.walk, {nil, 23, 15}})
-	table.insert(_q, {walk.walk, {nil, 23, 14}})
-	table.insert(_q, {walk.walk, {nil, 33, 14}})
-	table.insert(_q, {walk.walk, {nil, 33, 16}})
-	table.insert(_q, {walk.walk, {nil, 37, 16}})
-	table.insert(_q, {walk.walk, {nil, 37, 25}})
-	table.insert(_q, {walk.walk, {nil, 41, 25}})
-	table.insert(_q, {walk.walk, {nil, 41, 24}})
-	table.insert(_q, {walk.walk, {356, 14, 6}})
-	table.insert(_q, {walk.walk, {356, 14, 19}})
-	table.insert(_q, {walk.walk, {356, 9, 19}})
-	table.insert(_q, {walk.walk, {356, 9, 26}})
-	table.insert(_q, {walk.walk, {nil, 37, 29}})
-	table.insert(_q, {walk.walk, {nil, 37, 30}})
-	table.insert(_q, {walk.walk, {nil, 33, 30}})
-	table.insert(_q, {walk.walk, {nil, 33, 28}})
-	table.insert(_q, {walk.walk, {nil, 28, 28}})
-	table.insert(_q, {walk.walk, {nil, 28, 25}})
-	table.insert(_q, {walk.walk, {352, 16, 21}})
+	-- Step Route: Hummingway or FuSoYa
+	if _route[41] == 0 then
+		_sequence_fusoya_hummingway()
+		table.insert(_q, {walk.walk, {303, 5, 13}})
+		table.insert(_q, {walk.walk, {303, 5, 7}})
+		table.insert(_q, {walk.walk, {303, 7, 7}})
+		table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+		table.insert(_q, {walk.interact, {}})
+		_sequence_fusoya_fusoya()
+	else
+		_sequence_fusoya_fusoya()
+		table.insert(_q, {walk.walk, {303, 5, 13}})
+		table.insert(_q, {walk.walk, {303, 5, 7}})
+		table.insert(_q, {walk.walk, {303, 7, 7}})
+		table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+		table.insert(_q, {walk.interact, {}})
+		_sequence_fusoya_hummingway()
+	end
 end
 
 local function _sequence_grind_start()
-	-- Walk back to the Big Whale.
-	table.insert(_q, {_set_healing, {_healing_grind_start_1}})
-	table.insert(_q, {walk.walk, {352, 16, 29}})
-	table.insert(_q, {walk.walk, {nil, 28, 29}})
-	table.insert(_q, {walk.walk, {nil, 34, 29}})
-	table.insert(_q, {walk.walk, {nil, 34, 30}})
-	table.insert(_q, {walk.walk, {nil, 37, 30}})
-	table.insert(_q, {walk.walk, {nil, 37, 29}})
-	table.insert(_q, {walk.walk, {nil, 40, 29}})
-	table.insert(_q, {walk.walk, {nil, 40, 28}})
-	table.insert(_q, {walk.walk, {356, 9, 18}})
-	table.insert(_q, {walk.walk, {356, 14, 18}})
-	table.insert(_q, {walk.walk, {356, 14, 6}})
-	table.insert(_q, {walk.walk, {356, 21, 6}})
-	table.insert(_q, {walk.walk, {356, 21, 5}})
-	table.insert(_q, {walk.walk, {nil, 37, 25}})
-	table.insert(_q, {walk.walk, {nil, 37, 16}})
-	table.insert(_q, {walk.walk, {nil, 33, 16}})
-	table.insert(_q, {walk.walk, {nil, 33, 14}})
-	table.insert(_q, {walk.walk, {nil, 22, 14}})
-	table.insert(_q, {walk.walk, {nil, 22, 15}})
-	table.insert(_q, {walk.walk, {nil, 18, 15}})
-	table.insert(_q, {walk.walk, {nil, 18, 14}})
-	table.insert(_q, {walk.walk, {355, 19, 10}})
-	table.insert(_q, {walk.walk, {355, 12, 10}})
-	table.insert(_q, {walk.walk, {355, 12, 15}})
-	table.insert(_q, {walk.walk, {355, 11, 15}})
-	table.insert(_q, {walk.walk, {355, 11, 23}})
-	table.insert(_q, {walk.walk, {355, 14, 23}})
-	table.insert(_q, {walk.walk, {355, 14, 29}})
-	table.insert(_q, {walk.walk, {355, 12, 29}})
-	table.insert(_q, {walk.walk, {355, 12, 31}})
-	table.insert(_q, {walk.walk, {nil, 21, 21}})
-	table.insert(_q, {walk.walk, {nil, 21, 19}})
-	table.insert(_q, {walk.board, {}})
+	-- Board the Big Whale and return to Earth.
 	table.insert(_q, {walk.walk, {303, 7, 13}})
 	table.insert(_q, {walk.walk, {303, 7, 11}})
 	table.insert(_q, {walk.interact, {}})
 
 	-- Walk to the Passage.
 	table.insert(_q, {walk.walk, {181, 9, 20}})
-	table.insert(_q, {walk.walk, {181, 9, 15}})
+	table.insert(_q, {walk.walk, {181, 9, 16}})
+
+	-- Step Route: Giant of Bab-il Mouth
+	if _route[44] == 1 then
+		table.insert(_q, {walk.walk, {181, 10, 16}})
+	else
+		table.insert(_q, {walk.walk, {181, 9, 15}})
+	end
+
 	table.insert(_q, {walk.walk, {181, 10, 15}})
 	table.insert(_q, {walk.walk, {181, 10, 10}})
 	table.insert(_q, {walk.walk, {181, 11, 10}})
@@ -3004,6 +3716,19 @@ local function _sequence_grind_start()
 
 	-- Walk to just before the elements battle.
 	table.insert(_q, {_set_healing, {_healing_grind_start_2}})
+	table.insert(_q, {walk.walk, {186, 3, 6}})
+
+	-- Step Route: Giant of Bab-il Passage
+	for i = 1, _route[45] / 2 do
+		table.insert(_q, {walk.walk, {186, 4, 6}})
+		table.insert(_q, {walk.walk, {186, 3, 6}})
+	end
+
+	if _route[45] % 2 == 1 then
+		table.insert(_q, {walk.walk, {186, 3, 7}})
+		table.insert(_q, {walk.walk, {186, 3, 6}})
+	end
+
 	table.insert(_q, {walk.walk, {186, 3, 23}})
 	table.insert(_q, {walk.walk, {186, 4, 23}})
 	table.insert(_q, {walk.walk, {186, 4, 25}})
@@ -3051,6 +3776,19 @@ local function _sequence_cpu()
 	-- Walk to the CPU battle.
 	table.insert(_q, {walk.walk, {188, 15, 4}})
 	table.insert(_q, {walk.walk, {189, 9, 18}})
+	table.insert(_q, {walk.walk, {189, 9, 17}})
+
+	-- Step Route: Giant of Bab-il CPU
+	for i = 1, _route[46] / 2 do
+		table.insert(_q, {walk.walk, {189, 10, 17}})
+		table.insert(_q, {walk.walk, {189, 9, 17}})
+	end
+
+	if _route[46] % 2 == 1 then
+		table.insert(_q, {walk.walk, {189, 9, 16}})
+		table.insert(_q, {walk.walk, {189, 9, 17}})
+	end
+
 	table.insert(_q, {walk.walk, {189, 9, 13}})
 end
 
@@ -3126,6 +3864,19 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {359, 16, 25}})
 	table.insert(_q, {walk.walk, {359, 16, 24}})
 	table.insert(_q, {walk.walk, {360, 19, 30}})
+	table.insert(_q, {walk.walk, {360, 30, 30}})
+
+	-- Step Route: Lunar Subterrane B2
+	for i = 1, _route[47] / 2 do
+		table.insert(_q, {walk.walk, {360, 29, 30}})
+		table.insert(_q, {walk.walk, {360, 30, 30}})
+	end
+
+	if _route[47] % 2 == 1 then
+		table.insert(_q, {walk.walk, {360, 31, 30}})
+		table.insert(_q, {walk.walk, {360, 30, 30}})
+	end
+
 	table.insert(_q, {walk.walk, {360, 31, 30}})
 	table.insert(_q, {walk.walk, {360, 31, 4}})
 	table.insert(_q, {walk.walk, {360, 23, 4}})
@@ -3147,6 +3898,13 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {362, 28, 24}})
 	table.insert(_q, {walk.walk, {362, 28, 26}})
 	table.insert(_q, {walk.walk, {362, 25, 26}})
+
+	-- Step Route: Lunar Subterrane B4
+	for i = 1, _route[48] / 2 do
+		table.insert(_q, {walk.walk, {362, 24, 26}})
+		table.insert(_q, {walk.walk, {362, 25, 26}})
+	end
+
 	table.insert(_q, {walk.walk, {362, 25, 24}})
 	table.insert(_q, {walk.walk, {372, 24, 14}})
 	table.insert(_q, {walk.walk, {372, 18, 14}})
@@ -3162,6 +3920,13 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {362, 16, 31}})
 	table.insert(_q, {walk.walk, {363, 16, 14}})
 	table.insert(_q, {walk.walk, {363, 11, 14}})
+
+	-- Step Route: Lunar Subterrane B5
+	for i = 1, _route[49] / 2 do
+		table.insert(_q, {walk.walk, {363, 10, 14}})
+		table.insert(_q, {walk.walk, {363, 11, 14}})
+	end
+
 	table.insert(_q, {walk.walk, {363, 11, 13}})
 	table.insert(_q, {walk.walk, {373, 5, 5}})
 	table.insert(_q, {walk.walk, {373, 13, 5}})
@@ -3207,6 +3972,13 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {363, 19, 22}})
 	table.insert(_q, {walk.walk, {363, 19, 21}})
 	table.insert(_q, {walk.walk, {363, 14, 21}})
+
+	-- Step Route: Lunar Subterrane B5 (after room)
+	for i = 1, _route[50] / 2 do
+		table.insert(_q, {walk.walk, {363, 13, 21}})
+		table.insert(_q, {walk.walk, {363, 14, 21}})
+	end
+
 	table.insert(_q, {walk.walk, {363, 14, 20}})
 	table.insert(_q, {walk.walk, {374, 9, 6}})
 	table.insert(_q, {walk.walk, {374, 6, 6}})
@@ -3214,6 +3986,23 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {363, 18, 28}})
 	table.insert(_q, {walk.walk, {363, 18, 26}})
 	table.insert(_q, {walk.walk, {363, 20, 26}})
+	table.insert(_q, {walk.walk, {363, 20, 28}})
+
+	-- Step Route: Lunar Subterrane B5 (Pink Puff)
+	if _route[51] == 1 then
+		table.insert(_q, {walk.walk, {363, 23, 28}})
+		table.insert(_q, {walk.walk, {363, 23, 27}})
+
+		for i = 1, _route[52] / 2 do
+			table.insert(_q, {walk.walk, {375, 3, 9}})
+			table.insert(_q, {walk.walk, {375, 2, 9}})
+		end
+
+		table.insert(_q, {walk.walk, {375, 2, 10}})
+		table.insert(_q, {walk.walk, {363, 23, 28}})
+		table.insert(_q, {walk.walk, {363, 20, 28}})
+	end
+
 	table.insert(_q, {walk.walk, {363, 20, 31}})
 	table.insert(_q, {walk.walk, {364, 20, 10}})
 	table.insert(_q, {walk.walk, {364, 21, 10}})
@@ -3227,6 +4016,13 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {364, 25, 21}})
 	table.insert(_q, {walk.walk, {364, 25, 22}})
 	table.insert(_q, {walk.walk, {364, 22, 22}})
+
+	-- Step Route: Lunar Subterrane B6
+	for i = 1, _route[53] / 2 do
+		table.insert(_q, {walk.walk, {364, 21, 22}})
+		table.insert(_q, {walk.walk, {364, 22, 22}})
+	end
+
 	table.insert(_q, {walk.walk, {364, 22, 21}})
 	table.insert(_q, {walk.walk, {377, 5, 11}})
 	table.insert(_q, {walk.walk, {377, 10, 11}})
@@ -3234,6 +4030,26 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {365, 3, 13}})
 	table.insert(_q, {walk.walk, {365, 8, 13}})
 	table.insert(_q, {walk.walk, {365, 8, 21}})
+	table.insert(_q, {walk.walk, {365, 13, 21}})
+
+	-- Step Route: Lunar Subterrane B7 Save Room
+	if _route[54] == 1 then
+		table.insert(_q, {walk.walk, {365, 13, 20}})
+
+		for i = 1, _route[55] / 2 do
+			table.insert(_q, {walk.walk, {379, 4, 14}})
+			table.insert(_q, {walk.walk, {379, 3, 14}})
+		end
+
+		table.insert(_q, {walk.walk, {379, 3, 15}})
+		table.insert(_q, {walk.walk, {365, 13, 21}})
+	end
+
+	for i = 1, _route[56] / 2 do
+		table.insert(_q, {walk.walk, {365, 13, 22}})
+		table.insert(_q, {walk.walk, {365, 13, 21}})
+	end
+
 	table.insert(_q, {walk.walk, {365, 30, 21}})
 	table.insert(_q, {walk.walk, {365, 30, 2}})
 	table.insert(_q, {walk.walk, {365, 21, 2}})
@@ -3346,7 +4162,7 @@ local _sequences = {
 	{title = "Dark Crystal",  f = _sequence_dark_crystal,  map_area = 1, map_id = nil, map_x = 27,  map_y = 87},
 	{title = "Big Whale",     f = _sequence_big_whale,     map_area = 3, map_id = 324, map_x = 4,   map_y = 8},
 	{title = "FuSoYa",        f = _sequence_fusoya,        map_area = 0, map_id = nil, map_x = 153, map_y = 199},
-	{title = "Grind Start",   f = _sequence_grind_start,   map_area = 3, map_id = 352, map_x = 16,  map_y = 15},
+	{title = "Grind Start",   f = _sequence_grind_start,   map_area = 3, map_id = 303, map_x = 3,   map_y = 13},
 	{title = "Elements",      f = _sequence_elements,      map_area = 3, map_id = 188, map_x = 15,  map_y = 16},
 	{title = "CPU",           f = _sequence_cpu,           map_area = 3, map_id = 188, map_x = 15,  map_y = 15},
 	{title = "Subterrane",    f = _sequence_subterrane,    map_area = 2, map_id = nil, map_x = 19,  map_y = 39},
@@ -3369,6 +4185,12 @@ local function _check_autoreload()
 		table.insert(_q, {menu.wait, {132}})
 		table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
 		table.insert(_q, {menu.confirm, {}})
+
+		_route = {}
+
+		for i = 0, 56 do
+			_route[i] = 0
+		end
 
 		_state.auto_reload = nil
 	end
