@@ -59,6 +59,8 @@ _M.ENEMY = {
 	FIGHTER  = 0x2C,
 	BOMB     = 0x55,
 	GRAYBOMB = 0x56,
+	CAL      = 0xB2,
+	BRENA    = 0xD2,
 	GHAST    = 0xD3,
 }
 
@@ -347,6 +349,22 @@ function _M.enemy.get_closest(enemy)
 			return i
 		end
 	end
+end
+
+function _M.enemy.get_strongest(enemy)
+	local strongest = {nil, 0}
+
+	for i = 0, 7 do
+		if _M.enemy.get_id(i) == enemy then
+			local hp = _M.enemy.get_stat(i, "hp")
+
+			if hp >= strongest[2] then
+				strongest = {i, hp}
+			end
+		end
+	end
+
+	return strongest[1]
 end
 
 function _M.enemy.get_weakest(enemy)

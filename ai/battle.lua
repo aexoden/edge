@@ -307,7 +307,13 @@ local function _battle_baigan(character, turn)
 end
 
 local function _battle_calbrena(character, turn)
+	if not _state.turn then
+		_state.turn = 0
+	end
+
 	if turn > 1 and game.enemy.get_stat(6, "hp") > 0 then
+		_state.bigdoll = true
+
 		if not _state.changed then
 			_command_change()
 			_state.changed = true
@@ -323,6 +329,24 @@ local function _battle_calbrena(character, turn)
 			_command_parry()
 		end
 	else
+		if _state.bigdoll then
+			_state.turn = turn - 1
+		end
+
+		turn = turn - _state.turn
+
+		local strongest = {nil, 0}
+
+		for i = 0, 7 do
+			if game.enemy.get_id(i) == game.ENEMY.CAL then
+				local hp = game.enemy.get_stat(i, "hp")
+
+				if hp >= strongest[2] and hp > 0 then
+					strongest = {i, hp}
+				end
+			end
+		end
+
 		if character == game.CHARACTER.CECIL then
 			if turn == 1 then
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 3)
@@ -330,20 +354,23 @@ local function _battle_calbrena(character, turn)
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 4)
 			elseif turn == 3 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			elseif turn == 4 then
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, strongest[1])
 			else
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 5)
 			end
 		elseif character == game.CHARACTER.KAIN then
-			if turn <= 3 then
-				_command_jump(menu.battle.TARGET.ENEMY, turn - 1)
+			if strongest[1] then
+				_command_jump(menu.battle.TARGET.ENEMY, strongest[1])
 			else
 				_command_fight()
 			end
 		elseif character == game.CHARACTER.ROSA then
 			if turn == 1 then
 				_command_white(game.MAGIC.WHITE.SLOW, menu.battle.TARGET.ENEMY_ALL)
-			elseif turn == 2 then
+			elseif turn == 2 and not _state.muted then
 				_command_white(game.MAGIC.WHITE.MUTE, menu.battle.TARGET.PARTY_ALL)
+				_state.muted = true
 			elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 650 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 			else
