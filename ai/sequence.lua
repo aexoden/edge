@@ -3275,8 +3275,8 @@ end
 local function _sequence_dark_crystal()
 	-- Attempt to walk through the Land of Monsters.
 	table.insert(_q, {_set_healing, {_healing_monsters}})
-	table.insert(_q, {_state_set, {"auto_reload", true}})
 	table.insert(_q, {walk.walk, {nil, 27, 86}})
+	table.insert(_q, {_state_set, {"auto_reload", true}})
 	table.insert(_q, {walk.walk, {310, 17, 22}})
 	table.insert(_q, {walk.walk, {310, 11, 22}})
 	table.insert(_q, {walk.walk, {310, 11, 21}})
