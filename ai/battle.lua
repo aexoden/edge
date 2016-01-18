@@ -1287,7 +1287,9 @@ local function _battle_sisters(character, turn)
 			_command_duplicate(game.EQUIP.L_HAND)
 		end
 
-		if fight_yang then
+		if game.character.get_stat(game.CHARACTER.TELLAH, "hp", true) < 200 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		elseif fight_yang then
 			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		else
 			_command_parry()
