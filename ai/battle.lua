@@ -1164,6 +1164,9 @@ local function _battle_mombomb(character, turn)
 		else
 			_command_parry()
 		end
+	elseif game.enemy.get_stat(0, "hp") > 0 then
+		_command_wait_frames(60)
+		return true
 	else
 		if character == game.CHARACTER.CECIL then
 			_command_fight()
