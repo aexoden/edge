@@ -643,8 +643,9 @@ local function _battle_golbez(character, turn)
 		_command_fight()
 	elseif character == game.CHARACTER.KAIN then
 		if turn == 1 then
+			_command_wait_frames(10)
 			_command_run_buffer()
-			_command_wait_frames(15)
+			_command_wait_frames(30)
 			_command_jump()
 		else
 			_command_fight()
