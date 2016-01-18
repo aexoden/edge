@@ -2841,7 +2841,7 @@ local function _sequence_dark_imps()
 	table.insert(_q, {walk.walk, {293, 23, 24}})
 	table.insert(_q, {walk.walk, {293, 16, 24}})
 	table.insert(_q, {walk.walk, {293, 16, 10}})
-	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {menu.dialog.open, {}})
 	table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.TOWER}})
 	table.insert(_q, {walk.walk, {293, 16, 9}})
 

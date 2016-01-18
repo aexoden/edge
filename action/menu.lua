@@ -1186,6 +1186,21 @@ end
 -- Dialog Menu Functions
 --------------------------------------------------------------------------------
 
+function _M.dialog.open()
+	if memory.read("dialog", "height_lower") == 8 then
+		return true
+	end
+
+	if walk.is_mid_tile() or not walk.is_ready() then
+		return false
+	end
+
+	input.press({"P1 A"}, input.DELAY.MASH)
+
+	return false
+end
+
+
 function _M.dialog.select(item)
 	local cursor = (memory.read("dialog", "cursor_y") + memory.read("dialog", "cursor_scroll")) * 2 + memory.read("dialog", "cursor_x")
 	local index = game.item.get_index(item, 0, game.INVENTORY.DIALOG)
