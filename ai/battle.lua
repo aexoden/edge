@@ -534,6 +534,10 @@ local function _battle_elements(character, turn)
 		if character ~= game.CHARACTER.ROSA and character ~= game.CHARACTER.RYDIA then
 			local hp = game.character.get_stat(character, "hp", true)
 
+			if character == game.CHARACTER.CECIL then
+				hp = hp * 2
+			end
+
 			if hp < weakest[2] then
 				weakest = {i, hp}
 			end
