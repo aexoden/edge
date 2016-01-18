@@ -427,9 +427,12 @@ local function _post_grind_menu()
 
 		table.insert(stack, {menu.field.item.open, {}})
 
+		table.insert(stack, {menu.field.item.select, {game.ITEM.SORT}})
+		table.insert(stack, {menu.field.item.select, {game.ITEM.SORT}})
+
 		if duplicate then
-			table.insert(stack, {menu.field.item.select, {nil, 0}})
 			table.insert(stack, {menu.field.item.select, {game.ITEM.WEAPON.EXCALBUR}})
+			table.insert(stack, {menu.field.item.select, {nil, 0}})
 			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
 			table.insert(stack, {menu.field.item.select, {nil, 1}})
 		end
@@ -3936,10 +3939,6 @@ local function _sequence_core()
 	-- Complete the pre-Zeromus menu.
 	-- TODO: Improve inventory management so the sort is unnecessary.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {menu.field.item.open, {}})
-	table.insert(_q, {menu.field.item.select, {game.ITEM.SORT}})
-	table.insert(_q, {menu.field.item.select, {game.ITEM.SORT}})
-	table.insert(_q, {menu.field.item.close, {}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.EDGE}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.NONE}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.NONE}})
