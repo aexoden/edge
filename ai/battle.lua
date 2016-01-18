@@ -384,6 +384,10 @@ end
 
 local function _battle_cpu(character, turn)
 	if character == game.CHARACTER.EDGE then
+		if turn == 1 then
+			_command_wait_frames(15)
+		end
+
 		_command_dart(game.ITEM.WEAPON.EXCALBUR, menu.battle.TARGET.ENEMY, 0)
 	elseif character == game.CHARACTER.CECIL then
 		_command_fight(menu.battle.TARGET.ENEMY, 0)
