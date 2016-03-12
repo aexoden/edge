@@ -1011,7 +1011,11 @@ local function _battle_lugae1(character, turn)
 			_command_parry()
 		end
 	elseif character == game.CHARACTER.RYDIA then
-		_command_call(game.MAGIC.CALL.TITAN)
+		if game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 40 then
+			_command_call(game.MAGIC.CALL.TITAN)
+		else
+			_command_parry()
+		end
 	else
 		if turn == 2 then
 			_command_fight(menu.battle.TARGET.ENEMY, 0)
@@ -1058,7 +1062,11 @@ local function _battle_lugae2(character, turn)
 			_command_parry()
 		end
 	elseif character == game.CHARACTER.RYDIA then
-		_command_call(game.MAGIC.CALL.TITAN)
+		if game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 40 then
+			_command_call(game.MAGIC.CALL.TITAN)
+		else
+			_command_parry()
+		end
 	elseif character == game.CHARACTER.YANG then
 		_command_fight()
 	end
