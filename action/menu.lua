@@ -316,10 +316,12 @@ function _M.field.open_submenu_with_character(menu, character, is_open, is_selec
 				_select_vertical(cursor, index, 2)
 			end
 		else
+			_state.frame = nil
 			return true
 		end
-	else
+	elseif not _state.frame or emu.framecount() - _state.frame > 15 then
 		_M.field.select(menu)
+		_state.frame = emu.framecount()
 	end
 
 	return false
@@ -442,7 +444,7 @@ function _M.field.equip.equip(location, item)
 	if _is_cursor_visible() and game.character.get_equipment(memory.read("menu_equip", "slot"), location) == item then
 		_state.frame = nil
 		return true
-	elseif _is_subcursor_visible() then
+	elseif _state.frame and _is_subcursor_visible() then
 		local cursor = memory.read("menu_equip", "cursor")
 		local subcursor = (memory.read("menu_equip", "subcursor_y", cursor) + memory.read("menu_equip", "scroll", cursor)) * 2 + memory.read("menu_equip", "subcursor_x", cursor)
 		local index = game.item.get_index(item, 0)
