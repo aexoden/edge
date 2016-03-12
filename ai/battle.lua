@@ -802,6 +802,8 @@ local function _battle_grind(character, turn)
 			elseif _state.character_index == 3 then
 				if dragon_hp > 50 and dragon_hp < 15000 then
 					_command_fight()
+				elseif game.enemy.get_stat(0, "hp") < 800 then
+					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.ENEMY, 0)
 				else
 					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.ENEMY, 1)
 				end
