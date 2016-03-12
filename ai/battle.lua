@@ -722,7 +722,8 @@ local function _battle_grind(character, turn)
 			if type == game.battle.TYPE.NORMAL then
 				if character == game.CHARACTER.FUSOYA then
 					_command_black(game.MAGIC.BLACK.QUAKE)
-				elseif character == game.CHARACTER.RYDIA then
+					_state.quaked = true
+				elseif character == game.CHARACTER.RYDIA and _state.quaked then
 					if game.enemy.get_stat(2, "hp") == 0 then
 						_command_parry()
 					else
@@ -740,7 +741,8 @@ local function _battle_grind(character, turn)
 				elseif character == game.CHARACTER.FUSOYA then
 					_command_wait_text(" Flood")
 					_command_black(game.MAGIC.BLACK.QUAKE)
-				elseif character == game.CHARACTER.RYDIA then
+					_state.quaked = true
+				elseif character == game.CHARACTER.RYDIA and _state.quaked then
 					_command_wait_text(" Quake")
 					_command_parry()
 					_state.setup_complete = true
