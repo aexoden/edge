@@ -1414,6 +1414,8 @@ local function _battle_zeromus(character, turn)
 					_state.waited = true
 					return true
 				end
+			else
+				_command_parry()
 			end
 		elseif character == game.CHARACTER.RYDIA then
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
