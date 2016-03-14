@@ -83,7 +83,7 @@ function _M.reset()
 	end
 
 	if FULL_RUN then
-		_file, err = io.open(string.format("edge-%s.log", os.date("!%Y%m%d%H%M%S")), "w")
+		_file, err = io.open(string.format("logs/edge-%s.log", os.date("!%Y%m%d%H%M%S")), "w")
 	end
 end
 
