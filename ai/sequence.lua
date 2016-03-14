@@ -874,6 +874,7 @@ local function _sequence_girl()
 	table.insert(_q, {menu.field.equip.close, {}})
 
 	-- Save and reset.
+	table.insert(_q, {_state_set, {"check_autoreload", false}})
 	table.insert(_q, {menu.field.save.save, {1}})
 	table.insert(_q, {input.press, {{"Reset"}, input.DELAY.NORMAL}})
 	table.insert(_q, {menu.wait, {math.random(132, 387)}})
@@ -881,6 +882,7 @@ local function _sequence_girl()
 	table.insert(_q, {menu.wait, {132}})
 	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
 	table.insert(_q, {menu.confirm, {}})
+	table.insert(_q, {_state_set, {"check_autoreload", true}})
 
 	-- Walk to the shop and open the shopping menu.
 	table.insert(_q, {walk.walk, {nil, 98, 119}})
@@ -4175,24 +4177,29 @@ local _sequences = {
 --------------------------------------------------------------------------------
 
 local function _check_autoreload()
-	if _state.auto_reload and dialog.get_save_text(3) == "New" then
-		_q = {}
+	if _state.check_autoreload and dialog.get_save_text(3) == "New" then
+		if _state.auto_reload then
+			_q = {}
 
-		log.log("Load game screen detected: auto-reloading")
+			log.log("Load game screen detected: auto-reloading")
 
-		table.insert(_q, {menu.wait, {132}})
-		table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
-		table.insert(_q, {menu.wait, {132}})
-		table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
-		table.insert(_q, {menu.confirm, {}})
+			table.insert(_q, {menu.wait, {132}})
+			table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
+			table.insert(_q, {menu.wait, {132}})
+			table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
+			table.insert(_q, {menu.confirm, {}})
 
-		_route = {}
+			_route = {}
 
-		for i = 0, 56 do
-			_route[i] = 0
+			for i = 0, 56 do
+				_route[i] = 0
+			end
+
+			_state.auto_reload = nil
+		else
+			log.log("Load game screen detected: ending run")
+			_M.end_run()
 		end
-
-		_state.auto_reload = nil
 	end
 end
 
@@ -4243,6 +4250,14 @@ function _M.cycle()
 	end
 end
 
+function _M.end_run()
+	_state.active = false
+end
+
+function _M.is_active()
+	return _state.active
+end
+
 function _M.set_healing_check()
 	_state.check_healing = true
 end
@@ -4251,6 +4266,8 @@ function _M.reset()
 	_q = {}
 
 	_state = {
+		active = true,
+		check_autoreload = true,
 		check_healing = false,
 		multi_change = false,
 	}

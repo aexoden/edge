@@ -103,7 +103,9 @@ _reset()
 --------------------------------------------------------------------------------
 
 while true do
-	local result = dialog.cycle() or battle.cycle() or sequence.cycle()
+	if sequence.is_active() then
+		local result = dialog.cycle() or battle.cycle() or sequence.cycle()
+	end
 
 	input.cycle()
 	emu.frameadvance()

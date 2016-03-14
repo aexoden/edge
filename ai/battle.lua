@@ -1532,6 +1532,7 @@ function _M.cycle()
 		if index == _M.FORMATION.ZEROMUS and memory.read("battle", "flash") == 3 and not _state.flash_split then
 			_state.flash_split = true
 			bridge.split("Zeromus Death")
+			sequence.end_run()
 		end
 
 		if formation.f then
