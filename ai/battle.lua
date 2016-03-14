@@ -1523,6 +1523,10 @@ function _M.cycle()
 			end
 
 			log.log(string.format("Battle Start: %s (%s)", formation.title, stats))
+			
+			if SAVESTATE and formation.f then
+				savestate.save(string.format("states/%s.state", formation.title))
+			end
 
 			if _state.formation.presplit then
 				bridge.split(_state.formation.title .. " (start)")

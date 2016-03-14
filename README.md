@@ -16,7 +16,7 @@ Instructions may appear here eventually, once exact instructions are determined.
 ## Configuration
 
 After extracting Edge to a directory, preferably within BizHawk's lua directory,
-open the main.lua file. There are currently two configuration variables:
+open the main.lua file. There are a few configuration variables:
 
 ### SEED
 
@@ -30,6 +30,13 @@ Enables or disables LiveSplit integration. By default this is disabled. Enabling
 this requires luasocket and a correctly configured LiveSplit. USE OF THIS
 INTEGRATION IS CURRENTLY UNSUPPORTED. IT MAY OR MAY NOT WORK DEPENDING ON YOUR
 EXACT SETUP.
+
+### SAVESTATE
+
+When enabled, save states will automatically be created at the start of every
+battle for which a battle function exists. (This is generally boss battles and
+the grind fight.) This option is disabled by default, as it's primarily useful
+for debugging.
 
 ## Usage
 

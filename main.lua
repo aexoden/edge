@@ -30,6 +30,9 @@ SEED = nil
 -- Enable/Disable LiveSplit integration (requires luasocket and LiveSplit)
 LIVESPLIT = false
 
+-- Automatically create save states at the beginning of each battle.
+SAVESTATE = false
+
 --------------------------------------------------------------------------------
 -- Setup
 --------------------------------------------------------------------------------
