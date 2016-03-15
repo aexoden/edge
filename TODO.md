@@ -67,8 +67,6 @@ provide a good list of improvements that can be made.
 
 * Adjust Mist Kain delay.
 
-* Make sure Rydia is alive before trying to cast Warp.
-
 ## Battle-Specific Fixes
 
 ### MomBomb
