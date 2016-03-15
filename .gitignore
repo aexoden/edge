@@ -1,1 +1,2 @@
-edge*.log
+logs/*.log
+states/*.state
