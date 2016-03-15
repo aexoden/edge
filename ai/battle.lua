@@ -1523,7 +1523,7 @@ function _M.cycle()
 			end
 
 			log.log(string.format("Battle Start: %s (%s)", formation.title, stats))
-			
+
 			if SAVESTATE and formation.f then
 				savestate.save(string.format("states/%s.state", formation.title))
 			end
@@ -1588,7 +1588,15 @@ function _M.cycle()
 				dialog.set_pending_spoils()
 			end
 
-			local stats = string.format("%d/%d frames/%d GP dropped", _state.index, emu.framecount() - _state.frame, gp)
+			local victory = "Perished"
+
+			for i = 0, 4 do
+				if memory.read_stat(i, "hp", true) > 0 then
+					victory = "Victory"
+				end
+			end
+
+			local stats = string.format("%d/%d frames/%d GP dropped/%s", _state.index, emu.framecount() - _state.frame, gp, victory)
 
 			log.log(string.format("Battle Complete: %s (%s)", _state.formation.title, stats))
 

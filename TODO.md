@@ -23,11 +23,7 @@ provide a good list of improvements that can be made.
 * Add inventory management and other actions performed during animations or
   text boxes (especially during the Q.Eblan and Rubicant battles).
 
-* Build an external log analyzer to collect statistics from multiple runs. This
-  requires making the logging slightly more robust. Don't generate logs for tiny
-  test runs before rebooting the core, for instance. We should also detect death
-  and not report that battle as being complete, or at least flag that it was
-  complete due to death and not due to victory.
+* Build an external log analyzer to collect statistics from multiple runs.
 
 * Add additional strategies and branches to the run. (Drain spear and Yes64 are
   two examples.)
@@ -64,6 +60,14 @@ provide a good list of improvements that can be made.
   dynamic system would be designed depending on how many people were alive at
   various junctures, but this would be a simpler adjustment. This goes along
   with ensuring that Cecil and Rosa reach level 20 when they are supposed to.
+
+* Detect party death at the end of a battle.
+
+* Rework Calbrena battle.
+
+* Adjust Mist Kain delay.
+
+* Make sure Rydia is alive before trying to cast Warp.
 
 ## Battle-Specific Fixes
 
