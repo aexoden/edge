@@ -106,8 +106,10 @@ _reset()
 --------------------------------------------------------------------------------
 
 while true do
+	dialog.cycle()
+
 	if sequence.is_active() then
-		local result = dialog.cycle() or battle.cycle() or sequence.cycle()
+		local result = battle.cycle() or sequence.cycle()
 	end
 
 	input.cycle()
