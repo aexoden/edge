@@ -65,8 +65,6 @@ provide a good list of improvements that can be made.
 
 * Rework Calbrena battle.
 
-* Adjust Mist Kain delay.
-
 ## Battle-Specific Fixes
 
 ### MomBomb

@@ -418,7 +418,7 @@ local function _battle_d_mist(character, turn)
 		else
 			if turn == 4 then
 				-- TODO: Test this delay against audio cue
-				_command_wait_frames(330)
+				_command_wait_frames(340)
 			end
 
 			_command_jump()
