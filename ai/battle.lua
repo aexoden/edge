@@ -1636,18 +1636,30 @@ function _M.cycle()
 				dialog.set_pending_spoils()
 			end
 
-			local victory = memory.read("battle", "enemies") == 0
-			local battle_state = "Perished"
+			local ending = memory.read("battle", "ending")
+			local ending_text = string.format("Unknown: %02X", ending)
 
-			if victory then
-				battle_state = "Victory"
+			if ending == 0x00 then
+				ending_text = "Perished"
+			elseif ending == 0x04 then
+				ending_text = "Stalemate"
+			elseif ending == 0x08 then
+				ending_text = "Scripted Defeat"
+			elseif ending == 0x20 then
+				ending_text = "Victory (no spoils)"
+			elseif ending == 0x30 then
+				ending_text = "Victory"
+			elseif ending == 0x40 then
+				ending_text = "Ran Away"
+			elseif ending == 0x80 then
+				ending_text = "Perished (Zeromus)"
 			end
 
-			local stats = string.format("%d/%d frames/%d GP dropped/%s", _state.index, emu.framecount() - _state.frame, gp, battle_state)
+			local stats = string.format("%d/%d frames/%d GP dropped/%s", _state.index, emu.framecount() - _state.frame, gp, ending_text)
 
 			log.log(string.format("Battle Complete: %s (%s)", _state.formation.title, stats))
 
-			if victory and _state.formation.split then
+			if ending > 0 and _state.formation.split then
 				bridge.split(_state.formation.title)
 			end
 

@@ -116,7 +116,6 @@ local _addresses = {
 		ending              = {f = mainmemory.read_u8,     address = 0x0000A8, record_size = {0x01, 0x01}},
 		flash               = {f = mainmemory.read_u8,     address = 0x00EF87, record_size = {0x01, 0x01}},
 		formation           = {f = mainmemory.read_u16_le, address = 0x001800, record_size = {0x01, 0x01}},
-		enemies             = {f = mainmemory.read_u8,     address = 0x0029CD, record_size = {0x01, 0x01}},
 		enemy_target        = {f = mainmemory.read_u8,     address = 0x0000CE, record_size = {0x01, 0x01}},
 		state               = {f = mainmemory.read_u8,     address = 0x000203, record_size = {0x01, 0x01}},
 		party_level         = {f = mainmemory.read_u8,     address = 0x0038D4, record_size = {0x01, 0x01}},
