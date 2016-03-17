@@ -4197,7 +4197,7 @@ local function _check_autoreload()
 			end
 
 			_state.auto_reload = nil
-		else
+		elseif FULL_RUN then
 			log.log("Load game screen detected: ending run")
 			_M.end_run()
 		end
