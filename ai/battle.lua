@@ -1588,19 +1588,18 @@ function _M.cycle()
 				dialog.set_pending_spoils()
 			end
 
-			local victory = "Perished"
+			local victory = memory.read("battle", "enemies") == 0
+			local battle_state = "Perished"
 
-			for i = 0, 4 do
-				if memory.read_stat(i, "hp", true) > 0 then
-					victory = "Victory"
-				end
+			if victory then
+				battle_state = "Victory"
 			end
 
-			local stats = string.format("%d/%d frames/%d GP dropped/%s", _state.index, emu.framecount() - _state.frame, gp, victory)
+			local stats = string.format("%d/%d frames/%d GP dropped/%s", _state.index, emu.framecount() - _state.frame, gp, battle_state)
 
 			log.log(string.format("Battle Complete: %s (%s)", _state.formation.title, stats))
 
-			if _state.formation.split then
+			if victory and _state.formation.split then
 				bridge.split(_state.formation.title)
 			end
 
