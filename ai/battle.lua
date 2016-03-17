@@ -307,18 +307,27 @@ local function _battle_baigan(character, turn)
 end
 
 local function _battle_calbrena(character, turn)
-	if not _state.turn then
-		_state.turn = 0
+	if not _state.jumps then
+		_state.jumps = 0
+		_state.daggers = 0
 	end
 
 	if turn > 1 and game.enemy.get_stat(6, "hp") > 0 then
-		_state.bigdoll = true
+		_state.jumps = 0
+		_state.daggers = 0
+		_state.kain_target = nil
+
+		local hp = game.enemy.get_stat(6, "hp")
 
 		if not _state.changed then
 			_command_change()
 			_state.changed = true
 		elseif character == game.CHARACTER.KAIN then
-			_command_jump()
+			if hp > 700 and hp < 1350 then
+				_command_fight()
+			else
+				_command_jump()
+			end
 		elseif character == game.CHARACTER.CECIL then
 			if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
@@ -329,54 +338,93 @@ local function _battle_calbrena(character, turn)
 			_command_parry()
 		end
 	else
-		if _state.bigdoll then
-			_state.turn = turn - 1
-		end
+		local cals = 0
+		local brenas = 0
 
-		turn = turn - _state.turn
+		local strongest_cal = {nil, -1}
+		local strongest_brena = {nil, -1}
 
-		local strongest = {nil, 0}
+		for i = 0, 5 do
+			local hp = game.enemy.get_stat(i, "hp")
 
-		for i = 0, 7 do
 			if game.enemy.get_id(i) == game.ENEMY.CAL then
-				local hp = game.enemy.get_stat(i, "hp")
+				if hp > 0 then
+					cals = cals + 1
 
-				if hp >= strongest[2] and hp > 0 then
-					strongest = {i, hp}
+					if hp > strongest_cal[2] then
+						strongest_cal = {i, hp}
+					end
+				end
+			else
+				if hp > 0 then
+					brenas = brenas + 1
+
+					if hp > strongest_brena[2] then
+						strongest_brena = {i, hp}
+					end
 				end
 			end
 		end
 
 		if character == game.CHARACTER.CECIL then
-			if turn == 1 then
-				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 3)
-			elseif turn == 2 then
-				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 4)
-			elseif turn == 3 then
-				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-			elseif turn == 4 then
-				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, strongest[1])
+			if _state.daggers < 2 or _state.jumps == 3 then
+				if _state.jumps == 3 then
+					local frames = 600 - (emu.framecount() - _state.kain_frame)
+
+					if frames > 0 then
+						_command_wait_frames(frames)
+					end
+				end
+
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, strongest_brena[1])
+				_state.daggers = _state.daggers + 1
+			elseif cals == 1 then
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, strongest_cal[1])
 			else
-				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 5)
+				local target = {nil, 1000}
+
+				for i = 0, 2 do
+					local hp = game.enemy.get_stat(i, "hp")
+					local min = 0
+
+					if game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 then
+						min = 80
+					end
+
+					if ((hp > min and hp < 200) or hp > 700) and i ~= _state.kain_target then
+						target = {i, hp}
+					end
+				end
+
+				if target[1] then
+					_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, target[1])
+				else
+					_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+				end
 			end
 		elseif character == game.CHARACTER.KAIN then
-			if strongest[1] then
-				_command_jump(menu.battle.TARGET.ENEMY, strongest[1])
+			if _state.jumps == 2 and cals > 1 then
+				_command_parry()
+				_state.kain_target = nil
+			elseif cals > 0 then
+				_command_jump(menu.battle.TARGET.ENEMY, strongest_cal[1])
+				_state.jumps = _state.jumps + 1
+				_state.kain_target = strongest_cal[1]
+				_state.kain_frame = emu.framecount()
 			else
 				_command_fight()
 			end
 		elseif character == game.CHARACTER.ROSA then
 			if turn == 1 then
 				_command_white(game.MAGIC.WHITE.SLOW, menu.battle.TARGET.ENEMY_ALL)
-			elseif turn == 2 and not _state.muted then
+			elseif turn == 2 then
 				_command_white(game.MAGIC.WHITE.MUTE, menu.battle.TARGET.PARTY_ALL)
-				_state.muted = true
-			elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 650 then
+			elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 850 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 			else
 				_command_parry()
 			end
-		else
+		elseif character == game.CHARACTER.YANG then
 			_command_kick()
 		end
 	end
