@@ -267,16 +267,19 @@ local function _battle_baigan(character, turn)
 		if turn == 1 then
 			_command_run_buffer()
 			_command_cover(game.CHARACTER.TELLAH)
-		elseif turn == 2 then
-			if game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
+		elseif turn == 2 or turn == 3 then
+			if game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 then
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+			elseif game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 			elseif game.character.get_stat(game.CHARACTER.PALOM, "hp", true) > 0 then
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
 			else
-				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+				_command_wait_text(" Meteo")
+				_command_equip(character, game.ITEM.WEAPON.LEGEND)
 			end
 		else
-			-- TODO: Wait for Meteo
+			_command_wait_text(" Meteo")
 			_command_equip(character, game.ITEM.WEAPON.LEGEND)
 		end
 	elseif character == game.CHARACTER.PALOM then
@@ -296,7 +299,7 @@ local function _battle_baigan(character, turn)
 			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		end
 	elseif character == game.CHARACTER.TELLAH then
-		if not sequence.state.multi_change then
+		if game.item.get_count(game.ITEM.WEAPON.CHANGE, game.INVENTORY.BATTLE) < 2 then
 			_command_equip(character, game.ITEM.WEAPON.THUNDER)
 		end
 
