@@ -1122,7 +1122,12 @@ end
 function _M.battle.item.select(item, index)
 	local menu = memory.read("battle_menu", "menu")
 	local cursor = memory.read("battle_menu", "subcursor")
-	local index = game.item.get_index(item, index, game.INVENTORY.BATTLE)
+
+	local index = index
+
+	if item then
+		index = game.item.get_index(item, index, game.INVENTORY.BATTLE)
+	end
 
 	if _M.battle.is_open() then
 		if _M.battle.is_target() or (_state.item_selected ~= nil and memory.read("battle_menu", "item_selected") ~= _state.item_selected) then
