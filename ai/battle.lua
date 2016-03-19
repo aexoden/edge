@@ -1950,6 +1950,8 @@ function _M.cycle()
 
 			log.log(string.format("Battle Complete: %s (%s)", _state.formation.title, stats))
 
+			menu.wait_clear()
+
 			if ending > 0 and _state.formation.split then
 				bridge.split(_state.formation.title)
 			end
