@@ -626,7 +626,7 @@ local function _battle_elements(character, turn)
 		if turn == 1 then
 			_command_white(game.MAGIC.WHITE.SLOW)
 		else
-			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.PARTY, weakest[1])
 		end
 	elseif character == game.CHARACTER.RYDIA then
 		_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
