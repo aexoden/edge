@@ -573,6 +573,8 @@ local function _battle_eblan(character, turn)
 		_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 	elseif not cecil_equipped or not kain_equipped then
 		_command_parry()
+	else
+		return true
 	end
 end
 

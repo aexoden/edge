@@ -73,8 +73,6 @@ provide a good list of improvements that can be made.
 
 * Fix save states for Fabul battles.
 
-* Determine why the script stops managing inventory during the Eblan battle.
-
 ## Battle-Specific Fixes
 
 ### MomBomb
