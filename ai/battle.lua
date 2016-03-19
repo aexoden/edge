@@ -1804,6 +1804,7 @@ function _manage_inventory(full_inventory, items)
 
 		if not first_slot or not second_slot or first_slot >= second_slot then
 			log.log("Inventory: Couldn't find anything to move")
+			_state.disable_inventory = true
 			return false
 		end
 
@@ -1883,15 +1884,17 @@ function _M.cycle()
 				_state.q = {}
 				_state.slot = slot
 				_state.queued = false
+				_state.disable_inventory = nil
 			elseif not open then
 				_state.q = {}
 				_state.slot = -1
 				_state.queued = false
+				_state.disable_inventory = nil
 			end
 
 			if open and memory.read("battle_menu", "menu") ~= menu.battle.MENU.NONE then
 			 	if #_state.q == 0 and not _state.queued then
-					if not _manage_inventory(formation.full_inventory or _state.fulL_inventory, formation.needed_items) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1) then
+					if (_state.disable_inventory or not _manage_inventory(formation.full_inventory or _state.fulL_inventory, formation.needed_items)) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1) then
 						_state.turns[slot] = _state.turns[slot] + 1
 						_state.queued = true
 					end

@@ -20,8 +20,18 @@ provide a good list of improvements that can be made.
 * Clean up the individual battles starting from the beginning. Almost every
   battle can stand some level of improvement.
 
-* Add inventory management and other actions performed during animations or
-  text boxes (especially during the Q.Eblan and Rubicant battles).
+* Ensure inventory actions (such as during Q.Eblan/K.Eblan battle) are executed
+  during animations as much as possible.
+
+* Integrate waiting with inventory management so that management can take place
+  during waits, while still checking the wait conditions each frame.
+
+* Enhance inventory management to behave closer to how a human manages
+  inventory. The goal is to have items exactly where we need them when we need
+  them there.
+
+* Allow for specific item placement. This is necessary for Yes64 and is useful
+  for making sure certain items end up in good locations.
 
 * Build an external log analyzer to collect statistics from multiple runs.
 
@@ -60,6 +70,10 @@ provide a good list of improvements that can be made.
   dynamic system would be designed depending on how many people were alive at
   various junctures, but this would be a simpler adjustment. This goes along
   with ensuring that Cecil and Rosa reach level 20 when they are supposed to.
+
+* Fix save states for Fabul battles.
+
+* Determine why the script stops managing inventory during the Eblan battle.
 
 ## Battle-Specific Fixes
 
