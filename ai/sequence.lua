@@ -2024,6 +2024,12 @@ local function _sequence_kainazzo()
 		end
 	end
 
+	if game.character.get_weapon(game.CHARACTER.CECIL) ~= game.ITEM.WEAPON.LEGEND then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.LEGEND}})
+		table.insert(_q, {menu.field.equip.close, {}})
+	end
+
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Step Route: Castle Baron
