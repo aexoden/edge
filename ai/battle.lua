@@ -81,7 +81,8 @@ _M.FORMATION = {
 -- Variables
 --------------------------------------------------------------------------------
 
-_state = nil
+local _state = nil
+local _battle_count = 0
 
 --------------------------------------------------------------------------------
 -- Private Functions
@@ -1842,6 +1843,7 @@ function _M.cycle()
 			_state.formation = formation
 			_state.frame = emu.framecount()
 			_state.full_inventory = false
+			_battle_count = _battle_count + 1
 
 			local attack_type = game.battle.get_type()
 
@@ -1864,7 +1866,7 @@ function _M.cycle()
 			log.log(string.format("Battle Start: %s (%s)", formation.title, stats))
 
 			if FULL_RUN and SAVESTATE and formation.f then
-				savestate.save(string.format("states/%s.state", formation.title))
+				savestate.save(string.format("states/%03d - %s.state", _battle_count, formation.title:gsub('/', '-')))
 			end
 
 			if _state.formation.presplit then

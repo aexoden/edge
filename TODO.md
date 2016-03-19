@@ -71,8 +71,6 @@ provide a good list of improvements that can be made.
   various junctures, but this would be a simpler adjustment. This goes along
   with ensuring that Cecil and Rosa reach level 20 when they are supposed to.
 
-* Fix save states for Fabul battles.
-
 ## Battle-Specific Fixes
 
 ### MomBomb
