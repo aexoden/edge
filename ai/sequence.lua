@@ -427,8 +427,18 @@ local function _post_grind_menu()
 
 		table.insert(stack, {menu.field.item.open, {}})
 
-		table.insert(stack, {menu.field.item.select, {game.ITEM.SORT}})
-		table.insert(stack, {menu.field.item.select, {game.ITEM.SORT}})
+		local empty = 0
+
+		for i = 0, 47 do
+			if memory.read("menu_item", "item_id", i) == game.ITEM.NONE then
+				empty = empty + 1
+			end
+		end
+
+		if empty < 3 then
+			table.insert(stack, {menu.field.item.select, {game.ITEM.SORT}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.SORT}})
+		end
 
 		if duplicate then
 			table.insert(stack, {menu.field.item.select, {game.ITEM.WEAPON.EXCALBUR}})
