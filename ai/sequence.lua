@@ -2017,14 +2017,18 @@ local function _sequence_kainazzo()
 	table.insert(_q, {menu.field.change, {}})
 
 	if not _M.state.multi_change then
-		if game.character.get_weapon(game.CHARACTER.PALOM) == game.ITEM.WEAPON.CHANGE then
+		local hand, weapon = game.character.get_weapon(game.CHARACTER.PALOM)
+
+		if weapon == game.ITEM.WEAPON.CHANGE then
 			table.insert(_q, {menu.field.equip.open, {game.CHARACTER.PALOM}})
 			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.DANCING}})
 			table.insert(_q, {menu.field.equip.close, {}})
 		end
 	end
 
-	if game.character.get_weapon(game.CHARACTER.CECIL) ~= game.ITEM.WEAPON.LEGEND then
+	local hand, weapon = game.character.get_weapon(game.CHARACTER.CECIL)
+
+	if weapon ~= game.ITEM.WEAPON.LEGEND then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.LEGEND}})
 		table.insert(_q, {menu.field.equip.close, {}})
