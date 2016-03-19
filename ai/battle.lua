@@ -1861,7 +1861,7 @@ function _M.cycle()
 
 			log.log(string.format("Battle Start: %s (%s)", formation.title, stats))
 
-			if SAVESTATE and formation.f then
+			if FULL_RUN and SAVESTATE and formation.f then
 				savestate.save(string.format("states/%s.state", formation.title))
 			end
 
