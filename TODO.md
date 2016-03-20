@@ -71,6 +71,14 @@ provide a good list of improvements that can be made.
   various junctures, but this would be a simpler adjustment. This goes along
   with ensuring that Cecil and Rosa reach level 20 when they are supposed to.
 
+* Characters are, in general, making their battle decisions something like 12
+  frames earlier than a human would. (Assuming a human knew exactly what they
+  wanted to do and entered it the instant the menu appeared.) The only real
+  input that can be made before that 12 frames is up is a run buffer. Creating
+  a more advanced battle status that can a) delay most decisions until
+  appropriate while b) allowing for run buffers and interruptible wait commands
+  would be desirable.
+
 ## Battle-Specific Fixes
 
 ### MomBomb

@@ -1520,8 +1520,8 @@ local _formations = {
 	[_M.FORMATION.GUARDS]   = {title = "Guards",                 f = _battle_guards,   split = false},
 	[_M.FORMATION.KAINAZZO] = {title = "Kainazzo",               f = _battle_kainazzo, split = true},
 	[_M.FORMATION.KARATE]   = {title = "Karate",                 f = _battle_karate,   split = true,  full_inventory = true},
-	[_M.FORMATION.LUGAE1]   = {title = "Dr.Lugae/Balnab",        f = _battle_lugae1,   split = true,  full_inventory = true},
-	[_M.FORMATION.LUGAE2]   = {title = "Dr.Lugae",               f = _battle_lugae2,   split = true,  full_inventory = true},
+	[_M.FORMATION.LUGAE1]   = {title = "Dr.Lugae/Balnab",        f = _battle_lugae1,   split = true},
+	[_M.FORMATION.LUGAE2]   = {title = "Dr.Lugae",               f = _battle_lugae2,   split = true},
 	[_M.FORMATION.MAGE]     = {title = "Mages",                  f = _battle_mages,    split = false},
 	[_M.FORMATION.MILON]    = {title = "Milon",                  f = _battle_milon,    split = true,  full_inventory = true},
 	[_M.FORMATION.MILON_Z]  = {title = "Milon Z.",               f = _battle_milon_z,  split = true,  full_inventory = true},
@@ -1898,7 +1898,7 @@ function _M.cycle()
 
 			if open and memory.read("battle_menu", "menu") ~= menu.battle.MENU.NONE then
 			 	if #_state.q == 0 and not _state.queued then
-					if (_state.disable_inventory or not _manage_inventory(formation.full_inventory or _state.fulL_inventory, formation.needed_items)) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1) then
+					if (_state.disable_inventory or not _manage_inventory(formation.full_inventory or _state.full_inventory, formation.needed_items)) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1) then
 						_state.turns[slot] = _state.turns[slot] + 1
 						_state.queued = true
 					end
