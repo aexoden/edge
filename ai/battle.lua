@@ -1546,210 +1546,236 @@ local _formations = {
 --------------------------------------------------------------------------------
 
 _formations[_M.FORMATION.GIRL].needed_items = {
-	[game.ITEM.HELM.TIARA] = true,
-	[game.ITEM.ARMS.IRON] = true,
-	[game.ITEM.WEAPON.CHANGE] = true,
-	[game.ITEM.WEAPON.DANCING] = true,
+	[game.ITEM.HELM.TIARA] = 8,
+	[game.ITEM.ARMS.IRON] = 2,
+	[game.ITEM.WEAPON.CHANGE] = 8,
+	[game.ITEM.WEAPON.DANCING] = 8,
 }
 
 _formations[_M.FORMATION.OCTOMAMM].needed_items = {
-	[game.ITEM.HELM.CAP] = true,
-	[game.ITEM.ARMS.IRON] = true,
-	[game.ITEM.WEAPON.CHANGE] = true,
-	[game.ITEM.WEAPON.DANCING] = true,
+	[game.ITEM.HELM.CAP] = 4,
+	[game.ITEM.ARMS.IRON] = 2,
+	[game.ITEM.WEAPON.CHANGE] = 8,
+	[game.ITEM.WEAPON.DANCING] = 8,
 }
 
 _formations[_M.FORMATION.ANTLION].needed_items = {
-	[game.ITEM.HELM.CAP] = true,
-	[game.ITEM.ARMS.IRON] = true,
-	[game.ITEM.ITEM.LIFE] = true,
-	[game.ITEM.WEAPON.CHANGE] = true,
-	[game.ITEM.WEAPON.DANCING] = true,
+	[game.ITEM.HELM.CAP] = 4,
+	[game.ITEM.ARMS.IRON] = 2,
+	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.WEAPON.CHANGE] = 8,
+	[game.ITEM.WEAPON.DANCING] = 8,
 }
 
 _formations[_M.FORMATION.MOMBOMB].needed_items = _formations[_M.FORMATION.ANTLION].needed_items
-_formations[_M.FORMATION.GENERAL].needed_items = _formations[_M.FORMATION.ANTLION].needed_items
-_formations[_M.FORMATION.WEEPER].needed_items = _formations[_M.FORMATION.ANTLION].needed_items
-_formations[_M.FORMATION.GARGOYLE].needed_items = _formations[_M.FORMATION.ANTLION].needed_items
-_formations[_M.FORMATION.DRAGOON].needed_items = _formations[_M.FORMATION.ANTLION].needed_items
 
-_formations[_M.FORMATION.D_KNIGHT].needed_items = {
-	[game.ITEM.ARMOR.GAEA] = true,
-	[game.ITEM.ARMS.PALADIN] = true,
-	[game.ITEM.ARMS.IRON] = true,
-	[game.ITEM.HELM.GAEA] = true,
-	[game.ITEM.ITEM.CURE2] = true,
-	[game.ITEM.ITEM.ETHER1] = true,
-	[game.ITEM.ITEM.HEAL] = true,
-	[game.ITEM.ITEM.LIFE] = true,
-	[game.ITEM.RING.SILVER] = true,
-	[game.ITEM.SHIELD.PALADIN] = true,
-	[game.ITEM.WEAPON.CHANGE] = true,
-	[game.ITEM.WEAPON.DANCING] = true,
-	[game.ITEM.WEAPON.LEGEND] = true,
+_formations[_M.FORMATION.GENERAL].needed_items = {
+	[game.ITEM.HELM.CAP] = 16,
+	[game.ITEM.ARMS.IRON] = 2,
+	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.WEAPON.CHANGE] = 8,
+	[game.ITEM.WEAPON.DANCING] = 8,
 }
 
+_formations[_M.FORMATION.WEEPER].needed_items = _formations[_M.FORMATION.GENERAL].needed_items
+_formations[_M.FORMATION.GARGOYLE].needed_items = _formations[_M.FORMATION.GENERAL].needed_items
+_formations[_M.FORMATION.DRAGOON].needed_items = _formations[_M.FORMATION.GENERAL].needed_items
+
 _formations[_M.FORMATION.MILON].needed_items = {
-	[game.ITEM.ARMOR.GAEA] = true,
-	[game.ITEM.ARMS.PALADIN] = true,
-	[game.ITEM.ARMS.IRON] = true,
-	[game.ITEM.HELM.GAEA] = true,
-	[game.ITEM.ITEM.CURE2] = true,
-	[game.ITEM.ITEM.ETHER1] = true,
-	[game.ITEM.ITEM.HEAL] = true,
-	[game.ITEM.ITEM.LIFE] = true,
-	[game.ITEM.RING.SILVER] = true,
-	[game.ITEM.SHIELD.PALADIN] = true,
-	[game.ITEM.WEAPON.CHANGE] = true,
-	[game.ITEM.WEAPON.DANCING] = true,
+	[game.ITEM.ARMOR.GAEA] = 2,
+	[game.ITEM.ARMS.PALADIN] = 4,
+	[game.ITEM.ARMS.IRON] = 2,
+	[game.ITEM.HELM.GAEA] = 2,
+	[game.ITEM.ITEM.CURE2] = 8,
+	[game.ITEM.ITEM.ETHER1] = 4,
+	[game.ITEM.ITEM.HEAL] = 4,
+	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.RING.SILVER] = 2,
+	[game.ITEM.SHIELD.PALADIN] = 32,
+	[game.ITEM.WEAPON.CHANGE] = 16,
+	[game.ITEM.WEAPON.DANCING] = 16,
 }
 
 _formations[_M.FORMATION.MILON_Z].needed_items = _formations[_M.FORMATION.MILON].needed_items
 
+_formations[_M.FORMATION.D_KNIGHT].needed_items = {
+	[game.ITEM.ARMOR.GAEA] = 2,
+	[game.ITEM.ARMS.PALADIN] = 4,
+	[game.ITEM.ARMS.IRON] = 2,
+	[game.ITEM.HELM.GAEA] = 2,
+	[game.ITEM.ITEM.CURE2] = 8,
+	[game.ITEM.ITEM.ETHER1] = 4,
+	[game.ITEM.ITEM.HEAL] = 4,
+	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.RING.SILVER] = 2,
+	[game.ITEM.SHIELD.PALADIN] = 32,
+	[game.ITEM.WEAPON.CHANGE] = 16,
+	[game.ITEM.WEAPON.DANCING] = 16,
+	[game.ITEM.WEAPON.LEGEND] = 2,
+}
+
 _formations[_M.FORMATION.GUARDS].needed_items = {
-	[game.ITEM.ARMOR.GAEA] = true,
-	[game.ITEM.ARMS.PALADIN] = true,
-	[game.ITEM.ARMS.IRON] = true,
-	[game.ITEM.HELM.GAEA] = true,
-	[game.ITEM.ITEM.CURE2] = true,
-	[game.ITEM.ITEM.ETHER1] = true,
-	[game.ITEM.ITEM.HEAL] = true,
-	[game.ITEM.ITEM.LIFE] = true,
-	[game.ITEM.RING.SILVER] = true,
-	[game.ITEM.WEAPON.CHANGE] = true,
-	[game.ITEM.WEAPON.DANCING] = true,
-	[game.ITEM.WEAPON.LEGEND] = true,
+	[game.ITEM.ARMOR.GAEA] = 2,
+	[game.ITEM.ARMS.PALADIN] = 8,
+	[game.ITEM.ARMS.IRON] = 2,
+	[game.ITEM.HELM.GAEA] = 2,
+	[game.ITEM.ITEM.CURE2] = 8,
+	[game.ITEM.ITEM.ETHER1] = 4,
+	[game.ITEM.ITEM.HEAL] = 4,
+	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.RING.SILVER] = 2,
+	[game.ITEM.WEAPON.CHANGE] = 16,
+	[game.ITEM.WEAPON.DANCING] = 16,
+	[game.ITEM.WEAPON.LEGEND] = 16,
 }
 
 _formations[_M.FORMATION.KARATE].needed_items = _formations[_M.FORMATION.GUARDS].needed_items
 
 _formations[_M.FORMATION.BAIGAN].needed_items = {
-	[game.ITEM.ARMOR.GAEA] = true,
-	[game.ITEM.ARMOR.KARATE] = true,
-	[game.ITEM.ARMS.IRON] = true,
-	[game.ITEM.HELM.GAEA] = true,
-	[game.ITEM.HELM.HEADBAND] = true,
-	[game.ITEM.HELM.TIARA] = true,
-	[game.ITEM.ITEM.BARON] = true,
-	[game.ITEM.ITEM.CURE2] = true,
-	[game.ITEM.ITEM.ETHER1] = true,
-	[game.ITEM.ITEM.HEAL] = true,
-	[game.ITEM.ITEM.LIFE] = true,
-	[game.ITEM.RING.SILVER] = true,
-	[game.ITEM.WEAPON.CHANGE] = true,
-	[game.ITEM.WEAPON.DANCING] = true,
-	[game.ITEM.WEAPON.LEGEND] = true,
+	[game.ITEM.ARMOR.GAEA] = 2,
+	[game.ITEM.ARMOR.KARATE] = 2,
+	[game.ITEM.ARMS.IRON] = 16,
+	[game.ITEM.HELM.GAEA] = 2,
+	[game.ITEM.HELM.HEADBAND] = 2,
+	[game.ITEM.HELM.TIARA] = 2,
+	[game.ITEM.ITEM.BARON] = 16,
+	[game.ITEM.ITEM.CURE2] = 8,
+	[game.ITEM.ITEM.ETHER1] = 4,
+	[game.ITEM.ITEM.HEAL] = 4,
+	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.RING.SILVER] = 2,
+	[game.ITEM.WEAPON.CHANGE] = 16,
+	[game.ITEM.WEAPON.DANCING] = 16,
+	[game.ITEM.WEAPON.LEGEND] = 16,
 }
 
+_formations[_M.FORMATION.KAINAZZO].needed_items = _formations[_M.FORMATION.BAIGAN].needed_items
+
 _formations[_M.FORMATION.DARK_ELF].needed_items = {
-	[game.ITEM.ARMOR.GAEA] = true,
-	[game.ITEM.ARMOR.PRISONER] = true,
-	[game.ITEM.ARMOR.KARATE] = true,
-	[game.ITEM.HELM.GAEA] = true,
-	[game.ITEM.HELM.HEADBAND] = true,
-	[game.ITEM.HELM.TIARA] = true,
-	[game.ITEM.ITEM.CURE2] = true,
-	[game.ITEM.ITEM.ETHER1] = true,
-	[game.ITEM.ITEM.HEAL] = true,
-	[game.ITEM.ITEM.LIFE] = true,
-	[game.ITEM.RING.SILVER] = true,
-	[game.ITEM.WEAPON.CHANGE] = true,
-	[game.ITEM.WEAPON.DANCING] = true,
+	[game.ITEM.ARMOR.GAEA] = 2,
+	[game.ITEM.ARMOR.PRISONER] = 2,
+	[game.ITEM.ARMOR.KARATE] = 2,
+	[game.ITEM.HELM.GAEA] = 2,
+	[game.ITEM.HELM.HEADBAND] = 2,
+	[game.ITEM.HELM.TIARA] = 2,
+	[game.ITEM.ITEM.CURE2] = 8,
+	[game.ITEM.ITEM.ETHER1] = 4,
+	[game.ITEM.ITEM.HEAL] = 4,
+	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.RING.SILVER] = 2,
+	[game.ITEM.WEAPON.CHANGE] = 16,
+	[game.ITEM.WEAPON.DANCING] = 16,
 }
 
 _formations[_M.FORMATION.FLAMEDOG].needed_items = {
-	[game.ITEM.ARMOR.GAEA] = true,
-	[game.ITEM.ARMOR.PRISONER] = true,
-	[game.ITEM.ARMOR.KARATE] = true,
-	[game.ITEM.HELM.GAEA] = true,
-	[game.ITEM.HELM.HEADBAND] = true,
-	[game.ITEM.HELM.TIARA] = true,
-	[game.ITEM.ITEM.CURE2] = true,
-	[game.ITEM.ITEM.EARTH] = true,
-	[game.ITEM.ITEM.ETHER1] = true,
-	[game.ITEM.ITEM.HEAL] = true,
-	[game.ITEM.ITEM.LIFE] = true,
-	[game.ITEM.RING.SILVER] = true,
-	[game.ITEM.WEAPON.CHANGE] = true,
-	[game.ITEM.WEAPON.DANCING] = true,
+	[game.ITEM.ARMOR.GAEA] = 2,
+	[game.ITEM.ARMOR.PRISONER] = 2,
+	[game.ITEM.ARMOR.KARATE] = 2,
+	[game.ITEM.HELM.GAEA] = 2,
+	[game.ITEM.HELM.HEADBAND] = 2,
+	[game.ITEM.HELM.TIARA] = 2,
+	[game.ITEM.ITEM.CURE2] = 8,
+	[game.ITEM.ITEM.EARTH] = 16,
+	[game.ITEM.ITEM.ETHER1] = 4,
+	[game.ITEM.ITEM.HEAL] = 4,
+	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.RING.SILVER] = 2,
+	[game.ITEM.WEAPON.CHANGE] = 16,
+	[game.ITEM.WEAPON.DANCING] = 16,
 }
 
 _formations[_M.FORMATION.SISTERS].needed_items = {
-	[game.ITEM.ARMOR.GAEA] = true,
-	[game.ITEM.ARMOR.PRISONER] = true,
-	[game.ITEM.ARMOR.KARATE] = true,
-	[game.ITEM.HELM.GAEA] = true,
-	[game.ITEM.HELM.HEADBAND] = true,
-	[game.ITEM.HELM.TIARA] = true,
-	[game.ITEM.ITEM.CURE2] = true,
-	[game.ITEM.ITEM.EARTH] = true,
-	[game.ITEM.ITEM.ETHER1] = true,
-	[game.ITEM.ITEM.HEAL] = true,
-	[game.ITEM.ITEM.LIFE] = true,
-	[game.ITEM.RING.SILVER] = true,
-	[game.ITEM.WEAPON.CHANGE] = true,
-	[game.ITEM.WEAPON.DANCING] = true,
-	[game.ITEM.WEAPON.FIRE] = true,
-	[game.ITEM.WEAPON.LEGEND] = true,
+	[game.ITEM.ARMOR.GAEA] = 8,
+	[game.ITEM.ARMOR.PRISONER] = 2,
+	[game.ITEM.ARMOR.KARATE] = 8,
+	[game.ITEM.HELM.GAEA] = 8,
+	[game.ITEM.HELM.HEADBAND] = 8,
+	[game.ITEM.HELM.TIARA] = 2,
+	[game.ITEM.ITEM.CURE2] = 8,
+	[game.ITEM.ITEM.EARTH] = 16,
+	[game.ITEM.ITEM.ETHER1] = 4,
+	[game.ITEM.ITEM.HEAL] = 4,
+	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.RING.SILVER] = 2,
+	[game.ITEM.WEAPON.CHANGE] = 16,
+	[game.ITEM.WEAPON.DANCING] = 16,
+	[game.ITEM.WEAPON.FIRE] = 32,
+	[game.ITEM.WEAPON.LEGEND] = 16,
 }
 
 _formations[_M.FORMATION.VALVALIS].needed_items = {
-	[game.ITEM.ARMOR.PRISONER] = true,
-	[game.ITEM.HELM.GAEA] = true,
-	[game.ITEM.HELM.TIARA] = true,
-	[game.ITEM.ITEM.CURE2] = true,
-	[game.ITEM.ITEM.ETHER1] = true,
-	[game.ITEM.ITEM.HEAL] = true,
-	[game.ITEM.ITEM.LIFE] = true,
-	[game.ITEM.WEAPON.CHANGE] = true,
-	[game.ITEM.WEAPON.DANCING] = true,
-	[game.ITEM.WEAPON.FIRE] = true,
-	[game.ITEM.WEAPON.LEGEND] = true,
+	[game.ITEM.ARMOR.PRISONER] = 2,
+	[game.ITEM.HELM.GAEA] = 2,
+	[game.ITEM.HELM.TIARA] = 2,
+	[game.ITEM.ITEM.CURE2] = 8,
+	[game.ITEM.ITEM.ETHER1] = 4,
+	[game.ITEM.ITEM.HEAL] = 4,
+	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.WEAPON.CHANGE] = 16,
+	[game.ITEM.WEAPON.DANCING] = 16,
+	[game.ITEM.WEAPON.FIRE] = 16,
+	[game.ITEM.WEAPON.LEGEND] = 16,
 }
 
 _formations[_M.FORMATION.CALBRENA].needed_items = {
-	[game.ITEM.ARMOR.PRISONER] = true,
-	[game.ITEM.HELM.GAEA] = true,
-	[game.ITEM.HELM.TIARA] = true,
-	[game.ITEM.ITEM.CURE2] = true,
-	[game.ITEM.ITEM.ETHER1] = true,
-	[game.ITEM.ITEM.LIFE] = true,
-	[game.ITEM.WEAPON.CHANGE] = true,
-	[game.ITEM.WEAPON.DANCING] = true,
-	[game.ITEM.WEAPON.FIRE] = true,
+	[game.ITEM.ARMOR.PRISONER] = 16,
+	[game.ITEM.HELM.GAEA] = 2,
+	[game.ITEM.HELM.TIARA] = 16,
+	[game.ITEM.ITEM.CURE2] = 8,
+	[game.ITEM.ITEM.ETHER1] = 4,
+	[game.ITEM.ITEM.LIFE] = 4,
+	[game.ITEM.WEAPON.CHANGE] = 16,
+	[game.ITEM.WEAPON.DANCING] = 16,
+	[game.ITEM.WEAPON.FIRE] = 16,
 }
 
 _formations[_M.FORMATION.GOLBEZ].needed_items = _formations[_M.FORMATION.CALBRENA].needed_items
 
 _formations[_M.FORMATION.LUGAE1].needed_items = {
-	[game.ITEM.HELM.GAEA] = true,
-	[game.ITEM.ITEM.CURE2] = true,
-	[game.ITEM.ITEM.DARKNESS] = true,
-	[game.ITEM.ITEM.ETHER1] = true,
-	[game.ITEM.ITEM.LIFE] = true,
-	[game.ITEM.CLAW.CATCLAW] = true,
-	[game.ITEM.WEAPON.CHANGE] = true,
-	[game.ITEM.WEAPON.DANCING] = true,
+	[game.ITEM.HELM.GAEA] = 2,
+	[game.ITEM.ITEM.CURE2] = 8,
+	[game.ITEM.ITEM.DARKNESS] = 16,
+	[game.ITEM.ITEM.ETHER1] = 4,
+	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.CLAW.CATCLAW] = 2,
+	[game.ITEM.WEAPON.CHANGE] = 16,
+	[game.ITEM.WEAPON.DANCING] = 16,
+	[game.ITEM.WEAPON.LEGEND] = 16,
 }
 
 _formations[_M.FORMATION.LUGAE2].needed_items = _formations[_M.FORMATION.LUGAE1].needed_items
 _formations[_M.FORMATION.DARK_IMP].needed_items = _formations[_M.FORMATION.LUGAE1].needed_items
 
+_formations[_M.FORMATION.EBLAN].needed_items = {
+	[game.ITEM.HELM.GAEA] = 2,
+	[game.ITEM.ITEM.CURE2] = 4,
+	[game.ITEM.ITEM.DARKNESS] = 32,
+	[game.ITEM.ITEM.ETHER1] = 2,
+	[game.ITEM.ITEM.LIFE] = 2,
+	[game.ITEM.SHIELD.ICE] = 8,
+	[game.ITEM.WEAPON.BLIZZARD] = 8,
+	[game.ITEM.WEAPON.CHANGE] = 2,
+	[game.ITEM.WEAPON.DANCING] = 4,
+	[game.ITEM.WEAPON.ICEBRAND] = 8,
+	[game.ITEM.WEAPON.LEGEND] = 16,
+}
+
 _formations[_M.FORMATION.RUBICANT].needed_items = {
-	[game.ITEM.HELM.GAEA] = true,
-	[game.ITEM.ITEM.CURE2] = true,
-	[game.ITEM.ITEM.DARKNESS] = true,
-	[game.ITEM.ITEM.ETHER1] = true,
-	[game.ITEM.ITEM.LIFE] = true,
-	[game.ITEM.WEAPON.CHANGE] = true,
-	[game.ITEM.WEAPON.DANCING] = true,
+	[game.ITEM.HELM.GAEA] = 16,
+	[game.ITEM.ITEM.CURE2] = 8,
+	[game.ITEM.ITEM.DARKNESS] = 16,
+	[game.ITEM.ITEM.ETHER1] = 4,
+	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.WEAPON.CHANGE] = 2,
+	[game.ITEM.WEAPON.DANCING] = 4,
+	[game.ITEM.WEAPON.LEGEND] = 16,
 }
 
 _formations[_M.FORMATION.ELEMENTS].needed_items = {
-	[game.ITEM.ITEM.ELIXIR] = true,
-	[game.ITEM.ITEM.LIFE] = true,
-	[game.ITEM.RING.STRENGTH] = true,
-	[game.ITEM.WEAPON.EXCALBUR] = true,
+	[game.ITEM.ITEM.ELIXIR] = 32,
+	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.RING.STRENGTH] = 16,
+	[game.ITEM.WEAPON.EXCALBUR] = 64,
 }
 
 _formations[_M.FORMATION.CPU].needed_items = _formations[_M.FORMATION.ELEMENTS].needed_items
@@ -1760,62 +1786,70 @@ function _manage_inventory(full_inventory, items)
 	end
 
 	if (full_inventory and memory.read("battle", "active") == 0) or memory.read("battle", "enemies") == 0 then
-		local item_slots = {nil, nil}
-		local empty_slots = {nil, nil}
+		local best = {}
+		local counts = {}
 
 		for i = 0, 47 do
 			local item = memory.read("battle_menu", "item_id", i)
+			local count = memory.read("battle_menu", "item_count", i)
+
+			if items[item] and (not best[item] or count > counts[item]) then
+				best[item] = i
+				counts[item] = count
+			end
+		end
+
+		local empties = 0
+		local first_error = nil
+		local last_error = nil
+		local last_priority = 256
+		local target_priority = nil
+
+		for i = 0, 47 do
+			local priority = 0
+			local item = memory.read("battle_menu", "item_id", i)
 
 			if item == game.ITEM.NONE then
-				if not empty_slots[1] then
-					empty_slots[1] = i
-				end
+				empties = empties + 1
 
-				empty_slots[2] = i
-			elseif items[item] then
-				item_slots[2] = i
-			else
-				if not item_slots[1] then
-					item_slots[1] = i
+				if empties <= 2 then
+					priority = 7
+				elseif empties <= 4 then
+					priority = 3
+				else
+					priority = 1
+				end
+			elseif items[item] and best[item] == i then
+				if items[item] == true then
+					priority = 2
+				else
+					priority = items[item]
 				end
 			end
+
+			if not first_error and priority > last_priority then
+				first_error = i - 1
+				target_priority = last_priority
+			end
+
+			if target_priority and priority > target_priority then
+				last_error = i
+			end
+
+			last_priority = priority
 		end
 
-		local first_slot
-		local second_slot
-
-		if not item_slots[1] then
-			first_slot = empty_slots[1]
-			second_slot = item_slots[2]
-		elseif not item_slots[2] then
-			first_slot = item_slots[1]
-			second_slot = empty_slots[2]
-		else
-			first_slot = item_slots[1]
-			second_slot = item_slots[2]
-
-			if empty_slots[2] - item_slots[1] > second_slot - first_slot then
-				first_slot = item_slots[1]
-				second_slot = empty_slots[2]
-			end
-
-			if item_slots[2] - empty_slots[1] > second_slot - first_slot then
-				first_slot = empty_slots[1]
-				second_slot = item_slots[2]
-			end
-		end
-
-		if not first_slot or not second_slot or first_slot >= second_slot then
+		if not first_error then
 			log.log("Inventory: Couldn't find anything to move")
 			_state.disable_inventory = true
 			return false
 		end
 
-		log.log(string.format("Inventory: Swapping slots %d and %d", first_slot, second_slot))
+		log.log(string.format("Inventory: Swapping slots %d and %d", first_error, last_error))
 
 		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
-		table.insert(_state.q, {menu.battle.item.select, {nil, first_slot}})
-		table.insert(_state.q, {menu.battle.item.select, {nil, second_slot}})
+		table.insert(_state.q, {menu.battle.item.select, {nil, first_error}})
+		table.insert(_state.q, {menu.battle.item.select, {nil, last_error}})
 		table.insert(_state.q, {menu.battle.item.close, {}})
 
 		return true
