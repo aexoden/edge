@@ -3722,6 +3722,7 @@ local function _sequence_grind_start()
 	table.insert(_q, {walk.walk, {185, 3, 4}})
 
 	-- Do the pre-grind fight menu.
+	table.insert(_q, {dialog.set_mash_button, {"P1 B"}})
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.ALL, [game.CHARACTER.FUSOYA] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP}, game.CHARACTER.FUSOYA}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.RYDIA}})
@@ -3784,6 +3785,7 @@ local function _sequence_elements()
 end
 
 local function _sequence_cpu()
+	table.insert(_q, {dialog.set_mash_button, {"P1 A"}})
 	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {walk.walk, {188, 15, 14}})
 

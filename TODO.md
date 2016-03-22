@@ -55,8 +55,6 @@ provide a good list of improvements that can be made.
 
 ## Minor Fixes
 
-* Don't take the spoils after the grind fight.
-
 * Make sure anything that uses walk.interact() is robust. (At least one run
   failed when the bot failed to collect the Darkness sword for some unknown
   reason.)
