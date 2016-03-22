@@ -436,15 +436,24 @@ local function _post_grind_menu()
 		end
 
 		if empty < 3 then
-			table.insert(stack, {menu.field.item.select, {game.ITEM.SORT}})
-			table.insert(stack, {menu.field.item.select, {game.ITEM.SORT}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.HEAL}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.WEAPON.DANCING}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
 		end
 
 		if duplicate then
-			table.insert(stack, {menu.field.item.select, {game.ITEM.WEAPON.EXCALBUR}})
-			table.insert(stack, {menu.field.item.select, {nil, 0}})
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
-			table.insert(stack, {menu.field.item.select, {nil, 1}})
+			if memory.read("menu_item", "item_id", 0) ~= game.ITEM.WEAPON.EXCALBUR then
+				table.insert(stack, {menu.field.item.select, {game.ITEM.WEAPON.EXCALBUR}})
+				table.insert(stack, {menu.field.item.select, {nil, 0}})
+			end
+
+			if memory.read("menu_item", "item_id", 1) ~= game.ITEM.ITEM.ELIXIR then
+				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
+				table.insert(stack, {menu.field.item.select, {nil, 1}})
+			end
 		end
 
 		if heal then

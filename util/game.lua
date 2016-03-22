@@ -86,6 +86,7 @@ _M.INVENTORY = {
 _M.ITEM = {
 	NONE         = 0x00,
 	SORT         = 0xFE,
+	TRASHCAN     = 0xFF,
 	ARMOR = {
 		BL_BELT  = 0x99,
 		GAEA     = 0x8F,
