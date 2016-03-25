@@ -73,7 +73,7 @@ function _M.is_mid_tile()
 end
 
 function _M.is_ready()
-	return memory.read("walk", "state") == 0
+	return memory.read("walk", "state") == 0 and memory.read("walk", "battle") ~= 1
 end
 
 function _M.is_transition()

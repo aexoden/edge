@@ -248,6 +248,7 @@ local _addresses = {
 		gp                  = {f = mainmemory.read_u24_le, address = 0x0016A0, record_size = {0x01, 0x01}},
 	},
 	walk = {
+		battle              = {f = mainmemory.read_u8,     address = 0x00067E, record_size = {0x01, 0x01}},
 		direction           = {f = mainmemory.read_u8,     address = 0x001705, record_size = {0x01, 0x01}},
 		frames              = {f = mainmemory.read_u8,     address = 0x00067B, record_size = {0x01, 0x01}},
 		index               = {f = mainmemory.read_u8,     address = 0x000686, record_size = {0x01, 0x01}},

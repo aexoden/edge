@@ -136,6 +136,10 @@ local function _hummingway_finish()
 end
 
 local function _restore_party(characters, underflow_target, open_menu, immediate)
+	if walk.is_mid_tile() or not walk.is_ready() then
+		return false
+	end
+
 	local stack = {}
 	local cure_count = 0
 	local max_count = 0
