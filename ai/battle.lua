@@ -1900,7 +1900,7 @@ function _M.cycle()
 			log.log(string.format("Battle Start: %s (%s)", formation.title, stats))
 
 			if FULL_RUN and SAVESTATE and formation.f then
-				savestate.save(string.format("states/%03d - %s.state", _battle_count, formation.title:gsub('/', '-')))
+				savestate.save(string.format("states/%010d - %03d - %s.state", SEED, _battle_count, formation.title:gsub('/', '-')))
 			end
 
 			if _state.formation.presplit then
