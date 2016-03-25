@@ -88,9 +88,6 @@ provide a good list of improvements that can be made.
 
 * Prevent attacking the General if possible.
 
-* In the Weeper battle, whoever goes second should run buffer/attack WaterHag,
-  rather than it always being Cecil.
-
 ### Milon
 
 * Don't double use Cure2 when healing the twins.

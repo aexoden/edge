@@ -1412,24 +1412,29 @@ local function _battle_waterhag(character, turn)
 end
 
 local function _battle_weeper(character, turn)
-	if character == game.CHARACTER.CECIL then
-		if turn == 1 then
-			_command_run_buffer()
-			_command_fight(menu.battle.TARGET.ENEMY, 2)
-		else
-			_command_fight()
-		end
-	elseif character == game.CHARACTER.EDWARD then
+	if not _state.turn_count then
+		_state.turn_count = 0
+	end
+
+	_state.turn_count = _state.turn_count + 1
+
+	if character == game.CHARACTER.EDWARD then
 		if menu.battle.command.has_command(menu.battle.COMMAND.SHOW) then
 			_command_parry()
 		elseif turn == 1 then
 			_command_run_buffer()
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 0)
+			_state.edward = true
 		else
 			_command_fight()
 		end
-	elseif character == game.CHARACTER.YANG then
-		_command_fight()
+	else
+		if _state.turn_count == 2 and _state.edward then
+			_command_run_buffer()
+			_command_fight(menu.battle.TARGET.ENEMY, 2)
+		else
+			_command_fight()
+		end
 	end
 end
 
