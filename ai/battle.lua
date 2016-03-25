@@ -953,7 +953,7 @@ local function _battle_grind(character, turn)
 							_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 						elseif game.enemy.get_stat(0, "hp") > 50 then
 							_command_black(game.MAGIC.BLACK.WEAK)
-						elseif _state.duplicated and _state.edge_elixired then
+						elseif _state.duplicated and game.character.get_stat(game.CHARACTER.EDGE, "hp", true) >= 725 then
 							local alive = true
 
 							for i = 0, 4 do
@@ -975,7 +975,6 @@ local function _battle_grind(character, turn)
 					elseif character == game.CHARACTER.ROSA then
 						if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) < 750 then
 							_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
-							_state.edge_elixired = true
 						else
 							_command_parry()
 						end
