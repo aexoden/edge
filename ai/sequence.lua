@@ -4229,8 +4229,6 @@ local function _check_autoreload()
 			for i = 0, 56 do
 				_route[i] = 0
 			end
-
-			_state.auto_reload = nil
 		elseif FULL_RUN then
 			log.log("Load game screen detected: ending run")
 			_M.end_run()
