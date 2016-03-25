@@ -1197,23 +1197,23 @@ local function _battle_milon_z(character, turn)
 end
 
 local function _battle_mombomb(character, turn)
+	local count = 0, last
+
+	for i = 0, 4 do
+		local hp = memory.read_stat(i, "hp", true)
+
+		if hp < memory.read_stat(i, "hp_max", true) and hp < 100 then
+			count = count + 1
+			last = i
+		end
+	end
+
 	if game.enemy.get_stat(0, "hp") > 10000 then
 		if character == game.CHARACTER.CECIL or character == game.CHARACTER.YANG then
 			_command_fight()
 		elseif character == game.CHARACTER.EDWARD or character == game.CHARACTER.RYDIA then
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 		elseif character == game.CHARACTER.ROSA then
-			local count = 0, last
-
-			for i = 0, 4 do
-				local hp = memory.read_stat(i, "hp", true)
-
-				if hp < memory.read_stat(i, "hp_max", true) and hp < 150 then
-					count = count + 1
-					last = i
-				end
-			end
-
 			if count > 1 then
 				_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY_ALL)
 			elseif count == 1 then
@@ -1224,10 +1224,18 @@ local function _battle_mombomb(character, turn)
 		end
 	elseif not _state.kicked and game.enemy.get_stat(0, "hp") > 0 then
 		if character == game.CHARACTER.YANG then
-			_command_wait_text("Ex")
+			_command_wait_text("Ex", 600)
 			_command_wait_frames(60)
 			_command_kick()
 			_state.kicked = true
+		elseif character == game.CHARACTER.ROSA then
+			if count > 1 then
+				_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY_ALL)
+			elseif count == 1 then
+				_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY, last)
+			else
+				_command_parry()
+			end
 		else
 			_command_parry()
 		end
@@ -1235,14 +1243,22 @@ local function _battle_mombomb(character, turn)
 		_command_wait_frames(60)
 		return true
 	else
+		local target = 4
+
 		if character == game.CHARACTER.CECIL then
 			_command_fight()
 		elseif character == game.CHARACTER.EDWARD or character == game.CHARACTER.RYDIA then
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, game.enemy.get_weakest(game.ENEMY.GRAYBOMB))
+			if character == game.CHARACTER.EDWARD and game.enemy.get_stat(5, "hp") > 0 then
+				target = 5
+			elseif character == game.CHARACTER.RYDIA and game.enemy.get_stat(6, "hp") > 0 then
+				target = 6
+			end
+
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, target)
 		elseif character == game.CHARACTER.ROSA then
 			_command_aim(menu.battle.TARGET.ENEMY, game.enemy.get_weakest(game.ENEMY.BOMB))
 		elseif character == game.CHARACTER.YANG then
-			_command_kick()
+			_command_fight()
 		end
 	end
 end

@@ -79,11 +79,6 @@ provide a good list of improvements that can be made.
 
 ## Battle-Specific Fixes
 
-### MomBomb
-
-* Fix GreyBomb targeting to always target the front bomb, rather than the
-  weakest.
-
 ### Fabul battles
 
 * Prevent attacking the General if possible.
