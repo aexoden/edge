@@ -1384,7 +1384,7 @@ end
 
 local function _battle_valvalis(character, turn)
 	if character == game.CHARACTER.CECIL then
-		if turn == 1 then
+		if turn == 1 or game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 300 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 		else
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
@@ -1394,11 +1394,7 @@ local function _battle_valvalis(character, turn)
 			_command_run_buffer()
 		end
 
-		if game.character.get_stat(game.CHARACTER.KAIN, "level", true) < 19 and turn > 3 and turn % 2 == 0 then
-			_command_fight()
-		else
-			_command_jump()
-		end
+		_command_jump()
 	else
 		local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
 		local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp", true)
