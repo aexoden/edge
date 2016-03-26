@@ -1145,12 +1145,19 @@ local function _battle_milon(character, turn)
 	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
 	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
 
+	local palom_mp = game.character.get_stat(game.CHARACTER.PALOM, "mp", true)
+	local porom_mp = game.character.get_stat(game.CHARACTER.POROM, "mp", true)
+
 	local worst_twin = nil
 
 	if palom_hp < 70 and palom_hp < porom_hp then
 		worst_twin = {twin = game.CHARACTER.PALOM, hp = palom_hp}
 	elseif porom_hp < 70 and porom_hp < palom_hp then
 		worst_twin = {twin = game.CHARACTER.POROM, hp = porom_hp}
+	elseif palom_mp < 20 and palom_mp < porom_mp then
+		worst_twin = {twin = game.CHARACTER.PALOM, mp = palom_mp}
+	elseif porom_mp < 20 and porom_mp < palom_mp then
+		worst_twin = {twin = game.CHARACTER.POROM, mp = porom_mp}
 	end
 
 	if character == game.CHARACTER.CECIL then
@@ -1161,8 +1168,10 @@ local function _battle_milon(character, turn)
 		elseif worst_twin then
 			if worst_twin.hp == 0 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
-			else
+			elseif worst_twin.hp then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+			else
+				_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, worst_twin.twin)
 			end
 		else
 			_command_fight()
@@ -1173,7 +1182,7 @@ local function _battle_milon(character, turn)
 		elseif worst_twin and worst_twin.hp == 0 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
 		else
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+			_command_parry()
 		end
 	elseif character == game.CHARACTER.POROM then
 		if worst_twin and worst_twin.hp == 0 then
@@ -1187,8 +1196,10 @@ local function _battle_milon(character, turn)
 		elseif worst_twin then
 			if worst_twin.hp == 0 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
-			else
+			elseif worst_twin.hp then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+			else
+				_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, worst_twin.twin)
 			end
 		else
 			_command_parry()
