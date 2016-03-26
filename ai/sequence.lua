@@ -4218,11 +4218,14 @@ local function _check_autoreload()
 
 			log.log("Load game screen detected: auto-reloading")
 
+			table.insert(_q, {_state_set, {"check_autoreload", false}})
 			table.insert(_q, {menu.wait, {132}})
 			table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
 			table.insert(_q, {menu.wait, {132}})
 			table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
 			table.insert(_q, {menu.confirm, {}})
+			table.insert(_q, {menu.wait, {132}})
+			table.insert(_q, {_state_set, {"check_autoreload", true}})
 
 			_route = {}
 
