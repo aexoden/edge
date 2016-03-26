@@ -311,6 +311,8 @@ local function _battle_baigan(character, turn)
 end
 
 local function _battle_calbrena(character, turn)
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
+
 	if not _state.jumps then
 		_state.jumps = 0
 		_state.daggers = 0
@@ -423,13 +425,19 @@ local function _battle_calbrena(character, turn)
 				_command_white(game.MAGIC.WHITE.SLOW, menu.battle.TARGET.ENEMY_ALL)
 			elseif turn == 2 then
 				_command_white(game.MAGIC.WHITE.MUTE, menu.battle.TARGET.PARTY_ALL)
-			elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 850 then
+			elseif cecil_hp == 0 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			elseif cecil_hp < 850 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 			else
 				_command_parry()
 			end
 		elseif character == game.CHARACTER.YANG then
-			_command_kick()
+			if cecil_hp < 400 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			else
+				_command_kick()
+			end
 		end
 	end
 end
