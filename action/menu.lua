@@ -1088,7 +1088,7 @@ function _M.battle.equip.select(index, delay)
 	end
 
 	if _M.battle.is_open() then
-		if _state.item_selected ~= nil and memory.read("battle_menu", "item_selected") ~= _state.item_selected then
+		if _state.item_selected and memory.read("battle_menu", "item_selected") ~= _state.item_selected then
 			_state.item_selected = nil
 			return true
 		elseif menu == _M.battle.MENU.ITEM then
@@ -1097,7 +1097,7 @@ function _M.battle.equip.select(index, delay)
 			if cursor == index then
 				input.press({"P1 A"}, delay)
 
-				if _state.item_selected == nil then
+				if not _state.item_selected then
 					_state.item_selected = memory.read("battle_menu", "item_selected")
 				end
 			elseif cursor > index then

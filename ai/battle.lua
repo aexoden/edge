@@ -1947,11 +1947,13 @@ function _M.cycle()
 				_state.slot = slot
 				_state.queued = false
 				_state.disable_inventory = nil
+				menu.reset()
 			elseif not open then
 				_state.q = {}
 				_state.slot = -1
 				_state.queued = false
 				_state.disable_inventory = nil
+				menu.reset()
 			end
 
 			if open and memory.read("battle_menu", "menu") ~= menu.battle.MENU.NONE then
