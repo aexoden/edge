@@ -1027,7 +1027,7 @@ local function _sequence_tellah()
 	table.insert(_q, {walk.walk, {111, 15, 22}})
 	table.insert(_q, {walk.walk, {111, 7, 22}})
 	table.insert(_q, {walk.walk, {111, 7, 16}})
-	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.interact, {"Old man:"}})
 	table.insert(_q, {walk.walk, {111, 7, 13}})
 end
 
