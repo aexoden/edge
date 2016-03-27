@@ -2018,7 +2018,7 @@ function _M.cycle()
 			elseif ending == 0x40 then
 				ending_text = "Ran Away"
 			elseif ending == 0x80 then
-				ending_text = "Perished (Zeromus)"
+				ending_text = "Perished (Type 2)"
 			end
 
 			local stats = string.format("%d/%d frames/%d GP dropped/%s", _state.index, emu.framecount() - _state.frame, gp, ending_text)
@@ -2027,7 +2027,7 @@ function _M.cycle()
 
 			menu.wait_clear()
 
-			if ending > 0 and _state.formation.split then
+			if ending ~= 0x00 and ending ~= 0x80 and _state.formation.split then
 				bridge.split(_state.formation.title)
 			end
 
