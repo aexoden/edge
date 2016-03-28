@@ -490,9 +490,12 @@ function _M.field.form.move(character, index, formation)
 				_select_vertical(cursor, index, 2)
 			end
 		end
-	else
+	elseif not _state.frame or emu.framecount() - _state.frame > 15 then
 		_M.field.select(_M.field.CHOICE.FORM)
+		_state.frame = emu.framecount()
 	end
+
+	return false
 end
 
 function _M.field.form.swap(character1, character2, change)

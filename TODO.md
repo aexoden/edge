@@ -77,6 +77,8 @@ provide a good list of improvements that can be made.
   appropriate while b) allowing for run buffers and interruptible wait commands
   would be desirable.
 
+* Find a way to reduce or eliminate the 15 frame safety delays in the menu.
+
 ## Battle-Specific Fixes
 
 ### Fabul battles
