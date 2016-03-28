@@ -1934,6 +1934,18 @@ function _M.cycle()
 
 			log.log(string.format("Battle Start: %s (%s)", formation.title, stats))
 
+			local agility_text = string.format("%d", game.enemy.get_stat(0, "agility"))
+
+			for i = 1, 7 do
+				local agility = game.enemy.get_stat(i, "agility")
+
+				if agility > 0 then
+					agility_text = string.format("%s %d", agility_text, agility)
+				end
+			end
+
+			log.log(string.format("Enemy Agility: %s", agility_text))
+
 			if FULL_RUN and SAVESTATE and formation.f then
 				savestate.save(string.format("states/%010d - %03d - %s.state", SEED, _battle_count, formation.title:gsub('/', '-')))
 			end
