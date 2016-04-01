@@ -232,9 +232,7 @@ local function _command_use_weapon(character, target_weapon, target_type, target
 		table.insert(_state.q, {menu.battle.equip.select, {hand}})
 	end
 
-	table.insert(_state.q, {menu.battle.equip.select, {hand, input.DELAY.MASH}})
-	table.insert(_state.q, {menu.battle.equip.select, {hand, input.DELAY.MASH}})
-	table.insert(_state.q, {menu.battle.target, {target_type, target}})
+	table.insert(_state.q, {menu.battle.equip.use_weapon, {hand, target_type, target, input.DELAY.MASH}})
 end
 
 local function _command_wait_frames(frames)
