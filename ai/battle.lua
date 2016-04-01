@@ -395,7 +395,7 @@ local function _battle_calbrena(character, turn)
 						min = 80
 					end
 
-					if ((hp > min and hp < 200) or hp > 700) and i ~= _state.kain_target then
+					if ((hp > min and hp <= 240) or hp > 700) and i ~= _state.kain_target then
 						target = {i, hp}
 					end
 				end
