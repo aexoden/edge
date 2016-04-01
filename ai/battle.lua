@@ -848,18 +848,23 @@ local function _battle_grind(character, turn)
 					return true
 				end
 			elseif _state.character_index == 1 then
+				if _state.waited then
+					if dialog.get_battle_text(5) == " ..Id" then
+						_command_wait_frames(45)
+					end
+
+					_command_fight()
+					_state.waited = nil
+				else
+					_command_wait_text(" ..Id", 15)
+					_state.waited = true
+					return true
+				end
+
 				--if _state.waited then
 				--	if dialog.get_battle_text(5) == " ..Id" then
 						--_command_wait_frames(30)
 				--	end
-
-					_command_fight()
-				--	_state.waited = nil
-				--else
-				--	_command_wait_text(" ..Id", 15)
-				--	_state.waited = true
-				--	return true
-				--end
 			elseif _state.character_index == 2 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.ENEMY, 1)
 			elseif _state.character_index == 3 then
@@ -894,6 +899,10 @@ local function _battle_grind(character, turn)
 				_state.dragon_hp = _state.dragon_hp + 1
 			end
 
+			if fusoya_hp > 0 then
+				_state.fusoya_life_frame = nil
+			end
+
 			if dragon_hp > 0 and dragon_hp < 50 and dragon_hp < _state.dragon_hp then
 				_command_fight()
 				_state.dragon_hp = dragon_hp
@@ -902,8 +911,9 @@ local function _battle_grind(character, turn)
 				_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1)
 				_state.dragon_hp = dragon_hp
 				_state.dragon_character = character
-			elseif dragon_hp > 0 and fusoya_hp == 0 then
+			elseif dragon_hp > 0 and fusoya_hp == 0 and (not _state.fusoya_life_frame or emu.framecount() - _state.fusoya_life_frame > 450) then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+				_state.fusoya_life_frame = emu.framecount()
 			elseif dragon_hp > 0 and fusoya_hp < 760 then
 				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 			elseif game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 100 then
