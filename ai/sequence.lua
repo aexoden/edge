@@ -2740,7 +2740,7 @@ local function _sequence_dr_lugae()
 		table.insert(_q, {walk.walk, {271, 3, 7}})
 	end
 
-	table.insert(_q, {walk.walk, {271, 3, 14}})
+	table.insert(_q, {walk.walk, {271, 3, 14, true}})
 	table.insert(_q, {_set_healing, {_healing_dr_lugae}})
 
 	-- Walk to the Tower of Bab-il
