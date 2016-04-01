@@ -1881,8 +1881,7 @@ local function _sequence_karate()
 	end
 
 	table.insert(_q, {walk.walk, {151, 5, 14}})
-	table.insert(_q, {walk.walk, {0, 20, 27}})
-	table.insert(_q, {walk.walk, {0, 20, 26}})
+	table.insert(_q, {walk.walk, {0, 20, 26, true}})
 	table.insert(_q, {walk.walk, {11, 18, 17, true}})
 	table.insert(_q, {walk.walk, {11, 18, 8, true}})
 	table.insert(_q, {walk.walk, {11, 11, 8, true}})
