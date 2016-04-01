@@ -1744,13 +1744,7 @@ local function _sequence_milon_z()
 	-- Heal and prepare the party.
 	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {menu.field.open, {}})
-
-	if game.character.get_stat(game.CHARACTER.PALOM, "mp") < 1 then
-		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
-	else
-		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.HP, [game.CHARACTER.POROM] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
-	end
-
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.PALOM}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})

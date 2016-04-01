@@ -79,6 +79,11 @@ provide a good list of improvements that can be made.
 
 * Find a way to reduce or eliminate the 15 frame safety delays in the menu.
 
+* Allow configuring target HP or MP values for party restoration. (This would
+  allow us to only require that Palom has enough MP to cast Piggy or that Edge
+  only has enough MP to cast Flood if needed, instead of always curing their MP
+  to max.)
+
 ## Battle-Specific Fixes
 
 ### Fabul battles
