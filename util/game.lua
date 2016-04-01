@@ -401,7 +401,7 @@ function _M.item.get_count(item, inventory)
 
 	for i = 0, 47 do
 		if memory.read(category, "item_id", i) == item then
-			count = count + memory.read(category, "item_count")
+			count = count + memory.read(category, "item_count", i)
 		end
 	end
 
