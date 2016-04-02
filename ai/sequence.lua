@@ -588,7 +588,7 @@ local function _healing_flamedog()
 	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp")
 	local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp")
 
-	if cecil_hp == 0 or cecil_hp + yang_hp < 600 then
+	if cecil_hp == 0 or cecil_hp + yang_hp < 800 then
 		_restore_party({
 			[game.CHARACTER.CECIL] = _RESTORE.HP,
 			[game.CHARACTER.TELLAH] = _RESTORE.HP,
