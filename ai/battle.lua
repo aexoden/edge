@@ -847,11 +847,20 @@ local function _battle_grind(character, turn)
 				end
 			elseif _state.character_index == 1 then
 				if _state.waited then
-					if dialog.get_battle_text(5) == " ..Id" then
-						_command_wait_frames(45)
+					local wait = dialog.get_battle_text(5) == " ..Id"
+
+					if wait then
+						_command_wait_frames(40)
 					end
 
-					_command_fight()
+					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT}})
+
+					if wait then
+						_command_wait_frames(20)
+					end
+
+					table.insert(_state.q, {menu.battle.target, {nil, nil}})
+
 					_state.waited = nil
 				else
 					_command_wait_text(" ..Id", 15)
