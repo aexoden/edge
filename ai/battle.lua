@@ -523,6 +523,7 @@ local function _battle_dark_elf(character, turn)
 		end
 	else
 		local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp", true)
+		local tellah_mp = game.character.get_stat(game.CHARACTER.TELLAH, "mp", true)
 
 		if dragon_hp > 0 then
 			if game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.PIG) then
@@ -532,9 +533,15 @@ local function _battle_dark_elf(character, turn)
 			elseif tellah_hp < 200 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 			elseif character == game.CHARACTER.TELLAH and dragon_hp > 50 then
-				_command_black(game.MAGIC.BLACK.WEAK)
+				if tellah_mp < 25 then
+					_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+				else
+					_command_black(game.MAGIC.BLACK.WEAK)
+				end
 			elseif character == game.CHARACTER.YANG and game.character.get_stat(game.CHARACTER.YANG, "hp", true) < 50 then
 				_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+			elseif tellah_mp < 25 then
+				_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 			else
 				_command_fight()
 			end
