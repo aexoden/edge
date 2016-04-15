@@ -319,7 +319,8 @@ function _M.field.open_submenu_with_character(menu, character, is_open, is_selec
 			_state.frame = nil
 			return true
 		end
-	elseif not _state.frame or emu.framecount() - _state.frame > 15 then
+	elseif not _state.frame or emu.framecount() - _state.frame > 5 then
+		-- TODO: This delay is a really bad idea. Need to simply make menuing more robust.
 		_M.field.select(menu)
 		_state.frame = emu.framecount()
 	end
@@ -341,8 +342,18 @@ function _M.field.select(choice)
 	local cursor = _M.field.get_cursor()
 
 	if cursor then
-		if cursor == choice then
-			return input.press({"P1 A"})
+		if _state.select_frame then
+			if emu.framecount() - _state.select_frame >= 5 then
+				local result = input.press({"P1 A"}, input.DELAY.NONE)
+
+				if result then
+					_state.select_frame = nil
+				end
+
+				return result
+			end
+		elseif cursor == choice then
+			_state.select_frame = emu.framecount()
 		else
 			_select_vertical(cursor, choice, 4)
 		end
