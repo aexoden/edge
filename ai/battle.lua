@@ -749,7 +749,7 @@ local function _battle_grind(character, turn)
 		-- Set the character index, resetting each time we reach FuSoYa.
 		if character == game.CHARACTER.FUSOYA then
 			_state.character_index = 0
-		elseif not _state.waited then
+		elseif not _state.waited and not _state.first_waited then
 			_state.character_index = _state.character_index + 1
 		end
 
@@ -771,7 +771,7 @@ local function _battle_grind(character, turn)
 		-- Change phases on FuSoYa's turn or at the end of the cycle if he's dead.
 		if _state.phase == PHASE.SETUP and _state.character_index == 0 and _state.setup_complete then
 			_state.phase = PHASE.GRIND
-		elseif _state.phase == PHASE.GRIND and (weakest[2] == 0 or fusoya_hp <= 760 or game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 25) then
+		elseif _state.phase == PHASE.GRIND and (_state.character_index == 0 or weakest[2] == 0) and (weakest[2] == 0 or fusoya_hp <= 760 or game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 25) then
 			_state.phase = PHASE.HEAL
 			_state.dragon_hp = dragon_hp
 			_state.waited = nil
@@ -838,6 +838,7 @@ local function _battle_grind(character, turn)
 				end
 			end
 		elseif _state.phase == PHASE.GRIND then
+			print(_state.character_index, character, turn)
 			if _state.character_index == 0 then
 				if not _state.searcher_hp or _state.waited then
 					if game.enemy.get_stat(0, "hp") == _state.searcher_hp then
@@ -853,32 +854,39 @@ local function _battle_grind(character, turn)
 					return true
 				end
 			elseif _state.character_index == 1 then
-				if _state.waited then
+				if _state.first_waited then
+					_state.first_waited = nil
+
+					if dialog.get_battle_text(5) == " ..Id" then
+						print("waiting full")
+						_command_wait_frames(75)
+						_command_fight()
+					else
+						print("slow waiting")
+						_state.waited = true
+						return true
+					end
+				elseif _state.waited then
 					local wait = dialog.get_battle_text(5) == " ..Id"
 
 					if wait then
-						_command_wait_frames(40)
+						_command_wait_frames(5)
 					end
 
-					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT}})
+					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
 
 					if wait then
 						_command_wait_frames(20)
 					end
 
-					table.insert(_state.q, {menu.battle.target, {nil, nil}})
+					table.insert(_state.q, {menu.battle.target, {nil, nil, nil, input.DELAY.NONE}})
 
 					_state.waited = nil
 				else
-					_command_wait_text(" ..Id", 15)
-					_state.waited = true
+					_state.first_waited = true
+					_command_wait_frames(15)
 					return true
 				end
-
-				--if _state.waited then
-				--	if dialog.get_battle_text(5) == " ..Id" then
-						--_command_wait_frames(30)
-				--	end
 			elseif _state.character_index == 2 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.ENEMY, 1)
 			elseif _state.character_index == 3 then
