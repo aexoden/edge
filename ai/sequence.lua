@@ -1122,7 +1122,7 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {115, 21, 19}})
 	table.insert(_q, {walk.walk, {115, 21, 17}})
 	table.insert(_q, {walk.walk, {115, 18, 17}})
-	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.interact, {"Found"}})
 
 	-- Walk to Octomamm.
 	table.insert(_q, {walk.walk, {115, 21, 17}})
@@ -2776,7 +2776,7 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.walk, {291, 19, 5}})
 	table.insert(_q, {walk.walk, {291, 13, 5}})
 	table.insert(_q, {walk.walk, {291, 13, 10}})
-	table.insert(_q, {walk.interact, {}})
+	table.insert(_q, {walk.interact, {"Found"}})
 
 	-- Walk to the top floor, just before Dr.Lugae.
 	table.insert(_q, {walk.walk, {291, 13, 6}})
