@@ -94,6 +94,13 @@ end
 local function _log_seed()
 	local seed = memory.read("walk", "seed")
 
+	if seed >= 74 and seed <= 81 then
+		table.insert(_q, 2, {menu.wait, {120}})
+		table.insert(_q, 3, {input.press, {{"Reset"}, input.DELAY.NORMAL}})
+		table.insert(_q, 4, {menu.wait, {math.random(132, 387)}})
+		table.insert(_q, 5, {input.press, {{"P1 A"}, input.DELAY.MASH}})
+	end
+
 	_route = route.routes.no64.excalbur[seed]
 
 	for i = 0, 56 do
@@ -868,9 +875,7 @@ local function _sequence_d_mist()
 	table.insert(_q, {walk.walk, {108, 27, 2}})
 end
 
-local function _sequence_girl()
-	-- TODO: Detect and do something about the Mist Clip battle.
-
+local function _sequence_clip()
 	-- Walk toward mist and begin the Mist Clip.
 	table.insert(_q, {walk.walk, {nil, 86, 120}})
 	table.insert(_q, {walk.walk, {nil, 86, 119}})
@@ -906,8 +911,11 @@ local function _sequence_girl()
 	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
 	table.insert(_q, {menu.confirm, {}})
 	table.insert(_q, {_state_set, {"check_autoreload", true}})
+end
 
+local function _sequence_girl()
 	-- Walk to the shop and open the shopping menu.
+	table.insert(_q, {_state_set, {"auto_reload", true}})
 	table.insert(_q, {walk.walk, {nil, 98, 119}})
 	table.insert(_q, {_log_seed, {}})
 	table.insert(_q, {walk.walk, {nil, 97, 119}})
@@ -918,6 +926,7 @@ local function _sequence_girl()
 	table.insert(_q, {walk.walk, {1, 14, 26}})
 	table.insert(_q, {walk.walk, {1, 14, 25}})
 	table.insert(_q, {walk.walk, {225, 4, 5}})
+	table.insert(_q, {_state_set, {"auto_reload", false}})
 	table.insert(_q, {walk.interact, {}})
 
 	-- Sell the Shadow shield.
@@ -4163,7 +4172,8 @@ end
 local _sequences = {
 	{title = "Prologue",      f = _sequence_prologue,      map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
 	{title = "D.Mist",        f = _sequence_d_mist,        map_area = 0, map_id = nil, map_x = 102, map_y = 158},
-	{title = "Girl",          f = _sequence_girl,          map_area = 0, map_id = nil, map_x = 84,  map_y = 120},
+	{title = "Mist Clip",     f = _sequence_clip,          map_area = 0, map_id = nil, map_x = 84,  map_y = 120},
+	{title = "Girl",          f = _sequence_girl,          map_area = 0, map_id = nil, map_x = 96,  map_y = 119},
 	{title = "Officer",       f = _sequence_officer,       map_area = 0, map_id = nil, map_x = 103, map_y = 119},
 	{title = "Tellah",        f = _sequence_tellah,        map_area = 3, map_id = 16,  map_x = 14,  map_y = 12},
 	{title = "Octomamm",      f = _sequence_octomamm,      map_area = 3, map_id = 111, map_x = 7,   map_y = 13},

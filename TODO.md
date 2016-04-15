@@ -39,9 +39,8 @@ provide a good list of improvements that can be made.
   two examples.)
 
 * Automatically end the run or reset if possible in situations where the run is
-  more or less over. Example conditions include: getting an encounter on the
-  first step after resetting at Mist, accidentally killing the Searcher in the
-  grind fight, dying in the Land of Monsters.
+  more or less over. Example conditions include: accidentally killing the
+  Searcher in the grind fight, dying in the Land of Monsters.
 
 * If items are missing or otherwise not as expected, come up with a backup plan
   to avoid softlocking.
