@@ -73,6 +73,8 @@ local function _set_seed()
 end
 
 local function _reset()
+	SEED = _set_seed()
+
 	log.reset()
 
 	log.log("Edge Final Fantasy IV Speed Run Bot")
@@ -80,7 +82,7 @@ local function _reset()
 
 	if FULL_RUN then
 		log.log("Beginning Full Run")
-		log.log(string.format("RNG Seed: %d", _set_seed()))
+		log.log(string.format("RNG Seed: %d", SEED))
 	else
 		log.log("Beginning Test Mode")
 	end
