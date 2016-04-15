@@ -838,7 +838,6 @@ local function _battle_grind(character, turn)
 				end
 			end
 		elseif _state.phase == PHASE.GRIND then
-			print(_state.character_index, character, turn)
 			if _state.character_index == 0 then
 				if not _state.searcher_hp or _state.waited then
 					if game.enemy.get_stat(0, "hp") == _state.searcher_hp then
@@ -858,11 +857,9 @@ local function _battle_grind(character, turn)
 					_state.first_waited = nil
 
 					if dialog.get_battle_text(5) == " ..Id" then
-						print("waiting full")
 						_command_wait_frames(75)
 						_command_fight()
 					else
-						print("slow waiting")
 						_state.waited = true
 						return true
 					end

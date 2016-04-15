@@ -92,3 +92,14 @@ provide a good list of improvements that can be made.
 ### Milon
 
 * Don't double use Cure2 when healing the twins.
+
+### Grind Fight
+
+* This fight needs to be almost reworked entirely. There is highly specific
+  timing that needs to be investigated, and the exact nature of this timing may
+  depend on the enemy agilities and the party levels. Ideally, the bot should
+  only use information available to a human player. (That is, reading the enemy
+  agilities should only be done if a human player could determine the same thing
+  by observing something in battle.) Recovery needs to be made more reliable.
+  Recovery should not needlessly begin early preventing double Lifes. This is a
+  very complicated battle to get right.
