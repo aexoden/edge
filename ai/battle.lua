@@ -1614,6 +1614,8 @@ _formations[_M.FORMATION.GIRL].needed_items = {
 	[game.ITEM.ARMS.IRON] = 2,
 	[game.ITEM.WEAPON.CHANGE] = 8,
 	[game.ITEM.WEAPON.DANCING] = 8,
+	[game.ITEM.ITEM.CARROT] = 8,
+	[game.ITEM.ITEM.TRASHCAN] = 8,
 }
 
 _formations[_M.FORMATION.OCTOMAMM].needed_items = {
@@ -1621,6 +1623,8 @@ _formations[_M.FORMATION.OCTOMAMM].needed_items = {
 	[game.ITEM.ARMS.IRON] = 2,
 	[game.ITEM.WEAPON.CHANGE] = 8,
 	[game.ITEM.WEAPON.DANCING] = 8,
+	[game.ITEM.ITEM.CARROT] = 8,
+	[game.ITEM.ITEM.TRASHCAN] = 8,
 }
 
 _formations[_M.FORMATION.ANTLION].needed_items = {
@@ -1629,6 +1633,8 @@ _formations[_M.FORMATION.ANTLION].needed_items = {
 	[game.ITEM.ITEM.LIFE] = 8,
 	[game.ITEM.WEAPON.CHANGE] = 8,
 	[game.ITEM.WEAPON.DANCING] = 8,
+	[game.ITEM.ITEM.CARROT] = 8,
+	[game.ITEM.ITEM.TRASHCAN] = 8,
 }
 
 _formations[_M.FORMATION.MOMBOMB].needed_items = _formations[_M.FORMATION.ANTLION].needed_items
@@ -1639,6 +1645,8 @@ _formations[_M.FORMATION.GENERAL].needed_items = {
 	[game.ITEM.ITEM.LIFE] = 8,
 	[game.ITEM.WEAPON.CHANGE] = 8,
 	[game.ITEM.WEAPON.DANCING] = 8,
+	[game.ITEM.ITEM.CARROT] = 8,
+	[game.ITEM.ITEM.TRASHCAN] = 8,
 }
 
 _formations[_M.FORMATION.WEEPER].needed_items = _formations[_M.FORMATION.GENERAL].needed_items
@@ -1654,6 +1662,8 @@ _formations[_M.FORMATION.MILON].needed_items = {
 	[game.ITEM.ITEM.ETHER1] = 4,
 	[game.ITEM.ITEM.HEAL] = 4,
 	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.ITEM.CARROT] = 8,
+	[game.ITEM.ITEM.TRASHCAN] = 8,
 	[game.ITEM.RING.SILVER] = 2,
 	[game.ITEM.SHIELD.PALADIN] = 32,
 	[game.ITEM.WEAPON.CHANGE] = 16,

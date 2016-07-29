@@ -833,6 +833,11 @@ local function _sequence_d_mist()
 	table.insert(_q, {walk.walk, {nil, 102, 160}})
 	table.insert(_q, {walk.walk, {nil, 89, 160}})
 	table.insert(_q, {walk.walk, {nil, 89, 163}})
+	table.insert(_q, {walk.walk, {210, 8, 8}})
+	table.insert(_q, {walk.walk, {210, 9, 8}})
+	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+	table.insert(_q, {walk.interact, {"Found"}})
+	table.insert(_q, {walk.step, {walk.DIRECTION.RIGHT}})
 	table.insert(_q, {walk.chase, {210, {6, 7, 8}}})
 
 	-- Walk to the Misty Cave

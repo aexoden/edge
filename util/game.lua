@@ -115,6 +115,7 @@ _M.ITEM = {
 	ITEM = {
 		ADAMANT  = 0xF7,
 		BARON    = 0xEF,
+		CARROT   = 0xEB,
 		CRYSTAL  = 0xC8,
 		DARKNESS = 0xF5,
 		CURE2    = 0xCF,
@@ -128,6 +129,7 @@ _M.ITEM = {
 		SANDRUBY = 0xF0,
 		TENT     = 0xE2,
 		TOWER    = 0xFA,
+		TRASHCAN = 0xFF,
 	},
 	RING = {
 		PROTECT  = 0xAE,
