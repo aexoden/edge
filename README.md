@@ -5,7 +5,7 @@ currently follows the Edge+Excalbur route of the Any% No64 run.
 
 ## Prerequisites
 
-* BizHawk (currently tested with v1.11.3)
+* BizHawk (currently tested with v1.11.6)
 * Final Fantasy IV US 1.0 (originally released as Final Fantasy II)
 * luasocket (optional: for LiveSplit integration)
 
