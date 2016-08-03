@@ -1758,13 +1758,8 @@ local function _sequence_milon_z()
 	-- Heal and prepare the party.
 	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
-	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.PALOM}})
-	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
-	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
-	table.insert(_q, {menu.field.magic.select_character, {nil, true}})
-	table.insert(_q, {menu.field.magic.close, {}})
-	table.insert(_q, {menu.field.change, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.HP, [game.CHARACTER.POROM] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.TELLAH, game.FORMATION.THREE_FRONT}})
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Walk to Milon Z.

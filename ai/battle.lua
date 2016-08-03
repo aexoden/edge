@@ -1283,10 +1283,44 @@ local function _battle_milon(character, turn)
 end
 
 local function _battle_milon_z(character, turn)
-	if character == game.CHARACTER.CECIL then
-		_command_fight()
+	if character == game.CHARACTER.CECIL and turn >= 3 or character ~= game.CHARACTER.CECIL and turn >= 2 then
+		if game.character.get_stat(character, "hp", true) < game.character.get_stat(character, "hp_max", true) * 0.5 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, character)
+		elseif character == game.CHARACTER.CECIL then
+			_command_fight()
+		else
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY)
+		end
 	else
-		_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY)
+		if character == game.CHARACTER.CECIL then
+			if turn == 1 then
+				_command_wait_frames(360)
+				_command_parry()
+			elseif turn == 2 then
+				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
+				table.insert(_state.q, {menu.wait, {30}})
+				table.insert(_state.q, {input.press, {{"P1 B"}, input.DELAY.MASH}})
+				table.insert(_state.q, {menu.wait, {30}})
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.TRASHCAN}})
+				table.insert(_state.q, {menu.battle.item.close, {}})
+			end
+		elseif character == game.CHARACTER.PALOM then
+			if turn == 1 then
+				_command_black(game.MAGIC.BLACK.ICE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+			end
+		elseif character == game.CHARACTER.TELLAH then
+			if turn == 1 then
+				_command_run_buffer()
+				_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			end
+		elseif character == game.CHARACTER.POROM then
+			if turn == 1 then
+				_command_twin()
+			end
+		end
 	end
 end
 
@@ -1634,7 +1668,7 @@ local _formations = {
 	[_M.FORMATION.LUGAE2]   = {title = "Dr.Lugae",               f = _battle_lugae2,   split = true},
 	[_M.FORMATION.MAGE]     = {title = "Mages",                  f = _battle_mages,    split = false},
 	[_M.FORMATION.MILON]    = {title = "Milon",                  f = _battle_milon,    split = true},
-	[_M.FORMATION.MILON_Z]  = {title = "Milon Z.",               f = _battle_milon_z,  split = true,  full_inventory = true},
+	[_M.FORMATION.MILON_Z]  = {title = "Milon Z.",               f = _battle_milon_z,  split = true},
 	[_M.FORMATION.MOMBOMB]  = {title = "MomBomb",                f = _battle_mombomb,  split = true,  full_inventory = true},
 	[_M.FORMATION.OCTOMAMM] = {title = "Octomamm",               f = _battle_octomamm, split = true,  full_inventory = true},
 	[_M.FORMATION.OFFICER]  = {title = "Officer/Soldiers",       f = _battle_officer,  split = true},
