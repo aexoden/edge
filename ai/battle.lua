@@ -1171,67 +1171,113 @@ local function _battle_mages(character, turn)
 end
 
 local function _battle_milon(character, turn)
-	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
-	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
-
-	local palom_mp = game.character.get_stat(game.CHARACTER.PALOM, "mp", true)
-	local porom_mp = game.character.get_stat(game.CHARACTER.POROM, "mp", true)
-
-	local worst_twin = nil
-
-	if palom_hp < 70 and palom_hp < porom_hp then
-		worst_twin = {twin = game.CHARACTER.PALOM, hp = palom_hp}
-	elseif porom_hp < 70 and porom_hp < palom_hp then
-		worst_twin = {twin = game.CHARACTER.POROM, hp = porom_hp}
-	elseif palom_mp < 20 and palom_mp < porom_mp then
-		worst_twin = {twin = game.CHARACTER.PALOM, mp = palom_mp}
-	elseif porom_mp < 20 and porom_mp < palom_mp then
-		worst_twin = {twin = game.CHARACTER.POROM, mp = porom_mp}
-	end
-
-	if character == game.CHARACTER.CECIL then
-		if turn == 1 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 4)
-		elseif turn == 2 then
+	if _state.alternate then
+		if game.enemy.get_stat(0, "hp") == 0 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 1)
-		elseif worst_twin then
-			if worst_twin.hp == 0 then
-				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
-			elseif worst_twin.hp then
-				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+		else
+			_state.full_inventory = true
+		end
+
+		local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
+		local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
+
+		local palom_mp = game.character.get_stat(game.CHARACTER.PALOM, "mp", true)
+		local porom_mp = game.character.get_stat(game.CHARACTER.POROM, "mp", true)
+
+		local worst_twin = nil
+
+		if palom_hp < 70 and palom_hp < porom_hp then
+			worst_twin = {twin = game.CHARACTER.PALOM, hp = palom_hp}
+		elseif porom_hp < 70 and porom_hp < palom_hp then
+			worst_twin = {twin = game.CHARACTER.POROM, hp = porom_hp}
+		elseif palom_mp < 20 and palom_mp < porom_mp then
+			worst_twin = {twin = game.CHARACTER.PALOM, mp = palom_mp}
+		elseif porom_mp < 20 and porom_mp < palom_mp then
+			worst_twin = {twin = game.CHARACTER.POROM, mp = porom_mp}
+		end
+
+		local ghast = game.enemy.get_strongest(game.ENEMY.GHAST)
+
+		if character == game.CHARACTER.CECIL or character == game.CHARACTER.TELLAH then
+			if worst_twin then
+				if worst_twin.hp == 0 then
+					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+				elseif worst_twin.hp then
+					_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+				else
+					_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+				end
+			elseif ghast then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, ghast)
+			elseif character == game.CHARACTER.CECIL then
+				_command_fight()
 			else
-				_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+				_command_parry()
 			end
-		else
-			_command_fight()
-		end
-	elseif character == game.CHARACTER.PALOM then
-		if turn == 1 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 2)
-		elseif worst_twin and worst_twin.hp == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
-		else
-			_command_parry()
-		end
-	elseif character == game.CHARACTER.POROM then
-		if worst_twin and worst_twin.hp == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
-		else
-			_command_twin()
-		end
-	elseif character == game.CHARACTER.TELLAH then
-		if turn == 1 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 3)
-		elseif worst_twin then
-			if worst_twin.hp == 0 then
+		elseif character == game.CHARACTER.PALOM then
+			if worst_twin and worst_twin.hp == 0 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
-			elseif worst_twin.hp then
-				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, worst_twin.twin)
 			else
-				_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+				_command_twin()
 			end
-		else
-			_command_parry()
+		elseif character == game.CHARACTER.POROM then
+			if worst_twin and worst_twin.hp == 0 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+			else
+				_command_twin()
+			end
+		end
+	else
+		if character == game.CHARACTER.CECIL then
+			if turn == 1 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 4)
+			elseif turn == 2 then
+				if game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
+					_state.alternate = true
+					_state.full_inventory = true
+					return true
+				end
+
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 2)
+			elseif turn == 3 then
+				_command_parry()
+			elseif turn == 4 then
+				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
+				table.insert(_state.q, {menu.wait, {30}})
+				table.insert(_state.q, {input.press, {{"P1 B"}, input.DELAY.MASH}})
+				table.insert(_state.q, {menu.wait, {30}})
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CARROT}})
+				table.insert(_state.q, {menu.battle.item.close, {}})
+
+				_command_wait_frames(480)
+				_state.alternate = true
+
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 1)
+			end
+		elseif character == game.CHARACTER.PALOM then
+			if turn == 1 then
+				_command_black(game.MAGIC.BLACK.FIRE1, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+			end
+		elseif character == game.CHARACTER.POROM then
+			if turn == 1 then
+				_command_run_buffer()
+				_command_twin()
+			elseif turn == 2 then
+				_command_run_buffer()
+				_command_fight(menu.battle.TARGET.ENEMY, 0)
+			end
+		elseif character == game.CHARACTER.TELLAH then
+			if turn == 1 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+			elseif turn == 2 then
+				_command_wait_frames(120)
+				_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			elseif turn == 3 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 1)
+			end
 		end
 	end
 end
@@ -1587,7 +1633,7 @@ local _formations = {
 	[_M.FORMATION.LUGAE1]   = {title = "Dr.Lugae/Balnab",        f = _battle_lugae1,   split = true},
 	[_M.FORMATION.LUGAE2]   = {title = "Dr.Lugae",               f = _battle_lugae2,   split = true},
 	[_M.FORMATION.MAGE]     = {title = "Mages",                  f = _battle_mages,    split = false},
-	[_M.FORMATION.MILON]    = {title = "Milon",                  f = _battle_milon,    split = true,  full_inventory = true},
+	[_M.FORMATION.MILON]    = {title = "Milon",                  f = _battle_milon,    split = true},
 	[_M.FORMATION.MILON_Z]  = {title = "Milon Z.",               f = _battle_milon_z,  split = true,  full_inventory = true},
 	[_M.FORMATION.MOMBOMB]  = {title = "MomBomb",                f = _battle_mombomb,  split = true,  full_inventory = true},
 	[_M.FORMATION.OCTOMAMM] = {title = "Octomamm",               f = _battle_octomamm, split = true,  full_inventory = true},
