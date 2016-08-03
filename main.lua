@@ -31,7 +31,7 @@ SEED = nil
 LIVESPLIT = false
 
 -- Automatically create save states at the beginning of each battle.
-SAVESTATE = true
+SAVESTATE = false
 
 --------------------------------------------------------------------------------
 -- Setup
