@@ -1306,6 +1306,11 @@ local function _battle_milon_z(character, turn)
 				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
 				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.TRASHCAN}})
 				table.insert(_state.q, {menu.battle.item.close, {}})
+
+				_command_wait_frames(480)
+				_state.full_inventory = true
+
+				_command_fight()
 			end
 		elseif character == game.CHARACTER.PALOM then
 			if turn == 1 then
