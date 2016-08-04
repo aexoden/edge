@@ -691,7 +691,7 @@ local function _healing_milon_1()
 		_restore_party({
 			[game.CHARACTER.CECIL] = _RESTORE.HP,
 			[game.CHARACTER.PALOM] = _RESTORE.ALL,
-			[game.CHARACTER.POROM] = _RESTORE.ALL,
+			[game.CHARACTER.POROM] = _RESTORE.LIFE,
 		}, nil, true, true)
 	end
 
@@ -706,7 +706,7 @@ local function _healing_milon_2()
 		_restore_party({
 			[game.CHARACTER.CECIL] = _RESTORE.HP,
 			[game.CHARACTER.PALOM] = _RESTORE.ALL,
-			[game.CHARACTER.POROM] = _RESTORE.ALL,
+			[game.CHARACTER.POROM] = _RESTORE.LIFE,
 			[game.CHARACTER.TELLAH] = _RESTORE.HP,
 		}, nil, true, true)
 	end
@@ -1727,7 +1727,7 @@ local function _sequence_milon()
 
 	-- Heal and equip.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.ALL, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.LIFE, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.POROM}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.TIARA}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
