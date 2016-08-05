@@ -1758,7 +1758,7 @@ local function _sequence_milon_z()
 	-- Heal and prepare the party.
 	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.HP, [game.CHARACTER.POROM] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.TELLAH, game.FORMATION.THREE_FRONT}})
 	table.insert(_q, {menu.field.close, {}})
 
