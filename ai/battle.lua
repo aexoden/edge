@@ -1260,6 +1260,9 @@ local function _battle_milon(character, turn)
 		elseif character == game.CHARACTER.PALOM then
 			if turn == 1 then
 				_command_black(game.MAGIC.BLACK.FIRE1, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+			else
+				_state.alternate = true
+				return true
 			end
 		elseif character == game.CHARACTER.POROM then
 			if turn == 1 then
@@ -1268,6 +1271,9 @@ local function _battle_milon(character, turn)
 			elseif turn == 2 then
 				_command_run_buffer()
 				_command_fight(menu.battle.TARGET.ENEMY, 0)
+			else
+				_state.alternate = true
+				return true
 			end
 		elseif character == game.CHARACTER.TELLAH then
 			if turn == 1 then
@@ -1277,6 +1283,9 @@ local function _battle_milon(character, turn)
 				_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 			elseif turn == 3 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 1)
+			else
+				_state.alternate = true
+				return true
 			end
 		end
 	end
