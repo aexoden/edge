@@ -255,6 +255,10 @@ local function _battle_antlion(character, turn)
 			_command_parry()
 		end
 	elseif character == game.CHARACTER.EDWARD then
+		if turn == 2 then
+			_command_run_buffer()
+		end
+
 		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 	elseif character == game.CHARACTER.RYDIA then
 		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
@@ -1354,6 +1358,10 @@ local function _battle_mombomb(character, turn)
 		if character == game.CHARACTER.CECIL or character == game.CHARACTER.YANG then
 			_command_fight()
 		elseif character == game.CHARACTER.EDWARD or character == game.CHARACTER.RYDIA then
+			if turn == 1 and character == game.CHARACTER.EDWARD then
+				_command_run_buffer()
+			end
+
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 		elseif character == game.CHARACTER.ROSA then
 			if count > 1 then
