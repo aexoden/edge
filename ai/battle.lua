@@ -953,8 +953,8 @@ local function _battle_grind(character, turn)
 				_state.dragon_hp = dragon_hp
 				_state.dragon_character = character
 			elseif (_state.attacked or dragon_hp > 50) and character == game.CHARACTER.FUSOYA then
-				_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1)
-				_state.dragon_hp = dragon_hp
+				_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1, true)
+				_state.dragon_hp = 15000
 				_state.dragon_character = character
 			elseif dragon_hp > 0 and fusoya_hp == 0 and (not _state.fusoya_life_frame or emu.framecount() - _state.fusoya_life_frame > 450) then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
