@@ -1553,40 +1553,59 @@ local function _battle_sisters(character, turn)
 	end
 end
 
+local function _battle_valvalis_support()
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
+	local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp", true)
+
+	if kain_hp == 0 then
+		_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+	elseif cecil_hp == 0 then
+		_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+	elseif game.character.is_status(game.CHARACTER.KAIN, game.STATUS.STONE) then
+		_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+	elseif game.character.is_status(game.CHARACTER.CECIL, game.STATUS.STONE) then
+		_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+	elseif cecil_hp < 300 then
+		_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+	else
+		_command_fight()
+	end
+end
+
 local function _battle_valvalis(character, turn)
-	if character == game.CHARACTER.CECIL then
-		if turn == 1 or game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 300 then
+	if character == game.CHARACTER.KAIN then
+		if game.enemy.get_stat(0, "hp") < 500 then
+			_command_fight()
+		else
+			_command_jump()
+		end
+	elseif character == game.CHARACTER.CECIL then
+		if turn == 1 then
+			_command_wait_text(" Weak ")
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 		else
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 		end
-	elseif character == game.CHARACTER.KAIN then
+	elseif character == game.CHARACTER.YANG then
 		if turn == 1 then
-			_command_run_buffer()
-		end
-
-		_command_jump()
-	else
-		local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
-		local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp", true)
-
-		if character == game.CHARACTER.ROSA and game.enemy.get_stat(0, "speed_modifier") < 32 then
-			_command_white(game.MAGIC.WHITE.SLOW)
-		elseif kain_hp == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
-		elseif cecil_hp == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-		elseif game.character.is_status(game.CHARACTER.KAIN, game.STATUS.STONE) then
-			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
-		elseif game.character.is_status(game.CHARACTER.CECIL, game.STATUS.STONE) then
-			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-		elseif cecil_hp < 650 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-		elseif character == game.CHARACTER.ROSA or (character == game.CHARACTER.YANG and turn == 1) then
 			_command_parry()
 		else
-			_command_fight()
+			_battle_valvalis_support()
 		end
+	elseif character == game.CHARACTER.ROSA then
+		if game.enemy.get_stat(0, "speed_modifier") < 32 then
+			_command_white(game.MAGIC.WHITE.SLOW)
+		elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 400 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		else
+			_command_parry()
+		end
+	elseif character == game.CHARACTER.CID then
+		if turn >= 3 and turn % 2 == 1 then
+			_command_wait_frames(120)
+		end
+
+		_battle_valvalis_support()
 	end
 end
 
