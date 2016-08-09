@@ -2004,6 +2004,10 @@ _formations[_M.FORMATION.ELEMENTS].needed_items = {
 _formations[_M.FORMATION.CPU].needed_items = _formations[_M.FORMATION.ELEMENTS].needed_items
 
 function _manage_inventory(full_inventory, items)
+	if menu.battle.command.has_command(menu.battle.COMMAND.SHOW) then
+		return false
+	end
+
 	if not items then
 		items = {}
 	end
