@@ -1325,8 +1325,24 @@ end
 
 local function _battle_milon_z(character, turn)
 	if character == game.CHARACTER.CECIL and turn >= 3 or character ~= game.CHARACTER.CECIL and turn >= 2 then
+		local count = 0
+		local best = nil
+
+		for i = 0, 4 do
+			if memory.read_stat(i, "id", true) ~= 0 then
+				local hp = memory.read_stat(i, "hp", true)
+
+				if hp == 0 then
+					count = count + 1
+					best = i
+				end
+			end
+		end
+
 		if game.character.get_stat(character, "hp", true) < game.character.get_stat(character, "hp_max", true) * 0.5 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, character)
+		elseif count > 2 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, best)
 		elseif character == game.CHARACTER.CECIL then
 			_command_fight()
 		else
