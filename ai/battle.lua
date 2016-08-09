@@ -503,54 +503,71 @@ local function _battle_dark_elf(character, turn)
 	local elf_hp = game.enemy.get_stat(0, "hp")
 	local dragon_hp = game.enemy.get_stat(1, "hp")
 
-	if turn == 1 then
-		if character == game.CHARACTER.TELLAH then
-			_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.CID)
-		else
+	local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp", true)
+	local tellah_mp = game.character.get_stat(game.CHARACTER.TELLAH, "mp", true)
+
+	local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp", true)
+
+	local alternate = false
+
+	if character == game.CHARACTER.CECIL then
+		if turn == 1 then
+			_command_run_buffer()
 			_command_fight()
-		end
-	elseif turn == 2 and character == game.CHARACTER.TELLAH then
-		if game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.PIG) then
-			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		elseif elf_hp > 0 then
+			_command_fight()
 		else
+			alternate = true
+		end
+	elseif character == game.CHARACTER.YANG then
+		if elf_hp > 0 then
+			_command_fight()
+		else
+			alternate = true
+		end
+	elseif character == game.CHARACTER.CID then
+		_command_fight()
+	elseif character == game.CHARACTER.TELLAH then
+		if turn == 1 then
+			_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.CID)
+		elseif game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.PIG) then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		elseif turn == 2 then
+			if elf_hp > 0 then
+				_command_fight()
+			end
+
 			if dragon_hp == 0 then
 				_command_wait_text("Da")
 			end
 
 			_command_black(game.MAGIC.BLACK.WEAK)
-		end
-	elseif dragon_hp > 0 and dragon_hp < 50 then
-		if character == game.CHARACTER.YANG and game.character.get_stat(game.CHARACTER.YANG, "hp", true) < 50 then
-			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		else
-			_command_fight()
+			alternate = true
 		end
-	else
-		local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp", true)
-		local tellah_mp = game.character.get_stat(game.CHARACTER.TELLAH, "mp", true)
+	end
 
-		if dragon_hp > 0 then
-			if game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.PIG) then
-				_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-			elseif tellah_hp == 0 and character == game.CHARACTER.CECIL then
-				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-			elseif tellah_hp < 200 then
-				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-			elseif character == game.CHARACTER.TELLAH and dragon_hp > 50 then
-				if tellah_mp < 25 then
-					_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-				else
-					_command_black(game.MAGIC.BLACK.WEAK)
-				end
-			elseif character == game.CHARACTER.YANG and game.character.get_stat(game.CHARACTER.YANG, "hp", true) < 50 then
+	if alternate then
+		if dragon_hp > 0 and dragon_hp < 50 then
+			if yang_hp > 0 and yang_hp < 50 then
 				_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
-			elseif tellah_mp < 25 then
-				_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 			else
 				_command_fight()
 			end
+		elseif game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.PIG) then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		elseif tellah_hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		elseif tellah_hp < 200 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		elseif tellah_mp < 25 then
+			_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		elseif character == game.CHARACTER.TELLAH and dragon_hp > 50 then
+			_command_black(game.MAGIC.BLACK.WEAK)
+		elseif yang_hp > 0 then
+			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		else
-			_command_fight()
+			_command_parry()
 		end
 	end
 end
