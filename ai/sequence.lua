@@ -599,7 +599,6 @@ local function _healing_flamedog()
 		_restore_party({
 			[game.CHARACTER.CECIL] = _RESTORE.HP,
 			[game.CHARACTER.TELLAH] = _RESTORE.HP,
-			[game.CHARACTER.YANG] = _RESTORE.LIFE,
 		}, game.CHARACTER.TELLAH, true, true)
 	end
 
