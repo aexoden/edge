@@ -859,6 +859,10 @@ local function _battle_grind(character, turn)
 				end
 			end
 		elseif _state.phase == PHASE.GRIND then
+			if _state.attacked then
+				_state.attacked = nil
+			end
+
 			if _state.character_index == 0 then
 				if not _state.searcher_hp or _state.waited then
 					if game.enemy.get_stat(0, "hp") == _state.searcher_hp then
@@ -920,6 +924,7 @@ local function _battle_grind(character, turn)
 					_command_fight()
 					_state.searcher_hp = game.enemy.get_stat(0, "hp")
 					_state.waited = nil
+					_state.attacked = true
 				else
 					_command_wait_text("Life", 60)
 					_state.waited = true
@@ -947,7 +952,7 @@ local function _battle_grind(character, turn)
 				_command_fight()
 				_state.dragon_hp = dragon_hp
 				_state.dragon_character = character
-			elseif dragon_hp > 50 and character == game.CHARACTER.FUSOYA then
+			elseif (_state.attacked or dragon_hp > 50) and character == game.CHARACTER.FUSOYA then
 				_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1)
 				_state.dragon_hp = dragon_hp
 				_state.dragon_character = character
@@ -971,6 +976,8 @@ local function _battle_grind(character, turn)
 			else
 				_command_parry()
 			end
+
+			_state.attacked = nil
 		elseif _state.phase == PHASE.END then
 			local strongest = {nil, 0}
 
