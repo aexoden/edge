@@ -1050,7 +1050,7 @@ end
 
 local function _battle_kainazzo(character, turn)
 	if character == game.CHARACTER.CECIL or character == game.CHARACTER.YANG then
-		if turn == 1 then
+		if turn == 1 or game.enemy.get_stat(0, "hp") < 150 then
 			_command_fight()
 		elseif game.character.get_stat(game.CHARACTER.TELLAH, "hp", true) < 200 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
@@ -1058,7 +1058,11 @@ local function _battle_kainazzo(character, turn)
 			_command_parry()
 		end
 	elseif character == game.CHARACTER.TELLAH then
-		_command_black(game.MAGIC.BLACK.LIT3)
+		if turn == 1 then
+			_command_black(game.MAGIC.BLACK.LIT3)
+		else
+			_command_black(game.MAGIC.BLACK.VIRUS)
+		end
 	else
 		_command_parry()
 	end
