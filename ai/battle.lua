@@ -520,7 +520,7 @@ local function _battle_dark_elf(character, turn)
 			alternate = true
 		end
 	elseif character == game.CHARACTER.YANG then
-		if elf_hp > 0 then
+		if elf_hp > 0 and turn == 1 then
 			_command_fight()
 		else
 			alternate = true
@@ -533,12 +533,8 @@ local function _battle_dark_elf(character, turn)
 		elseif game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.PIG) then
 			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 		elseif turn == 2 then
-			if elf_hp > 0 then
-				_command_fight()
-			end
-
 			if dragon_hp == 0 then
-				_command_wait_text("Da")
+				_command_wait_text("Da", 300)
 			end
 
 			_command_black(game.MAGIC.BLACK.WEAK)
@@ -668,13 +664,17 @@ local function _battle_elements(character, turn)
 end
 
 local function _battle_flamedog(character, turn)
-	if character == game.CHARACTER.TELLAH then
-		_command_black(game.MAGIC.BLACK.ICE1)
-	elseif character == game.CHARACTER.CECIL and turn == 1 then
-		_command_run_buffer()
-		_command_fight()
-	else
-		_command_fight()
+	if character == game.CHARACTER.CECIL then
+		if turn == 1 then
+			_command_run_buffer()
+			_command_cover(game.CHARACTER.TELLAH)
+		elseif game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+		end
+	elseif character == game.CHARACTER.YANG then
+		_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+	elseif character == game.CHARACTER.TELLAH then
+		_command_black(game.MAGIC.BLACK.ICE2)
 	end
 end
 

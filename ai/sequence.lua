@@ -2353,7 +2353,7 @@ local function _sequence_flamedog()
 	table.insert(_q, {walk.walk, {153, 8, 15}})
 
 	-- Heal, turn to the chest, and engage FlameDog.
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.ALL}, nil, true}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.ALL}, nil, true}})
 	table.insert(_q, {walk.step, {walk.DIRECTION.LEFT}})
 	table.insert(_q, {walk.interact, {}})
 end
