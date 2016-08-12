@@ -114,31 +114,31 @@ end
 -- Command Helpers
 --------------------------------------------------------------------------------
 
-local function _command_aim(target_type, target)
+local function _command_aim(target_type, target, wait, limit)
 	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.AIM}})
-	table.insert(_state.q, {menu.battle.target, {target_type, target}})
+	table.insert(_state.q, {menu.battle.target, {target_type, target, wait, limit}})
 end
 
-local function _command_magic(type, spell, target_type, target, wait)
+local function _command_magic(type, spell, target_type, target, wait, limit)
 	table.insert(_state.q, {menu.battle.command.select, {type}})
 	table.insert(_state.q, {menu.battle.magic.select, {spell}})
-	table.insert(_state.q, {menu.battle.target, {target_type, target, wait}})
+	table.insert(_state.q, {menu.battle.target, {target_type, target, wait, limit}})
 end
 
-local function _command_black(spell, target_type, target, wait)
-	_command_magic(menu.battle.COMMAND.BLACK, spell, target_type, target, wait)
+local function _command_black(spell, target_type, target, wait, limit)
+	_command_magic(menu.battle.COMMAND.BLACK, spell, target_type, target, wait, limit)
 end
 
-local function _command_call(spell, target_type, target, wait)
-	_command_magic(menu.battle.COMMAND.CALL, spell, target_type, target, wait)
+local function _command_call(spell, target_type, target, wait, limit)
+	_command_magic(menu.battle.COMMAND.CALL, spell, target_type, target, wait, limit)
 end
 
-local function _command_white(spell, target_type, target, wait)
-	_command_magic(menu.battle.COMMAND.WHITE, spell, target_type, target, wait)
+local function _command_white(spell, target_type, target, wait, limit)
+	_command_magic(menu.battle.COMMAND.WHITE, spell, target_type, target, wait, limit)
 end
 
-local function _command_ninja(spell, target_type, target)
-	_command_magic(menu.battle.COMMAND.NINJA, spell, target_type, target, wait)
+local function _command_ninja(spell, target_type, target, wait, limit)
+	_command_magic(menu.battle.COMMAND.NINJA, spell, target_type, target, wait, limit)
 end
 
 local function _command_change()
@@ -150,10 +150,10 @@ local function _command_cover(target)
 	table.insert(_state.q, {menu.battle.target, {menu.battle.TARGET.CHARACTER, target}})
 end
 
-local function _command_dart(item, target_type, target)
+local function _command_dart(item, target_type, target, wait, limit)
 	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.DART}})
 	table.insert(_state.q, {menu.battle.item.select, {item}})
-	table.insert(_state.q, {menu.battle.target, {target_type, target}})
+	table.insert(_state.q, {menu.battle.target, {target_type, target, wait, limit}})
 end
 
 local function _command_duplicate(hand, single)
@@ -182,14 +182,14 @@ local function _command_equip(character, target_weapon)
 	end
 end
 
-local function _command_fight(target_type, target)
+local function _command_fight(target_type, target, wait, limit)
 	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT}})
-	table.insert(_state.q, {menu.battle.target, {target_type, target}})
+	table.insert(_state.q, {menu.battle.target, {target_type, target, wait, limit}})
 end
 
-local function _command_jump(target_type, target)
+local function _command_jump(target_type, target, wait, limit)
 	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.JUMP}})
-	table.insert(_state.q, {menu.battle.target, {target_type, target}})
+	table.insert(_state.q, {menu.battle.target, {target_type, target, wait, limit}})
 end
 
 local function _command_kick(target_type, target)
@@ -868,7 +868,7 @@ local function _battle_grind(character, turn)
 					if game.enemy.get_stat(0, "hp") == _state.searcher_hp then
 						_command_parry()
 					else
-						_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1, true)
+						_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1, true, 600)
 					end
 
 					_state.waited = nil
@@ -901,7 +901,7 @@ local function _battle_grind(character, turn)
 						_command_wait_frames(20)
 					end
 
-					table.insert(_state.q, {menu.battle.target, {nil, nil, nil, input.DELAY.NONE}})
+					table.insert(_state.q, {menu.battle.target, {nil, nil, nil, nil, input.DELAY.NONE}})
 
 					_state.waited = nil
 				else
@@ -953,7 +953,7 @@ local function _battle_grind(character, turn)
 				_state.dragon_hp = dragon_hp
 				_state.dragon_character = character
 			elseif (_state.attacked or dragon_hp > 50) and character == game.CHARACTER.FUSOYA then
-				_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1, true)
+				_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1, true, 600)
 				_state.dragon_hp = 15000
 				_state.dragon_character = character
 			elseif dragon_hp > 0 and fusoya_hp == 0 and (not _state.fusoya_life_frame or emu.framecount() - _state.fusoya_life_frame > 450) then
@@ -1722,7 +1722,7 @@ local function _battle_zeromus(character, turn)
 				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.PARTY, nuke_target)
 			elseif turn == 7 or turn == 11 then
 				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
-				table.insert(_state.q, {menu.battle.target, {target_type, target, nil, input.DELAY.NONE}})
+				table.insert(_state.q, {menu.battle.target, {target_type, target, nil, nil, input.DELAY.NONE}})
 			end
 		end
 	end
