@@ -2142,6 +2142,38 @@ function _M.cycle()
 
 			log.log(string.format("Battle Start: %s (%s)", formation.title, stats))
 
+			local party_text = ""
+
+			for i = 0, 4 do
+				local character = game.character.get_character(game.character.get_slot_from_index(i))
+
+				local delimiter = " / "
+
+				if party_text == "" then
+					delimiter = ""
+				end
+
+				local front = ""
+
+				if memory.read("party", "formation") == game.FORMATION.TWO_FRONT then
+					if i == 1 or i == 3 then
+						front = "*"
+					end
+				else
+					if i == 0 or i == 2 or i == 4 then
+						front = "*"
+					end
+				end
+
+				if character then
+					party_text = string.format("%s%s%s%s:%d", party_text, delimiter, front, game.character.get_name(character), game.character.get_stat(character, "level"))
+				else
+					party_text = string.format("%s%s%sempty", party_text, delimiter, front)
+				end
+			end
+
+			log.log(string.format("Party Formation: %s", party_text))
+
 			local agility_text = string.format("%d", game.enemy.get_stat(0, "agility"))
 
 			for i = 1, 7 do

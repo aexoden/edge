@@ -233,6 +233,21 @@ local _CHARACTERS = {
 	[0x14] = _M.CHARACTER.KAIN,
 }
 
+local _CHARACTER_NAMES = {
+	[_M.CHARACTER.CECIL]  = "Cecil",
+	[_M.CHARACTER.CID]    = "Cid",
+	[_M.CHARACTER.EDGE]   = "Edge",
+	[_M.CHARACTER.EDWARD] = "Edward",
+	[_M.CHARACTER.FUSOYA] = "FuSoYa",
+	[_M.CHARACTER.KAIN]   = "Kain",
+	[_M.CHARACTER.PALOM]  = "Palom",
+	[_M.CHARACTER.POROM]  = "Porom",
+	[_M.CHARACTER.ROSA]   = "Rosa",
+	[_M.CHARACTER.RYDIA]  = "Rydia",
+	[_M.CHARACTER.TELLAH] = "Tellah",
+	[_M.CHARACTER.YANG]   = "Yang",
+}
+
 local _CHARACTER_IDS = {}
 
 for id, character in ipairs(_CHARACTERS) do
@@ -276,6 +291,10 @@ function _M.character.get_character(slot)
 	return _CHARACTERS[_get_character_id(slot)]
 end
 
+function _M.character.get_name(character)
+	return _CHARACTER_NAMES[character]
+end
+
 function _M.character.get_slot(character)
 	for i = 0, 9 do
 		if _CHARACTER_IDS[character][_get_character_id(i)] then
@@ -295,6 +314,20 @@ function _M.character.get_index(slot)
 		return 3
 	elseif slot == 2 then
 		return 4
+	end
+end
+
+function _M.character.get_slot_from_index(index)
+	if index == 0 then
+		return 1
+	elseif index == 1 then
+		return 3
+	elseif index == 2 then
+		return 0
+	elseif index == 3 then
+		return 4
+	elseif index == 4 then
+		return 2
 	end
 end
 
