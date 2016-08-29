@@ -577,6 +577,7 @@ function _M.field.magic.select(spell, extra_button)
 		local cursor = memory.read("menu_magic", "subcursor")
 
 		if cursor == index then
+			_state.frame = nil
 			return input.press({"P1 A", extra_button}, input.DELAY.NORMAL)
 		else
 			_select_magic(cursor, index)
@@ -585,7 +586,11 @@ function _M.field.magic.select(spell, extra_button)
 		local cursor = memory.read("menu_magic", "cursor")
 
 		if cursor == list then
-			input.press({"P1 A"}, input.DELAY.NORMAL)
+			if not _state.frame or emu.framecount() - _state.frame > 12 then
+				if input.press({"P1 A"}, input.DELAY.NORMAL) then
+					_state.frame = emu.framecount()
+				end
+			end
 		else
 			_select_vertical(cursor, list, 1)
 		end
