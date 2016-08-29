@@ -82,6 +82,7 @@ _M.FORMATION = {
 --------------------------------------------------------------------------------
 
 local _state = nil
+local _splits = {}
 local _battle_count = 0
 
 --------------------------------------------------------------------------------
@@ -2190,7 +2191,7 @@ function _M.cycle()
 				savestate.save(string.format("states/%010d - %03d - %s.state", SEED, _battle_count, formation.title:gsub('/', '-')))
 			end
 
-			if _state.formation.presplit then
+			if _state.formation.presplit and not _splits[_state.index] then
 				bridge.split(_state.formation.title .. " (start)")
 			end
 		end
@@ -2279,13 +2280,12 @@ function _M.cycle()
 
 			menu.wait_clear()
 
-			if ending ~= 0x00 and ending ~= 0x80 and _state.formation.split then
+			if ending ~= 0x00 and ending ~= 0x80 and _state.formation.split and not _splits[_state.index] then
 				bridge.split(_state.formation.title)
 			end
 
 			if _formations[_state.index] then
-				_formations[_state.index].presplit = false
-				_formations[_state.index].split = false
+				_splits[_state.index] = true
 			end
 
 			sequence.set_healing_check()
@@ -2299,6 +2299,7 @@ end
 
 function _M.reset()
 	_reset_state()
+	_splits = {}
 end
 
 return _M

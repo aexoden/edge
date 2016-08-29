@@ -36,8 +36,6 @@ provide a good list of improvements that can be made.
 * Clean up the individual battles starting from the beginning. Almost every
   battle can stand some level of improvement.
 
-* Automatically execute repeated runs for data collection.
-
 * Ensure inventory actions (such as during Q.Eblan/K.Eblan battle) are executed
   during animations as much as possible.
 

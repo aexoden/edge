@@ -23,6 +23,7 @@
 local _M = {}
 
 local bridge = require "util.bridge"
+local corememory = memory
 local dialog = require "util.dialog"
 local game = require "util.game"
 local input = require "util.input"
@@ -4285,6 +4286,16 @@ end
 
 function _M.end_run()
 	_state.active = false
+
+	if AUTOMATIC then
+		log.log("Automatic mode is on. Rebooting...")
+
+		for i = 0, 0x2000, 4 do
+			corememory.write_u32_le(i, 0, "CARTRAM")
+		end
+
+		client.reboot_core();
+	end
 end
 
 function _M.is_active()

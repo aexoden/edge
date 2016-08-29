@@ -5,7 +5,7 @@ currently follows the Edge+Excalbur route of the Any% No64 run.
 
 ## Prerequisites
 
-* BizHawk (currently tested with v1.11.6)
+* BizHawk (currently tested with v1.11.7)
 * Final Fantasy IV US 1.0 (originally released as Final Fantasy II)
 * luasocket (optional: for LiveSplit integration)
 
@@ -18,11 +18,20 @@ Instructions may appear here eventually, once exact instructions are determined.
 After extracting Edge to a directory, preferably within BizHawk's lua directory,
 open the main.lua file. There are a few configuration variables:
 
-### SEED
+### INITIAL_SEED
 
 By default, this is set to nil, which will cause the script to do random runs.
 If you set this to an integer, it will instead do that specific run. Runs are
 generally only repeatable with the same version of Edge.
+
+### AUTOMATIC
+
+This controls whether the bot executes a single run or continuously does
+automatic runs. By default, it is set to false, which will result in a single
+run. If INITIAL_SEED is nil, the bot will continuously do runs for random
+seeds. If INITIAL_SEED is set to a particular seed, the bot will do runs
+incrementally starting from the given seed. (For example, if INITIAL_SEED is set
+to 5, the bot will do runs with seeds 5, 6, 7, etc.)
 
 ### LIVESPLIT
 

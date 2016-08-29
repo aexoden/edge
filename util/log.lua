@@ -82,6 +82,8 @@ function _M.reset()
 		_file = nil
 	end
 
+	_base_frame = nil
+
 	if FULL_RUN then
 		_file, err = io.open(string.format("logs/edge-%010d-%s.log", SEED, os.date("!%Y%m%d-%H%M%S")), "w")
 	end

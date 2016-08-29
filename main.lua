@@ -25,7 +25,10 @@
 --------------------------------------------------------------------------------
 
 -- Specify a number to do a specific run. Set this value to nil to do random runs.
-SEED = nil
+INITIAL_SEED = nil
+
+-- Automatically do continuous runs by restarting after completion.
+AUTOMATIC = false
 
 -- Enable/Disable LiveSplit integration (requires luasocket and LiveSplit)
 LIVESPLIT = false
@@ -42,19 +45,19 @@ local bridge = require "util.bridge"
 local dialog = require "util.dialog"
 local input = require "util.input"
 local log = require "util.log"
-local memory = require "util.memory"
 local menu = require "action.menu"
 local sequence = require "ai.sequence"
 local walk = require "action.walk"
 
 FULL_RUN = emu.framecount() == 1
+INITIALIZED = false
 
 --------------------------------------------------------------------------------
 -- Functions
 --------------------------------------------------------------------------------
 
 local function _set_seed()
-	local seed = SEED
+	local seed = INITIAL_SEED
 
 	if not seed then
 		math.randomseed(os.time())
@@ -62,6 +65,10 @@ local function _set_seed()
 		math.random()
 		math.random()
 		seed = math.random(0, 2147483646)
+	end
+
+	if AUTOMATIC and SEED ~= nil then
+		seed = SEED + 1
 	end
 
 	math.randomseed(seed)
@@ -95,19 +102,20 @@ local function _reset()
 	battle.reset()
 
 	sequence.reset()
+
+	INITIALIZED = true
 end
-
---------------------------------------------------------------------------------
--- Initialization
---------------------------------------------------------------------------------
-
-_reset()
 
 --------------------------------------------------------------------------------
 -- Main Loop
 --------------------------------------------------------------------------------
 
 while true do
+	if emu.framecount() == 1 or not INITIALIZED then
+		FULL_RUN = emu.framecount() == 1
+		_reset()
+	end
+
 	dialog.cycle()
 
 	if sequence.is_active() then
