@@ -9,6 +9,22 @@ provide a good list of improvements that can be made.
   otherwise make the battle safer. Current test runs are dying at the grind
   fight upward of 70% of the time.
 
+* Fix automatic reloading so it only occurs at the appropriate locations.
+
+* Investigate and fix Zeromus deaths in seeds 7, 10, 16 and 27.
+
+* Investigate and fix Dr. Lugae death in seed 11.
+
+* Fix Grind Fight softlock in seed 23.
+
+* Investigate and fix Milon Z death in seed 20.
+
+* Investigate and fix Valvalis death in seed 32.
+
+* Investigate FuSoYa menuing softlock in seed 33.
+
+* Investigate and fix potentially fix Fabul death in seed 35.
+
 ## Major Features
 
 * Add some sort of goal/action based system to battles. The primary motivation
@@ -19,6 +35,8 @@ provide a good list of improvements that can be made.
 
 * Clean up the individual battles starting from the beginning. Almost every
   battle can stand some level of improvement.
+
+* Automatically execute repeated runs for data collection.
 
 * Ensure inventory actions (such as during Q.Eblan/K.Eblan battle) are executed
   during animations as much as possible.
