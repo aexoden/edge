@@ -4238,7 +4238,7 @@ local function _check_autoreload()
 end
 
 local function _check_sequence()
-	if #_q == 0 and walk.is_ready() and not walk.is_mid_tile() and not walk.is_transition() then
+	if #_q == 0 and walk.is_ready() and not walk.is_mid_tile() and not walk.is_transition() and dialog.get_save_text(3) ~= "New" and not emu.islagged() then
 		local map_area = memory.read("walk", "map_area")
 		local map_id = memory.read("walk", "map_id")
 		local map_x = memory.read("walk", "x")
