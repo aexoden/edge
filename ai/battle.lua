@@ -1473,17 +1473,23 @@ local function _battle_octomamm(character, turn)
 		end
 
 		local rydia_hp = game.character.get_stat(game.CHARACTER.RYDIA, "hp", true)
+		local tellah_mp = game.character.get_stat(game.CHARACTER.TELLAH, "mp", true)
 
-		if rydia_hp == 0 then
+		if rydia_hp == 0 and tellah_mp >= 8 then
 			_command_white(game.MAGIC.WHITE.LIFE1, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
-		elseif rydia_hp < 15 or game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 100 then
+		elseif tellah_mp >= 9 and (rydia_hp > 0 and rydia_hp < 15) or game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 100 then
 			_command_white(game.MAGIC.WHITE.CURE2, menu.battle.TARGET.PARTY_ALL)
 		elseif game.enemy.get_stat(0, "hp") < 1200 then
 			if not _state.duplicated_change then
 				_state.duplicated_change = true
 
 				_command_duplicate(game.EQUIP.R_HAND)
-				_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+
+				if tellah_mp >= 15 then
+					_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+				else
+					_command_parry()
+				end
 			else
 				_command_parry()
 			end

@@ -19,8 +19,6 @@ provide a good list of improvements that can be made.
 
 * Investigate and fix Valvalis death in seed 32.
 
-* Investigate FuSoYa menuing softlock in seed 33.
-
 * Investigate and fix potentially fix Fabul death in seed 35.
 
 ## Major Features
