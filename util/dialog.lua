@@ -132,6 +132,8 @@ function _M.reset()
 	for key, _ in pairs(_splits) do
 		_splits[key].done = false
 	end
+
+	_M.set_mash_button("P1 A")
 end
 
 function _M.set_mash_button(mash_button)
