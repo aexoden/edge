@@ -879,37 +879,8 @@ local function _battle_grind(character, turn)
 					return true
 				end
 			elseif _state.character_index == 1 then
-				if _state.first_waited then
-					_state.first_waited = nil
-
-					if dialog.get_battle_text(5) == " ..Id" then
-						_command_wait_frames(75)
-						_command_fight()
-					else
-						_state.waited = true
-						return true
-					end
-				elseif _state.waited then
-					local wait = dialog.get_battle_text(5) == " ..Id"
-
-					if wait then
-						_command_wait_frames(5)
-					end
-
-					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
-
-					if wait then
-						_command_wait_frames(20)
-					end
-
-					table.insert(_state.q, {menu.battle.target, {nil, nil, nil, nil, input.DELAY.NONE}})
-
-					_state.waited = nil
-				else
-					_state.first_waited = true
-					_command_wait_frames(15)
-					return true
-				end
+				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
+				table.insert(_state.q, {menu.battle.target, {nil, nil, nil, nil, input.DELAY.NONE}})
 			elseif _state.character_index == 2 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.ENEMY, 1)
 			elseif _state.character_index == 3 then
