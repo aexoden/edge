@@ -9,7 +9,7 @@ provide a good list of improvements that can be made.
   otherwise make the battle safer. Current test runs are dying at the grind
   fight upward of 70% of the time.
 
-* Investigate and fix Zeromus deaths in seeds 7, 10, 16 and 27.
+* Investigate and fix Zeromus deaths in seeds 7, 10 and 27.
 
 * Investigate and fix Dr. Lugae death in seed 11.
 

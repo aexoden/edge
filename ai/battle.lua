@@ -1725,8 +1725,14 @@ local function _battle_zeromus(character, turn)
 			elseif turn == 4 or turn == 6 or turn == 9 then
 				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
 			elseif turn == 10 then
-				local nuke_target = memory.read("battle", "enemy_target")
-				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.PARTY, nuke_target)
+				local edge_hp = game.character.get_stat(game.CHARACTER.EDGE, "hp", true)
+				local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp", true)
+
+				if edge_hp < kain_hp then
+					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+				else
+					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+				end
 			elseif turn == 7 or turn == 11 then
 				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
 				table.insert(_state.q, {menu.battle.target, {target_type, target, nil, nil, input.DELAY.NONE}})
