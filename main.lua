@@ -56,6 +56,17 @@ INITIALIZED = false
 -- Functions
 --------------------------------------------------------------------------------
 
+local function _get_version()
+	local file = io.popen("git describe", "r")
+	local version = string.match(string.match(file:read('*all'), "%S.*"), ".*%S")
+
+	if version == "" then
+		return "v0.0.5"
+	else
+		return version
+	end
+end
+
 local function _set_seed()
 	local seed = INITIAL_SEED
 
@@ -86,6 +97,7 @@ local function _reset()
 
 	log.log("Edge Final Fantasy IV Speed Run Bot")
 	log.log("-----------------------------------")
+	log.log(string.format("Version: %s", _get_version()))
 
 	if FULL_RUN then
 		log.log("Beginning Full Run")
