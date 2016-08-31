@@ -200,6 +200,8 @@ _M.MAGIC = {
 
 _M.STATUS = {
 	CRITICAL = 0x00000001,
+	HIDING   = 0x00000080,
+	JUMPING  = 0x00000200,
 	PARALYZE = 0x00200000,
 	POISON   = 0x01000000,
 	PIG      = 0x08000000,
@@ -337,6 +339,10 @@ end
 
 function _M.character.is_status(character, status)
 	return bit.band(memory.read_stat(_M.character.get_slot(character), "status", true), status) > 0
+end
+
+function _M.character.is_status_by_slot(slot, status)
+	return bit.band(memory.read_stat(slot, "status", true), status) > 0
 end
 
 function _M.character.get_equipment(slot, location, battle)

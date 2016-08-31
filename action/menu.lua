@@ -986,6 +986,10 @@ function _M.battle.target(target, index, wait, limit, delay)
 		local left = {"P1 Left"}
 		local right = {"P1 Right"}
 
+		if not _state.max_frame then
+			_state.max_frame = emu.framecount() + 300
+		end
+
 		if game.battle.get_type() == game.battle.TYPE.BACK_ATTACK then
 			left = {"P1 Right"}
 			right = {"P1 Left"}
@@ -1016,7 +1020,7 @@ function _M.battle.target(target, index, wait, limit, delay)
 			index = target
 		end
 
-		if not index or cursor == index then
+		if not index or cursor == index or emu.framecount() > _state.max_frame then
 			input.press({"P1 A"}, delay)
 
 			_state.pressed = true
@@ -1053,6 +1057,7 @@ function _M.battle.target(target, index, wait, limit, delay)
 		end
 	elseif _state.pressed then
 		_state.pressed = nil
+		_state.max_frame = nil
 		_wait_frame = nil
 		return true
 	end

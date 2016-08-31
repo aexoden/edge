@@ -1089,11 +1089,13 @@ local function _battle_lugae1(character, turn)
 		local dead = false
 
 		for i = 0, 4 do
-			if memory.read_stat(i, "hp", true) == 0 then
-				index = i
-				dead = true
-			elseif memory.read_stat(i, "hp", true) < memory.read_stat(i, "hp_max", true) and bit.band(memory.read_stat(i, "status", true), game.STATUS.CRITICAL) == 0 then
-				index = i
+			if not game.character.is_status_by_slot(i, game.STATUS.JUMPING) then
+				if memory.read_stat(i, "hp", true) == 0 then
+					index = i
+					dead = true
+				elseif memory.read_stat(i, "hp", true) < memory.read_stat(i, "hp_max", true) and bit.band(memory.read_stat(i, "status", true), game.STATUS.CRITICAL) == 0 then
+					index = i
+				end
 			end
 		end
 
@@ -1127,10 +1129,12 @@ local function _battle_lugae2(character, turn)
 	local lowest = {nil, 99999}
 
 	for i = 0, 4 do
-		local hp = memory.read_stat(i, "hp", true)
+		if not game.character.is_status_by_slot(i, game.STATUS.JUMPING) then
+			local hp = memory.read_stat(i, "hp", true)
 
-		if hp < memory.read_stat(i, "hp_max", true) and hp < lowest[2] then
-			lowest = {i, hp}
+			if hp < memory.read_stat(i, "hp_max", true) and hp < lowest[2] then
+				lowest = {i, hp}
+			end
 		end
 	end
 
