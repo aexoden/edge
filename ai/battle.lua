@@ -912,8 +912,10 @@ local function _battle_grind(character, turn)
 				end
 			end
 		elseif _state.phase == PHASE.HEAL then
-			if _state.dragon_character and game.character.get_stat(_state.dragon_character, "hp", true) == 0 then
-				_state.dragon_hp = _state.dragon_hp + 1
+			if _state.dragon_character then
+				if game.character.get_stat(_state.dragon_character, "hp", true) == 0 or character == _state.dragon_character then
+					_state.dragon_hp = _state.dragon_hp + 1
+				end
 			end
 
 			if fusoya_hp > 0 then
