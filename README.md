@@ -9,10 +9,6 @@ currently follows the Edge+Excalbur route of the Any% No64 run.
 * Final Fantasy IV US 1.0 (originally released as Final Fantasy II)
 * luasocket (optional: for LiveSplit integration)
 
-Instructions for installing and using luasocket along with LiveSplit are
-currently unavailable. This integration is not required to use the script.
-Instructions may appear here eventually, once exact instructions are determined.
-
 ## Configuration
 
 After extracting Edge to a directory, preferably within BizHawk's lua directory,
@@ -46,6 +42,20 @@ When enabled, save states will automatically be created at the start of every
 battle for which a battle function exists. (This is generally boss battles and
 the grind fight.) This option is disabled by default, as it's primarily useful
 for debugging.
+
+## LiveSplit Integration Requirements (optional and difficult)
+
+Integration with LiveSplit requires functional luasocket support. As of BizHawk
+v1.11.7, this appears to be an arduous process. Roughly speaking, you need to
+(within the BizHawk source tree) build a version of lua51.dll using the
+"Release-LUAPERKS" target and replace the lua51.dll in the dll directory. You
+must additionally obtain a copy of socket.lua and place this in the root BizHawk
+directory. (Other directories may also work.)
+
+On the LiveSplit end, you must add the LiveSplit server to your layout.
+
+Again, this is entirely optional and is only useful if you want to record or
+stream runs with LiveSplit.
 
 ## Usage
 

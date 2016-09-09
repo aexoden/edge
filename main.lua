@@ -134,6 +134,7 @@ while true do
 		local result = battle.cycle() or sequence.cycle()
 	end
 
+	bridge.cycle()
 	input.cycle()
 	emu.frameadvance()
 end

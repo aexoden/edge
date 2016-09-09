@@ -32,6 +32,7 @@ end
 -- Variables
 --------------------------------------------------------------------------------
 
+local _q = {}
 local _socket = nil
 
 --------------------------------------------------------------------------------
@@ -51,11 +52,7 @@ local function _connect()
 	end
 end
 
---------------------------------------------------------------------------------
--- Public Functions
---------------------------------------------------------------------------------
-
-function _M.send(message)
+local function _send(message)
 	if not _socket and FULL_RUN and LIVESPLIT then
 		_connect()
 	end
@@ -68,10 +65,27 @@ function _M.send(message)
 	end
 end
 
+--------------------------------------------------------------------------------
+-- Public Functions
+--------------------------------------------------------------------------------
+
+function _M.send(message)
+	table.insert(_q, message)
+	return true
+end
+
 function _M.split(message)
 	log.log("Split: " .. message)
 
 	return _M.send("startorsplit")
+end
+
+function _M.cycle()
+	if #_q > 0 then
+		if _send(_q[1]) then
+			table.remove(_q, 1)
+		end
+	end
 end
 
 function _M.reset()

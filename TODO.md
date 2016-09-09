@@ -121,8 +121,6 @@ before the next release.
 * Provide a stream-friendly mode that plays through the ending before any
   reboot.
 
-* Fix LiveSplit integration with the newest BizHawk.
-
 ## Battle Fixes
 
 This section is for any battle-specific fixes that need to be made. These may be
