@@ -9,8 +9,6 @@ This section includes any critical must-fixes before the next release. This will
 generally be limited to either crashes or softlocks (where the bot is for
 whatever reason stuck and unable to continue, but hasn't crashed).
 
-* Clear the log console between runs. (Runs become slower as the console fills.)
-
 * Fix the problem of attempting to dump inventory using the trash can in
   situations when the trash can was already used.
 
