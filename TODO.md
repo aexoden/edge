@@ -114,8 +114,6 @@ before the next release.
 * Check healing strategy upon immediately entering Zot. Death was observed with
   only Tellah and Yang alive with a total of approximately ~500 HP.
 
-* Ensure that a random seed is always random, even in automatic mode.
-
 * Provide a stream-friendly mode that plays through the ending before any
   reboot.
 
