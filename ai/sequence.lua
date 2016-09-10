@@ -48,9 +48,7 @@ _RESTORE = {
 -- Variables
 --------------------------------------------------------------------------------
 
-_M.state = {
-	multi_change = false,
-}
+_M.state = {}
 
 local _q = nil
 local _route = {}
@@ -1187,7 +1185,6 @@ local function _sequence_edward()
 	local weapon, quantity = game.character.get_equipment(game.character.get_slot(game.CHARACTER.TELLAH), game.EQUIP.R_HAND)
 
 	if quantity == 255 then
-		_M.state.multi_change = true
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.NONE}})
@@ -1736,7 +1733,7 @@ local function _sequence_milon()
 	table.insert(_q, {menu.field.equip.close, {}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
 
-	if _M.state.multi_change then
+	if game.item.get_count(game.ITEM.WEAPON.CHANGE) > 1 then
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
 	end
 
@@ -1906,7 +1903,7 @@ local function _sequence_baigan()
 	-- Buy armor.
 	table.insert(_q, {menu.shop.buy.open, {1}})
 
-	if not _M.state.multi_change then
+	if game.item.get_count(game.ITEM.WEAPON.CHANGE) <= 1 then
 		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.WEAPON.THUNDER}})
 	end
 
@@ -2033,7 +2030,7 @@ local function _sequence_kainazzo()
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.LIFE}}})
 	table.insert(_q, {menu.field.change, {}})
 
-	if not _M.state.multi_change then
+	if game.item.get_count(game.ITEM.WEAPON.CHANGE) < 1 then
 		local hand, weapon = game.character.get_weapon(game.CHARACTER.PALOM)
 
 		if weapon == game.ITEM.WEAPON.CHANGE then
@@ -4313,7 +4310,6 @@ function _M.reset()
 		active = true,
 		check_autoreload = true,
 		check_healing = false,
-		multi_change = false,
 	}
 
 	if FULL_RUN then

@@ -108,9 +108,6 @@ before the next release.
 * Ensure that step routing is correct at the tile before the Elements battle if
   the grind fight begins on that last tile.
 
-* Eliminate the multi_change variable and instead determine the current state
-  dynamically by counting the number of available Change rods.
-
 * Check healing strategy upon immediately entering Zot. Death was observed with
   only Tellah and Yang alive with a total of approximately ~500 HP.
 
