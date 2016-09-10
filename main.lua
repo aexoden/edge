@@ -78,7 +78,7 @@ local function _set_seed()
 		seed = math.random(0, 2147483646)
 	end
 
-	if AUTOMATIC and INITIAL_SEED ~= nil then
+	if SEED and AUTOMATIC and INITIAL_SEED ~= nil then
 		seed = SEED + 1
 	end
 
