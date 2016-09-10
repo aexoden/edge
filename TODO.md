@@ -9,9 +9,6 @@ This section includes any critical must-fixes before the next release. This will
 generally be limited to either crashes or softlocks (where the bot is for
 whatever reason stuck and unable to continue, but hasn't crashed).
 
-* Fix the problem of attempting to dump inventory using the trash can in
-  situations when the trash can was already used.
-
 * Investigate unknown menuing softlock on seed 181, which occurs while curing
   the party after the Lugae battle.
 

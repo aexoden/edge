@@ -446,12 +446,17 @@ local function _post_grind_menu()
 		end
 
 		if empty < 3 then
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
-			table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.HEAL}})
-			table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
-			table.insert(stack, {menu.field.item.select, {game.ITEM.WEAPON.DANCING}})
-			table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
+			if game.item.get_count(game.ITEM.TRASHCAN) < 1 then
+				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.SORT}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.SORT}})
+			else
+				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.HEAL}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.WEAPON.DANCING}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
+			end
 		end
 
 		if duplicate then
