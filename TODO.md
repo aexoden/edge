@@ -115,10 +115,6 @@ provide a good list of improvements that can be made.
 * Work on the TrashCan timing or abandon its attempt in cases where it's
   unlikely to work successfully.
 
-### Valvalis
-
-* Verify that everyone can participate in recovery as necessary.
-
 ### Calbrena
 
 * Watch Cecil's health, especially toward the end. If he gets wiped immediately

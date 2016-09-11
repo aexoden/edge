@@ -1575,7 +1575,7 @@ local function _battle_sisters(character, turn)
 	end
 end
 
-local function _battle_valvalis_support()
+local function _battle_valvalis_support(character)
 	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
 	local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp", true)
 
@@ -1587,8 +1587,12 @@ local function _battle_valvalis_support()
 		_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
 	elseif game.character.is_status(game.CHARACTER.CECIL, game.STATUS.STONE) then
 		_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-	elseif cecil_hp < 300 then
+	elseif cecil_hp < 400 then
 		_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+	elseif character == game.CHARACTER.CECIL then
+		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+	elseif character == game.CHARACTER.ROSA then
+		_command_parry()
 	else
 		_command_fight()
 	end
@@ -1606,28 +1610,22 @@ local function _battle_valvalis(character, turn)
 			_command_wait_text(" Weak ", 300)
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 		else
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+			_battle_valvalis_support(character)
 		end
 	elseif character == game.CHARACTER.YANG then
 		if turn == 1 then
 			_command_parry()
 		else
-			_battle_valvalis_support()
+			_battle_valvalis_support(character)
 		end
 	elseif character == game.CHARACTER.ROSA then
 		if game.enemy.get_stat(0, "speed_modifier") < 32 then
 			_command_white(game.MAGIC.WHITE.SLOW)
-		elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 400 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 		else
-			_command_parry()
+			_battle_valvalis_support(character)
 		end
 	elseif character == game.CHARACTER.CID then
-		if turn >= 3 and turn % 2 == 1 then
-			_command_wait_frames(120)
-		end
-
-		_battle_valvalis_support()
+		_battle_valvalis_support(character)
 	end
 end
 
