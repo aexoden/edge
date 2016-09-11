@@ -1531,6 +1531,7 @@ end
 
 local function _battle_sisters(character, turn)
 	local fight_yang = game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 and game.character.get_stat(game.CHARACTER.KAIN, "exp") < 17154
+	local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp", true)
 
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
@@ -1543,8 +1544,12 @@ local function _battle_sisters(character, turn)
 				return true
 			end
 
-			if game.character.get_stat(game.CHARACTER.TELLAH, "hp", true) < 200 then
+			if tellah_hp == 0 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+			elseif tellah_hp < 300 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+			elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 500 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 			elseif fight_yang then
 				_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 			else
@@ -1556,7 +1561,9 @@ local function _battle_sisters(character, turn)
 			_command_duplicate(game.EQUIP.L_HAND)
 		end
 
-		if game.character.get_stat(game.CHARACTER.TELLAH, "hp", true) < 200 then
+		if tellah_hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		elseif tellah_hp < 200 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 		elseif fight_yang then
 			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)

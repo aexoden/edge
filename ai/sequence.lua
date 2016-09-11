@@ -189,7 +189,7 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 					end
 				end
 
-				if game.character.is_status(character, game.STATUS.POISON) then
+				if game.character.is_status(character, game.STATUS.POISON) or game.character.is_status(character, game.STATUS.MUTE) then
 					heal[character] = true
 				end
 			end

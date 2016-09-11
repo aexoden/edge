@@ -115,15 +115,6 @@ provide a good list of improvements that can be made.
 * Work on the TrashCan timing or abandon its attempt in cases where it's
   unlikely to work successfully.
 
-### Magus Sisters
-
-* Cecil needs to be able to revive Tellah, especially.
-
-* Cecil should be a little more willing to use Cure2s on Tellah, or even
-  himself.
-
-* Make sure Tellah is not muted before this fight.
-
 ### Valvalis
 
 * Cecil waiting indefinitely for Weak is probably a bad idea, in case the turn
