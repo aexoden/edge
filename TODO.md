@@ -115,10 +115,6 @@ provide a good list of improvements that can be made.
 * Work on the TrashCan timing or abandon its attempt in cases where it's
   unlikely to work successfully.
 
-### Golbez
-
-* In the worst case, ensure Rydia has a more viable strat than simply attacking.
-
 ### Dr. Lugae
 
 * During the fight with both Dr. Lugae and Balnab, the bot should probably do a

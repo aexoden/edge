@@ -735,7 +735,11 @@ local function _battle_golbez(character, turn)
 			_command_wait_text("Golbez:An")
 		end
 
-		_command_fight()
+		if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		else
+			_command_fight()
+		end
 	elseif character == game.CHARACTER.KAIN then
 		if turn == 1 then
 			_command_wait_frames(10)
@@ -745,6 +749,14 @@ local function _battle_golbez(character, turn)
 			_state.full_inventory = true
 		else
 			_command_fight()
+		end
+	elseif character == game.CHARACTER.RYDIA then
+		if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 600 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		else
+			_command_call(game.MAGIC.CALL.TITAN)
 		end
 	else
 		_command_fight()
