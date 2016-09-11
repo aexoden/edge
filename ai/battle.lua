@@ -808,6 +808,10 @@ local function _battle_grind(character, turn)
 			end
 		end
 
+		if _state.character_index > 1 then
+			_state.casting_weak = nil
+		end
+
 		-- Change phases on FuSoYa's turn or at the end of the cycle if he's dead.
 		if _state.phase == PHASE.SETUP and _state.character_index == 0 and _state.setup_complete then
 			_state.phase = PHASE.GRIND
@@ -888,6 +892,7 @@ local function _battle_grind(character, turn)
 						_command_parry()
 					else
 						_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1, true, 600)
+						_state.casting_weak = true
 					end
 
 					_state.waited = nil
@@ -940,7 +945,7 @@ local function _battle_grind(character, turn)
 				_state.fusoya_life_frame = nil
 			end
 
-			if dragon_hp > 0 and dragon_hp < 50 and dragon_hp < _state.dragon_hp then
+			if _state.casting_weak or (dragon_hp > 0 and dragon_hp < 50 and dragon_hp < _state.dragon_hp) then
 				_command_fight()
 				_state.dragon_hp = dragon_hp
 				_state.dragon_character = character
@@ -948,6 +953,7 @@ local function _battle_grind(character, turn)
 				_command_black(game.MAGIC.BLACK.WEAK, menu.battle.TARGET.ENEMY, 1, true, 600)
 				_state.dragon_hp = 15000
 				_state.dragon_character = character
+				_state.casting_weak = true
 			elseif dragon_hp > 0 and fusoya_hp == 0 and (not _state.fusoya_life_frame or emu.framecount() - _state.fusoya_life_frame > 450) then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 				_state.fusoya_life_frame = emu.framecount()
