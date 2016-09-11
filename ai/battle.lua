@@ -835,7 +835,7 @@ local function _battle_grind(character, turn)
 					if game.enemy.get_stat(2, "hp") == 0 then
 						_command_parry()
 					else
-						_command_wait_text(" Quake")
+						_command_wait_text(" Quake", 600)
 						_command_parry()
 					end
 
@@ -851,7 +851,7 @@ local function _battle_grind(character, turn)
 					_command_black(game.MAGIC.BLACK.QUAKE)
 					_state.quaked = true
 				elseif character == game.CHARACTER.RYDIA and _state.quaked then
-					_command_wait_text(" Quake")
+					_command_wait_text(" Quake", 600)
 					_command_parry()
 					_state.setup_complete = true
 				else
@@ -866,10 +866,10 @@ local function _battle_grind(character, turn)
 					end
 				elseif character == game.CHARACTER.RYDIA then
 					if turn == 1 then
-						_command_wait_text(" Lit-3")
+						_command_wait_text(" Lit-3", 600)
 						_command_parry()
 					elseif turn == 2 then
-						_command_wait_text(" Quake")
+						_command_wait_text(" Quake", 600)
 						_command_parry()
 						_state.setup_complete = true
 					end

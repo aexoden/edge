@@ -137,10 +137,6 @@ provide a good list of improvements that can be made.
   Recovery should not needlessly begin early preventing double Lifes. This is a
   very complicated battle to get right.
 
-* In weird level setups, Rydia won't necessarily go directly after FuSoYa. Make
-  sure that in that event, people don't pointlessly wait for Quake, and just
-  get the battle started and make the most of it.
-
 * If the dragon fighting sequence is going well, don't shift into cure mode
   until the dragon is dead. (Avoid Rydia using a Cure2 on FuSoYa instead of
   fighting the dragon.)
