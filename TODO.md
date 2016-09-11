@@ -112,9 +112,6 @@ provide a good list of improvements that can be made.
 
 ### Milon Z
 
-* Ensure everyone has enough MP for the spells they may have to cast before the
-  battle.
-
 * Work on the TrashCan timing or abandon its attempt in cases where it's
   unlikely to work successfully.
 
