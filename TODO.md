@@ -115,10 +115,6 @@ provide a good list of improvements that can be made.
 * Work on the TrashCan timing or abandon its attempt in cases where it's
   unlikely to work successfully.
 
-### Dark Elf
-
-* Tellah should prioritize casting Weak, though it may be a question of balance.
-
 ### Magus Sisters
 
 * Cecil needs to be able to revive Tellah, especially.
