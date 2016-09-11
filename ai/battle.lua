@@ -436,7 +436,9 @@ local function _battle_calbrena(character, turn)
 				_command_parry()
 			end
 		elseif character == game.CHARACTER.YANG then
-			if cecil_hp < 400 then
+			if cecil_hp == 0 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			elseif cecil_hp < 600 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 			else
 				_command_kick()

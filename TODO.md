@@ -115,12 +115,6 @@ provide a good list of improvements that can be made.
 * Work on the TrashCan timing or abandon its attempt in cases where it's
   unlikely to work successfully.
 
-### Calbrena
-
-* Watch Cecil's health, especially toward the end. If he gets wiped immediately
-  prior to his last turn, a battle with the big doll will result. Regardless,
-  Cecil should really survive this battle.
-
 ### Golbez
 
 * In the worst case, ensure Rydia has a more viable strat than simply attacking.
