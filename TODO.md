@@ -110,8 +110,6 @@ provide a good list of improvements that can be made.
 
 * Don't double use Cure2 when healing the twins.
 
-* Investigate abandoning the Carrot strat in certain cases.
-
 ### Milon Z
 
 * Ensure everyone has enough MP for the spells they may have to cast before the

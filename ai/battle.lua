@@ -1185,15 +1185,19 @@ local function _battle_mages(character, turn)
 end
 
 local function _battle_milon(character, turn)
+	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
+	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
+
+	if turn == 1 and porom_hp > 100 then
+		_state.alternate = true
+	end
+
 	if _state.alternate then
 		if game.enemy.get_stat(0, "hp") == 0 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 1)
 		else
 			_state.full_inventory = true
 		end
-
-		local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
-		local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
 
 		local palom_mp = game.character.get_stat(game.CHARACTER.PALOM, "mp", true)
 		local porom_mp = game.character.get_stat(game.CHARACTER.POROM, "mp", true)
