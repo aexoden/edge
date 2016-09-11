@@ -1530,9 +1530,15 @@ end
 
 local function _battle_rubicant(character, turn)
 	if character == game.CHARACTER.CECIL then
-		_command_fight()
+		if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		else
+			_command_fight()
+		end
 	elseif character == game.CHARACTER.EDGE then
-		if game.character.get_stat(game.CHARACTER.EDGE, "mp", true) >= 20 then
+		if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		elseif game.character.get_stat(game.CHARACTER.EDGE, "mp", true) >= 20 then
 			_command_ninja(game.MAGIC.NINJA.FLOOD)
 		else
 			_command_parry()
@@ -1546,6 +1552,10 @@ local function _battle_rubicant(character, turn)
 	elseif character == game.CHARACTER.ROSA then
 		if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 600 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 		else
 			_command_parry()
 		end

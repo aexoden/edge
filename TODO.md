@@ -126,12 +126,6 @@ provide a good list of improvements that can be made.
 * Yang should be at least level 15. There are potentially dire consequences if
   he is not.
 
-### Rubicant
-
-* Edge and perhaps other characters need some ability to participate in
-  recovery. It does the team little good if he parries away his life when he's
-  the only one alive.
-
 ### Grind Fight
 
 * This fight needs to be almost reworked entirely. There is highly specific
