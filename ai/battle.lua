@@ -1603,7 +1603,7 @@ local function _battle_valvalis(character, turn)
 		end
 	elseif character == game.CHARACTER.CECIL then
 		if turn == 1 then
-			_command_wait_text(" Weak ")
+			_command_wait_text(" Weak ", 300)
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 		else
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)

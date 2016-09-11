@@ -117,9 +117,6 @@ provide a good list of improvements that can be made.
 
 ### Valvalis
 
-* Cecil waiting indefinitely for Weak is probably a bad idea, in case the turn
-  order ends up slightly odd.
-
 * Verify that everyone can participate in recovery as necessary.
 
 ### Calbrena
