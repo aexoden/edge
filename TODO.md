@@ -2,15 +2,12 @@
 
 This list of features and bug fixes isn't necessarily exhaustive, but it does
 provide a good list of improvements that can be made.
-121
+
 ## Critical Fixes
 
 This section includes any critical must-fixes before the next release. This will
 generally be limited to either crashes or softlocks (where the bot is for
 whatever reason stuck and unable to continue, but hasn't crashed).
-
-* Investigate unknown menuing softlock on seed 181, which occurs while curing
-  the party after the Lugae battle.
 
 ## Major Features
 

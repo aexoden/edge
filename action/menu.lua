@@ -545,13 +545,23 @@ end
 
 function _M.field.item.select_character(character)
 	if memory.read("menu_item", "selected") == 0 then
-		return input.press({"P1 A"}, input.DELAY.NORMAL)
+		result = input.press({"P1 A"}, input.DELAY.NORMAL)
+
+		if result then
+			_state.frame = nil
+		end
+
+		return result
 	else
 		local cursor = memory.read("menu_item", "character")
 		local index = game.character.get_index(game.character.get_slot(character))
 
 		if cursor == index then
-			input.press({"P1 A"}, input.DELAY.NORMAL)
+			if not _state.frame or emu.framecount() - _state.frame > 15 then
+				if input.press({"P1 A"}, input.DELAY.NORMAL) then
+					_state.frame = emu.framecount()
+				end
+			end
 		else
 			_select_vertical(cursor, index, 2)
 		end
