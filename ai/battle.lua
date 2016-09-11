@@ -680,6 +680,8 @@ local function _battle_flamedog(character, turn)
 end
 
 local function _battle_gargoyle(character, turn)
+	_state.full_inventory = true
+
 	if character == game.CHARACTER.CECIL then
 		_command_fight()
 	elseif character == game.CHARACTER.EDWARD then
@@ -697,6 +699,8 @@ local function _battle_gargoyle(character, turn)
 end
 
 local function _battle_general(character, turn)
+	_state.full_inventory = true
+
 	if game.enemy.get_weakest(game.ENEMY.FIGHTER) then
 		if character == game.CHARACTER.CECIL then
 			_command_fight()
@@ -1621,6 +1625,8 @@ local function _battle_waterhag(character, turn)
 end
 
 local function _battle_weeper(character, turn)
+	_state.full_inventory = true
+
 	if not _state.turn_count then
 		_state.turn_count = 0
 	end
@@ -1631,6 +1637,7 @@ local function _battle_weeper(character, turn)
 		if menu.battle.command.has_command(menu.battle.COMMAND.SHOW) then
 			_command_parry()
 		elseif turn == 1 then
+			_state.full_inventory = true
 			_command_run_buffer()
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 0)
 			_state.edward = true
@@ -1731,8 +1738,8 @@ local _formations = {
 	[_M.FORMATION.EBLAN]    = {title = "K.Eblan/Q.Eblan",        f = _battle_eblan,    split = true,  full_inventory = true},
 	[_M.FORMATION.ELEMENTS] = {title = "Elements",               f = _battle_elements, split = true},
 	[_M.FORMATION.FLAMEDOG] = {title = "FlameDog",               f = _battle_flamedog, split = true},
-	[_M.FORMATION.GARGOYLE] = {title = "Gargoyle",               f = _battle_gargoyle, split = false, full_inventory = true},
-	[_M.FORMATION.GENERAL]  = {title = "General/Fighters",       f = _battle_general,  split = false, full_inventory = true},
+	[_M.FORMATION.GARGOYLE] = {title = "Gargoyle",               f = _battle_gargoyle, split = false},
+	[_M.FORMATION.GENERAL]  = {title = "General/Fighters",       f = _battle_general,  split = false},
 	[_M.FORMATION.GIRL]     = {title = "Girl",                   f = _battle_girl,     split = true,  full_inventory = true},
 	[_M.FORMATION.GOLBEZ]   = {title = "Golbez",                 f = _battle_golbez,   split = true},
 	[_M.FORMATION.GRIND]    = {title = "Grind Fight",            f = _battle_grind,    split = true, presplit = true},
@@ -1755,7 +1762,7 @@ local _formations = {
 	[_M.FORMATION.SISTERS]  = {title = "Magus Sisters",          f = _battle_sisters,  split = true},
 	[_M.FORMATION.VALVALIS] = {title = "Valvalis",               f = _battle_valvalis, split = true},
 	[_M.FORMATION.WATERHAG] = {title = "WaterHag",               f = _battle_waterhag, split = true},
-	[_M.FORMATION.WEEPER]   = {title = "Weeper/WaterHag/Imp",    f = _battle_weeper,   split = false, full_inventory = true},
+	[_M.FORMATION.WEEPER]   = {title = "Weeper/WaterHag/Imp",    f = _battle_weeper,   split = false},
 	[_M.FORMATION.ZEMUS]    = {title = "Zemus",                  f = nil,              split = true},
 	[_M.FORMATION.ZEROMUS]  = {title = "Zeromus",                f = _battle_zeromus,  split = false},
 }

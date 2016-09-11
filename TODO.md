@@ -106,8 +106,6 @@ provide a good list of improvements that can be made.
 
 * Prevent attacking the General if possible.
 
-* Do not do inventory management as the first action.
-
 ### Milon
 
 * Don't double use Cure2 when healing the twins.
