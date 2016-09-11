@@ -1156,14 +1156,23 @@ local function _battle_lugae2(character, turn)
 		end
 	end
 
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
+	local rosa_hp = game.character.get_stat(game.CHARACTER.ROSA, "hp", true)
+
 	if character == game.CHARACTER.CECIL then
 		if lowest[2] == 0 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
+		elseif lowest[2] < 40 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.PARTY, lowest[1])
 		else
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 		end
 	elseif character == game.CHARACTER.KAIN then
-		_command_jump()
+		if cecil_hp == 0 and rosa_hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
+		else
+			_command_jump()
+		end
 	elseif character == game.CHARACTER.ROSA then
 		if turn == 1 and not _state.waited then
 			-- TODO: Wait for Laser
@@ -1182,13 +1191,19 @@ local function _battle_lugae2(character, turn)
 			_command_parry()
 		end
 	elseif character == game.CHARACTER.RYDIA then
-		if game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 40 then
+		if cecil_hp == 0 and rosa_hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
+		elseif game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 40 then
 			_command_call(game.MAGIC.CALL.TITAN)
 		else
 			_command_parry()
 		end
 	elseif character == game.CHARACTER.YANG then
-		_command_fight()
+		if cecil_hp == 0 and rosa_hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
+		else
+			_command_fight()
+		end
 	end
 end
 

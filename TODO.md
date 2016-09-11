@@ -126,10 +126,6 @@ provide a good list of improvements that can be made.
 * Yang should be at least level 15. There are potentially dire consequences if
   he is not.
 
-* Recovery needs to be made more robust. Giving characters other than Rosa and
-  Cecil the ability to aid in recovery is vital for some of the worst-case
-  scenarios.
-
 ### Rubicant
 
 * Edge and perhaps other characters need some ability to participate in
