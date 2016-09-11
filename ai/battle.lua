@@ -955,6 +955,7 @@ local function _battle_grind(character, turn)
 				_state.dragon_character = character
 				_state.casting_weak = true
 			elseif dragon_hp > 0 and fusoya_hp == 0 and (not _state.fusoya_life_frame or emu.framecount() - _state.fusoya_life_frame > 450) then
+				_command_wait_text("Fire", 300)
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 				_state.fusoya_life_frame = emu.framecount()
 			elseif dragon_hp > 0 and fusoya_hp < 760 then

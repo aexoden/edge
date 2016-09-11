@@ -141,10 +141,6 @@ provide a good list of improvements that can be made.
   until the dragon is dead. (Avoid Rydia using a Cure2 on FuSoYa instead of
   fighting the dragon.)
 
-* Try to mitigate the situation where FuSoYa is dead, and the Life/Elixir
-  pattern is consistently interrupted by Fire in between. (This prevents FuSoYa
-  from ever getting up.)
-
 ### Zeromus
 
 * Investigate adding code to dynamically recover in the event of a Big Bang that
