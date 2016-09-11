@@ -3,16 +3,11 @@
 This list of features and bug fixes isn't necessarily exhaustive, but it does
 provide a good list of improvements that can be made.
 
-## Critical Fixes
+## Critical Issues
 
-This section includes any critical must-fixes before the next release. This will
-generally be limited to either crashes or softlocks (where the bot is for
-whatever reason stuck and unable to continue, but hasn't crashed).
+*There are currently no known critical issues.*
 
 ## Major Features
-
-This section is for major improvements that represent a major undertaking to
-successfully implement.
 
 * Implement the capability to execute different routes. This includes both Yes64
   and the multitude of available No64 routes. Ideally, the bot should be capable
@@ -94,10 +89,7 @@ successfully implement.
 * Build an external log analyzer to collect statistics from multiple runs and
   display them in some kind of visually appealing fashion.
 
-## Minor Fixes
-
-This section is for minor bugs or improvements that should probably be fixed
-before the next release.
+## Minor Issues
 
 * Ensure that step routing is correct at the tile before the Elements battle if
   the grind fight begins on that last tile.
@@ -108,10 +100,7 @@ before the next release.
 * Provide a stream-friendly mode that plays through the ending before any
   reboot.
 
-## Battle Fixes
-
-This section is for any battle-specific fixes that need to be made. These may be
-either simple or complicated in their nature.
+## Battle-Specific Issues
 
 ### Fabul Battles
 
