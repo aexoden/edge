@@ -447,8 +447,8 @@ local function _post_grind_menu()
 
 		if empty < 3 then
 			if game.item.get_count(game.ITEM.TRASHCAN) < 1 then
-				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.SORT}})
-				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.SORT}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.SORT}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.SORT}})
 			else
 				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
 				table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
