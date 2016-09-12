@@ -4234,7 +4234,12 @@ local function _check_autoreload()
 			end
 		elseif FULL_RUN then
 			log.log("Load game screen detected: ending run")
-			_M.end_run()
+
+			if EXTENDED_ENDING then
+				_M.end_run(600)
+			else
+				_M.end_run()
+			end
 		end
 	end
 end
@@ -4286,17 +4291,27 @@ function _M.cycle()
 	end
 end
 
-function _M.end_run()
+function _M.is_end()
+	if not _state.active and _state.reboot_frame and emu.framecount() >= _state.reboot_frame then
+		return true
+	else
+		return false
+	end
+end
+
+function _M.end_run(delay)
 	_state.active = false
 
 	if AUTOMATIC then
-		log.log("Automatic mode is on. Rebooting...")
-
 		for i = 0, 0x2000, 4 do
 			corememory.write_u32_le(i, 0, "CARTRAM")
 		end
 
-		client.reboot_core();
+		if delay then
+			_state.reboot_frame = emu.framecount() + delay
+		else
+			_state.reboot_frame = emu.framecount()
+		end
 	end
 end
 

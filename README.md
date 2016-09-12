@@ -43,6 +43,13 @@ battle for which a battle function exists. (This is generally boss battles and
 the grind fight.) This option is disabled by default, as it's primarily useful
 for debugging.
 
+### EXTENDED_ENDING
+
+This option only has meaning when AUTOMATIC is enabled. When enabled, the bot
+will allow the ending to play out before rebooting to the next seed. This is
+useful if streaming the runs. If the bot dies, it will wait five minutes before
+rebooting.
+
 ## LiveSplit Integration Requirements (optional and difficult)
 
 Integration with LiveSplit requires functional luasocket support. As of BizHawk

@@ -36,6 +36,9 @@ LIVESPLIT = false
 -- Automatically create save states at the beginning of each battle.
 SAVESTATE = false
 
+-- Do an extended ending at the end of the run (for streaming purposes)
+EXTENDED_ENDING = false
+
 --------------------------------------------------------------------------------
 -- Setup
 --------------------------------------------------------------------------------
@@ -130,8 +133,13 @@ while true do
 
 	dialog.cycle()
 
-	if sequence.is_active() then
-		local result = battle.cycle() or sequence.cycle()
+	if not battle.cycle() and sequence.is_active() then
+		sequence.cycle()
+	end
+
+	if sequence.is_end() then
+		log.log("Rebooting...")
+		client.reboot_core()
 	end
 
 	bridge.cycle()

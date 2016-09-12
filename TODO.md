@@ -97,9 +97,6 @@ provide a good list of improvements that can be made.
 * Check healing strategy upon immediately entering Zot. Death was observed with
   only Tellah and Yang alive with a total of approximately ~500 HP.
 
-* Provide a stream-friendly mode that plays through the ending before any
-  reboot.
-
 ## Battle-Specific Issues
 
 ### Fabul Battles
