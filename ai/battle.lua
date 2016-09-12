@@ -941,8 +941,14 @@ local function _battle_grind(character, turn)
 				end
 			end
 
+			if _state.fusoya_character then
+				if game.character.get_stat(_state.fusoya_character, "hp", true) == 0 or character == _state.fusoya_character then
+					_state.fusoya_character = nil
+				end
+			end
+
 			if fusoya_hp > 0 then
-				_state.fusoya_life_frame = nil
+				_state.fusoya_character = nil
 			end
 
 			if _state.casting_weak or (dragon_hp > 0 and dragon_hp < 50 and dragon_hp < _state.dragon_hp) then
@@ -954,10 +960,10 @@ local function _battle_grind(character, turn)
 				_state.dragon_hp = 15000
 				_state.dragon_character = character
 				_state.casting_weak = true
-			elseif dragon_hp > 0 and fusoya_hp == 0 and (not _state.fusoya_life_frame or emu.framecount() - _state.fusoya_life_frame > 450) then
-				_command_wait_text("Fire", 300)
+			elseif dragon_hp > 0 and fusoya_hp == 0 and (not _state.fusoya_character) then
+				_command_wait_text("Fire", 180)
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
-				_state.fusoya_life_frame = emu.framecount()
+				_state.fusoya_character = character
 			elseif dragon_hp > 0 and fusoya_hp < 760 then
 				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 			elseif game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 100 then
