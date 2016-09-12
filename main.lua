@@ -57,7 +57,7 @@ INITIALIZED = false
 --------------------------------------------------------------------------------
 
 local function _get_version()
-	local file = io.popen("git describe", "r")
+	local file = io.popen("git describe --tags", "r")
 	local version = string.match(string.match(file:read('*all'), "%S.*"), ".*%S")
 
 	if version == "" then
