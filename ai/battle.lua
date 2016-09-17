@@ -1408,6 +1408,7 @@ local function _battle_milon_z(character, turn)
 			end
 		elseif character == game.CHARACTER.POROM then
 			if turn == 1 then
+				_command_run_buffer()
 				_command_twin()
 			end
 		end

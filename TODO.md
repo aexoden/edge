@@ -116,9 +116,6 @@ provide a good list of improvements that can be made.
   unlikely to work successfully. (Such as if Porom dies before Ice-2 is even
   selected.)
 
-* Run buffer the casting of Twin to help mitigate Cecil not getting his final
-  turn.
-
 ### Dr. Lugae
 
 * During the fight with both Dr. Lugae and Balnab, the bot should probably do a
