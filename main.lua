@@ -64,7 +64,7 @@ local function _get_version()
 	local version = string.match(string.match(file:read('*all'), "%S.*"), ".*%S")
 
 	if version == "" then
-		return "v0.0.5"
+		return "v0.0.6"
 	else
 		return version
 	end

@@ -97,6 +97,9 @@ provide a good list of improvements that can be made.
 * Check healing strategy upon immediately entering Zot. Death was observed with
   only Tellah and Yang alive with a total of approximately ~500 HP.
 
+* Seed 79 has inventory management issues. It ultimately softlocks when trying
+  to equip Kain toward the end of the game.
+
 ## Battle-Specific Issues
 
 ### Fabul Battles
@@ -110,7 +113,11 @@ provide a good list of improvements that can be made.
 ### Milon Z
 
 * Work on the TrashCan timing or abandon its attempt in cases where it's
-  unlikely to work successfully.
+  unlikely to work successfully. (Such as if Porom dies before Ice-2 is even
+  selected.)
+
+* Run buffer the casting of Twin to help mitigate Cecil not getting his final
+  turn.
 
 ### Dr. Lugae
 
@@ -137,6 +144,16 @@ provide a good list of improvements that can be made.
 * If the dragon fighting sequence is going well, don't shift into cure mode
   until the dragon is dead. (Avoid Rydia using a Cure2 on FuSoYa instead of
   fighting the dragon.)
+
+* Additional work on mitigating the Life/Elixir cycle being interrupted. A fix
+  is nominally in place, but it may have been partially counteracted.
+
+* At least one case was observed (v0.0.6 on seed 26, 30) where two characters
+  attacked in short succession, leading to bad things. (The scenario in seed 30
+  is nothing short of ridiculous, and I have no idea what happened there.)
+
+* If FuSoYa gives up on waiting for the dragon to appear, he really shouldn't
+  Weak the searcher.
 
 ### Zeromus
 
