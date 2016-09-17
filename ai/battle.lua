@@ -1506,7 +1506,7 @@ local function _battle_octomamm(character, turn)
 			_command_white(game.MAGIC.WHITE.LIFE1, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
 		elseif tellah_mp >= 9 and (rydia_hp > 0 and rydia_hp < 15) or game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 100 then
 			_command_white(game.MAGIC.WHITE.CURE2, menu.battle.TARGET.PARTY_ALL)
-		elseif game.enemy.get_stat(0, "hp") < 1200 then
+		elseif game.enemy.get_stat(0, "hp") < 800 then
 			if not _state.duplicated_change then
 				_state.duplicated_change = true
 
