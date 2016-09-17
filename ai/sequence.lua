@@ -100,10 +100,10 @@ local function _log_seed()
 		table.insert(_q, 5, {input.press, {{"P1 A"}, input.DELAY.MASH}})
 	end
 
-	_route = route.routes.no64.excalbur[seed]
-
 	for i = 0, 56 do
-		if not _route[i] then
+		if route.routes.no64.excalbur[seed][i] then
+			_route[i] = route.routes.no64.excalbur[seed][i]
+		else
 			_route[i] = 0
 		end
 	end
