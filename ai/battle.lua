@@ -815,7 +815,7 @@ local function _battle_grind(character, turn)
 		-- Change phases on FuSoYa's turn or at the end of the cycle if he's dead.
 		if _state.phase == PHASE.SETUP and _state.character_index == 0 and _state.setup_complete then
 			_state.phase = PHASE.GRIND
-		elseif _state.phase == PHASE.GRIND and (_state.character_index == 0 or weakest[2] == 0) and (weakest[2] == 0 or fusoya_hp <= 760 or game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 25) then
+		elseif _state.phase == PHASE.GRIND and (_state.character_index == 0 or _state.character_index == 4 or weakest[2] == 0) and (weakest[2] == 0 or fusoya_hp <= 760 or game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 25) then
 			_state.phase = PHASE.HEAL
 			_state.dragon_hp = dragon_hp
 			_state.waited = nil
@@ -902,8 +902,14 @@ local function _battle_grind(character, turn)
 					return true
 				end
 			elseif _state.character_index == 1 then
-				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
-				table.insert(_state.q, {menu.battle.target, {nil, nil, nil, nil, input.DELAY.NONE}})
+				if dragon_hp > 0 then
+					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
+					table.insert(_state.q, {menu.battle.target, {nil, nil, nil, nil, input.DELAY.NONE}})
+					_state.dragon_hp = dragon_hp
+					_state.dragon_character = character
+				else
+					_command_parry()
+				end
 			elseif _state.character_index == 2 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.ENEMY, 1)
 			elseif _state.character_index == 3 then
@@ -961,7 +967,7 @@ local function _battle_grind(character, turn)
 				_state.dragon_character = character
 				_state.casting_weak = true
 			elseif dragon_hp > 0 and fusoya_hp == 0 and (not _state.fusoya_character) then
-				_command_wait_text("Fire", 180)
+				_command_wait_text("Fire", 300)
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 				_state.fusoya_character = character
 			elseif dragon_hp > 0 and fusoya_hp < 760 then
