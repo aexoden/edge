@@ -97,9 +97,6 @@ provide a good list of improvements that can be made.
 * Check healing strategy upon immediately entering Zot. Death was observed with
   only Tellah and Yang alive with a total of approximately ~500 HP.
 
-* Seed 79 has inventory management issues. It ultimately softlocks when trying
-  to equip Kain toward the end of the game.
-
 ## Battle-Specific Issues
 
 ### Fabul Battles

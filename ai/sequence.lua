@@ -445,7 +445,7 @@ local function _post_grind_menu()
 			end
 		end
 
-		if empty < 3 then
+		if empty < 4 then
 			if game.item.get_count(game.ITEM.TRASHCAN) < 1 then
 				table.insert(stack, {menu.field.item.select, {game.ITEM.SORT}})
 				table.insert(stack, {menu.field.item.select, {game.ITEM.SORT}})
@@ -453,6 +453,8 @@ local function _post_grind_menu()
 				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
 				table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
 				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.HEAL}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.WEAPON.DANCING}})
 				table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
 				table.insert(stack, {menu.field.item.select, {game.ITEM.WEAPON.DANCING}})
 				table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
@@ -3121,6 +3123,20 @@ local function _sequence_rubicant()
 	-- Equip the CatClaws on Edge and change party formation.
 	table.insert(_q, {_set_healing, {_healing_rubicant}})
 	table.insert(_q, {menu.field.open, {}})
+
+	for i = 0, 47 do
+		if memory.read("menu_item", "item_id", i) == game.ITEM.NONE then
+			empty = empty + 1
+		end
+	end
+
+	if empty < 8 then
+		table.insert(_q, {menu.field.item.open, {}})
+		table.insert(_q, {menu.field.item.select, {game.ITEM.SORT}})
+		table.insert(_q, {menu.field.item.select, {game.ITEM.SORT}})
+		table.insert(_q, {menu.field.item.close, {}})
+	end
+
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.EDGE}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.CLAW.CATCLAW}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.CLAW.CATCLAW}})
@@ -3975,7 +3991,6 @@ local function _sequence_core()
 	table.insert(_q, {walk.interact, {}})
 
 	-- Complete the pre-Zeromus menu.
-	-- TODO: Improve inventory management so the sort is unnecessary.
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.EDGE}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.NONE}})
