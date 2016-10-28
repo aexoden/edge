@@ -5,7 +5,7 @@ currently follows the Edge+Excalbur route of the Any% No64 run.
 
 ## Prerequisites
 
-* BizHawk (currently tested with v1.11.7)
+* BizHawk (currently tested with v1.11.8.2)
 * Final Fantasy IV US 1.0 (originally released as Final Fantasy II)
 * luasocket (optional: for LiveSplit integration)
 
@@ -53,7 +53,7 @@ rebooting.
 ## LiveSplit Integration Requirements (optional and difficult)
 
 Integration with LiveSplit requires functional luasocket support. As of BizHawk
-v1.11.7, this appears to be an arduous process. Roughly speaking, you need to
+v1.11.8.2, this appears to be an arduous process. Roughly speaking, you need to
 (within the BizHawk source tree) build a version of lua51.dll using the
 "Release-LUAPERKS" target and replace the lua51.dll in the dll directory. You
 must additionally obtain a copy of socket.lua and place this in the root BizHawk
