@@ -86,9 +86,6 @@ provide a good list of improvements that can be made.
   only need to ensure that the character can cast a particular spell (such as
   Edge potentially needing to cast Flood during the grind fight).
 
-* Build an external log analyzer to collect statistics from multiple runs and
-  display them in some kind of visually appealing fashion.
-
 ## Minor Issues
 
 * Ensure that step routing is correct at the tile before the Elements battle if

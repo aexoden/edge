@@ -1,0 +1,600 @@
+#!/usr/bin/env python3
+#-------------------------------------------------------------------------------
+# Copyright (c) 2015 Jason Lynch <jason@calindora.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#-------------------------------------------------------------------------------
+
+import os
+import re
+import statistics
+import sys
+
+from collections import OrderedDict
+
+
+#-------------------------------------------------------------------------------
+# Functions
+#-------------------------------------------------------------------------------
+
+def describe_formation(formation):
+    formations = {
+        42: 'Gargoyle x1, Cocktric x2',
+        200: 'Grind Fight',
+        220: 'Elements',
+        221: 'CPU',
+        222: 'D.Mist',
+        223: 'Octomamm',
+        224: 'Antlion',
+        225: 'MomBomb',
+        226: 'Milon',
+        227: 'Milon Z',
+        228: 'Baigan',
+        229: 'Kainazzo',
+        231: 'Dark Elf',
+        232: 'Magus Sisters',
+        234: 'Valvalis',
+        235: 'FloatEye (intro)',
+        237: 'Officer x1, Soldier x3',
+        239: 'WaterHag',
+        240: 'Imp Cap. x3',
+        243: 'Golbez (Tellah)',
+        245: 'Raven (intro)',
+        246: 'D.Knight',
+        247: 'General x1, Fighter x3',
+        248: 'Weeper x1, WaterHag x1, Imp Cap. x1',
+        249: 'Gargoyle x1',
+        250: 'Guard x2',
+        254: 'Q.Eblan/K.Eblan',
+        255: 'Rubicant',
+        256: 'Dark Imp x3',
+        423: 'Calbrena',
+        425: 'Dr. Lugae/Balnab',
+        435: 'Zemus',
+        437: 'Dr. Lugae',
+        438: 'Golbez',
+        439: 'Zeromus',
+        451: 'FlameDog',
+    }
+
+    return formations[formation] if formation in formations else 'Formation #{}'.format(formation)
+
+
+def format_time(frames):
+    seconds = frames / 60.0988
+    return '{:.0f}:{:02.0f}:{:05.2f}'.format(seconds // 3600, (seconds // 60) % 60, seconds % 60)
+
+
+def get_battle_data(logs, classified=False):
+    battles = OrderedDict()
+
+    for log in logs:
+        for battle in log.battles:
+            if battle['result'].startswith('Victory') or battle['result'].startswith('Perished'):
+                if battle['formation'] not in battles:
+                    if classified:
+                        battles[battle['formation']] = {}
+                    else:
+                        battles[battle['formation']] = {'count': 0, 'data': []}
+
+                if classified:
+                    key = (battle['type'], ' '.join(map(str, battle['enemy_agility'])), battle['party_formation'])
+
+                    if key not in battles[battle['formation']]:
+                        battles[battle['formation']][key] = {'count': 0, 'data': []}
+
+                    battles[battle['formation']][key]['count'] += 1
+
+                    if battle['result'].startswith('Victory'):
+                        battles[battle['formation']][key]['data'].append(battle['frames'])
+                else:
+                    battles[battle['formation']]['count'] += 1
+
+                    if battle['result'].startswith('Victory'):
+                        battles[battle['formation']]['data'].append(battle['frames'])
+
+    return battles
+
+
+def get_split_data(logs, cumulative=True):
+    splits = {}
+
+    for log in logs:
+        for split, data in log.splits.items():
+            if split not in splits:
+                splits[split] = []
+
+            if cumulative:
+                splits[split].append(data['total'])
+            else:
+                splits[split].append(data['current'])
+
+    return splits
+
+
+def get_seed_data(logs):
+    seeds = {}
+
+    for log in logs:
+        if log.success:
+            if log.step_seed not in seeds:
+                seeds[log.step_seed] = []
+
+            seeds[log.step_seed].append(log.frames)
+
+    return seeds
+
+
+#-------------------------------------------------------------------------------
+# Classes
+#-------------------------------------------------------------------------------
+
+class Log(object):
+    def __init__(self, filename):
+        self._battles = []
+        self._splits = {}
+        self._success = False
+        self._frames = None
+        self._rng_seed = None
+        self._step_seed = None
+        self._version = None
+
+        self._parse_file(filename)
+
+        if 'Zeromus Death' in self._splits:
+            self._success = True
+            self._frames = self._splits['Zeromus Death']['total']
+
+    @property
+    def back_attack_count(self):
+        return sum([1 if x['type'] in ['Back Attack', 'Surprised'] else 0 for x in self._battles])
+
+    @property
+    def battles(self):
+        return self._battles
+
+    @property
+    def frames(self):
+        return self._frames
+
+    @property
+    def splits(self):
+        return self._splits
+
+    @property
+    def success(self):
+        return self._success
+
+    @property
+    def rng_seed(self):
+        return self._rng_seed
+
+    @property
+    def step_seed(self):
+        return self._step_seed
+
+    @property
+    def result(self):
+        if self.success:
+            return format_time(self.frames)
+        elif len(self._battles) > 0 and self._battles[-1]['result'].startswith('Perished'):
+            return 'Died to {}'.format(describe_formation(self._battles[-1]['formation']))
+        else:
+            return 'Unknown Failure'
+
+    @property
+    def version(self):
+        return self._version
+
+    def _parse_file(self, filename):
+        with open(filename) as f:
+            current_battle = None
+
+            for line in f:
+                line_type, fields = self._parse_line(line.strip())
+
+                if line_type == 'split':
+                    if fields['split'] == 'Start':
+                        base_frame = int(fields['frame'])
+                        last_split = base_frame
+                    else:
+                        self._splits[fields['split']] = {'current': int(fields['frame']) - last_split, 'total': int(fields['frame']) - base_frame}
+                        last_split = int(fields['frame'])
+                elif line_type == 'rng_seed':
+                    self._rng_seed = int(fields['seed'])
+                elif line_type == 'step_seed':
+                    self._step_seed = int(fields['seed'])
+                elif line_type == 'version':
+                    self._version = fields['version']
+                elif line_type == 'battle_start':
+                    if current_battle:
+                        print('WARNING: A new battle has started without finishing the previous one while parsing {}'.format(filename))
+
+                    current_battle = {
+                        'formation': int(fields['formation']),
+                        'type': fields['type'],
+                        'party_level': None if fields['party_level'] == '-' else int(fields['party_level']),
+                        'enemy_level': None if fields['enemy_level'] == '-' else int(fields['enemy_level']),
+                    }
+                elif line_type == 'battle_enemy_agility':
+                    current_battle['enemy_agility'] = list(map(int, fields['agility'].split()))
+                elif line_type == 'battle_party_formation':
+                    current_battle['party_formation'] = fields['formation']
+                elif line_type == 'battle_stop':
+                    current_battle['frames'] = int(fields['frames'])
+                    current_battle['dropped_gp'] = int(fields['dropped_gp'])
+                    current_battle['result'] = fields['result']
+                    self._battles.append(current_battle)
+                    current_battle = None
+
+    def _parse_line(self, line):
+        base_regex = '(?P<timestamp>.*) :: (?P<frame>.*) :: (?P<time>.*) :: '
+
+        regexes = {
+            'battle_start': 'Battle Start: (?P<description>.*) \((?P<formation>.*)/(?P<type>.*)/(?P<party_level>.*)/(?P<enemy_level>.*)\)',
+            'battle_enemy_agility': 'Enemy Agility: (?P<agility>.*)',
+            'battle_party_formation': 'Party Formation: (?P<formation>.*)',
+            'battle_stop': 'Battle Complete: (?P<description>.*) \((?P<formation>.*)/(?P<frames>.*) frames/(?P<dropped_gp>.*) GP dropped/(?P<result>.*)\)',
+            'inventory': 'Inventory: .*',
+            'rng_seed': 'RNG Seed: (?P<seed>.*)',
+            'step_seed': 'New Seed: (?P<seed>.*)',
+            'sequence': 'Sequence: (?P<sequence>.*)',
+            'split': 'Split: (?P<split>.*)',
+            'version': 'Version: (?P<version>.*)',
+            '_ignore': '(Edge Final Fantasy IV|--------------------|Beginning Full Run|Setting Initial Seed|Rebooting|Load game screen)',
+        }
+
+        for line_type, regex in regexes.items():
+            matches = re.match(base_regex + regex, line)
+
+            if matches:
+                return (line_type, matches.groupdict())
+
+        print('UNRECOGNIZED LINE: {}'.format(line))
+        return (None, None)
+
+
+#-------------------------------------------------------------------------------
+# HTML Functions
+#-------------------------------------------------------------------------------
+
+def html_output_header(f):
+    f.write('<!DOCTYPE html>\n')
+    f.write('<html lang="en">\n')
+    f.write('\t<head>\n')
+    f.write('\t\t<meta charset="utf-8">\n')
+    f.write('\t\t<title>Edge Log Analysis</title>\n')
+    f.write('\t\t<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">\n')
+    f.write('\t\t<meta name="viewport" content="width=device-width, initial-scale=1">\n')
+    f.write('\t\t<style type="text/css">\n')
+    f.write('\t\t\t.bold { font-weight: bold; }\n')
+    f.write('\t\t</style>\n')
+    f.write('\t</head>\n')
+    f.write('\t<body>\n')
+    f.write('\t\t<div class="container">\n')
+    f.write('\t\t\t<h1>Edge Log Analysis</h1>\n')
+    f.write('\t\t\t<h2>Introduction</h2>\n')
+    f.write('\t\t\t<p>This page is a statistical analysis of the log files generated by Edge, the Final Fantasy IV speed running bot.</p>\n')
+
+
+def html_output_footer(f):
+    f.write('\t\t</div>\n')
+    f.write('\t</body>\n')
+    f.write('</html>\n')
+
+
+def html_output_basic_statistics(f, logs):
+    f.write('\t\t\t<h2>Basic Statistics</h2>\n')
+    f.write('\t\t\t<dl class="dl-horizontal">\n')
+    f.write('\t\t\t\t<dt>Number of Logs</dt><dd>{}</dd>'.format(len(logs)))
+    f.write('\t\t\t</dl>\n')
+
+
+def html_output_splits(f, logs):
+    splits = {}
+
+    f.write('\t\t\t<h2>Splits</h2>\n')
+    f.write('\t\t\t<table class="table table-striped">\n')
+    f.write('\t\t\t\t<thead>\n')
+    f.write('\t\t\t\t\t<tr>\n')
+    f.write('\t\t\t\t\t\t<th>Split</th>\n')
+    f.write('\t\t\t\t\t\t<th>Count</th>\n')
+    f.write('\t\t\t\t\t\t<th>Minimum</th>\n')
+    f.write('\t\t\t\t\t\t<th>Maximum</th>\n')
+    f.write('\t\t\t\t\t\t<th>Median</th>\n')
+    f.write('\t\t\t\t\t</tr>\n')
+    f.write('\t\t\t\t</thead>\n')
+    f.write('\t\t\t\t<tbody>\n')
+
+    splits = get_split_data(logs, True)
+
+    for split, data in sorted(splits.items(), key=lambda x: min(x[1])):
+        f.write('\t\t\t\t\t<tr>\n')
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(split))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(len(data)))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data))))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data))))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data))))
+        f.write('\t\t\t\t\t</tr>\n')
+
+    f.write('\t\t\t\t</tbody>\n')
+    f.write('\t\t\t</table>\n')
+
+
+def html_output_battles(f, logs):
+    f.write('\t\t\t<h2>Battles</h2>\n')
+    f.write('\t\t\t<table class="table table-striped">\n')
+    f.write('\t\t\t\t<thead>\n')
+    f.write('\t\t\t\t\t<tr>\n')
+    f.write('\t\t\t\t\t\t<th>Description</th>\n')
+    f.write('\t\t\t\t\t\t<th>Count</th>\n')
+    f.write('\t\t\t\t\t\t<th>Success Rate</th>\n')
+    f.write('\t\t\t\t\t\t<th>Minimum</th>\n')
+    f.write('\t\t\t\t\t\t<th>Maximum</th>\n')
+    f.write('\t\t\t\t\t\t<th>Median</th>\n')
+    f.write('\t\t\t\t\t</tr>\n')
+    f.write('\t\t\t\t</thead>\n')
+    f.write('\t\t\t\t<tbody>\n')
+
+    battles = OrderedDict()
+
+    for log in logs:
+        for battle in log.battles:
+            if battle['result'].startswith('Victory') or battle['result'].startswith('Perished'):
+                if battle['formation'] not in battles:
+                    battles[battle['formation']] = {'data': [], 'count': 0}
+
+                if battle['result'].startswith('Victory'):
+                    battles[battle['formation']]['data'].append(battle['frames'])
+
+                battles[battle['formation']]['count'] += 1
+
+    for formation, data in battles.items():
+        f.write('\t\t\t\t\t<tr>\n')
+        f.write('\t\t\t\t\t\t<td><a href="battles/{:03}.html">{}</a></td>\n'.format(formation, describe_formation(formation)))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['count']))
+        f.write('\t\t\t\t\t\t<td>{:.3f}%</td>\n'.format(len(data['data']) * 100 / data['count']))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data'])) if len(data['data']) > 0 else 'N/A'))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data'])) if len(data['data']) > 0 else 'N/A'))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data'])) if len(data['data']) > 0 else 'N/A'))
+        f.write('\t\t\t\t\t</tr>\n')
+
+    f.write('\t\t\t\t</tbody>\n')
+    f.write('\t\t\t</table>\n')
+
+
+def html_output_battle(f, formation, battle_data):
+    f.write('\t\t\t<h2>Battle Data for {}</h2>\n'.format(describe_formation(formation)))
+    f.write('\t\t\t<table class="table table-striped">\n')
+    f.write('\t\t\t\t<thead>\n')
+    f.write('\t\t\t\t\t<tr>\n')
+    f.write('\t\t\t\t\t\t<th>Battle Type</th>\n')
+    f.write('\t\t\t\t\t\t<th>Enemy Agility</th>\n')
+    f.write('\t\t\t\t\t\t<th>Party Formation</th>\n')
+    f.write('\t\t\t\t\t\t<th>Battles</th>\n')
+    f.write('\t\t\t\t\t\t<th>Deaths</th>\n')
+    f.write('\t\t\t\t\t\t<th>Best Time</th>\n')
+    f.write('\t\t\t\t\t\t<th>Worst Time</th>\n')
+    f.write('\t\t\t\t\t\t<th>Median Time</th>\n')
+    f.write('\t\t\t\t\t</tr>\n')
+    f.write('\t\t\t\t</thead>\n')
+    f.write('\t\t\t\t<tbody>\n')
+
+    for (battle_type, enemy_agility, party_formation), data in sorted(battle_data.items(), key=lambda x: statistics.median(x[1]['data']) if len(x[1]['data']) > 0 else 1000000):
+        f.write('\t\t\t\t\t<tr>\n')
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(battle_type))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(enemy_agility))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(party_formation))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['count']))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['count'] - len(data['data'])))
+
+        if len(data['data']) > 0:
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data']))))
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data']))))
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data']))))
+        else:
+            f.write('\t\t\t\t\t\t<td>N/A</td>\n')
+            f.write('\t\t\t\t\t\t<td>N/A</td>\n')
+            f.write('\t\t\t\t\t\t<td>N/A</td>\n')
+
+        f.write('\t\t\t\t\t</tr>\n')
+
+    f.write('\t\t\t\t</tbody>\n')
+    f.write('\t\t\t</table>\n')
+
+
+def html_output_seeds(f, logs):
+    f.write('\t\t\t<h2>Step Seeds</h2>\n')
+    f.write('\t\t\t<table class="table table-striped">\n')
+    f.write('\t\t\t\t<thead>\n')
+    f.write('\t\t\t\t\t<tr>\n')
+    f.write('\t\t\t\t\t\t<th>Seed</th>\n')
+    f.write('\t\t\t\t\t\t<th>Count</th>\n')
+    f.write('\t\t\t\t\t\t<th>Minimum</th>\n')
+    f.write('\t\t\t\t\t\t<th>Maximum</th>\n')
+    f.write('\t\t\t\t\t\t<th>Median</th>\n')
+    f.write('\t\t\t\t\t</tr>\n')
+    f.write('\t\t\t\t</thead>\n')
+    f.write('\t\t\t\t<tbody>\n')
+
+    seeds = get_seed_data(logs)
+
+    for seed, data in sorted(seeds.items(), key=lambda x: statistics.median(x[1])):
+        f.write('\t\t\t\t\t<tr>\n')
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(seed))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(len(data)))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data))))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data))))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data))))
+        f.write('\t\t\t\t\t</tr>\n')
+
+    f.write('\t\t\t\t</tbody>\n')
+    f.write('\t\t\t</table>\n')
+
+
+def html_output_run(f, splits, battles, log):
+    f.write('\t\t\t<h2>Splits</h2>\n')
+    f.write('\t\t\t<table class="table table-striped">\n')
+    f.write('\t\t\t\t<thead>\n')
+    f.write('\t\t\t\t\t<tr>\n')
+    f.write('\t\t\t\t\t\t<th>Split</th>\n')
+    f.write('\t\t\t\t\t\t<th>Cumulative Time</th>\n')
+    f.write('\t\t\t\t\t\t<th>Segment Time</th>\n')
+    f.write('\t\t\t\t\t\t<th>Best Segment Time</th>\n')
+    f.write('\t\t\t\t\t\t<th>Worst Segment Time</th>\n')
+    f.write('\t\t\t\t\t\t<th>Median Segment Time</th>\n')
+    f.write('\t\t\t\t\t</tr>\n')
+    f.write('\t\t\t\t</thead>\n')
+    f.write('\t\t\t\t<tbody>\n')
+
+    for split, data in sorted(log.splits.items(), key=lambda x: x[1]['total']):
+        if data['current'] < sorted(splits[split])[int(len(splits[split]) * 0.3333)]:
+            result_class = 'text-success'
+        elif data['current'] < sorted(splits[split])[int(len(splits[split]) * 0.6667)]:
+            result_class = 'text-warning'
+        else:
+            result_class = 'text-danger'
+
+        f.write('\t\t\t\t\t<tr>\n')
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(split))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(data['total'])))
+        f.write('\t\t\t\t\t\t<td class="{}">{}</td>\n'.format(result_class, format_time(data['current'])))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(splits[split]))))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(splits[split]))))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(splits[split]))))
+        f.write('\t\t\t\t\t</tr>\n')
+
+    f.write('\t\t\t\t</tbody>\n')
+    f.write('\t\t\t</table>\n')
+
+    f.write('\t\t\t<h2>Battles</h2>\n')
+    f.write('\t\t\t<table class="table table-striped">\n')
+    f.write('\t\t\t\t<thead>\n')
+    f.write('\t\t\t\t\t<tr>\n')
+    f.write('\t\t\t\t\t\t<th>Formation</th>\n')
+    f.write('\t\t\t\t\t\t<th>Time</th>\n')
+    f.write('\t\t\t\t\t\t<th>Best Time</th>\n')
+    f.write('\t\t\t\t\t\t<th>Worst Time</th>\n')
+    f.write('\t\t\t\t\t\t<th>Median Time</th>\n')
+    f.write('\t\t\t\t\t</tr>\n')
+    f.write('\t\t\t\t</thead>\n')
+    f.write('\t\t\t\t<tbody>\n')
+
+    for data in log.battles:
+        if data['formation'] in battles and len(battles[data['formation']]['data']) > 0:
+            if data['frames'] < sorted(battles[data['formation']]['data'])[int(len(battles[data['formation']]['data']) * 0.3333)]:
+                result_class = 'text-success'
+            elif data['frames'] < sorted(battles[data['formation']]['data'])[int(len(battles[data['formation']]['data']) * 0.6667)]:
+                result_class = 'text-warning'
+            else:
+                result_class = 'text-danger'
+
+            f.write('\t\t\t\t\t<tr>\n')
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(describe_formation(data['formation'])))
+            f.write('\t\t\t\t\t\t<td class="{}">{}</td>\n'.format(result_class, format_time(data['frames'])))
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(battles[data['formation']]['data']))))
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(battles[data['formation']]['data']))))
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(battles[data['formation']]['data']))))
+            f.write('\t\t\t\t\t</tr>\n')
+
+    f.write('\t\t\t\t</tbody>\n')
+    f.write('\t\t\t</table>\n')
+
+
+def html_output_runs(f, logs):
+    f.write('\t\t\t<h2>Runs</h2>\n')
+    f.write('\t\t\t<table class="table table-striped">\n')
+    f.write('\t\t\t\t<thead>\n')
+    f.write('\t\t\t\t\t<tr>\n')
+    f.write('\t\t\t\t\t\t<th>Edge Version</th>\n')
+    f.write('\t\t\t\t\t\t<th>RNG Seed</th>\n')
+    f.write('\t\t\t\t\t\t<th>Step Seed</th>\n')
+    f.write('\t\t\t\t\t\t<th>Surprised/Back Attacks</th>\n')
+    f.write('\t\t\t\t\t\t<th>Result</th>\n')
+    f.write('\t\t\t\t\t</tr>\n')
+    f.write('\t\t\t\t</thead>\n')
+    f.write('\t\t\t\t<tbody>\n')
+
+    frames = [log.frames for log in logs if log.success]
+
+    for log in logs:
+        if log.success:
+            if log.frames < sorted(frames)[int(len(frames) * 0.3333)]:
+                result_class = 'text-success'
+            elif log.frames < sorted(frames)[int(len(frames) * 0.6667)]:
+                result_class = 'text-warning'
+            else:
+                result_class = 'text-danger'
+        else:
+            result_class = 'text-danger bold'
+
+        f.write('\t\t\t\t\t<tr>\n'.format(log.rng_seed))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.version))
+        f.write('\t\t\t\t\t\t<td><a href="runs/{:010}.html">{}</a></td>\n'.format(log.rng_seed, log.rng_seed))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.step_seed))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.back_attack_count))
+        f.write('\t\t\t\t\t\t<td class="{}">{}</td>\n'.format(result_class, log.result))
+        f.write('\t\t\t\t\t</tr>\n')
+
+    f.write('\t\t\t\t</tbody>\n')
+    f.write('\t\t\t</table>\n')
+
+
+#-------------------------------------------------------------------------------
+# Main Execution
+#-------------------------------------------------------------------------------
+
+logs = []
+
+if not os.path.exists(sys.argv[1]):
+    print('Output directory must exist.')
+    sys.exit(1)
+
+for filename in sys.argv[2:]:
+    logs.append(Log(filename))
+
+with open(os.path.join(sys.argv[1], 'index.html'), 'w') as f:
+    html_output_header(f)
+    html_output_basic_statistics(f, logs)
+    html_output_splits(f, logs)
+    html_output_battles(f, logs)
+    html_output_seeds(f, logs)
+    html_output_runs(f, logs)
+    html_output_footer(f)
+
+splits = get_split_data(logs, False)
+battles = get_battle_data(logs, False)
+
+os.mkdir(os.path.join(sys.argv[1], 'runs'))
+
+for log in logs:
+    with open(os.path.join(sys.argv[1], 'runs', '{:010}.html'.format(log.rng_seed)), 'w') as f:
+        html_output_header(f)
+        html_output_run(f, splits, battles, log)
+        html_output_footer(f)
+
+battles = get_battle_data(logs, True)
+
+os.mkdir(os.path.join(sys.argv[1], 'battles'))
+
+for formation, data in battles.items():
+    with open(os.path.join(sys.argv[1], 'battles', '{:03}.html'.format(formation)), 'w') as f:
+        html_output_header(f)
+        html_output_battle(f, formation, data)
+        html_output_footer(f)
