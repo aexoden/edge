@@ -3124,6 +3124,8 @@ local function _sequence_rubicant()
 	table.insert(_q, {_set_healing, {_healing_rubicant}})
 	table.insert(_q, {menu.field.open, {}})
 
+	local empty = 0
+
 	for i = 0, 47 do
 		if memory.read("menu_item", "item_id", i) == game.ITEM.NONE then
 			empty = empty + 1
