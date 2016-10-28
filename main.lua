@@ -26,6 +26,9 @@
 
 CONFIG = {}
 
+-- Specify a specific route to run. Set this to nil to choose a random route.
+CONFIG.ROUTE = nil
+
 -- Specify a number to do a specific run. Set this value to nil to do random runs.
 CONFIG.SEED = nil
 
@@ -72,6 +75,16 @@ local function _get_version()
 	end
 end
 
+local function _set_route()
+	ROUTES = {"no64-excalbur"}
+
+	if CONFIG.ROUTE then
+		return CONFIG.ROUTE
+	else
+		return ROUTES[math.random(#ROUTES)]
+	end
+end
+
 local function _set_seed()
 	local seed = CONFIG.SEED
 
@@ -96,6 +109,7 @@ local function _set_seed()
 end
 
 local function _reset()
+	ROUTE = _set_route()
 	SEED = _set_seed()
 
 	log.reset()
@@ -106,6 +120,7 @@ local function _reset()
 
 	if FULL_RUN then
 		log.log("Beginning Full Run")
+		log.log(string.format("Route: %s", ROUTE))
 		log.log(string.format("RNG Seed: %d", SEED))
 	else
 		log.log("Beginning Test Mode")

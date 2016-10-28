@@ -101,8 +101,8 @@ local function _log_seed()
 	end
 
 	for i = 0, 56 do
-		if route.routes.no64.excalbur[seed][i] then
-			_route[i] = route.routes.no64.excalbur[seed][i]
+		if route.routes[ROUTE][seed][i] then
+			_route[i] = route.routes[ROUTE][seed][i]
 		else
 			_route[i] = 0
 		end

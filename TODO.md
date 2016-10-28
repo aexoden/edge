@@ -9,16 +9,9 @@ provide a good list of improvements that can be made.
 
 ## Major Features
 
-* Implement the capability to execute different routes. This includes both Yes64
-  and the multitude of available No64 routes. Ideally, the bot should be capable
-  of executing any one of these (and thus allowing us to ultimately compare them
-  with large sample sizes). There are two options for specifying the route.
-  First, the route could be a parameter, and then the randomization seed applies
-  within that route. This has the advantage of being able to specify a given
-  route directly. The second option is to have the bot determine the route
-  randomly as part of the given randomization seed. This means a randomization
-  seed is once again globally deterministic, but it does make it harder to
-  request a random run of a given route.
+* Implement additional routes. Currently, no64-excalbur is supported, but
+  support for at the very least yes64 and no64-drain is highly desirable. The
+  new Rosa route could also be implemented, as well as a Paladin specific route.
 
 * Find a way to keep track of battle goals and properly queueing characters to
   take care of them. The major motivation is to be able to specify that an
