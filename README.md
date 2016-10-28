@@ -15,6 +15,18 @@ After extracting Edge to a directory, preferably within BizHawk's lua directory,
 open the main.lua file. There are a few configuration variables, all prefixed
 with "CONFIG.":
 
+### ROUTE
+
+By default, this is set to nil, which will cause the script to choose a random
+route for its runs. You can also set this to any valid route to do only runs of
+that particular route. The only currently supported route is no64-excalbur.
+
+### ENCOUNTER_SEED
+
+By default, this is set to nil, which will cause the script to choose an
+encounter seed randomly. If you instead specify this value, it will only do runs
+on that particular encounter seed.
+
 ### SEED
 
 By default, this is set to nil, which will cause the script to do random runs.

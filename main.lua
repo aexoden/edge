@@ -29,6 +29,9 @@ CONFIG = {}
 -- Specify a specific route to run. Set this to nil to choose a random route.
 CONFIG.ROUTE = nil
 
+-- Specify the encounter seed to run against. Set to nil to choose a random seed.
+CONFIG.ENCOUNTER_SEED = nil
+
 -- Specify a number to do a specific run. Set this value to nil to do random runs.
 CONFIG.SEED = nil
 
@@ -85,6 +88,14 @@ local function _set_route()
 	end
 end
 
+local function _set_encounter_seed()
+	if CONFIG.ENCOUNTER_SEED then
+		return CONFIG.ENCOUNTER_SEED
+	else
+		return math.random(0, 255)
+	end
+end
+
 local function _set_seed()
 	local seed = CONFIG.SEED
 
@@ -110,6 +121,7 @@ end
 
 local function _reset()
 	ROUTE = _set_route()
+	ENCOUNTER_SEED = _set_encounter_seed()
 	SEED = _set_seed()
 
 	log.reset()
@@ -121,6 +133,7 @@ local function _reset()
 	if FULL_RUN then
 		log.log("Beginning Full Run")
 		log.log(string.format("Route: %s", ROUTE))
+		log.log(string.format("Encounter Seed: %d", ENCOUNTER_SEED))
 		log.log(string.format("RNG Seed: %d", SEED))
 	else
 		log.log("Beginning Test Mode")

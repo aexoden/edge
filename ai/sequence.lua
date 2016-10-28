@@ -500,11 +500,11 @@ local function _set_healing(f)
 	return _state_set("healing", f)
 end
 
-local function _set_initial_seed()
-	local seed = memory.read("game", "counter")
+local function _set_encounter_seed(seed, base)
+	local counter = memory.read("game", "counter")
 
-	if seed == 59 then
-		log.log("Setting Initial Seed to 92")
+	if counter % 256 == (seed - base - 33) % 256 then
+		log.log(string.format("Setting encounter seed to %d", seed))
 		log.start()
 		return input.press({"P1 A"}, input.DELAY.NONE)
 	end
@@ -782,7 +782,7 @@ end
 --------------------------------------------------------------------------------
 
 local function _sequence_new_game()
-	table.insert(_q, {_set_initial_seed, {}})
+	table.insert(_q, {_set_encounter_seed, {92, 0}})
 	table.insert(_q, {bridge.split, {"Start"}})
 end
 
@@ -915,9 +915,8 @@ local function _sequence_clip()
 	table.insert(_q, {_state_set, {"check_autoreload", false}})
 	table.insert(_q, {menu.field.save.save, {1}})
 	table.insert(_q, {input.press, {{"Reset"}, input.DELAY.NORMAL}})
-	table.insert(_q, {menu.wait, {math.random(132, 387)}})
-	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
-	table.insert(_q, {menu.wait, {132}})
+	table.insert(_q, {_set_encounter_seed, {ENCOUNTER_SEED, 92}})
+	table.insert(_q, {menu.wait, {180}})
 	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
 	table.insert(_q, {menu.confirm, {}})
 	table.insert(_q, {_state_set, {"check_autoreload", true}})
