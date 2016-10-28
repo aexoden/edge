@@ -87,7 +87,8 @@ provide a good list of improvements that can be made.
 * Check healing strategy upon immediately entering Zot. Death was observed with
   only Tellah and Yang alive with a total of approximately ~500 HP.
 
-* Update step routes to the newest version.
+* Update step routes to the newest version. This requires adding support for the
+  new warp in the Castle of Dwarves.
 
 * In Toroia when leaving the main lobby toward Edward, it's possible to get
   stuck with an NPC in the doorway.

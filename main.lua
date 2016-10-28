@@ -30,13 +30,13 @@ CONFIG = {}
 CONFIG.ROUTE = nil
 
 -- Specify the encounter seed to run against. Set to nil to choose a random seed.
-CONFIG.ENCOUNTER_SEED = nil
+CONFIG.ENCOUNTER_SEED = 43
 
 -- Specify a number to do a specific run. Set this value to nil to do random runs.
 CONFIG.SEED = nil
 
 -- Automatically do continuous runs by restarting after completion.
-CONFIG.AUTOMATIC = false
+CONFIG.AUTOMATIC = true
 
 -- Enable/Disable LiveSplit integration (requires luasocket and LiveSplit)
 CONFIG.LIVESPLIT = false
