@@ -2254,7 +2254,7 @@ function _M.cycle()
 
 			log.log(string.format("Enemy Agility: %s", agility_text))
 
-			if FULL_RUN and SAVESTATE and formation.f then
+			if FULL_RUN and CONFIG.SAVESTATE and formation.f then
 				savestate.save(string.format("states/%010d - %03d - %s.state", SEED, _battle_count, formation.title:gsub('/', '-')))
 			end
 
@@ -2267,7 +2267,7 @@ function _M.cycle()
 			_state.flash_split = true
 			bridge.split("Zeromus Death")
 
-			if EXTENDED_ENDING then
+			if CONFIG.EXTENDED_ENDING then
 				sequence.end_run(20 * 60 * 60)
 			else
 				sequence.end_run(65 * 60)

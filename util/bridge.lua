@@ -24,7 +24,7 @@ local _M = {}
 
 local log = require "util.log"
 
-if LIVESPLIT then
+if CONFIG.LIVESPLIT then
 	local socket = require "socket"
 end
 
@@ -53,7 +53,7 @@ local function _connect()
 end
 
 local function _send(message)
-	if not _socket and FULL_RUN and LIVESPLIT then
+	if not _socket and FULL_RUN and CONFIG.LIVESPLIT then
 		_connect()
 	end
 
@@ -61,7 +61,7 @@ local function _send(message)
 		_socket:send(message .. "\r\n")
 		return true
 	else
-		return not (LIVESPLIT and FULL_RUN)
+		return not (CONFIG.LIVESPLIT and FULL_RUN)
 	end
 end
 

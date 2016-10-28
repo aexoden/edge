@@ -24,20 +24,22 @@
 -- Configuration
 --------------------------------------------------------------------------------
 
+CONFIG = {}
+
 -- Specify a number to do a specific run. Set this value to nil to do random runs.
-INITIAL_SEED = nil
+CONFIG.SEED = nil
 
 -- Automatically do continuous runs by restarting after completion.
-AUTOMATIC = false
+CONFIG.AUTOMATIC = false
 
 -- Enable/Disable LiveSplit integration (requires luasocket and LiveSplit)
-LIVESPLIT = false
+CONFIG.LIVESPLIT = false
 
 -- Automatically create save states at the beginning of each battle.
-SAVESTATE = false
+CONFIG.SAVESTATE = false
 
 -- Do an extended ending at the end of the run (for streaming purposes)
-EXTENDED_ENDING = false
+CONFIG.EXTENDED_ENDING = false
 
 --------------------------------------------------------------------------------
 -- Setup
@@ -71,7 +73,7 @@ local function _get_version()
 end
 
 local function _set_seed()
-	local seed = INITIAL_SEED
+	local seed = CONFIG.SEED
 
 	if not seed then
 		math.randomseed(os.time())
@@ -81,7 +83,7 @@ local function _set_seed()
 		seed = math.random(0, 2147483646)
 	end
 
-	if SEED and AUTOMATIC and INITIAL_SEED ~= nil then
+	if SEED and CONFIG.AUTOMATIC and CONFIG.SEED ~= nil then
 		seed = SEED + 1
 	end
 

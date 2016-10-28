@@ -4253,7 +4253,7 @@ local function _check_autoreload()
 		elseif FULL_RUN then
 			log.log("Load game screen detected: ending run")
 
-			if EXTENDED_ENDING then
+			if CONFIG.EXTENDED_ENDING then
 				_M.end_run(600)
 			else
 				_M.end_run()
@@ -4320,7 +4320,7 @@ end
 function _M.end_run(delay)
 	_state.active = false
 
-	if AUTOMATIC then
+	if CONFIG.AUTOMATIC then
 		for i = 0, 0x2000, 4 do
 			corememory.write_u32_le(i, 0, "CARTRAM")
 		end
