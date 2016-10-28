@@ -97,6 +97,11 @@ provide a good list of improvements that can be made.
 * Check healing strategy upon immediately entering Zot. Death was observed with
   only Tellah and Yang alive with a total of approximately ~500 HP.
 
+* Update step routes to the newest version.
+
+* In Toroia when leaving the main lobby toward Edward, it's possible to get
+  stuck with an NPC in the doorway.
+
 ## Battle-Specific Issues
 
 ### Fabul Battles
@@ -113,6 +118,21 @@ provide a good list of improvements that can be made.
   unlikely to work successfully. (Such as if Porom dies before Ice-2 is even
   selected.)
 
+### Calbrena
+
+* Not sure how feasible it is, but Yang and/or Rosa being dead at the end of
+  this fight seems to be a bad thing, so attempting to revive them may be
+  very desirable.
+
+### Dark Elf
+
+* Ensure that Tellah having enough MP to cast Weak is prioritized.
+
+### Golbez
+
+* In the event of an initial jump failure, Kain should jump again. We can
+  probably just have him check Golbez's remaining HP to decide what to do.
+
 ### Dr. Lugae
 
 * During the fight with both Dr. Lugae and Balnab, the bot should probably do a
@@ -123,6 +143,10 @@ provide a good list of improvements that can be made.
 
 * Yang should be at least level 15. There are potentially dire consequences if
   he is not.
+
+### Dark Imps
+
+* Rydia should only attempt casting a spell if she has MP.
 
 ### Grind Fight
 
