@@ -51,12 +51,7 @@ _RESTORE = {
 _M.state = {}
 
 local _q = nil
-local _route = {}
 local _state = {}
-
-for i = 0, 56 do
-	_route[i] = 0
-end
 
 --------------------------------------------------------------------------------
 -- Private Functions
@@ -100,19 +95,11 @@ local function _log_seed()
 		table.insert(_q, 5, {input.press, {{"P1 A"}, input.DELAY.MASH}})
 	end
 
-	for i = 0, 56 do
-		if route.routes[ROUTE][seed][i] then
-			_route[i] = route.routes[ROUTE][seed][i]
-		else
-			_route[i] = 0
-		end
-	end
-
 	return log.log(string.format("New Seed: %d", seed))
 end
 
 local function _hummingway_start()
-	_state.target_index = (memory.read("walk", "index") + 16 + _route[42]) % 256
+	_state.target_index = (memory.read("walk", "index") + 16 + route.get_value("Hummingway Cave")) % 256
 
 	return true
 end
@@ -1090,14 +1077,14 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {84, 4, 10}})
 
 	-- Step Route: Watery Pass-South Save Room
-	if _route[0] % 2 == 1 then
+	if route.get_value("Watery Pass-South Save Room") % 2 == 1 then
 		table.insert(_q, {walk.walk, {84, 4, 6}})
 		table.insert(_q, {walk.walk, {84, 4, 7}})
 	end
 
 	table.insert(_q, {walk.walk, {84, 4, 4}})
 
-	for i = 1, _route[0] / 2 do
+	for i = 1, route.get_value("Watery Pass-South Save Room") / 2 do
 		table.insert(_q, {walk.walk, {84, 5, 4}})
 		table.insert(_q, {walk.walk, {84, 4, 4}})
 	end
@@ -1124,7 +1111,7 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {113, 6, 17}})
 
 	-- Step Route: Watery Pass-South B3F
-	for i = 1, _route[1] / 2 do
+	for i = 1, route.get_value("Watery Pass-South B3F") / 2 do
 		table.insert(_q, {walk.walk, {113, 5, 17}})
 		table.insert(_q, {walk.walk, {113, 6, 17}})
 	end
@@ -1160,7 +1147,7 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {nil, 134, 72}})
 
 	-- Step Route: Waterfalls B1F
-	for i = 1, _route[2] / 2 do
+	for i = 1, route.get_value("Waterfalls B1F") / 2 do
 		table.insert(_q, {walk.walk, {116, 17, 9}})
 		table.insert(_q, {walk.walk, {116, 16, 9}})
 	end
@@ -1223,7 +1210,7 @@ local function _sequence_edward()
 	table.insert(_q, {walk.walk, {63, 8, 13}})
 
 	-- Step Route: Damcyan
-	for i = 1, _route[3] / 2 do
+	for i = 1, route.get_value("Damcyan") / 2 do
 		table.insert(_q, {walk.walk, {63, 9, 13}})
 		table.insert(_q, {walk.walk, {63, 8, 13}})
 	end
@@ -1231,7 +1218,7 @@ local function _sequence_edward()
 	table.insert(_q, {walk.walk, {63, 8, 7}})
 	table.insert(_q, {walk.walk, {64, 8, 10}})
 
-	if _route[3] % 2 == 1 then
+	if route.get_value("Damcyan") % 2 == 1 then
 		table.insert(_q, {walk.walk, {64, 9, 10}})
 		table.insert(_q, {walk.walk, {64, 9, 13}})
 	else
@@ -1286,10 +1273,10 @@ local function _sequence_antlion()
 	table.insert(_q, {walk.walk, {120, 25, 26}})
 
 	-- Step Route: Antlion B2F Inward
-	if _route[4] == 1 then
+	if route.get_value("Antlion B2F Inward Charm Room Choice") == 1 then
 		table.insert(_q, {walk.walk, {120, 25, 23}})
 
-		for i = 1, _route[5] / 2 do
+		for i = 1, route.get_value("Antlion B2F Inward Charm Room Steps") / 2 do
 			table.insert(_q, {walk.walk, {123, 4, 11}})
 			table.insert(_q, {walk.walk, {123, 4, 12}})
 		end
@@ -1320,10 +1307,10 @@ local function _sequence_waterhag()
 	table.insert(_q, {walk.walk, {120, 25, 26}})
 
 	-- Step Route: Antlion B2F Outward
-	if _route[6] == 1 then
+	if route.get_value("Antlion B2F Outward Charm Room Choice") == 1 then
 		table.insert(_q, {walk.walk, {120, 25, 23}})
 
-		for i = 1, _route[7] / 2 do
+		for i = 1, route.get_value("Antlion B2F Outward Charm Room Steps") / 2 do
 			table.insert(_q, {walk.walk, {123, 4, 11}})
 			table.insert(_q, {walk.walk, {123, 4, 12}})
 		end
@@ -1452,14 +1439,14 @@ local function _sequence_dragoon()
 	table.insert(_q, {walk.walk, {127, 19, 9}})
 
 	-- Step Route: Mt.Hobs-East
-	for i = 1, _route[8] / 2 do
+	for i = 1, route.get_value("Mt.Hobs-East") / 2 do
 		table.insert(_q, {walk.walk, {128, 7, 11}})
 		table.insert(_q, {walk.walk, {128, 7, 10}})
 	end
 
 	table.insert(_q, {walk.walk, {128, 11, 10}})
 
-	if _route[8] % 2 == 1 then
+	if route.get_value("Mt.Hobs-East") % 2 == 1 then
 		table.insert(_q, {walk.walk, {128, 10, 10}})
 		table.insert(_q, {walk.walk, {128, 11, 10}})
 	end
@@ -1504,34 +1491,36 @@ local function _sequence_twins()
 	table.insert(_q, {walk.walk, {73, 4, 7}})
 
 	-- Step Route: Fabul
-	if _route[9] >= 6 then
+	local steps = route.get_value("Fabul")
+
+	if steps >= 6 then
 		table.insert(_q, {walk.walk, {73, 4, 11}})
-		_route[9] = _route[9] - 6
+		steps = steps - 6
 	else
-		if _route[9] == 5 then
+		if steps == 5 then
 			table.insert(_q, {walk.walk, {73, 4, 9}})
 			table.insert(_q, {walk.walk, {73, 5, 9}})
 			table.insert(_q, {walk.walk, {73, 5, 11}})
-		elseif _route[9] == 4 then
+		elseif steps == 4 then
 			table.insert(_q, {walk.walk, {73, 4, 9}})
 			table.insert(_q, {walk.walk, {73, 6, 9}})
 			table.insert(_q, {walk.walk, {73, 6, 11}})
-		elseif _route[9] == 3 then
+		elseif steps == 3 then
 			table.insert(_q, {walk.walk, {73, 4, 8}})
 			table.insert(_q, {walk.walk, {73, 6, 8}})
 			table.insert(_q, {walk.walk, {73, 6, 11}})
-		elseif _route[9] == 2 then
+		elseif steps == 2 then
 			table.insert(_q, {walk.walk, {73, 4, 8}})
 			table.insert(_q, {walk.walk, {73, 7, 8}})
 			table.insert(_q, {walk.walk, {73, 7, 11}})
-		elseif _route[9] == 1 then
+		elseif steps == 1 then
 			table.insert(_q, {walk.walk, {73, 4, 8}})
 			table.insert(_q, {walk.walk, {73, 8, 8}})
 		else
 			table.insert(_q, {walk.walk, {73, 8, 7}})
 		end
 
-		_route[9] = 0
+		steps = 0
 	end
 
 	table.insert(_q, {walk.walk, {73, 8, 11}})
@@ -1541,9 +1530,9 @@ local function _sequence_twins()
 	table.insert(_q, {walk.walk, {71, 6, 11}})
 
 	-- Step Route: Fabul
-	if _route[9] > 0 then
+	if steps > 0 then
 		table.insert(_q, {walk.walk, {71, 5, 11}})
-		_route[9] = _route[9] - 1
+		steps = steps - 1
 	else
 		table.insert(_q, {walk.walk, {71, 6, 10}})
 	end
@@ -1552,15 +1541,15 @@ local function _sequence_twins()
 	table.insert(_q, {walk.walk, {71, 5, 7}})
 
 	-- Step Route: Fabul
-	if _route[9] >= 2 then
+	if steps >= 2 then
 		table.insert(_q, {walk.walk, {76, 18, 7}})
 		table.insert(_q, {walk.walk, {76, 18, 5}})
-		_route[9] = _route[9] - 2
-	elseif _route[9] == 1 then
+		steps = steps - 2
+	elseif steps == 1 then
 		table.insert(_q, {walk.walk, {76, 20, 6}})
 		table.insert(_q, {walk.walk, {76, 19, 6}})
 		table.insert(_q, {walk.walk, {76, 19, 5}})
-		_route[9] = _route[9] - 1
+		steps = steps - 1
 	else
 		table.insert(_q, {walk.walk, {76, 20, 5}})
 	end
@@ -1578,7 +1567,7 @@ local function _sequence_twins()
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Head to the boat.
-	if _route[9] % 2 == 1 then
+	if steps % 2 == 1 then
 		table.insert(_q, {walk.walk, {79, 3, 4}})
 		table.insert(_q, {walk.walk, {79, 3, 5}})
 	else
@@ -1587,7 +1576,7 @@ local function _sequence_twins()
 
 	table.insert(_q, {walk.walk, {79, 1, 5}})
 
-	for i = 1, _route[9] / 2 do
+	for i = 1, steps / 2 do
 		table.insert(_q, {walk.walk, {79, 1, 4}})
 		table.insert(_q, {walk.walk, {79, 1, 5}})
 	end
@@ -1673,7 +1662,7 @@ local function _sequence_milon()
 	table.insert(_q, {walk.walk, {nil, 157, 205}})
 
 	-- Step Route: World Map (Mysidia)
-	for i = 1, _route[10] / 2 do
+	for i = 1, route.get_value("World Map (Mysidia)") / 2 do
 		table.insert(_q, {walk.walk, {nil, 157, 204}})
 		table.insert(_q, {walk.walk, {nil, 157, 205}})
 	end
@@ -1723,7 +1712,7 @@ local function _sequence_milon()
 	table.insert(_q, {walk.walk, {135, 17, 16}})
 
 	-- Step Route: Mt.Ordeals Summit
-	if _route[11] > 0 then
+	if route.get_value("Mt.Ordeals Summit 1") > 0 then
 		table.insert(_q, {walk.walk, {135, 17, 15}})
 	else
 		table.insert(_q, {walk.walk, {135, 16, 16}})
@@ -1786,7 +1775,7 @@ local function _sequence_karate()
 	table.insert(_q, {walk.walk, {135, 16, 15}})
 
 	-- Step Route: Mt.Ordeals Summit
-	if _route[12] > 0 then
+	if route.get_value("Mt.Ordeals Summit 2") > 0 then
 		table.insert(_q, {walk.walk, {135, 17, 15}})
 	else
 		table.insert(_q, {walk.walk, {135, 16, 16}})
@@ -1822,12 +1811,12 @@ local function _sequence_karate()
 	table.insert(_q, {walk.walk, {132, 10, 28}})
 
 	-- Step Route: Mt.Ordeals
-	for i = 1, _route[13] / 2 do
+	for i = 1, route.get_value("Mt.Ordeals") / 2 do
 		table.insert(_q, {walk.walk, {132, 9, 28}})
 		table.insert(_q, {walk.walk, {132, 10, 28}})
 	end
 
-	if _route[13] % 2 == 1 then
+	if route.get_value("Mt.Ordeals") % 2 == 1 then
 		table.insert(_q, {walk.walk, {132, 11, 28}})
 		table.insert(_q, {walk.walk, {132, 10, 28}})
 	end
@@ -1876,12 +1865,12 @@ local function _sequence_karate()
 	table.insert(_q, {walk.walk, {151, 5, 10}})
 
 	-- Step Route: Serpent Road
-	for i = 1, _route[14] / 2 do
+	for i = 1, route.get_value("Serpent Road") / 2 do
 		table.insert(_q, {walk.walk, {151, 6, 10}})
 		table.insert(_q, {walk.walk, {151, 5, 10}})
 	end
 
-	if _route[14] % 2 == 1 then
+	if route.get_value("Serpent Road") % 2 == 1 then
 		table.insert(_q, {walk.walk, {151, 5, 9}})
 		table.insert(_q, {walk.walk, {151, 5, 10}})
 	end
@@ -1981,12 +1970,12 @@ local function _sequence_baigan()
 	table.insert(_q, {walk.walk, {60, 6, 12}})
 
 	-- Step Route: Castle Baron B1F
-	if _route[15] == 1 then
+	if route.get_value("Castle Baron B1F Inward Save Room Choice") == 1 then
 		table.insert(_q, {walk.walk, {60, 6, 11}})
 		table.insert(_q, {walk.walk, {60, 2, 11}})
 		table.insert(_q, {walk.walk, {60, 2, 9}})
 
-		for i = 1, _route[16] / 2 do
+		for i = 1, route.get_value("Castle Baron B1F Inward Save Room Steps") / 2 do
 			table.insert(_q, {walk.walk, {61, 4, 10}})
 			table.insert(_q, {walk.walk, {61, 4, 11}})
 		end
@@ -2062,14 +2051,14 @@ local function _sequence_kainazzo()
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Step Route: Castle Baron
-	for i = 1, _route[17] / 2 do
+	for i = 1, route.get_value("Castle Baron (Kainazzo)") / 2 do
 		table.insert(_q, {walk.walk, {42, 9, 4}})
 		table.insert(_q, {walk.walk, {42, 8, 4}})
 	end
 
 	table.insert(_q, {walk.walk, {42, 8, 3}})
 
-	if _route[17] % 2 == 1 then
+	if route.get_value("Castle Baron (Kainazzo)") % 2 == 1 then
 		table.insert(_q, {walk.walk, {42, 9, 3}})
 		table.insert(_q, {walk.walk, {42, 8, 3}})
 	end
@@ -2093,24 +2082,26 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {85, 9, 10}})
 
 	-- Step Route: Toroian Castle
-	if _route[18] >= 3 and _route[18] % 2 == 1 then
+	local steps = route.get_value("Toroian Castle")
+
+	if steps >= 3 and steps % 2 == 1 then
 		table.insert(_q, {walk.walk, {85, 7, 10}})
-		_route[18] = _route[18] - 3
-	elseif _route[18] >= 2 then
+		steps = steps - 3
+	elseif steps >= 2 then
 		table.insert(_q, {walk.walk, {85, 9, 9}})
 		table.insert(_q, {walk.walk, {85, 7, 9}})
-		_route[18] = _route[18] - 2
-	elseif _route[18] == 1 then
+		steps = steps - 2
+	elseif steps == 1 then
 		table.insert(_q, {walk.walk, {85, 9, 8}})
 		table.insert(_q, {walk.walk, {85, 7, 8}})
-		_route[18] = _route[18] - 1
+		steps = steps - 1
 	else
 		table.insert(_q, {walk.walk, {85, 9, 7}})
 	end
 
 	table.insert(_q, {walk.walk, {85, 7, 7}})
 
-	for i = 1, _route[18] / 2 do
+	for i = 1, steps / 2 do
 		table.insert(_q, {walk.walk, {85, 7, 8}})
 		table.insert(_q, {walk.walk, {85, 7, 7}})
 	end
@@ -2139,7 +2130,7 @@ local function _sequence_dark_elf()
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Step Route: World Map (Toroia)
-	if _route[19] > 0 then
+	if route.get_value("World Map (Toroia) 1") > 0 then
 		table.insert(_q, {walk.walk, {nil, 36, 82}})
 	else
 		table.insert(_q, {walk.walk, {nil, 35, 70}})
@@ -2187,10 +2178,10 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {143, 22, 9}})
 
 	-- Step Route: Cave Magnes B3F
-	if _route[20] == 1 then
+	if route.get_value("Cave Magnes B3F Inward Save Room Choice") == 1 then
 		table.insert(_q, {walk.walk, {143, 21, 9}})
 
-		for i = 1, _route[21] / 2 do
+		for i = 1, route.get_value("Cave Magnes B3F Inward Save Room Steps") / 2 do
 			table.insert(_q, {walk.walk, {146, 6, 11}})
 			table.insert(_q, {walk.walk, {146, 6, 12}})
 		end
@@ -2218,13 +2209,13 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {147, 13, 15}})
 
 	-- Step Route: Cave Magnes B4F
-	if _route[22] == 1 then
+	if route.get_value("Cave Magnes B4F Inward Save Room Choice") == 1 then
 		table.insert(_q, {walk.walk, {147, 24, 15}})
 		table.insert(_q, {walk.walk, {147, 24, 16}})
 		table.insert(_q, {walk.walk, {147, 27, 16}})
 		table.insert(_q, {walk.walk, {147, 27, 15}})
 
-		for i = 1, _route[23] / 2 do
+		for i = 1, route.get_value("Cave Magnes B4F Inward Save Room Steps") / 2 do
 			table.insert(_q, {walk.walk, {161, 6, 11}})
 			table.insert(_q, {walk.walk, {161, 6, 12}})
 		end
@@ -2236,7 +2227,7 @@ local function _sequence_dark_elf()
 		table.insert(_q, {walk.walk, {147, 13, 15}})
 	end
 
-	for i = 1, _route[24] / 2 do
+	for i = 1, route.get_value("Cave Magnes B4F") / 2 do
 		table.insert(_q, {walk.walk, {147, 12, 15}})
 		table.insert(_q, {walk.walk, {147, 13, 15}})
 	end
@@ -2294,25 +2285,27 @@ local function _sequence_flamedog()
 	table.insert(_q, {walk.walk, {85, 9, 10, true}})
 
 	-- Step Route: Toroian Castle 1F
-	if _route[25] == 1 then
-		if _route[26] >= 3 and _route[26] % 2 == 1 then
+	if route.get_value("Toroian Castle 1F Inward Choice") == 1 then
+		local steps = route.get_value("Toroian Castle 1F Inward Steps")
+
+		if steps >= 3 and steps % 2 == 1 then
 			table.insert(_q, {walk.walk, {85, 7, 10, true}})
-			_route[26] = _route[26] - 3
-		elseif _route[26] >= 2 then
+			steps = steps - 3
+		elseif steps >= 2 then
 			table.insert(_q, {walk.walk, {85, 9, 9, true}})
 			table.insert(_q, {walk.walk, {85, 7, 9, true}})
-			_route[26] = _route[26] - 2
-		elseif _route[26] == 1 then
+			steps = steps - 2
+		elseif steps == 1 then
 			table.insert(_q, {walk.walk, {85, 9, 8, true}})
 			table.insert(_q, {walk.walk, {85, 7, 8, true}})
-			_route[26] = _route[26] - 1
+			steps = steps - 1
 		else
 			table.insert(_q, {walk.walk, {85, 9, 7, true}})
 		end
 
 		table.insert(_q, {walk.walk, {85, 7, 7, true}})
 
-		for i = 1, _route[26] / 2 do
+		for i = 1, steps / 2 do
 			table.insert(_q, {walk.walk, {85, 6, 7}})
 			table.insert(_q, {walk.walk, {85, 7, 7}})
 		end
@@ -2331,9 +2324,9 @@ local function _sequence_flamedog()
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Step Route: World Map (Toroia)
-	if _route[27] == 2 then
+	if route.get_value("World Map (Toroia) 2") == 2 then
 		table.insert(_q, {walk.walk, {nil, 36, 81}})
-	elseif _route[27] == 1 then
+	elseif route.get_value("World Map (Toroia) 2") == 1 then
 		table.insert(_q, {walk.walk, {nil, 35, 82}})
 		table.insert(_q, {walk.walk, {nil, 36, 82}})
 	else
@@ -2467,21 +2460,23 @@ local function _sequence_calbrena()
 	table.insert(_q, {_set_healing, {_healing_calbrena}})
 
 	-- Step Route: Castle Baron (after Valvalis)
-	while _route[28] > 0 do
-		if _route[28] == 3 then
+	local steps = route.get_value("Castle Baron (Valvalis)")
+
+	while steps > 0 do
+		if steps == 3 then
 			table.insert(_q, {walk.walk, {52, 6, 5}})
 			table.insert(_q, {walk.walk, {52, 8, 5}})
 			table.insert(_q, {walk.walk, {52, 8, 4}})
-			_route[28] = 0
-		elseif _route[28] >= 2 then
+			steps = 0
+		elseif steps >= 2 then
 			table.insert(_q, {walk.walk, {52, 5, 4}})
 			table.insert(_q, {walk.walk, {52, 6, 4}})
-			_route[28] = _route[28] - 2
-		elseif _route[28] == 1 then
+			steps = steps - 2
+		elseif steps == 1 then
 			table.insert(_q, {walk.walk, {52, 7, 4}})
 			table.insert(_q, {walk.walk, {52, 7, 5}})
 			table.insert(_q, {walk.walk, {52, 7, 4}})
-			_route[28] = 0
+			steps = 0
 		end
 	end
 
@@ -2544,30 +2539,46 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.interact, {}})
 
 	-- Walk to the right tower and collect the Strength ring.
-	table.insert(_q, {walk.walk, {269, 9, 20}})
-	table.insert(_q, {walk.walk, {265, 8, 1}})
-	table.insert(_q, {walk.walk, {265, 8, 6}})
+	local steps = route.get_value("Castle of Dwarves Steps")
 
-	-- Step Route: Castle of Dwarves A
-	if _route[29] >= 2 then
-		table.insert(_q, {walk.walk, {265, 8, 10}})
-		_route[29] = _route[29] - 2
-	elseif _route[29] == 1 then
-		table.insert(_q, {walk.walk, {265, 9, 6}})
-		table.insert(_q, {walk.walk, {265, 9, 10}})
-		_route[29] = _route[29] - 1
+	if route.get_value("Castle of Dwarves Choice") == 1 then
+		table.insert(_q, {menu.field.open, {}})
+		table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
+		table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+		table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+		table.insert(_q, {menu.field.close, {}})
+		table.insert(_q, {menu.field.open, {}})
+		table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
+		table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+		table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+		table.insert(_q, {menu.field.close, {}})
 	else
-		table.insert(_q, {walk.walk, {265, 10, 6}})
+		table.insert(_q, {walk.walk, {269, 9, 20}})
+		table.insert(_q, {walk.walk, {265, 8, 1}})
+		table.insert(_q, {walk.walk, {265, 8, 6}})
+
+		-- Step Route: Castle of Dwarves A
+		if steps >= 2 then
+			table.insert(_q, {walk.walk, {265, 8, 10}})
+			steps = steps - 2
+		elseif steps == 1 then
+			table.insert(_q, {walk.walk, {265, 9, 6}})
+			table.insert(_q, {walk.walk, {265, 9, 10}})
+			steps = steps - 1
+		else
+			table.insert(_q, {walk.walk, {265, 10, 6}})
+		end
+
+		table.insert(_q, {walk.walk, {265, 10, 10}})
+		table.insert(_q, {walk.walk, {265, 10, 15}})
 	end
 
-	table.insert(_q, {walk.walk, {265, 10, 10}})
-	table.insert(_q, {walk.walk, {265, 10, 15}})
 	table.insert(_q, {walk.walk, {264, 11, 7}})
 
 	-- Step Route: Castle of Dwarves B
-	if _route[29] >= 1 then
+	if steps >= 1 then
 		table.insert(_q, {walk.walk, {264, 16, 7, true}})
-		_route[29] = _route[29] - 1
+		steps = steps - 1
 	else
 		table.insert(_q, {walk.walk, {264, 11, 8, true}})
 	end
@@ -2578,36 +2589,36 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.walk, {270, 3, 9, true}})
 
 	-- Step Route: Castle of Dwarves C
-	if _route[29] >= 10 then
+	if steps >= 10 then
 		table.insert(_q, {walk.walk, {270, 11, 9, true}})
 		table.insert(_q, {walk.walk, {270, 11, 7, true}})
-		_route[29] = _route[29] - 10
+		steps = steps - 10
 	else
-		if _route[29] == 9 then
+		if steps == 9 then
 			-- 9 steps is the default if we don't reposition.
-		elseif _route[29] == 8 then
+		elseif steps == 8 then
 			table.insert(_q, {walk.walk, {270, 12, 9, true}})
 			table.insert(_q, {walk.walk, {270, 12, 8, true}})
-		elseif _route[29] == 7 then
+		elseif steps == 7 then
 			table.insert(_q, {walk.walk, {270, 10, 9, true}})
 			table.insert(_q, {walk.walk, {270, 10, 6, true}})
-		elseif _route[29] == 6 then
+		elseif steps == 6 then
 			table.insert(_q, {walk.walk, {270, 9, 9, true}})
 			table.insert(_q, {walk.walk, {270, 9, 6, true}})
-		elseif _route[29] == 5 then
+		elseif steps == 5 then
 			table.insert(_q, {walk.walk, {270, 3, 7, true}})
 			table.insert(_q, {walk.walk, {270, 7, 7, true}})
 			table.insert(_q, {walk.walk, {270, 7, 6, true}})
-		elseif _route[29] == 4 then
+		elseif steps == 4 then
 			table.insert(_q, {walk.walk, {270, 7, 9, true}})
 			table.insert(_q, {walk.walk, {270, 7, 6, true}})
-		elseif _route[29] == 3 then
+		elseif steps == 3 then
 			table.insert(_q, {walk.walk, {270, 6, 9, true}})
 			table.insert(_q, {walk.walk, {270, 6, 6, true}})
-		elseif _route[29] == 2 then
+		elseif steps == 2 then
 			table.insert(_q, {walk.walk, {270, 5, 9, true}})
 			table.insert(_q, {walk.walk, {270, 5, 6, true}})
-		elseif _route[29] == 1 then
+		elseif steps == 1 then
 			table.insert(_q, {walk.walk, {270, 3, 8, true}})
 			table.insert(_q, {walk.walk, {270, 4, 8, true}})
 			table.insert(_q, {walk.walk, {270, 4, 6, true}})
@@ -2616,7 +2627,7 @@ local function _sequence_dr_lugae()
 			table.insert(_q, {walk.walk, {270, 4, 6, true}})
 		end
 
-		_route[29] = 0
+		steps = 0
 	end
 
 	table.insert(_q, {walk.walk, {270, 13, 4, true}})
@@ -2624,9 +2635,9 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.walk, {272, 8, 8}})
 
 	-- Step Route: Castle of Dwarves D
-	if _route[29] >= 1 then
+	if steps >= 1 then
 		table.insert(_q, {walk.walk, {272, 8, 7}})
-		_route[29] = _route[29] - 1
+		steps = steps - 1
 	else
 		table.insert(_q, {walk.walk, {272, 6, 8}})
 	end
@@ -2643,9 +2654,9 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.walk, {272, 6, 7}})
 
 	-- Step Route: Castle of Dwarves E
-	if _route[29] >= 1 then
+	if steps >= 1 then
 		table.insert(_q, {walk.walk, {272, 8, 7}})
-		_route[29] = _route[29] - 1
+		steps = steps - 1
 	else
 		table.insert(_q, {walk.walk, {272, 6, 8}})
 	end
@@ -2666,9 +2677,9 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.walk, {270, 2, 6, true}})
 
 	-- Step Route: Castle of Dwarves F
-	if _route[29] >= 1 then
+	if steps >= 1 then
 		table.insert(_q, {walk.walk, {270, 2, 5, true}})
-		_route[29] = _route[29] - 1
+		steps = steps - 1
 	else
 		table.insert(_q, {walk.walk, {270, 1, 6, true}})
 	end
@@ -2691,9 +2702,9 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.walk, {267, 11, 11}})
 
 	-- Step Route: Castle of Dwarves G
-	if _route[29] >= 1 then
+	if steps >= 1 then
 		table.insert(_q, {walk.walk, {267, 11, 12}})
-		_route[29] = _route[29] - 1
+		steps = steps - 1
 	else
 		table.insert(_q, {walk.walk, {267, 10, 11}})
 	end
@@ -2701,9 +2712,9 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.walk, {267, 10, 12}})
 	table.insert(_q, {walk.walk, {267, 10, 14}})
 
-	if _route[29] >= 1 then
+	if steps >= 1 then
 		table.insert(_q, {walk.walk, {267, 11, 14}})
-		_route[29] = _route[29] - 1
+		steps = steps - 1
 	else
 		table.insert(_q, {walk.walk, {267, 10, 17}})
 	end
@@ -2715,19 +2726,19 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.walk, {267, 2, 27}})
 
 	-- Step Route: Castle of Dwarves H
-	if _route[29] >= 1 then
+	if steps >= 1 then
 		table.insert(_q, {walk.walk, {271, 29, 6}})
-		_route[29] = _route[29] - 1
+		steps = steps - 1
 	else
 		table.insert(_q, {walk.walk, {271, 28, 5}})
 	end
 
 	table.insert(_q, {walk.walk, {271, 28, 6}})
 
-	if _route[29] % 2 == 1 then
+	if steps % 2 == 1 then
 		table.insert(_q, {walk.walk, {271, 27, 6}})
 		table.insert(_q, {walk.walk, {271, 27, 8}})
-		_route[29] = _route[29] - 1
+		steps = steps - 1
 	else
 		table.insert(_q, {walk.walk, {271, 28, 8}})
 	end
@@ -2740,7 +2751,7 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.step, {walk.DIRECTION.LEFT}})
 	table.insert(_q, {walk.interact, {}})
 
-	for i = 1, _route[29] / 2 do
+	for i = 1, steps / 2 do
 		table.insert(_q, {walk.walk, {271, 3, 6}})
 		table.insert(_q, {walk.walk, {271, 3, 7}})
 	end
@@ -2965,12 +2976,12 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {36, 15, 15}})
 
 	-- Step Route: Castle of Baron (airship hook)
-	for i = 1, _route[30] / 2 do
+	for i = 1, route.get_value("Castle Baron (Airship Hook)") / 2 do
 		table.insert(_q, {walk.walk, {42, 9, 12}})
 		table.insert(_q, {walk.walk, {42, 8, 12}})
 	end
 
-	if _route[30] % 2 == 1 then
+	if route.get_value("Castle Baron (Airship Hook)") % 2 == 1 then
 		table.insert(_q, {walk.walk, {42, 8, 13}})
 	end
 
@@ -3034,20 +3045,22 @@ local function _sequence_edge()
 	table.insert(_q, {menu.shop.close, {}})
 
 	-- Step Route: Cave Eblana B2F
-	if _route[31] % 2 == 1 then
+	local steps = route.get_value("Cave Eblana B2F")
+
+	if steps % 2 == 1 then
 		table.insert(_q, {walk.walk, {204, 8, 5}})
 		table.insert(_q, {walk.walk, {204, 8, 9}})
-		_route[31] = _route[31] - 1
-	elseif _route[31] >= 2 then
+		steps = steps - 1
+	elseif steps >= 2 then
 		table.insert(_q, {walk.walk, {204, 7, 9}})
-		_route[31] = _route[31] - 2
+		steps = steps - 2
 	else
 		table.insert(_q, {walk.walk, {204, 9, 5}})
 	end
 
 	table.insert(_q, {walk.walk, {204, 9, 9}})
 
-	for i = 1, _route[31] / 2 do
+	for i = 1, steps / 2 do
 		table.insert(_q, {walk.walk, {204, 8, 9}})
 		table.insert(_q, {walk.walk, {204, 9, 9}})
 	end
@@ -3100,11 +3113,11 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {202, 27, 24}})
 
 	-- Step Route: Pass to Bab-il 2
-	if _route[32] == 1 then
+	if route.get_value("Pass to Bab-il 2 Inward Save Room Choice") == 1 then
 		table.insert(_q, {walk.walk, {202, 29, 24}})
 		table.insert(_q, {walk.walk, {202, 29, 23}})
 
-		for i = 1, _route[33] / 2 do
+		for i = 1, route.get_value("Pass to Bab-il 2 Inward Save Room Steps") / 2 do
 			table.insert(_q, {walk.walk, {205, 4, 10}})
 			table.insert(_q, {walk.walk, {205, 4, 11}})
 		end
@@ -3266,30 +3279,32 @@ local function _sequence_monsters()
 	table.insert(_q, {walk.walk, {263, 15, 19}})
 
 	-- Step Route: Castle of Dwarves (visiting Cid)
-	if _route[34] >= 4 and _route[34] % 2 == 0 then
+	local steps = route.get_value("Castle of Dwarves (Cid)")
+
+	if steps >= 4 and steps % 2 == 0 then
 		table.insert(_q, {walk.walk, {264, 6, 11, true}})
-		_route[34] = _route[34] - 4
-	elseif _route[34] >= 3 and _route[34] % 2 == 1 then
+		steps = steps - 4
+	elseif steps >= 3 and steps % 2 == 1 then
 		table.insert(_q, {walk.walk, {264, 8, 11, true}})
 		table.insert(_q, {walk.walk, {264, 8, 8, true}})
-		_route[34] = _route[34] - 3
-	elseif _route[34] == 2 then
+		steps = steps - 3
+	elseif steps == 2 then
 		table.insert(_q, {walk.walk, {264, 11, 10, true}})
 		table.insert(_q, {walk.walk, {264, 8, 10, true}})
 		table.insert(_q, {walk.walk, {264, 8, 8, true}})
-		_route[34] = _route[34] - 2
-	elseif _route[34] == 1 then
+		steps = steps - 2
+	elseif steps == 1 then
 		table.insert(_q, {walk.walk, {264, 11, 9, true}})
 		table.insert(_q, {walk.walk, {264, 8, 9, true}})
 		table.insert(_q, {walk.walk, {264, 8, 8, true}})
-		_route[34] = _route[34] - 1
+		steps = steps - 1
 	else
 		table.insert(_q, {walk.walk, {264, 11, 8, true}})
 	end
 
 	table.insert(_q, {walk.walk, {264, 6, 8, true}})
 
-	for i = 1, _route[34] / 2 do
+	for i = 1, steps / 2 do
 		table.insert(_q, {walk.walk, {264, 6, 7, true}})
 		table.insert(_q, {walk.walk, {264, 6, 8, true}})
 	end
@@ -3318,7 +3333,7 @@ local function _sequence_monsters()
 	table.insert(_q, {walk.interact, {}})
 
 	-- Step Route: Underworld Map
-	for i = 1, _route[35] / 2 do
+	for i = 1, route.get_value("Underworld Map") / 2 do
 		table.insert(_q, {walk.walk, {nil, 28, 87}})
 		table.insert(_q, {walk.walk, {nil, 27, 87}})
 	end
@@ -3363,12 +3378,12 @@ local function _sequence_dark_crystal()
 	table.insert(_q, {walk.walk, {312, 4, 14}})
 
 	-- Step Route: Land of Monsters B3F
-	if _route[36] == 2 then
+	if route.get_value("Land of Monsters B3F Inward Choice") == 2 then
 		table.insert(_q, {walk.walk, {312, 0, 14}})
 		table.insert(_q, {walk.walk, {312, 0, 26}})
 		table.insert(_q, {walk.walk, {312, 29, 26}})
 		table.insert(_q, {walk.walk, {312, 29, 14}})
-	elseif _route[36] == 1 then
+	elseif route.get_value("Land of Monsters B3F Inward Choice") == 1 then
 		table.insert(_q, {walk.walk, {312, 0, 14}})
 		table.insert(_q, {walk.walk, {312, 0, 26}})
 		table.insert(_q, {walk.walk, {312, 29, 26}})
@@ -3411,7 +3426,7 @@ local function _sequence_dark_crystal()
 	table.insert(_q, {walk.walk, {nil, 46, 109}})
 
 	-- Step Route: Sealed Cave
-	for i = 1, _route[37] / 2 do
+	for i = 1, route.get_value("Sealed Cave") / 2 do
 		table.insert(_q, {walk.walk, {324, 4, 9}})
 		table.insert(_q, {walk.walk, {324, 4, 10}})
 	end
@@ -3432,12 +3447,12 @@ local function _sequence_big_whale()
 	table.insert(_q, {walk.walk, {264, 11, 1}})
 
 	-- Step Route: Castle of Dwarves (King's Room)
-	for i = 1, _route[38] / 2 do
+	for i = 1, route.get_value("Castle of Dwarves (King)") / 2 do
 		table.insert(_q, {walk.walk, {265, 10, 12}})
 		table.insert(_q, {walk.walk, {265, 10, 13}})
 	end
 
-	if _route[38] % 2 == 1 then
+	if route.get_value("Castle of Dwarves (King)") % 2 == 1 then
 		table.insert(_q, {walk.walk, {265, 10, 14}})
 	end
 
@@ -3458,7 +3473,7 @@ local function _sequence_big_whale()
 	table.insert(_q, {walk.walk, {nil, 35, 237}})
 
 	-- Step Route: World Map (Eblan)
-	for i = 1, _route[39] / 2 do
+	for i = 1, route.get_value("World Map (Eblan)") / 2 do
 		table.insert(_q, {walk.walk, {nil, 35, 236}})
 		table.insert(_q, {walk.walk, {nil, 35, 237}})
 	end
@@ -3482,7 +3497,7 @@ local function _sequence_big_whale()
 	-- Step Route: Grotto Adamant
 	table.insert(_q, {walk.walk, {160, 7, 19}})
 
-	for i = 1, _route[40] / 2 do
+	for i = 1, route.get_value("Grotto Adamant") / 2 do
 		table.insert(_q, {walk.walk, {160, 8, 19}})
 		table.insert(_q, {walk.walk, {160, 7, 19}})
 	end
@@ -3608,7 +3623,7 @@ local function _sequence_fusoya_fusoya()
 	table.insert(_q, {walk.walk, {nil, 21, 19}})
 
 	-- Step Route: Lunar World Map
-	for i = 1, _route[43] / 2 do
+	for i = 1, route.get_value("Lunar World Map") / 2 do
 		table.insert(_q, {walk.walk, {nil, 21, 20}})
 		table.insert(_q, {walk.walk, {nil, 21, 19}})
 	end
@@ -3665,7 +3680,7 @@ local function _sequence_fusoya()
 	table.insert(_q, {walk.interact, {}})
 
 	-- Step Route: Hummingway or FuSoYa
-	if _route[41] == 0 then
+	if route.get_value("Hummingway/FuSoYa Choice") == 0 then
 		_sequence_fusoya_hummingway()
 		table.insert(_q, {walk.walk, {303, 5, 13}})
 		table.insert(_q, {walk.walk, {303, 5, 7}})
@@ -3695,7 +3710,7 @@ local function _sequence_grind_start()
 	table.insert(_q, {walk.walk, {181, 9, 16}})
 
 	-- Step Route: Giant of Bab-il Mouth
-	if _route[44] == 1 then
+	if route.get_value("Giant of Bab-il Mouth") == 1 then
 		table.insert(_q, {walk.walk, {181, 10, 16}})
 	else
 		table.insert(_q, {walk.walk, {181, 9, 15}})
@@ -3780,12 +3795,12 @@ local function _sequence_grind_start()
 	table.insert(_q, {walk.walk, {186, 3, 6}})
 
 	-- Step Route: Giant of Bab-il Passage
-	for i = 1, _route[45] / 2 do
+	for i = 1, route.get_value("Giant of Bab-il Passage") / 2 do
 		table.insert(_q, {walk.walk, {186, 4, 6}})
 		table.insert(_q, {walk.walk, {186, 3, 6}})
 	end
 
-	if _route[45] % 2 == 1 then
+	if route.get_value("Giant of Bab-il Passage") % 2 == 1 then
 		table.insert(_q, {walk.walk, {186, 3, 7}})
 		table.insert(_q, {walk.walk, {186, 3, 6}})
 	end
@@ -3841,12 +3856,12 @@ local function _sequence_cpu()
 	table.insert(_q, {walk.walk, {189, 9, 17}})
 
 	-- Step Route: Giant of Bab-il CPU
-	for i = 1, _route[46] / 2 do
+	for i = 1, route.get_value("Giant of Bab-il CPU") / 2 do
 		table.insert(_q, {walk.walk, {189, 10, 17}})
 		table.insert(_q, {walk.walk, {189, 9, 17}})
 	end
 
-	if _route[46] % 2 == 1 then
+	if route.get_value("Giant of Bab-il CPU") % 2 == 1 then
 		table.insert(_q, {walk.walk, {189, 9, 16}})
 		table.insert(_q, {walk.walk, {189, 9, 17}})
 	end
@@ -3929,12 +3944,12 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {360, 30, 30}})
 
 	-- Step Route: Lunar Subterrane B2
-	for i = 1, _route[47] / 2 do
+	for i = 1, route.get_value("Lunar Subterrane B2") / 2 do
 		table.insert(_q, {walk.walk, {360, 29, 30}})
 		table.insert(_q, {walk.walk, {360, 30, 30}})
 	end
 
-	if _route[47] % 2 == 1 then
+	if route.get_value("Lunar Subterrane B2") % 2 == 1 then
 		table.insert(_q, {walk.walk, {360, 31, 30}})
 		table.insert(_q, {walk.walk, {360, 30, 30}})
 	end
@@ -3962,7 +3977,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {362, 25, 26}})
 
 	-- Step Route: Lunar Subterrane B4
-	for i = 1, _route[48] / 2 do
+	for i = 1, route.get_value("Lunar Subterrane B4") / 2 do
 		table.insert(_q, {walk.walk, {362, 24, 26}})
 		table.insert(_q, {walk.walk, {362, 25, 26}})
 	end
@@ -3984,7 +3999,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {363, 11, 14}})
 
 	-- Step Route: Lunar Subterrane B5
-	for i = 1, _route[49] / 2 do
+	for i = 1, route.get_value("Lunar Subterrane B5 1") / 2 do
 		table.insert(_q, {walk.walk, {363, 10, 14}})
 		table.insert(_q, {walk.walk, {363, 11, 14}})
 	end
@@ -4031,7 +4046,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {363, 14, 21}})
 
 	-- Step Route: Lunar Subterrane B5 (after room)
-	for i = 1, _route[50] / 2 do
+	for i = 1, route.get_value("Lunar Subterrane B5 2") / 2 do
 		table.insert(_q, {walk.walk, {363, 13, 21}})
 		table.insert(_q, {walk.walk, {363, 14, 21}})
 	end
@@ -4046,11 +4061,11 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {363, 20, 28}})
 
 	-- Step Route: Lunar Subterrane B5 (Pink Puff)
-	if _route[51] == 1 then
+	if route.get_value("Lunar Subterrane B5 Inward Pink Puff Room Choice") == 1 then
 		table.insert(_q, {walk.walk, {363, 23, 28}})
 		table.insert(_q, {walk.walk, {363, 23, 27}})
 
-		for i = 1, _route[52] / 2 do
+		for i = 1, route.get_value("Lunar Subterrane B5 Inward Pink Puff Room Steps") / 2 do
 			table.insert(_q, {walk.walk, {375, 3, 9}})
 			table.insert(_q, {walk.walk, {375, 2, 9}})
 		end
@@ -4075,7 +4090,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {364, 22, 22}})
 
 	-- Step Route: Lunar Subterrane B6
-	for i = 1, _route[53] / 2 do
+	for i = 1, route.get_value("Lunar Subterrane B6") / 2 do
 		table.insert(_q, {walk.walk, {364, 21, 22}})
 		table.insert(_q, {walk.walk, {364, 22, 22}})
 	end
@@ -4090,10 +4105,10 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {365, 13, 21}})
 
 	-- Step Route: Lunar Subterrane B7 Save Room
-	if _route[54] == 1 then
+	if route.get_value("Lunar Subterrane B7 Inward Save Room Choice") == 1 then
 		table.insert(_q, {walk.walk, {365, 13, 20}})
 
-		for i = 1, _route[55] / 2 do
+		for i = 1, route.get_value("Lunar Subterrane B7 Inward Save Room Steps") / 2 do
 			table.insert(_q, {walk.walk, {379, 4, 14}})
 			table.insert(_q, {walk.walk, {379, 3, 14}})
 		end
@@ -4102,7 +4117,7 @@ local function _sequence_core()
 		table.insert(_q, {walk.walk, {365, 13, 21}})
 	end
 
-	for i = 1, _route[56] / 2 do
+	for i = 1, route.get_value("Lunar Subterrane B7") / 2 do
 		table.insert(_q, {walk.walk, {365, 13, 22}})
 		table.insert(_q, {walk.walk, {365, 13, 21}})
 	end
@@ -4248,11 +4263,7 @@ local function _check_autoreload()
 			table.insert(_q, {menu.wait, {132}})
 			table.insert(_q, {_state_set, {"check_autoreload", true}})
 
-			_route = {}
-
-			for i = 0, 56 do
-				_route[i] = 0
-			end
+			route.set_enabled(false)
 		elseif FULL_RUN then
 			log.log("Load game screen detected: ending run")
 

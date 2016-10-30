@@ -55,6 +55,7 @@ local battle = require "ai.battle"
 local bridge = require "util.bridge"
 local dialog = require "util.dialog"
 local input = require "util.input"
+local route = require "util.route"
 local log = require "util.log"
 local menu = require "action.menu"
 local sequence = require "ai.sequence"
@@ -141,6 +142,7 @@ local function _reset()
 
 	bridge.reset()
 	menu.reset()
+	route.reset()
 	walk.reset()
 
 	dialog.reset()
