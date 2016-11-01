@@ -3823,10 +3823,25 @@ local function _sequence_grind_start()
 	table.insert(_q, {walk.walk, {188, 15, 16}})
 end
 
+local function _grind_search()
+	if memory.read("walk", "y") == 16 then
+		local level = game.character.get_stat(game.CHARACTER.EDGE, "level")
+
+		if level ~= nil and level >= 45 then
+			return true
+		else
+			walk.walk(188, 15, 17)
+		end
+	else
+		walk.walk(188, 15, 16)
+	end
+
+	return false
+end
+
 local function _sequence_elements()
 	if game.character.get_stat(game.CHARACTER.EDGE, "level") < 45 then
-		table.insert(_q, {walk.walk, {188, 15, 17}})
-		table.insert(_q, {walk.walk, {188, 15, 16}})
+		table.insert(_q, {_grind_search, {}})
 	else
 		_post_grind_menu()
 		table.insert(_q, {walk.walk, {188, 15, 15}})

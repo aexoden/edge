@@ -81,9 +81,6 @@ provide a good list of improvements that can be made.
 
 ## Minor Issues
 
-* Ensure that step routing is correct at the tile before the Elements battle if
-  the grind fight begins on that last tile.
-
 * Check healing strategy upon immediately entering Zot. Death was observed with
   only Tellah and Yang alive with a total of approximately ~500 HP.
 

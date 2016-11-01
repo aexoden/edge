@@ -335,7 +335,13 @@ function _M.character.get_slot_from_index(index)
 end
 
 function _M.character.get_stat(character, stat, battle)
-	return memory.read_stat(_M.character.get_slot(character), stat, battle)
+	local slot = _M.character.get_slot(character)
+
+	if slot then
+		return memory.read_stat(_M.character.get_slot(character), stat, battle)
+	else
+		return nil
+	end
 end
 
 function _M.character.is_status(character, status)
