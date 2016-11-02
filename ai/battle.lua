@@ -747,8 +747,10 @@ local function _battle_golbez(character, turn)
 			_command_wait_frames(30)
 			_command_jump()
 			_state.full_inventory = true
-		else
+		elseif game.enemy.get_stat(0, "hp") < 20500 then
 			_command_fight()
+		else
+			_command_jump()
 		end
 	elseif character == game.CHARACTER.RYDIA then
 		if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then

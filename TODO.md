@@ -108,9 +108,6 @@ provide a good list of improvements that can be made.
 
 ### Golbez
 
-* In the event of an initial jump failure, Kain should jump again. We can
-  probably just have him check Golbez's remaining HP to decide what to do.
-
 ### Dr. Lugae
 
 * During the fight with both Dr. Lugae and Balnab, the bot should probably do a
