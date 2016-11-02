@@ -121,8 +121,6 @@ provide a good list of improvements that can be made.
 
 ### Dark Imps
 
-* Rydia should only attempt casting a spell if she has MP.
-
 ### Grind Fight
 
 * This fight needs to be almost reworked entirely. There is highly specific

@@ -572,7 +572,7 @@ local function _battle_dark_elf(character, turn)
 end
 
 local function _battle_dark_imp(character, turn)
-	if character == game.CHARACTER.RYDIA then
+	if character == game.CHARACTER.RYDIA and game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 5 then
 		_command_black(game.MAGIC.BLACK.ICE1)
 	else
 		_command_fight()
