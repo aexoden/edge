@@ -472,6 +472,7 @@ local function _battle_d_knight(character, turn)
 		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND, input.DELAY.MASH}})
 		table.insert(_state.q, {menu.battle.target, {}})
 	else
+		_command_run_buffer()
 		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 	end
 end
