@@ -1484,7 +1484,11 @@ local function _battle_mombomb(character, turn)
 
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, target)
 		elseif character == game.CHARACTER.ROSA then
-			_command_aim(menu.battle.TARGET.ENEMY, game.enemy.get_weakest(game.ENEMY.BOMB))
+			if game.enemy.get_stat(1, "hp") < game.enemy.get_stat(2, "hp") then
+				_command_aim(menu.battle.TARGET.ENEMY, 1)
+			else
+				_command_aim(menu.battle.TARGET.ENEMY, 2)
+			end
 		elseif character == game.CHARACTER.YANG then
 			_command_fight()
 		end
