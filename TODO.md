@@ -98,10 +98,6 @@ provide a good list of improvements that can be made.
 
 ### Milon Z
 
-* Work on the TrashCan timing or abandon its attempt in cases where it's
-  unlikely to work successfully. (Such as if Porom dies before Ice-2 is even
-  selected.)
-
 ### Calbrena
 
 * Not sure how feasible it is, but Yang and/or Rosa being dead at the end of

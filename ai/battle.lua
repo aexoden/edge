@@ -1358,7 +1358,7 @@ local function _battle_milon(character, turn)
 end
 
 local function _battle_milon_z(character, turn)
-	if character == game.CHARACTER.CECIL and turn >= 3 or character ~= game.CHARACTER.CECIL and turn >= 2 then
+	if _state.alternate or character == game.CHARACTER.CECIL and turn >= 3 or character ~= game.CHARACTER.CECIL and turn >= 2 then
 		local count = 0
 		local best = nil
 
@@ -1405,7 +1405,12 @@ local function _battle_milon_z(character, turn)
 			end
 		elseif character == game.CHARACTER.PALOM then
 			if turn == 1 then
-				_command_black(game.MAGIC.BLACK.ICE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+				if game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
+					_command_black(game.MAGIC.BLACK.ICE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+				else
+					_state.alternate = true
+					_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY)
+				end
 			end
 		elseif character == game.CHARACTER.TELLAH then
 			if turn == 1 then
