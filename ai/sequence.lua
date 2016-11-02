@@ -2106,8 +2106,7 @@ local function _sequence_dark_elf()
 		table.insert(_q, {walk.walk, {85, 7, 7}})
 	end
 
-	table.insert(_q, {walk.walk, {85, 2, 7}})
-	table.insert(_q, {walk.walk, {85, 2, 10}})
+	table.insert(_q, {walk.walk, {85, 2, 10, true}})
 	table.insert(_q, {walk.walk, {39, 6, 5}})
 	table.insert(_q, {walk.walk, {39, 6, 12}})
 	table.insert(_q, {walk.walk, {39, 9, 12}})

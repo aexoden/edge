@@ -84,9 +84,6 @@ provide a good list of improvements that can be made.
 * Check healing strategy upon immediately entering Zot. Death was observed with
   only Tellah and Yang alive with a total of approximately ~500 HP.
 
-* In Toroia when leaving the main lobby toward Edward, it's possible to get
-  stuck with an NPC in the doorway.
-
 ## Battle-Specific Issues
 
 ### Fabul Battles
