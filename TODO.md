@@ -106,8 +106,6 @@ provide a good list of improvements that can be made.
 
 ### Dark Elf
 
-* Ensure that Tellah having enough MP to cast Weak is prioritized.
-
 ### Golbez
 
 * In the event of an initial jump failure, Kain should jump again. We can

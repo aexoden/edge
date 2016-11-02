@@ -557,12 +557,12 @@ local function _battle_dark_elf(character, turn)
 			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 		elseif tellah_hp == 0 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		elseif tellah_mp < 25 then
+			_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 		elseif character == game.CHARACTER.TELLAH and dragon_hp > 50 then
 			_command_black(game.MAGIC.BLACK.WEAK)
 		elseif tellah_hp < 200 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-		elseif tellah_mp < 25 then
-			_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 		elseif yang_hp > 0 then
 			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		else
