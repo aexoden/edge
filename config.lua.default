@@ -1,0 +1,50 @@
+--------------------------------------------------------------------------------
+-- Copyright (c) 2015 Jason Lynch <jason@calindora.com>
+--
+-- Permission is hereby granted, free of charge, to any person obtaining a copy
+-- of this software and associated documentation files (the "Software"), to deal
+-- in the Software without restriction, including without limitation the rights
+-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+-- copies of the Software, and to permit persons to whom the Software is
+-- furnished to do so, subject to the following conditions:
+--
+-- The above copyright notice and this permission notice shall be included in
+-- all copies or substantial portions of the Software.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+-- THE SOFTWARE.
+--------------------------------------------------------------------------------
+
+local _M = {}
+
+--------------------------------------------------------------------------------
+-- Configuration
+--------------------------------------------------------------------------------
+
+-- Specify a specific route to run. Set this to nil to choose a random route.
+_M.ROUTE = nil
+
+-- Specify the encounter seed to run against. Set to nil to choose a random seed.
+_M.ENCOUNTER_SEED = nil
+
+-- Specify a number to do a specific run. Set this value to nil to do random runs.
+_M.SEED = nil
+
+-- Automatically do continuous runs by restarting after completion.
+_M.AUTOMATIC = false
+
+-- Enable/Disable LiveSplit integration (requires luasocket and LiveSplit)
+_M.LIVESPLIT = false
+
+-- Automatically create save states at the beginning of each battle.
+_M.SAVESTATE = false
+
+-- Do an extended ending at the end of the run (for streaming purposes)
+_M.EXTENDED_ENDING = false
+
+return _M

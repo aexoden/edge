@@ -12,8 +12,8 @@ currently follows the Edge+Excalbur route of the Any% No64 run.
 ## Configuration
 
 After extracting Edge to a directory, preferably within BizHawk's lua directory,
-open the main.lua file. There are a few configuration variables, all prefixed
-with "CONFIG.":
+copy the config.lua.default file to config.lua and open it. There are a few
+configuration variables:
 
 ### ROUTE
 
