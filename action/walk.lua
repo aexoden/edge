@@ -227,7 +227,7 @@ function _M.interact(dialog_text)
 	end
 end
 
-function _M.walk(target_map_id, target_x, target_y, npc_safe)
+function _M.walk(target_map_id, target_x, target_y, npc_safe, alternate)
 	local current_map_id = memory.read("walk", "map_id")
 	local current_x = memory.read("walk", "x")
 	local current_y = memory.read("walk", "y")
@@ -255,10 +255,18 @@ function _M.walk(target_map_id, target_x, target_y, npc_safe)
 			local npc_dx = target_x - npc_x
 			local npc_dy = target_y - npc_y
 
+			local test_x = target_x
+			local test_y = current_y
+
+			if alternate then
+				test_x = current_x
+				test_y = target_y
+			end
+
 			if memory.read("npc", "visible", i) > 0 then
-				if npc_y == current_y and ((dx <= 0 and npc_dx <= 0 and npc_dx > dx) or (dx >= 0 and npc_dx >= 0 and npc_dx < dx)) then
+				if npc_y == test_y and ((dx <= 0 and npc_dx <= 0 and npc_dx > dx) or (dx >= 0 and npc_dx >= 0 and npc_dx < dx)) then
 					return false
-				elseif npc_x == target_x and ((dy <= 0 and npc_dy <= 0 and npc_dy > dy) or (dy >= 0 and npc_dy >= 0 and npc_dy < dy)) then
+				elseif npc_x == test_x and ((dy <= 0 and npc_dy <= 0 and npc_dy > dy) or (dy >= 0 and npc_dy >= 0 and npc_dy < dy)) then
 					return false
 				end
 			end
@@ -283,14 +291,26 @@ function _M.walk(target_map_id, target_x, target_y, npc_safe)
 		end
 	end
 
-	if dx > 0 then
-		input.press({"P1 Right"}, input.DELAY.NONE)
-	elseif dx < 0 then
-		input.press({"P1 Left"}, input.DELAY.NONE)
-	elseif dy > 0 or (map_area == 0 and dy < -128) or (map_area == 2 and dy < -32) then
-		input.press({"P1 Down"}, input.DELAY.NONE)
-	elseif dy < 0 then
-		input.press({"P1 Up"}, input.DELAY.NONE)
+	if alternate then
+		if dy > 0 or (map_area == 0 and dy < -128) or (map_area == 2 and dy < -32) then
+			input.press({"P1 Down"}, input.DELAY.NONE)
+		elseif dy < 0 then
+			input.press({"P1 Up"}, input.DELAY.NONE)
+		elseif dx > 0 then
+			input.press({"P1 Right"}, input.DELAY.NONE)
+		elseif dx < 0 then
+			input.press({"P1 Left"}, input.DELAY.NONE)
+		end
+	else
+		if dx > 0 then
+			input.press({"P1 Right"}, input.DELAY.NONE)
+		elseif dx < 0 then
+			input.press({"P1 Left"}, input.DELAY.NONE)
+		elseif dy > 0 or (map_area == 0 and dy < -128) or (map_area == 2 and dy < -32) then
+			input.press({"P1 Down"}, input.DELAY.NONE)
+		elseif dy < 0 then
+			input.press({"P1 Up"}, input.DELAY.NONE)
+		end
 	end
 
 	return false

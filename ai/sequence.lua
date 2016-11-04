@@ -1861,8 +1861,6 @@ local function _sequence_karate()
 	table.insert(_q, {walk.walk, {137, 4, 5}})
 
 	-- Walk to Yang.
-	-- TODO: Fix the second and third to last steps. They currently go one step
-	--       too far to the left to avoid a potential trap.
 	table.insert(_q, {walk.walk, {151, 5, 10}})
 
 	-- Step Route: Serpent Road
@@ -1880,9 +1878,8 @@ local function _sequence_karate()
 	table.insert(_q, {walk.walk, {0, 20, 26, true}})
 	table.insert(_q, {walk.walk, {11, 18, 17, true}})
 	table.insert(_q, {walk.walk, {11, 18, 8, true}})
-	table.insert(_q, {walk.walk, {11, 11, 8, true}})
-	table.insert(_q, {walk.walk, {11, 11, 4, true}})
-	table.insert(_q, {walk.walk, {11, 13, 4, true}})
+	table.insert(_q, {walk.walk, {11, 12, 8, true}})
+	table.insert(_q, {walk.walk, {11, 13, 4, true, true}})
 	table.insert(_q, {walk.interact, {}})
 
 end
