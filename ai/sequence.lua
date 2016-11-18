@@ -2112,6 +2112,7 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {88, 3, 5}})
 	table.insert(_q, {walk.walk, {88, 3, 3}})
 	table.insert(_q, {walk.walk, {88, 8, 3}})
+	table.insert(_q, {dialog.set_mash_button, {"P1 B"}})
 	table.insert(_q, {walk.walk, {88, 8, 4}})
 
 	-- Cast Exit, get a black chocobo, and fly to Cave Magnes.
@@ -2134,6 +2135,7 @@ local function _sequence_dark_elf()
 	end
 
 	table.insert(_q, {walk.walk, {nil, 36, 70}})
+	table.insert(_q, {dialog.set_mash_button, {"P1 A"}})
 	table.insert(_q, {walk.walk, {nil, 43, 70}})
 	table.insert(_q, {walk.walk, {nil, 43, 54}})
 	table.insert(_q, {walk.walk, {nil, 41, 54}})
