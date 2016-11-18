@@ -78,7 +78,7 @@ end
 
 function _M.reset()
 	console.clear()
-	
+
 	if _file then
 		_file:close()
 		_file = nil
