@@ -2211,7 +2211,7 @@ end
 --------------------------------------------------------------------------------
 
 function _M.cycle()
-	if _is_battle() then
+	if sequence.is_active() and _is_battle() then
 		local index = memory.read("battle", "formation")
 		local formation = _formations[index]
 
@@ -2352,7 +2352,7 @@ function _M.cycle()
 		end
 
 		return true
-	else
+	elseif not _is_battle() then
 		if _state.formation then
 			local gp = 0
 
