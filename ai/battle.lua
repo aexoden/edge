@@ -511,8 +511,15 @@ local function _battle_dark_elf(character, turn)
 	local tellah_mp = game.character.get_stat(game.CHARACTER.TELLAH, "mp", true)
 
 	local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp", true)
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
 
 	local alternate = false
+
+	if character == game.CHARACTER.YANG and elf_hp == 0 and not _state.yang_waited then
+		_state.yang_waited = true
+		_command_wait_frames(120)
+		return true
+	end
 
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
@@ -551,6 +558,9 @@ local function _battle_dark_elf(character, turn)
 		if dragon_hp > 0 and dragon_hp < 50 then
 			if yang_hp > 0 and yang_hp < 50 then
 				_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+			elseif (cecil_hp > 0 and cecil_hp < 50) or (tellah_hp > 0 and tellah_hp < 50) then
+				_command_wait_text("D.B", 300)
+				_command_fight()
 			else
 				_command_fight()
 			end
@@ -564,7 +574,7 @@ local function _battle_dark_elf(character, turn)
 			_command_black(game.MAGIC.BLACK.WEAK)
 		elseif tellah_hp < 200 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-		elseif yang_hp > 0 then
+		elseif yang_hp > 0 and yang_hp < 50 then
 			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		else
 			_command_parry()
