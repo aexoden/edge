@@ -468,20 +468,32 @@ function _M.item.get_index(item, index, inventory)
 		category, key = "menu_item", "item_id"
 	end
 
-	if not index then
-		index = 0
-	end
-
 	local count = 0
+
+	local best = nil
+	local best_count = 256
 
 	for i = 0, 47 do
 		if memory.read(category, key, i) == item then
-			if count == index then
-				return i
+			if index then
+				if count == index then
+					return i
+				end
+			else
+				local number = memory.read(category, "item_count", i)
+
+				if number < best_count then
+					best = i
+					best_count = number
+				end
 			end
 
 			count = count + 1
 		end
+	end
+
+	if best then
+		return best
 	end
 
 	return nil

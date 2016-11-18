@@ -458,7 +458,7 @@ function _M.field.equip.equip(location, item)
 	elseif _state.frame and _is_subcursor_visible() then
 		local cursor = memory.read("menu_equip", "cursor")
 		local subcursor = (memory.read("menu_equip", "subcursor_y", cursor) + memory.read("menu_equip", "scroll", cursor)) * 2 + memory.read("menu_equip", "subcursor_x", cursor)
-		local index = game.item.get_index(item, 0)
+		local index = game.item.get_index(item, nil)
 
 		if subcursor == index then
 			input.press({"P1 A"}, input.DELAY.NORMAL)
