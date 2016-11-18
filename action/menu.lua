@@ -973,22 +973,6 @@ end
 -- Battle Menu External Functions
 --------------------------------------------------------------------------------
 
-function _M.battle.dialog.wait(text, limit)
-	if limit and _M.wait(limit) then
-		return true
-	else
-		local result = dialog.get_battle_text(#text) == text or dialog.get_battle_spell() == text
-
-		if result then
-			_wait_frame = nil
-			return result
-		end
-	end
-
-	return false
-end
-
-
 function _M.battle.target(target, index, wait, limit, delay)
 	if _M.battle.is_open() and _M.battle.is_target() then
 		local cursor = memory.read("battle_menu", "target")
