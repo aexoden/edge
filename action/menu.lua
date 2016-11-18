@@ -1232,7 +1232,13 @@ function _M.battle.dialog.wait(text, limit)
 	if limit and _M.wait(limit) then
 		return true
 	else
-		local result = dialog.get_battle_text(#text) == text or dialog.get_battle_spell() == text
+		local result
+
+		if text then
+			result = dialog.get_battle_text(#text) == text or dialog.get_battle_spell() == text
+		else
+			result = dialog.get_battle_text(0) == "" and dialog.get_battle_spell() == ""
+		end
 
 		if result then
 			_wait_frame = nil

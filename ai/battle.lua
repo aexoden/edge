@@ -1361,7 +1361,7 @@ local function _battle_milon(character, turn)
 end
 
 local function _battle_milon_z(character, turn)
-	if _state.alternate or character == game.CHARACTER.CECIL and turn >= 3 or character ~= game.CHARACTER.CECIL and turn >= 2 then
+	if _state.alternate or character == game.CHARACTER.CECIL and turn > 3 or character ~= game.CHARACTER.CECIL and turn >= 2 then
 		local count = 0
 		local best = nil
 
@@ -1388,25 +1388,48 @@ local function _battle_milon_z(character, turn)
 	else
 		if character == game.CHARACTER.CECIL then
 			if turn == 1 then
-				_command_wait_frames(360)
-				_command_parry()
-			elseif turn == 2 then
-				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
-				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
-				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
-				table.insert(_state.q, {menu.wait, {30}})
-				table.insert(_state.q, {input.press, {{"P1 B"}, input.DELAY.MASH}})
-				table.insert(_state.q, {menu.wait, {30}})
-				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
-				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.TRASHCAN}})
-				table.insert(_state.q, {menu.battle.item.close, {}})
+				if not _state.cecil_waited then
+					_command_wait_text("Poiso", 85)
+					_command_wait_text(nil)
+					_command_wait_frames(40 + 30)
+					_state.cecil_waited = true
+					return true
+				else
+					local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
+					local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
 
-				_command_wait_frames(480)
-				_state.full_inventory = true
+					if porom_hp < palom_hp and porom_hp < 75 then
+						_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+					elseif palom_hp < porom_hp and palom_hp < 75 then
+						_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
+					else
+						_command_parry()
+					end
+				end
+			elseif turn >= 2 then
+				if _state.palom then
+					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
+					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
+					table.insert(_state.q, {menu.wait, {30}})
+					table.insert(_state.q, {input.press, {{"P1 B"}, input.DELAY.MASH}})
+					table.insert(_state.q, {menu.wait, {30}})
+					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
+					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.TRASHCAN}})
+					table.insert(_state.q, {menu.battle.item.close, {}})
 
-				_command_fight()
+					_command_wait_frames(480)
+					_state.full_inventory = true
+
+					_command_fight()
+				else
+					_command_run_buffer()
+					_command_parry()
+				end
 			end
 		elseif character == game.CHARACTER.PALOM then
+			_state.palom = true
+
 			if turn == 1 then
 				if game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
 					_command_black(game.MAGIC.BLACK.ICE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
@@ -1422,6 +1445,8 @@ local function _battle_milon_z(character, turn)
 			end
 		elseif character == game.CHARACTER.POROM then
 			if turn == 1 then
+				_command_wait_frames(10)
+				_command_run_buffer()
 				_command_twin()
 			end
 		end
