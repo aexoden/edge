@@ -1268,7 +1268,7 @@ local function _battle_milon(character, turn)
 		local ghast = game.enemy.get_strongest(game.ENEMY.GHAST)
 
 		if character == game.CHARACTER.CECIL or character == game.CHARACTER.TELLAH then
-			if worst_twin then
+			if worst_twin and (worst_twin.hp < 40 or character == game.CHARACTER.TELLAH) then
 				if worst_twin.hp == 0 then
 					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
 				elseif worst_twin.hp then
