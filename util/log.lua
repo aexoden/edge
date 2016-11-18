@@ -87,7 +87,7 @@ function _M.reset()
 	_base_frame = nil
 
 	if FULL_RUN then
-		_file, err = io.open(string.format("logs/edge-%010d-%s.log", SEED, os.date("!%Y%m%d-%H%M%S")), "w")
+		_file, err = io.open(string.format("logs/edge-%s-%03d-%010d-%s.log", ROUTE, ENCOUNTER_SEED, SEED, os.date("!%Y%m%d-%H%M%S")), "w")
 	end
 end
 

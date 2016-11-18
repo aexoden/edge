@@ -2292,7 +2292,7 @@ function _M.cycle()
 			log.log(string.format("Enemy Agility: %s", agility_text))
 
 			if FULL_RUN and CONFIG.SAVESTATE and formation.f then
-				savestate.save(string.format("states/%010d - %03d - %s.state", SEED, _battle_count, formation.title:gsub('/', '-')))
+				savestate.save(string.format("states/%s - %03d - %010d - %03d - %s.state", ROUTE, ENCOUNTER_SEED, SEED, _battle_count, formation.title:gsub('/', '-')))
 			end
 
 			if _state.formation.presplit and not _splits[_state.index] then
