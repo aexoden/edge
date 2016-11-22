@@ -97,6 +97,58 @@ _M.variables = {
 	}
 }
 
+--------------------------------------------------------------------------------
+-- Split Data
+--------------------------------------------------------------------------------
+
+_M.splits = {
+	["no64-excalbur"] = {
+		["Start"]                  = 159,
+		["Prologue"]               = 22162,
+		["D.Mist"]                 = 36711,
+		["Girl"]                   = 46757,
+		["Officer/Soldiers"]       = 54318,
+		["Tellah"]                 = 61301,
+		["Octomamm"]               = 84529,
+		["Edward"]                 = 95621,
+		["Antlion"]                = 104752,
+		["WaterHag"]               = 117897,
+		["MomBomb"]                = 134048,
+		["Dragoon"]                = 156600,
+		["Twins"]                  = 180511,
+		["Milon"]                  = 204024,
+		["Milon Z."]               = 209852,
+		["Paladin"]                = 215829,
+		["Karate"]                 = 238543,
+		["Baigan"]                 = 257047,
+		["Kainazzo"]               = 262119,
+		["Dark Elf"]               = 301114,
+		["FlameDog"]               = 313555,
+		["Magus Sisters"]          = 323223,
+		["Valvalis"]               = 347254,
+		["Calbrena"]               = 375632,
+		["Golbez"]                 = 381494,
+		["Dr.Lugae/Balnab"]        = 415464,
+		["Dr.Lugae"]               = 421420,
+		["Dark Imps"]              = 426923,
+		["Edge"]                   = 460370,
+		["K.Eblan/Q.Eblan"]        = 480901,
+		["Rubicant"]               = 487427,
+		["Lost the Dark Crystal!"] = 513539,
+		["Big Whale"]              = 533068,
+		["FuSoYa"]                 = 546959,
+		["Grind Fight (start)"]    = 575578,
+		["Grind Fight"]            = 588747,
+		["Elements"]               = 598678,
+		["CPU"]                    = 603242,
+		["Lunar Subterrane"]       = 623205,
+		["Lunar Core"]             = 638494,
+		["Zemus"]                  = 651057,
+		["Zeromus Death"]          = 677846,
+	}
+}
+
+
 _M.routes["no64-excalbur"] = {
 	[0] = {
 		[0] = 4,
@@ -6151,6 +6203,14 @@ end
 
 function _M.set_enabled(value)
 	_enabled = value
+end
+
+function _M.get_best_split_frame(split)
+	return _M.splits[ROUTE][split]
+end
+
+function _M.get_final_split_frame()
+	return _M.splits[ROUTE]["Zeromus Death"]
 end
 
 function _M.get_value(variable)

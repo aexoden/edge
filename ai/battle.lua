@@ -2308,13 +2308,13 @@ function _M.cycle()
 			end
 
 			if _state.formation.presplit and not _splits[_state.index] then
-				bridge.split(_state.formation.title .. " (start)")
+				sequence.split(_state.formation.title .. " (start)")
 			end
 		end
 
 		if index == _M.FORMATION.ZEROMUS and memory.read("battle", "flash") == 3 and not _state.flash_split then
 			_state.flash_split = true
-			bridge.split("Zeromus Death")
+			sequence.split("Zeromus Death")
 
 			if CONFIG.EXTENDED_ENDING then
 				sequence.end_run(20 * 60 * 60)
@@ -2402,7 +2402,7 @@ function _M.cycle()
 			menu.wait_clear()
 
 			if ending ~= 0x00 and ending ~= 0x80 and _state.formation.split and not _splits[_state.index] then
-				bridge.split(_state.formation.title)
+				sequence.split(_state.formation.title)
 			end
 
 			if _formations[_state.index] then

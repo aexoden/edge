@@ -76,7 +76,7 @@ local function _log_prologue()
 		_state.count = _state.count + 1
 
 		if _state.count == 5 then
-			bridge.split("Prologue")
+			_M.split("Prologue")
 			_state.count = nil
 			return true
 		end
@@ -774,7 +774,7 @@ end
 
 local function _sequence_new_game()
 	table.insert(_q, {_set_encounter_seed, {92, 0, true}})
-	table.insert(_q, {bridge.split, {"Start"}})
+	table.insert(_q, {_M.split, {"Start"}})
 end
 
 local function _sequence_prologue()
@@ -3946,7 +3946,7 @@ end
 
 local function _sequence_core()
 	-- Walk to the Protect ring chest.
-	table.insert(_q, {bridge.split, {"Lunar Subterrane"}})
+	table.insert(_q, {_M.split, {"Lunar Subterrane"}})
 	table.insert(_q, {walk.walk, {359, 13, 8}})
 	table.insert(_q, {walk.walk, {359, 17, 8}})
 	table.insert(_q, {walk.walk, {359, 17, 19}})
@@ -4146,7 +4146,7 @@ end
 
 local function _sequence_zemus()
 	-- Walk to the Zemus battle.
-	table.insert(_q, {bridge.split, {"Lunar Core"}})
+	table.insert(_q, {_M.split, {"Lunar Core"}})
 	table.insert(_q, {walk.walk, {366, 17, 9}})
 	table.insert(_q, {walk.walk, {366, 24, 9}})
 	table.insert(_q, {walk.walk, {366, 24, 12}})
@@ -4367,6 +4367,28 @@ end
 
 function _M.set_healing_check()
 	_state.check_healing = true
+end
+
+function _M.split(split)
+	local result = bridge.split(split)
+
+	if FULL_RUN and CONFIG.RESET_FOR_TIME and result then
+		local delta = emu.framecount() - route.get_best_split_frame(split)
+		local split_final_frame = route.get_final_split_frame()
+
+		local factor = (split_final_frame - emu.framecount()) / split_final_frame
+
+		if factor < 0 then
+			factor = 0
+		end
+
+		if delta > (60 + 90 * factor) * 60 then
+			log.log("Resetting for time...")
+			_M.end_run()
+		end
+	end
+
+	return result
 end
 
 function _M.reset()

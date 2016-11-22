@@ -151,8 +151,10 @@ class Log(object):
         self._splits = {}
         self._success = False
         self._frames = None
+        self._route = None
         self._rng_seed = None
         self._step_seed = None
+        self._reset_for_time = False
         self._version = None
 
         self._parse_file(filename)
@@ -174,6 +176,10 @@ class Log(object):
         return self._frames
 
     @property
+    def route(self):
+        return self._route
+
+    @property
     def splits(self):
         return self._splits
 
@@ -193,6 +199,8 @@ class Log(object):
     def result(self):
         if self.success:
             return format_time(self.frames)
+        elif self._reset_for_time:
+            return 'Ragequit after {}'.format(sorted(self._splits.items(), key=lambda x: x[1]['total'])[-1][0])
         elif len(self._battles) > 0 and self._battles[-1]['result'].startswith('Perished'):
             return 'Died to {}'.format(describe_formation(self._battles[-1]['formation']))
         else:
@@ -216,12 +224,16 @@ class Log(object):
                     else:
                         self._splits[fields['split']] = {'current': int(fields['frame']) - last_split, 'total': int(fields['frame']) - base_frame}
                         last_split = int(fields['frame'])
+                elif line_type == 'route':
+                    self._route = fields['route']
                 elif line_type == 'rng_seed':
                     self._rng_seed = int(fields['seed'])
                 elif line_type == 'step_seed':
                     self._step_seed = int(fields['seed'])
                 elif line_type == 'version':
                     self._version = fields['version']
+                elif line_type == 'reset_for_time':
+                    self._reset_for_time = True
                 elif line_type == 'battle_start':
                     if current_battle:
                         print('WARNING: A new battle has started without finishing the previous one while parsing {}'.format(filename))
@@ -252,12 +264,14 @@ class Log(object):
             'battle_party_formation': 'Party Formation: (?P<formation>.*)',
             'battle_stop': 'Battle Complete: (?P<description>.*) \((?P<formation>.*)/(?P<frames>.*) frames/(?P<dropped_gp>.*) GP dropped/(?P<result>.*)\)',
             'inventory': 'Inventory: .*',
+            'route': 'Route: (?P<route>.*)',
             'rng_seed': 'RNG Seed: (?P<seed>.*)',
-            'step_seed': 'New Seed: (?P<seed>.*)',
+            'reset_for_time': 'Resetting for time...',
+            'step_seed': 'Encounter Seed: (?P<seed>.*)',
             'sequence': 'Sequence: (?P<sequence>.*)',
             'split': 'Split: (?P<split>.*)',
             'version': 'Version: (?P<version>.*)',
-            '_ignore': '(Edge Final Fantasy IV|--------------------|Beginning Full Run|Setting Initial Seed|Rebooting|Load game screen)',
+            '_ignore': '(Edge Final Fantasy IV|--------------------|Beginning Full Run|Setting Initial Seed|Rebooting|Load game screen|New Seed|Setting encounter seed)',
         }
 
         for line_type, regex in regexes.items():
@@ -546,7 +560,7 @@ def html_output_runs(f, logs):
 
         f.write('\t\t\t\t\t<tr>\n'.format(log.rng_seed))
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.version))
-        f.write('\t\t\t\t\t\t<td><a href="runs/{:010}.html">{}</a></td>\n'.format(log.rng_seed, log.rng_seed))
+        f.write('\t\t\t\t\t\t<td><a href="runs/{}-{:03}-{:010}.html">{}</a></td>\n'.format(log.route, log.step_seed, log.rng_seed, log.rng_seed))
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.step_seed))
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.back_attack_count))
         f.write('\t\t\t\t\t\t<td class="{}">{}</td>\n'.format(result_class, log.result))
@@ -584,7 +598,7 @@ battles = get_battle_data(logs, False)
 os.mkdir(os.path.join(sys.argv[1], 'runs'))
 
 for log in logs:
-    with open(os.path.join(sys.argv[1], 'runs', '{:010}.html'.format(log.rng_seed)), 'w') as f:
+    with open(os.path.join(sys.argv[1], 'runs', '{}-{:03}-{:010}.html'.format(log.route, log.step_seed, log.rng_seed)), 'w') as f:
         html_output_header(f)
         html_output_run(f, splits, battles, log)
         html_output_footer(f)

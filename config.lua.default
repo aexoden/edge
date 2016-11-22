@@ -47,4 +47,7 @@ _M.SAVESTATE = false
 -- Do an extended ending at the end of the run (for streaming purposes)
 _M.EXTENDED_ENDING = false
 
+-- Reset if too far behind PB.
+_M.RESET_FOR_TIME = false
+
 return _M
