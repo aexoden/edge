@@ -1294,7 +1294,9 @@ local function _battle_milon(character, turn)
 				_command_parry()
 			end
 		elseif character == game.CHARACTER.PALOM then
-			if worst_twin and worst_twin.hp == 0 then
+			if turn == 1 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, ghast)
+			elseif worst_twin and worst_twin.hp == 0 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
 			else
 				_command_twin()
