@@ -559,7 +559,7 @@ local function _battle_dark_elf(character, turn)
 			if yang_hp > 0 and yang_hp < 50 then
 				_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 			elseif (cecil_hp > 0 and cecil_hp < 50) or (tellah_hp > 0 and tellah_hp < 50) then
-				_command_wait_text("D.B", 300)
+				_command_wait_text("D.B", 600)
 				_command_fight()
 			else
 				_command_fight()
