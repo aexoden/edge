@@ -88,7 +88,7 @@ function _M.is_dialog()
 		_pending_spoils = nil
 	end
 
-	return battle_dialog_state == 1 or spoils or _pending_spoils or dialog_height == 7 or (dialog_height > 0 and (dialog_state == 0 or dialog_prompt == 0))
+	return battle_dialog_state == 1 or spoils or _pending_spoils ~= nil or dialog_height == 7 or (dialog_height > 0 and (dialog_state == 0 or dialog_prompt == 0))
 end
 
 function _M.cycle()
@@ -132,6 +132,8 @@ function _M.reset()
 	for key, _ in pairs(_splits) do
 		_splits[key].done = false
 	end
+
+	_pending_spoils = nil
 
 	_M.set_mash_button("P1 A")
 end
