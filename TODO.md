@@ -79,10 +79,19 @@ provide a good list of improvements that can be made.
   only need to ensure that the character can cast a particular spell (such as
   Edge potentially needing to cast Flood during the grind fight).
 
+* Change formation changes so that we can simply specify the target formation.
+  This makes changes easier if two routes have different formations, for
+  example, but need to come together again.
+
 ## Minor Issues
 
 * Check healing strategy upon immediately entering Zot. Death was observed with
   only Tellah and Yang alive with a total of approximately ~500 HP.
+
+* Move the IceClaw dupe away from the Magus Sisters battle to avoid needing to
+  revive Yang unconditionally.
+
+* Check that the airship path is correct when traveling to Eblan.
 
 ## Battle-Specific Issues
 
@@ -97,6 +106,12 @@ provide a good list of improvements that can be made.
 * Restore the Twins' MP if they don't have enough to Twin.
 
 ### Milon Z
+
+* Ensure that we switch to backup strats as quickly as possible.
+
+### Magus Sisters
+
+* Avoid healing after the second delta attack, unless necessary.
 
 ### Calbrena
 
