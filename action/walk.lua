@@ -283,16 +283,16 @@ function _M.walk(target_map_id, target_x, target_y, npc_safe, alternate)
 
 	if delta_limit then
 		if math.abs(dx) > delta_limit then
-			dx = dx * -1
+			dx = (dx * -1) % 256
 		end
 
 		if math.abs(dy) > delta_limit then
-			dy = dy * -1
+			dy = (dy * -1) % 256
 		end
 	end
 
 	if alternate then
-		if dy > 0 or (map_area == 0 and dy < -128) or (map_area == 2 and dy < -32) then
+		if dy > 0 then
 			input.press({"P1 Down"}, input.DELAY.NONE)
 		elseif dy < 0 then
 			input.press({"P1 Up"}, input.DELAY.NONE)
@@ -306,7 +306,7 @@ function _M.walk(target_map_id, target_x, target_y, npc_safe, alternate)
 			input.press({"P1 Right"}, input.DELAY.NONE)
 		elseif dx < 0 then
 			input.press({"P1 Left"}, input.DELAY.NONE)
-		elseif dy > 0 or (map_area == 0 and dy < -128) or (map_area == 2 and dy < -32) then
+		elseif dy > 0 then
 			input.press({"P1 Down"}, input.DELAY.NONE)
 		elseif dy < 0 then
 			input.press({"P1 Up"}, input.DELAY.NONE)
