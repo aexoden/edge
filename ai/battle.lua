@@ -1346,7 +1346,7 @@ local function _battle_milon(character, turn)
 				return true
 			end
 		elseif character == game.CHARACTER.POROM then
-			if turn == 1 then
+			if turn == 1 and palom_hp > 0 then
 				_command_run_buffer()
 				_command_twin()
 			elseif turn == 2 then
