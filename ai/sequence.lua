@@ -282,10 +282,12 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 					end
 				else
 					for character, hp in pairs(target_hp) do
-						target_hp[character] = target_hp[character] - math.floor(healing / max_count)
+						if not life[character] then
+							target_hp[character] = target_hp[character] - math.floor(healing / max_count)
 
-						if target_hp[character] <= 0 then
-							target_hp[character] = nil
+							if target_hp[character] <= 0 then
+								target_hp[character] = nil
+							end
 						end
 					end
 				end
