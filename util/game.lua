@@ -93,6 +93,8 @@ _M.ITEM = {
 		KARATE   = 0x98,
 		PRISONER = 0x96,
 		SAMURAI  = 0x8A,
+		WHITE    = 0x93,
+		WIZARD   = 0x90,
 	},
 	ARMS = {
 		IRON     = 0x9C,
@@ -142,6 +144,9 @@ _M.ITEM = {
 		PALADIN  = 0x64,
 		SHADOW   = 0x62,
 	},
+	STAR = {
+		NINJA    = 0x41,
+	},
 	WEAPON = {
 		BLACK    = 0x18,
 		BLIZZARD = 0x26,
@@ -174,6 +179,7 @@ _M.MAGIC = {
 		QUAKE = 0x28,
 		STOP  = 0x2C,
 		METEO = 0x2F,
+		NUKE  = 0x30,
 	},
 	CALL = {
 		SHIVA = 0x36,
@@ -184,10 +190,12 @@ _M.MAGIC = {
 		SMOKE = 0x45,
 	},
 	WHITE = {
+		HOLD  = 0x01,
 		MUTE  = 0x02,
 		SLOW  = 0x07,
 		BERSK = 0x09,
 		WALL  = 0x0A,
+		WHITE = 0x0B,
 		CURE1 = 0x0E,
 		CURE2 = 0x0F,
 		CURE4 = 0x11,

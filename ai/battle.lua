@@ -448,18 +448,53 @@ local function _battle_calbrena(character, turn)
 end
 
 local function _battle_cpu(character, turn)
-	if character == game.CHARACTER.EDGE then
-		if turn == 1 then
-			_command_wait_frames(20)
-		end
+	if ROUTE == "no64-excalbur" then
+		if character == game.CHARACTER.EDGE then
+			if turn == 1 then
+				_command_wait_frames(20)
+			end
 
-		_command_dart(game.ITEM.WEAPON.EXCALBUR, menu.battle.TARGET.ENEMY, 0)
-	elseif character == game.CHARACTER.CECIL then
-		_command_fight(menu.battle.TARGET.ENEMY, 0)
-	elseif character == game.CHARACTER.FUSOYA then
-		_command_black(game.MAGIC.BLACK.QUAKE)
-	else
-		_command_parry()
+			_command_dart(game.ITEM.WEAPON.EXCALBUR, menu.battle.TARGET.ENEMY, 0)
+		elseif character == game.CHARACTER.CECIL then
+			_command_fight(menu.battle.TARGET.ENEMY, 0)
+		elseif character == game.CHARACTER.FUSOYA then
+			_command_black(game.MAGIC.BLACK.QUAKE)
+		else
+			_command_parry()
+		end
+	elseif ROUTE == "no64-rosa" then
+		if character == game.CHARACTER.EDGE then
+			if turn == 1 then
+				_command_change()
+			elseif turn == 2 then
+				_command_dart(game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 2)
+			else
+				_command_dart(game.ITEM.WEAPON.DANCING)
+			end
+		elseif character == game.CHARACTER.FUSOYA then
+			if turn == 1 then
+				_command_black(game.MAGIC.BLACK.METEO)
+			else
+				_command_black(game.MAGIC.BLACK.QUAKE)
+			end
+		elseif character == game.CHARACTER.ROSA then
+			if turn == 1 then
+				_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+			elseif turn == 2 then
+				_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+			else
+				_command_white(game.MAGIC.WHITE.WHITE)
+			end
+		elseif character == game.CHARACTER.RYDIA then
+			_command_call(game.MAGIC.CALL.TITAN)
+		elseif character == game.CHARACTER.CECIL then
+			if turn == 2 then
+				_command_equip(character, game.ITEM.WEAPON.ICEBRAND)
+				_command_fight(menu.battle.TARGET.ENEMY, 0)
+			else
+				_command_parry()
+			end
+		end
 	end
 end
 
@@ -623,7 +658,7 @@ local function _battle_eblan(character, turn)
 	end
 end
 
-local function _battle_elements(character, turn)
+local function _battle_elements_excalbur(character, turn)
 	local weakest = {nil, 99999}
 
 	for i = 0, 4 do
@@ -674,6 +709,55 @@ local function _battle_elements(character, turn)
 		end
 	elseif character == game.CHARACTER.RYDIA then
 		_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+	end
+end
+
+local function _battle_elements_rosa(character, turn)
+	if character == game.CHARACTER.EDGE then
+		_command_parry()
+	elseif character == game.CHARACTER.FUSOYA then
+		if turn == 1 then
+			_command_black(game.MAGIC.BLACK.NUKE)
+		elseif turn == 2 then
+			_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+		elseif turn == 3 then
+			_command_black(game.MAGIC.BLACK.FIRE3, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+		elseif turn == 4 then
+			if game.enemy.get_stat(0, "hp") <= 9999 then
+				_command_black(game.MAGIC.BLACK.FIRE3, menu.battle.TARGET.ENEMY, 0)
+			else
+				_command_black(game.MAGIC.BLACK.NUKE, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+				_state.nuke = true
+			end
+		elseif turn == 5 then
+			_command_black(game.MAGIC.BLACK.ICE3)
+		end
+	elseif character == game.CHARACTER.ROSA then
+		if turn == 1 or turn == 5 then
+			if turn == 1 or _state.nuke then
+				_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.ENEMY, 0)
+			end
+		elseif turn >= 6 then
+			_command_parry()
+		else
+			_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+		end
+	elseif character == game.CHARACTER.CECIL then
+		if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) > 0 then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+		else
+			_command_parry()
+		end
+	elseif character == game.CHARACTER.RYDIA then
+		_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+	end
+end
+
+local function _battle_elements(character, turn)
+	if ROUTE == "no64-rosa" then
+		return _battle_elements_rosa(character, turn)
+	else
+		return _battle_elements_excalbur(character, turn)
 	end
 end
 
@@ -777,7 +861,17 @@ local function _battle_golbez(character, turn)
 end
 
 local function _battle_grind(character, turn)
-	if game.character.get_stat(game.CHARACTER.EDGE, "level", true) > 45 then
+	local grind_character = game.CHARACTER.EDGE
+	local required_dragons = 15
+	local level = game.character.get_stat(game.CHARACTER.EDGE, "level", true)
+
+	if ROUTE == "no64-rosa" then
+		grind_character = game.CHARACTER.ROSA
+		required_dragons = 17
+		level = game.character.get_stat(game.CHARACTER.ROSA, "level", true)
+	end
+
+	if level > 45 then
 		return _command_run()
 	else
 		local PHASE = {
@@ -836,7 +930,7 @@ local function _battle_grind(character, turn)
 			_state.cured = nil
 			_state.casted = nil
 			_state.phase = PHASE.GRIND
-		elseif _state.phase == PHASE.GRIND and _state.character_index == 4 and dragon_hp == 0 and dragon_kills >= 15 then
+		elseif _state.phase == PHASE.GRIND and _state.character_index == 4 and dragon_hp == 0 and dragon_kills >= required_dragons then
 			_state.waited = nil
 			_state.phase = PHASE.END
 		end
@@ -1006,7 +1100,7 @@ local function _battle_grind(character, turn)
 			local strongest = {nil, 0}
 
 			for i = 0, 4 do
-				if game.character.get_character(i) ~= game.CHARACTER.EDGE then
+				if game.character.get_character(i) ~= grind_character and (ROUTE ~= "no64-rosa" or game.character.get_character(i) ~= game.CHARACTER.FUSOYA) then
 					local hp = memory.read_stat(i, "hp", true)
 
 					if hp > strongest[2] then
@@ -1022,26 +1116,42 @@ local function _battle_grind(character, turn)
 					_state.revived = true
 
 					if character == game.CHARACTER.CECIL then
-						if not _state.duplicated then
-							_command_duplicate(game.EQUIP.R_HAND)
-							_state.duplicated = true
-						end
+						if ROUTE == "no64-excalbur" then
+							if not _state.duplicated then
+								_command_duplicate(game.EQUIP.R_HAND)
+								_state.duplicated = true
+							end
 
-						_command_parry()
-					elseif character == game.CHARACTER.EDGE then
-						if strongest[1] and (_state.virus or strongest[2] > 400) then
-							_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
-						elseif strongest[1] then
 							_command_parry()
 						else
-							_command_equip(character, game.ITEM.CLAW.CATCLAW)
-							_command_fight()
+							_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
+						end
+					elseif character == game.CHARACTER.EDGE then
+						if ROUTE == "no64-rosa" then
+							_command_parry()
+						else
+							if strongest[1] and (_state.virus or strongest[2] > 400) then
+								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
+							elseif strongest[1] then
+								_command_parry()
+							else
+								_command_equip(character, game.ITEM.CLAW.CATCLAW)
+								_command_fight()
+							end
 						end
 					elseif character == game.CHARACTER.FUSOYA then
 						if game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 45 then
 							_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 						elseif game.enemy.get_stat(0, "hp") > 50 then
 							_command_black(game.MAGIC.BLACK.WEAK)
+						elseif ROUTE == "no64-rosa" then
+							if game.character.get_stat(game.CHARACTER.ROSA, "hp", true) == 0 then
+								_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+							elseif strongest[1] then
+								_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.PARTY, strongest[1])
+							else
+								_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+							end
 						elseif _state.duplicated and game.character.get_stat(game.CHARACTER.EDGE, "hp", true) >= 725 then
 							local alive = true
 
@@ -1062,16 +1172,33 @@ local function _battle_grind(character, turn)
 							_command_parry()
 						end
 					elseif character == game.CHARACTER.ROSA then
-						if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) < 750 then
-							_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+						if ROUTE == "no64-rosa" then
+							if game.battle.get_type() ~= game.battle.TYPE.BACK_ATTACK and not _state.changed then
+								_command_change()
+								_state.changed = true
+							else
+								if strongest[1] or game.character.get_stat(game.CHARACTER.FUSOYA, "hp", true) > 0 then
+									_command_parry()
+								else
+									_command_fight()
+								end
+							end
 						else
-							_command_parry()
+							if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) < 750 then
+								_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+							else
+								_command_parry()
+							end
 						end
 					elseif character == game.CHARACTER.RYDIA then
-						if strongest[1] and strongest[2] > 400 then
+						if ROUTE == "no64-rosa" then
 							_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
 						else
-							_command_parry()
+							if strongest[1] and strongest[2] > 400 then
+								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
+							else
+								_command_parry()
+							end
 						end
 					end
 				end
@@ -1770,7 +1897,7 @@ local function _battle_weeper(character, turn)
 	end
 end
 
-local function _battle_zeromus(character, turn)
+local function _battle_zeromus_excalbur(character, turn)
 	if not _state.cecil_nuke then
 		if character == game.CHARACTER.CECIL then
 			if turn == 1 then
@@ -1842,6 +1969,106 @@ local function _battle_zeromus(character, turn)
 				table.insert(_state.q, {menu.battle.target, {target_type, target, nil, nil, input.DELAY.NONE}})
 			end
 		end
+	end
+end
+
+local function _battle_zeromus_rosa(character, turn)
+	local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp", true)
+	local rosa_hp = game.character.get_stat(game.CHARACTER.ROSA, "hp", true)
+
+	local weakest = nil
+
+	if kain_hp < rosa_hp then
+		if kain_hp < game.character.get_stat(game.CHARACTER.KAIN, "hp_max", true) then
+			weakest = {game.CHARACTER.KAIN, kain_hp}
+		end
+	else
+		if rosa_hp < game.character.get_stat(game.CHARACTER.ROSA, "hp_max", true) then
+			weakest = {game.CHARACTER.ROSA, rosa_hp}
+		end
+	end
+
+	if character == game.CHARACTER.CECIL then
+		if turn == 1 then
+			_command_use_item(game.ITEM.ITEM.CRYSTAL)
+		elseif turn == 2 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		else
+			if weakest then
+				if weakest[2] == 0 then
+					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, weakest[1])
+				else
+					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, weakest[1])
+				end
+			else
+				_command_parry()
+			end
+		end
+	elseif character == game.CHARACTER.ROSA then
+		if turn == 1 then
+			_command_white(game.MAGIC.WHITE.BERSK, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		elseif turn == 2 or turn == 5 then
+			if turn == 5 then
+				_command_wait_text("Blk.Hole", 180)
+			end
+
+			_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		elseif turn == 3 or turn == 4 or turn == 6 then
+			_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		elseif turn == 7 then
+			if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
+				_command_run_buffer()
+			end
+
+			_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		elseif turn == 8 then
+			_command_white(game.MAGIC.WHITE.WHITE)
+		end
+	elseif character == game.CHARACTER.EDGE then
+		if turn == 1 then
+			_command_dart(game.ITEM.STAR.NINJA)
+		elseif turn == 2 then
+			if game.character.get_stat(game.CHARACTER.CECIL, "hp", true) == 0 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			else
+				_command_parry()
+			end
+		else
+			if weakest then
+				if weakest[2] == 0 then
+					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, weakest[1])
+				else
+					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, weakest[1])
+				end
+			else
+				_command_parry()
+			end
+		end
+	elseif character == game.CHARACTER.RYDIA then
+		if turn == 1 then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+		elseif turn == 2 then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+		end
+	elseif character == game.CHARACTER.KAIN then
+		if turn == 1 then
+			_command_run_buffer()
+			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		elseif turn == 2 then
+			_command_run_buffer()
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.ENEMY, 0)
+		elseif turn == 3 then
+			_command_run_buffer()
+			_command_parry()
+		end
+	end
+end
+
+local function _battle_zeromus(character, turn)
+	if ROUTE == "no64-excalbur" then
+		return _battle_zeromus_excalbur(character, turn)
+	else
+		return _battle_zeromus_rosa(character, turn)
 	end
 end
 
@@ -2079,6 +2306,7 @@ _formations[_M.FORMATION.CALBRENA].needed_items = {
 	[game.ITEM.HELM.TIARA] = 16,
 	[game.ITEM.ITEM.CURE2] = 8,
 	[game.ITEM.ITEM.ETHER1] = 4,
+	[game.ITEM.ITEM.HEAL] = 4,
 	[game.ITEM.ITEM.LIFE] = 4,
 	[game.ITEM.WEAPON.CHANGE] = 16,
 	[game.ITEM.WEAPON.DANCING] = 16,
@@ -2092,6 +2320,7 @@ _formations[_M.FORMATION.LUGAE1].needed_items = {
 	[game.ITEM.ITEM.CURE2] = 8,
 	[game.ITEM.ITEM.DARKNESS] = 16,
 	[game.ITEM.ITEM.ETHER1] = 4,
+	[game.ITEM.ITEM.HEAL] = 4,
 	[game.ITEM.ITEM.LIFE] = 8,
 	[game.ITEM.CLAW.CATCLAW] = 2,
 	[game.ITEM.WEAPON.CHANGE] = 16,
@@ -2108,6 +2337,7 @@ _formations[_M.FORMATION.EBLAN].needed_items = {
 	[game.ITEM.ITEM.DARKNESS] = 32,
 	[game.ITEM.ITEM.ETHER1] = 2,
 	[game.ITEM.ITEM.LIFE] = 2,
+	[game.ITEM.ITEM.HEAL] = 4,
 	[game.ITEM.SHIELD.ICE] = 8,
 	[game.ITEM.WEAPON.BLIZZARD] = 8,
 	[game.ITEM.WEAPON.CHANGE] = 2,
@@ -2121,6 +2351,7 @@ _formations[_M.FORMATION.RUBICANT].needed_items = {
 	[game.ITEM.ITEM.CURE2] = 8,
 	[game.ITEM.ITEM.DARKNESS] = 16,
 	[game.ITEM.ITEM.ETHER1] = 4,
+	[game.ITEM.ITEM.HEAL] = 4,
 	[game.ITEM.ITEM.LIFE] = 8,
 	[game.ITEM.WEAPON.CHANGE] = 2,
 	[game.ITEM.WEAPON.DANCING] = 4,
@@ -2130,6 +2361,7 @@ _formations[_M.FORMATION.RUBICANT].needed_items = {
 _formations[_M.FORMATION.ELEMENTS].needed_items = {
 	[game.ITEM.ITEM.ELIXIR] = 32,
 	[game.ITEM.ITEM.LIFE] = 8,
+	[game.ITEM.ITEM.HEAL] = 4,
 	[game.ITEM.RING.STRENGTH] = 16,
 	[game.ITEM.WEAPON.EXCALBUR] = 64,
 }

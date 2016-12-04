@@ -400,18 +400,33 @@ end
 
 local function _post_grind_menu()
 	local stack = {}
+	local revive = false
 	local heal = false
 	local duplicate = false
+	local rosa_menu = false
+	local grind_character = game.CHARACTER.EDGE
 
-	if game.character.get_stat(game.CHARACTER.EDGE, "hp") < 500 then
+	if ROUTE == "no64-rosa" then
+		grind_character = game.CHARACTER.ROSA
+	end
+
+	if game.character.get_stat(grind_character, "hp") < 500 then
 		heal = true
 	end
 
-	if game.item.get_count(game.ITEM.WEAPON.EXCALBUR) <= 1 then
+	if game.character.get_stat(game.CHARACTER.EDGE, "hp") == 0 then
+		revive = true
+	end
+
+	if ROUTE == "no64-excalbur" and game.item.get_count(game.ITEM.WEAPON.EXCALBUR) <= 1 then
 		duplicate = true
 	end
 
-	if heal or duplicate then
+	if ROUTE == "no64-rosa" and game.character.get_slot(game.CHARACTER.ROSA) ~= 1 then
+		rosa_menu = true
+	end
+
+	if heal or duplicate or revive or rosa_menu then
 		table.insert(stack, {menu.field.open, {}})
 
 		if duplicate then
@@ -460,13 +475,33 @@ local function _post_grind_menu()
 			end
 		end
 
-		if heal then
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
+		if revive then
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
 			table.insert(stack, {menu.field.item.select_character, {game.CHARACTER.EDGE}})
 		end
 
+		if heal then
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
+			table.insert(stack, {menu.field.item.select_character, {grind_character}})
+		end
+
 		table.insert(stack, {menu.field.item.close, {}})
+
+		if rosa_menu then
+			table.insert(stack, {menu.field.form.swap, {game.CHARACTER.EDGE, game.CHARACTER.ROSA, game.FORMATION.TWO_FRONT}})
+			table.insert(stack, {menu.field.form.swap, {game.CHARACTER.CECIL, game.CHARACTER.RYDIA}})
+			table.insert(stack, {menu.field.magic.open, {game.CHARACTER.ROSA}})
+			table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE1}})
+			table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.WALL}})
+			table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.WHITE}})
+			table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.HOLD}})
+			table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.SLOW}})
+			table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE4}})
+			table.insert(stack, {menu.field.magic.close, {}})
+		end
+
 		table.insert(stack, {menu.field.close, {}})
 	end
 
@@ -643,7 +678,13 @@ local function _healing_grind_start_1()
 end
 
 local function _healing_grind_start_2()
-	if game.character.get_stat(game.CHARACTER.EDGE, "level") >= 45 then
+	local level = game.character.get_stat(game.CHARACTER.EDGE, "level")
+
+	if ROUTE == "no64-rosa" then
+		level = game.character.get_stat(game.CHARACTER.ROSA, "level")
+	end
+
+	if level >= 45 then
 		_post_grind_menu()
 	else
 		for i = 0, 4 do
@@ -2667,8 +2708,17 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.walk, {270, 10, 6}})
 	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
 	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {menu.shop.buy.open, {1}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.RING.RUNE}})
+
+	if ROUTE == "no64-excalbur" then
+		table.insert(_q, {menu.shop.buy.open, {1}})
+		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.RING.RUNE}})
+	else
+		table.insert(_q, {menu.shop.buy.open, {10}})
+		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.RING.RUNE}})
+		table.insert(_q, {menu.shop.switch_quantity, {}})
+		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ARMOR.WIZARD}})
+	end
+
 	table.insert(_q, {menu.shop.buy.close, {}})
 	table.insert(_q, {menu.shop.close, {}})
 
@@ -3244,7 +3294,7 @@ local function _sequence_rubicant()
 	table.insert(_q, {walk.interact, {"Rubicant:Now"}})
 end
 
-local function _sequence_monsters()
+local function _sequence_falcon_upgrade()
 	-- Exit the Tower of Bab-il.
 	table.insert(_q, {walk.walk, {172, 14, 15}})
 	table.insert(_q, {walk.walk, {171, 16, 20}})
@@ -3317,9 +3367,13 @@ local function _sequence_monsters()
 
 	-- Remove the Strength ring from Kain and cast Exit.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE}})
-	table.insert(_q, {menu.field.equip.close, {}})
+
+	if ROUTE ~= "no64-rosa" then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE}})
+		table.insert(_q, {menu.field.equip.close, {}})
+	end
+
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.CECIL}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
@@ -3328,22 +3382,28 @@ local function _sequence_monsters()
 	-- Board the airship and fly to just outside the Land of Monsters.
 	table.insert(_q, {walk.walk, {nil, 98, 82}})
 	table.insert(_q, {walk.board, {}})
-	table.insert(_q, {walk.walk, {nil, 27, 87}})
-	table.insert(_q, {walk.interact, {}})
 
-	-- Step Route: Underworld Map
-	for i = 1, route.get_value("Underworld Map") / 2 do
-		table.insert(_q, {walk.walk, {nil, 28, 87}})
+	if ROUTE == "no64-excalbur" then
 		table.insert(_q, {walk.walk, {nil, 27, 87}})
-	end
+		table.insert(_q, {walk.interact, {}})
 
-	-- Make a safety save.
-	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {menu.field.save.save, {1}})
-	table.insert(_q, {menu.field.close, {}})
+		-- Step Route: Underworld Map
+		for i = 1, route.get_value("Underworld Map") / 2 do
+			table.insert(_q, {walk.walk, {nil, 28, 87}})
+			table.insert(_q, {walk.walk, {nil, 27, 87}})
+		end
+
+		-- Make a safety save.
+		table.insert(_q, {menu.field.open, {}})
+		table.insert(_q, {menu.field.save.save, {1}})
+		table.insert(_q, {menu.field.close, {}})
+	else
+		table.insert(_q, {walk.walk, {nil, 46, 110}})
+		table.insert(_q, {walk.interact, {}})
+	end
 end
 
-local function _sequence_dark_crystal()
+local function _sequence_sealed_cave()
 	-- Attempt to walk through the Land of Monsters.
 	table.insert(_q, {_set_healing, {_healing_monsters}})
 	table.insert(_q, {walk.walk, {nil, 27, 86}})
@@ -3422,6 +3482,9 @@ local function _sequence_dark_crystal()
 	table.insert(_q, {walk.board, {}})
 	table.insert(_q, {walk.walk, {nil, 46, 110}})
 	table.insert(_q, {walk.interact, {}})
+end
+
+local function _sequence_dark_crystal()
 	table.insert(_q, {walk.walk, {nil, 46, 109}})
 
 	-- Step Route: Sealed Cave
@@ -3467,54 +3530,58 @@ local function _sequence_big_whale()
 	table.insert(_q, {walk.board, {}})
 	table.insert(_q, {walk.walk, {nil, 112, 17}})
 	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {nil, 36, 237}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {nil, 35, 237}})
 
-	-- Step Route: World Map (Eblan)
-	for i = 1, route.get_value("World Map (Eblan)") / 2 do
-		table.insert(_q, {walk.walk, {nil, 35, 236}})
+	if ROUTE == "no64-excalbur" then
+		table.insert(_q, {walk.walk, {nil, 36, 237}})
+		table.insert(_q, {walk.interact, {}})
 		table.insert(_q, {walk.walk, {nil, 35, 237}})
-	end
 
-	table.insert(_q, {walk.board, {}})
-	table.insert(_q, {walk.walk, {nil, 24, 232}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {nil, 211, 132}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {nil, 210, 132}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {nil, 211, 132}})
-	table.insert(_q, {walk.board, {}})
-	table.insert(_q, {walk.walk, {nil, 211, 134}})
-	table.insert(_q, {walk.walk, {nil, 215, 134}})
-	table.insert(_q, {walk.walk, {nil, 215, 136}})
-	table.insert(_q, {walk.walk, {nil, 218, 136}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {nil, 219, 136}})
+		-- Step Route: World Map (Eblan)
+		for i = 1, route.get_value("World Map (Eblan)") / 2 do
+			table.insert(_q, {walk.walk, {nil, 35, 236}})
+			table.insert(_q, {walk.walk, {nil, 35, 237}})
+		end
 
-	-- Step Route: Grotto Adamant
-	table.insert(_q, {walk.walk, {160, 7, 19}})
+		table.insert(_q, {walk.board, {}})
+		table.insert(_q, {walk.walk, {nil, 24, 232}})
+		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {walk.walk, {nil, 211, 132}})
+		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {walk.walk, {nil, 210, 132}})
+		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {walk.walk, {nil, 211, 132}})
+		table.insert(_q, {walk.board, {}})
+		table.insert(_q, {walk.walk, {nil, 211, 134}})
+		table.insert(_q, {walk.walk, {nil, 215, 134}})
+		table.insert(_q, {walk.walk, {nil, 215, 136}})
+		table.insert(_q, {walk.walk, {nil, 218, 136}})
+		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {walk.walk, {nil, 219, 136}})
 
-	for i = 1, route.get_value("Grotto Adamant") / 2 do
-		table.insert(_q, {walk.walk, {160, 8, 19}})
+		-- Step Route: Grotto Adamant
 		table.insert(_q, {walk.walk, {160, 7, 19}})
+
+		for i = 1, route.get_value("Grotto Adamant") / 2 do
+			table.insert(_q, {walk.walk, {160, 8, 19}})
+			table.insert(_q, {walk.walk, {160, 7, 19}})
+		end
+
+		-- Collect the Adamant and head to Mysidia.
+		table.insert(_q, {walk.walk, {160, 7, 13}})
+		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.RAT}})
+		table.insert(_q, {walk.walk, {160, 7, 21}})
+		table.insert(_q, {walk.walk, {nil, 218, 136}})
+		table.insert(_q, {walk.board, {}})
+		table.insert(_q, {walk.walk, {nil, 214, 136}})
+		table.insert(_q, {walk.walk, {nil, 214, 134}})
+		table.insert(_q, {walk.walk, {nil, 211, 134}})
+		table.insert(_q, {walk.walk, {nil, 211, 132}})
+		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {walk.walk, {nil, 210, 132}})
+		table.insert(_q, {walk.board, {}})
 	end
 
-	-- Collect the Adamant and head to Mysidia.
-	table.insert(_q, {walk.walk, {160, 7, 13}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.RAT}})
-	table.insert(_q, {walk.walk, {160, 7, 21}})
-	table.insert(_q, {walk.walk, {nil, 218, 136}})
-	table.insert(_q, {walk.board, {}})
-	table.insert(_q, {walk.walk, {nil, 214, 136}})
-	table.insert(_q, {walk.walk, {nil, 214, 134}})
-	table.insert(_q, {walk.walk, {nil, 211, 134}})
-	table.insert(_q, {walk.walk, {nil, 211, 132}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {nil, 210, 132}})
-	table.insert(_q, {walk.board, {}})
 	table.insert(_q, {walk.walk, {nil, 153, 199}})
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {nil, 154, 199}})
@@ -3633,43 +3700,47 @@ end
 local function _sequence_fusoya()
 	-- Get the Excalbur.
 	table.insert(_q, {_set_healing, {_healing_fusoya}})
-	table.insert(_q, {walk.board, {}})
-	table.insert(_q, {walk.walk, {nil, 106, 211}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {nil, 106, 122}})
-	table.insert(_q, {walk.walk, {nil, 104, 122}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {nil, 104, 123}})
-	table.insert(_q, {walk.walk, {256, 6, 6}})
-	table.insert(_q, {walk.walk, {258, 11, 14}})
-	table.insert(_q, {walk.walk, {258, 11, 11}})
-	table.insert(_q, {walk.walk, {258, 14, 11}})
-	table.insert(_q, {walk.walk, {258, 14, 5}})
-	table.insert(_q, {walk.walk, {259, 3, 4}})
-	table.insert(_q, {walk.walk, {259, 3, 5}})
-	table.insert(_q, {walk.walk, {259, 2, 5}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.ADAMANT}})
-	table.insert(_q, {walk.walk, {259, 2, 4}})
-	table.insert(_q, {walk.walk, {259, 9, 4}})
-	table.insert(_q, {walk.walk, {258, 14, 10}})
-	table.insert(_q, {walk.walk, {258, 11, 10}})
-	table.insert(_q, {walk.walk, {258, 11, 9}})
-	table.insert(_q, {walk.walk, {258, 7, 9}})
-	table.insert(_q, {walk.step, {walk.DIRECTION.DOWN}})
-	table.insert(_q, {walk.interact, {}})
 
-	-- Return to the overworld and board the Big Whale.
-	table.insert(_q, {walk.walk, {258, 11, 9}})
-	table.insert(_q, {walk.walk, {258, 11, 14}})
-	table.insert(_q, {walk.walk, {258, 7, 17, true}})
-	table.insert(_q, {walk.walk, {256, 6, 12}})
-	table.insert(_q, {walk.walk, {nil, 104, 122}})
-	table.insert(_q, {walk.board, {}})
-	table.insert(_q, {walk.walk, {nil, 112, 17}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {nil, 149, 199}})
-	table.insert(_q, {walk.interact, {}})
+	if ROUTE == "no64-excalbur" then
+		table.insert(_q, {walk.board, {}})
+		table.insert(_q, {walk.walk, {nil, 106, 211}})
+		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {walk.walk, {nil, 106, 122}})
+		table.insert(_q, {walk.walk, {nil, 104, 122}})
+		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {walk.walk, {nil, 104, 123}})
+		table.insert(_q, {walk.walk, {256, 6, 6}})
+		table.insert(_q, {walk.walk, {258, 11, 14}})
+		table.insert(_q, {walk.walk, {258, 11, 11}})
+		table.insert(_q, {walk.walk, {258, 14, 11}})
+		table.insert(_q, {walk.walk, {258, 14, 5}})
+		table.insert(_q, {walk.walk, {259, 3, 4}})
+		table.insert(_q, {walk.walk, {259, 3, 5}})
+		table.insert(_q, {walk.walk, {259, 2, 5}})
+		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.ADAMANT}})
+		table.insert(_q, {walk.walk, {259, 2, 4}})
+		table.insert(_q, {walk.walk, {259, 9, 4}})
+		table.insert(_q, {walk.walk, {258, 14, 10}})
+		table.insert(_q, {walk.walk, {258, 11, 10}})
+		table.insert(_q, {walk.walk, {258, 11, 9}})
+		table.insert(_q, {walk.walk, {258, 7, 9}})
+		table.insert(_q, {walk.step, {walk.DIRECTION.DOWN}})
+		table.insert(_q, {walk.interact, {}})
+
+		-- Return to the overworld and board the Big Whale.
+		table.insert(_q, {walk.walk, {258, 11, 9}})
+		table.insert(_q, {walk.walk, {258, 11, 14}})
+		table.insert(_q, {walk.walk, {258, 7, 17, true}})
+		table.insert(_q, {walk.walk, {256, 6, 12}})
+		table.insert(_q, {walk.walk, {nil, 104, 122}})
+		table.insert(_q, {walk.board, {}})
+		table.insert(_q, {walk.walk, {nil, 112, 17}})
+		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {walk.walk, {nil, 149, 199}})
+		table.insert(_q, {walk.interact, {}})
+	end
+
 	table.insert(_q, {walk.walk, {nil, 150, 199}})
 	table.insert(_q, {walk.board, {}})
 
@@ -3779,10 +3850,21 @@ local function _sequence_grind_start()
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.FUSOYA}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+
+	if ROUTE ~= "no64-excalbur" then
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.RUNE}})
+	end
+
 	table.insert(_q, {menu.field.equip.close, {}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.ROSA}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.LUNAR}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.WIZARD}})
+
+	if ROUTE == "no64-rosa" then
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.WIZARD}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.RUNE}})
+	end
+
 	table.insert(_q, {menu.field.equip.close, {}})
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.CECIL, game.CHARACTER.EDGE}})
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.RYDIA, game.CHARACTER.FUSOYA}})
@@ -3826,6 +3908,10 @@ local function _grind_search()
 	if memory.read("walk", "y") == 16 then
 		local level = game.character.get_stat(game.CHARACTER.EDGE, "level")
 
+		if ROUTE == "no64-rosa" then
+			level = game.character.get_stat(game.CHARACTER.ROSA, "level")
+		end
+
 		if level ~= nil and level >= 45 then
 			return true
 		else
@@ -3839,7 +3925,13 @@ local function _grind_search()
 end
 
 local function _sequence_elements()
-	if game.character.get_stat(game.CHARACTER.EDGE, "level") < 45 then
+	local level = game.character.get_stat(game.CHARACTER.EDGE, "level")
+
+	if ROUTE == "no64-rosa" then
+		level = game.character.get_stat(game.CHARACTER.ROSA, "level")
+	end
+
+	if level < 45 then
 		table.insert(_q, {_grind_search, {}})
 	else
 		_post_grind_menu()
@@ -3855,13 +3947,18 @@ local function _sequence_cpu()
 	-- Do the post-battle menu.
 	table.insert(_q, {menu.field.open, {}})
 
-	if game.character.get_stat(game.CHARACTER.ROSA, "level") < 20 then
-		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.ALL, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP}}})
+	if ROUTE == "no64-excalbur" then
+		if game.character.get_stat(game.CHARACTER.ROSA, "level") < 20 then
+			table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.ALL, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP}}})
+		else
+			table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.ALL, [game.CHARACTER.EDGE] = _RESTORE.HP}}})
+		end
+
+		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.FUSOYA, game.CHARACTER.CECIL}})
 	else
-		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.ALL, [game.CHARACTER.EDGE] = _RESTORE.HP}}})
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.HP}, game.CHARACTER.FUSOYA}})
 	end
 
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.FUSOYA, game.CHARACTER.CECIL}})
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Walk to the CPU battle.
@@ -4024,29 +4121,31 @@ local function _sequence_core()
 	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
 	table.insert(_q, {walk.interact, {}})
 
-	-- Complete the pre-Zeromus menu.
-	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.EDGE}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.NONE}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.NONE}})
-	table.insert(_q, {menu.field.equip.close, {}})
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.BANDANNA}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.BL_BELT}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.STRENGTH}})
-	table.insert(_q, {menu.field.equip.close, {}})
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.HEADBAND}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.KARATE}})
-	table.insert(_q, {menu.field.equip.close, {}})
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.EDGE}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.SAMURAI}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.SAMURAI}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.PROTECT}})
-	table.insert(_q, {menu.field.equip.close, {}})
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.EDGE, game.CHARACTER.ROSA}})
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.KAIN, game.CHARACTER.RYDIA}})
-	table.insert(_q, {menu.field.close, {}})
+	-- Complete the Excalbur pre-Zeromus menu.
+	if ROUTE == "no64-excalbur" then
+		table.insert(_q, {menu.field.open, {}})
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.EDGE}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.NONE}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.NONE}})
+		table.insert(_q, {menu.field.equip.close, {}})
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.BANDANNA}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.BL_BELT}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.STRENGTH}})
+		table.insert(_q, {menu.field.equip.close, {}})
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.HEADBAND}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.KARATE}})
+		table.insert(_q, {menu.field.equip.close, {}})
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.EDGE}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.SAMURAI}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.SAMURAI}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.PROTECT}})
+		table.insert(_q, {menu.field.equip.close, {}})
+		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.EDGE, game.CHARACTER.ROSA}})
+		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.KAIN, game.CHARACTER.RYDIA}})
+		table.insert(_q, {menu.field.close, {}})
+	end
 
 	-- Walk to the Lunar Core.
 	table.insert(_q, {walk.walk, {373, 17, 5}})
@@ -4066,8 +4165,29 @@ local function _sequence_core()
 	end
 
 	table.insert(_q, {walk.walk, {363, 14, 20}})
-	table.insert(_q, {walk.walk, {374, 9, 6}})
-	table.insert(_q, {walk.walk, {374, 6, 6}})
+	table.insert(_q, {walk.walk, {374, 9, 7}})
+	table.insert(_q, {walk.walk, {374, 6, 7}})
+
+	if ROUTE == "no64-rosa" then
+		table.insert(_q, {walk.walk, {374, 3, 7}})
+		table.insert(_q, {walk.walk, {374, 3, 13}})
+		table.insert(_q, {walk.interact, {"Found"}})
+
+		table.insert(_q, {menu.field.open, {}})
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.EDGE}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.PROTECT}})
+		table.insert(_q, {menu.field.equip.close, {}})
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.ROSA}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.WHITE}})
+		table.insert(_q, {menu.field.equip.close, {}})
+		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.EDGE, game.CHARACTER.KAIN}})
+		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.EDGE, game.CHARACTER.CECIL}})
+		table.insert(_q, {menu.field.close, {}})
+
+		table.insert(_q, {walk.walk, {374, 3, 7}})
+		table.insert(_q, {walk.walk, {374, 6, 7}})
+	end
+
 	table.insert(_q, {walk.walk, {374, 6, 3}})
 	table.insert(_q, {walk.walk, {363, 18, 28}})
 	table.insert(_q, {walk.walk, {363, 18, 26}})
@@ -4196,6 +4316,14 @@ local function _sequence_zemus()
 	table.insert(_q, {walk.walk, {368, 19, 12}})
 	table.insert(_q, {walk.walk, {368, 22, 12}})
 	table.insert(_q, {walk.walk, {368, 22, 15}})
+
+	if ROUTE == "no64-rosa" then
+		table.insert(_q, {walk.walk, {368, 24, 15}})
+		table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+		table.insert(_q, {walk.interact, {"Found"}})
+		table.insert(_q, {walk.walk, {368, 22, 15}})
+	end
+
 	table.insert(_q, {walk.walk, {368, 13, 15}})
 	table.insert(_q, {walk.walk, {368, 13, 18}})
 	table.insert(_q, {walk.walk, {368, 14, 18}})
@@ -4217,44 +4345,45 @@ local function _sequence_zemus()
 end
 
 local _sequences = {
-	{title = "Prologue",      f = _sequence_prologue,      map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
-	{title = "D.Mist",        f = _sequence_d_mist,        map_area = 0, map_id = nil, map_x = 102, map_y = 158},
-	{title = "Mist Clip",     f = _sequence_clip,          map_area = 0, map_id = nil, map_x = 84,  map_y = 120},
-	{title = "Girl",          f = _sequence_girl,          map_area = 0, map_id = nil, map_x = 96,  map_y = 119},
-	{title = "Officer",       f = _sequence_officer,       map_area = 0, map_id = nil, map_x = 103, map_y = 119},
-	{title = "Tellah",        f = _sequence_tellah,        map_area = 3, map_id = 16,  map_x = 14,  map_y = 12},
-	{title = "Octomamm",      f = _sequence_octomamm,      map_area = 3, map_id = 111, map_x = 7,   map_y = 13},
-	{title = "Edward",        f = _sequence_edward,        map_area = 0, map_id = nil, map_x = 125, map_y = 67},
-	{title = "Antlion",       f = _sequence_antlion,       map_area = 0, map_id = nil, map_x = 117, map_y = 57},
-	{title = "WaterHag",      f = _sequence_waterhag,      map_area = 3, map_id = 121, map_x = 14,  map_y = 20},
-	{title = "MomBomb",       f = _sequence_mombomb,       map_area = 3, map_id = 18,  map_x = 4,   map_y = 5},
-	{title = "Dragoon",       f = _sequence_dragoon,       map_area = 3, map_id = 127, map_x = 21,  map_y = 14},
-	{title = "Twins",         f = _sequence_twins,         map_area = 3, map_id = 74,  map_x = 12,  map_y = 15},
-	{title = "Milon",         f = _sequence_milon,         map_area = 3, map_id = 22,  map_x = 14,  map_y = 7},
-	{title = "Milon Z.",      f = _sequence_milon_z,       map_area = 3, map_id = 135, map_x = 14,  map_y = 10},
-	{title = "Paladin",       f = _sequence_paladin,       map_area = 3, map_id = 135, map_x = 9,   map_y = 10},
-	{title = "Karate",        f = _sequence_karate,        map_area = 3, map_id = 135, map_x = 6,   map_y = 10},
-	{title = "Baigan",        f = _sequence_baigan,        map_area = 3, map_id = 11,  map_x = 14,  map_y = 15},
-	{title = "Kainazzo",      f = _sequence_kainazzo,      map_area = 3, map_id = 42,  map_x = 8,   map_y = 4},
-	{title = "Dark Elf",      f = _sequence_dark_elf,      map_area = 0, map_id = nil, map_x = 102, map_y = 155},
-	{title = "FlameDog",      f = _sequence_flamedog,      map_area = 3, map_id = 148, map_x = 11,  map_y = 12},
-	{title = "Magus Sisters", f = _sequence_magus_sisters, map_area = 3, map_id = 153, map_x = 8,   map_y = 15},
-	{title = "Valvalis",      f = _sequence_valvalis,      map_area = 3, map_id = 157, map_x = 15,  map_y = 17},
-	{title = "Calbrena",      f = _sequence_calbrena,      map_area = 3, map_id = 52,  map_x = 6,   map_y = 4},
-	{title = "Dr.Lugae",      f = _sequence_dr_lugae,      map_area = 3, map_id = 265, map_x = 10,  map_y = 8},
-	{title = "Dark Imps",     f = _sequence_dark_imps,     map_area = 3, map_id = 296, map_x = 16,  map_y = 19},
-	{title = "Edge",          f = _sequence_edge,          map_area = 3, map_id = 293, map_x = 16,  map_y = 10},
-	{title = "Rubicant",      f = _sequence_rubicant,      map_area = 3, map_id = 202, map_x = 22,  map_y = 6},
-	{title = "Monsters",      f = _sequence_monsters,      map_area = 3, map_id = 172, map_x = 14,  map_y = 17},
-	{title = "Dark Crystal",  f = _sequence_dark_crystal,  map_area = 1, map_id = nil, map_x = 27,  map_y = 87},
-	{title = "Big Whale",     f = _sequence_big_whale,     map_area = 3, map_id = 324, map_x = 4,   map_y = 8},
-	{title = "FuSoYa",        f = _sequence_fusoya,        map_area = 0, map_id = nil, map_x = 153, map_y = 199},
-	{title = "Grind Start",   f = _sequence_grind_start,   map_area = 3, map_id = 303, map_x = 3,   map_y = 13},
-	{title = "Elements",      f = _sequence_elements,      map_area = 3, map_id = 188, map_x = 15,  map_y = 16},
-	{title = "CPU",           f = _sequence_cpu,           map_area = 3, map_id = 188, map_x = 15,  map_y = 15},
-	{title = "Subterrane",    f = _sequence_subterrane,    map_area = 2, map_id = nil, map_x = 19,  map_y = 39},
-	{title = "Lunar Core",    f = _sequence_core,          map_area = 3, map_id = 359, map_x = 13,  map_y = 13},
-	{title = "Zemus",         f = _sequence_zemus,         map_area = 3, map_id = 366, map_x = 17,  map_y = 8},
+	{title = "Prologue",       f = _sequence_prologue,       map_area = 3, map_id = 43,  map_x = 14,  map_y = 5},
+	{title = "D.Mist",         f = _sequence_d_mist,         map_area = 0, map_id = nil, map_x = 102, map_y = 158},
+	{title = "Mist Clip",      f = _sequence_clip,           map_area = 0, map_id = nil, map_x = 84,  map_y = 120},
+	{title = "Girl",           f = _sequence_girl,           map_area = 0, map_id = nil, map_x = 96,  map_y = 119},
+	{title = "Officer",        f = _sequence_officer,        map_area = 0, map_id = nil, map_x = 103, map_y = 119},
+	{title = "Tellah",         f = _sequence_tellah,         map_area = 3, map_id = 16,  map_x = 14,  map_y = 12},
+	{title = "Octomamm",       f = _sequence_octomamm,       map_area = 3, map_id = 111, map_x = 7,   map_y = 13},
+	{title = "Edward",         f = _sequence_edward,         map_area = 0, map_id = nil, map_x = 125, map_y = 67},
+	{title = "Antlion",        f = _sequence_antlion,        map_area = 0, map_id = nil, map_x = 117, map_y = 57},
+	{title = "WaterHag",       f = _sequence_waterhag,       map_area = 3, map_id = 121, map_x = 14,  map_y = 20},
+	{title = "MomBomb",        f = _sequence_mombomb,        map_area = 3, map_id = 18,  map_x = 4,   map_y = 5},
+	{title = "Dragoon",        f = _sequence_dragoon,        map_area = 3, map_id = 127, map_x = 21,  map_y = 14},
+	{title = "Twins",          f = _sequence_twins,          map_area = 3, map_id = 74,  map_x = 12,  map_y = 15},
+	{title = "Milon",          f = _sequence_milon,          map_area = 3, map_id = 22,  map_x = 14,  map_y = 7},
+	{title = "Milon Z.",       f = _sequence_milon_z,        map_area = 3, map_id = 135, map_x = 14,  map_y = 10},
+	{title = "Paladin",        f = _sequence_paladin,        map_area = 3, map_id = 135, map_x = 9,   map_y = 10},
+	{title = "Karate",         f = _sequence_karate,         map_area = 3, map_id = 135, map_x = 6,   map_y = 10},
+	{title = "Baigan",         f = _sequence_baigan,         map_area = 3, map_id = 11,  map_x = 14,  map_y = 15},
+	{title = "Kainazzo",       f = _sequence_kainazzo,       map_area = 3, map_id = 42,  map_x = 8,   map_y = 4},
+	{title = "Dark Elf",       f = _sequence_dark_elf,       map_area = 0, map_id = nil, map_x = 102, map_y = 155},
+	{title = "FlameDog",       f = _sequence_flamedog,       map_area = 3, map_id = 148, map_x = 11,  map_y = 12},
+	{title = "Magus Sisters",  f = _sequence_magus_sisters,  map_area = 3, map_id = 153, map_x = 8,   map_y = 15},
+	{title = "Valvalis",       f = _sequence_valvalis,       map_area = 3, map_id = 157, map_x = 15,  map_y = 17},
+	{title = "Calbrena",       f = _sequence_calbrena,       map_area = 3, map_id = 52,  map_x = 6,   map_y = 4},
+	{title = "Dr.Lugae",       f = _sequence_dr_lugae,       map_area = 3, map_id = 265, map_x = 10,  map_y = 8},
+	{title = "Dark Imps",      f = _sequence_dark_imps,      map_area = 3, map_id = 296, map_x = 16,  map_y = 19},
+	{title = "Edge",           f = _sequence_edge,           map_area = 3, map_id = 293, map_x = 16,  map_y = 10},
+	{title = "Rubicant",       f = _sequence_rubicant,       map_area = 3, map_id = 202, map_x = 22,  map_y = 6},
+	{title = "Falcon Upgrade", f = _sequence_falcon_upgrade, map_area = 3, map_id = 172, map_x = 14,  map_y = 17},
+	{title = "Sealed Cave",    f = _sequence_sealed_cave,    map_area = 1, map_id = nil, map_x = 27,  map_y = 87},
+	{title = "Dark Crystal",   f = _sequence_dark_crystal,   map_area = 1, map_id = nil, map_x = 46,  map_y = 110},
+	{title = "Big Whale",      f = _sequence_big_whale,      map_area = 3, map_id = 324, map_x = 4,   map_y = 8},
+	{title = "FuSoYa",         f = _sequence_fusoya,         map_area = 0, map_id = nil, map_x = 153, map_y = 199},
+	{title = "Grind Start",    f = _sequence_grind_start,    map_area = 3, map_id = 303, map_x = 3,   map_y = 13},
+	{title = "Elements",       f = _sequence_elements,       map_area = 3, map_id = 188, map_x = 15,  map_y = 16},
+	{title = "CPU",            f = _sequence_cpu,            map_area = 3, map_id = 188, map_x = 15,  map_y = 15},
+	{title = "Subterrane",     f = _sequence_subterrane,     map_area = 2, map_id = nil, map_x = 19,  map_y = 39},
+	{title = "Lunar Core",     f = _sequence_core,           map_area = 3, map_id = 359, map_x = 13,  map_y = 13},
+	{title = "Zemus",          f = _sequence_zemus,          map_area = 3, map_id = 366, map_x = 17,  map_y = 8},
 }
 
 --------------------------------------------------------------------------------
