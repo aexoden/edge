@@ -1521,7 +1521,7 @@ local function _battle_milon_z(character, turn)
 			end
 		end
 
-		if game.character.get_stat(character, "hp", true) < game.character.get_stat(character, "hp_max", true) * 0.5 then
+		if count > 0 and game.character.get_stat(character, "hp", true) < game.character.get_stat(character, "hp_max", true) * 0.5 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, character)
 		elseif count > 2 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, best)
