@@ -340,16 +340,7 @@ function _M.field.select(choice)
 
 	if cursor then
 		if cursor == choice then
-			if not _state.select_frame or emu.framecount() - _state.select_frame >= 10 then
-				local result = input.press({"P1 A"}, input.DELAY.NONE)
-				_state.select_frame = emu.framecount()
-
-				if result then
-					_state.select_frame = nil
-				end
-
-				return result
-			end
+			return input.press({"P1 A"}, input.DELAY.MASH)
 		else
 			_select_vertical(cursor, choice, 4)
 		end
@@ -497,9 +488,8 @@ function _M.field.form.move(character, index, formation)
 				_select_vertical(cursor, index, 2)
 			end
 		end
-	elseif not _state.frame or emu.framecount() - _state.frame > 15 then
+	else
 		_M.field.select(_M.field.CHOICE.FORM)
-		_state.frame = emu.framecount()
 	end
 
 	return false
