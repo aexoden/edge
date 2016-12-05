@@ -134,9 +134,11 @@ def get_seed_data(logs):
     for log in logs:
         if log.success:
             if log.step_seed not in seeds:
-                seeds[log.step_seed] = []
+                seeds[log.step_seed] = {'data': [], 'battles': 0, 'back_attack_count': 0}
 
-            seeds[log.step_seed].append(log.frames)
+            seeds[log.step_seed]['data'].append(log.frames)
+            seeds[log.step_seed]['battles'] += len(log.battles)
+            seeds[log.step_seed]['back_attack_count'] += log.back_attack_count
 
     return seeds
 
@@ -176,6 +178,10 @@ class Log(object):
         return self._frames
 
     @property
+    def max_frame(self):
+        return max([x['total'] for x in self._splits.values()]) if len(self._splits) > 0 else 0
+
+    @property
     def route(self):
         return self._route
 
@@ -194,6 +200,13 @@ class Log(object):
     @property
     def step_seed(self):
         return self._step_seed
+
+    @property
+    def non_battle_frames(self):
+        if self.frames:
+            return self.frames - sum([x['frames'] for x in self._battles])
+        else:
+            return None
 
     @property
     def result(self):
@@ -440,6 +453,7 @@ def html_output_seeds(f, logs):
     f.write('\t\t\t\t\t<tr>\n')
     f.write('\t\t\t\t\t\t<th>Seed</th>\n')
     f.write('\t\t\t\t\t\t<th>Count</th>\n')
+    f.write('\t\t\t\t\t\t<th>Back Attacks</th>\n')
     f.write('\t\t\t\t\t\t<th>Minimum</th>\n')
     f.write('\t\t\t\t\t\t<th>Maximum</th>\n')
     f.write('\t\t\t\t\t\t<th>Median</th>\n')
@@ -449,13 +463,14 @@ def html_output_seeds(f, logs):
 
     seeds = get_seed_data(logs)
 
-    for seed, data in sorted(seeds.items(), key=lambda x: statistics.median(x[1])):
+    for seed, data in sorted(seeds.items(), key=lambda x: statistics.median(x[1]['data'])):
         f.write('\t\t\t\t\t<tr>\n')
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(seed))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(len(data)))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data))))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data))))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data))))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(len(data['data'])))
+        f.write('\t\t\t\t\t\t<td>{} / {} ({:.3f}%)</td>\n'.format(data['back_attack_count'], data['battles'], data['back_attack_count'] * 100 / data['battles'] if data['battles'] > 0 else 1))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data']))))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data']))))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data']))))
         f.write('\t\t\t\t\t</tr>\n')
 
     f.write('\t\t\t\t</tbody>\n')
@@ -540,6 +555,7 @@ def html_output_runs(f, logs):
     f.write('\t\t\t\t\t\t<th>RNG Seed</th>\n')
     f.write('\t\t\t\t\t\t<th>Step Seed</th>\n')
     f.write('\t\t\t\t\t\t<th>Surprised/Back Attacks</th>\n')
+    f.write('\t\t\t\t\t\t<th>Non-Battle Time</th>\n')
     f.write('\t\t\t\t\t\t<th>Result</th>\n')
     f.write('\t\t\t\t\t</tr>\n')
     f.write('\t\t\t\t</thead>\n')
@@ -547,7 +563,7 @@ def html_output_runs(f, logs):
 
     frames = [log.frames for log in logs if log.success]
 
-    for log in logs:
+    for log in sorted(logs, key=lambda x: x.frames if x.frames else (10 ** 8) - x.max_frame):
         if log.success:
             if log.frames < sorted(frames)[int(len(frames) * 0.3333)]:
                 result_class = 'text-success'
@@ -562,7 +578,8 @@ def html_output_runs(f, logs):
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.version))
         f.write('\t\t\t\t\t\t<td><a href="runs/{}-{:03}-{:010}.html">{}</a></td>\n'.format(log.route, log.step_seed, log.rng_seed, log.rng_seed))
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.step_seed))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.back_attack_count))
+        f.write('\t\t\t\t\t\t<td>{} / {} ({:.3f}%)</td>\n'.format(log.back_attack_count, len(log.battles), log.back_attack_count * 100 / len(log.battles) if len(log.battles) > 0 else 1))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(log.non_battle_frames) if log.non_battle_frames else 'N/A'))
         f.write('\t\t\t\t\t\t<td class="{}">{}</td>\n'.format(result_class, log.result))
         f.write('\t\t\t\t\t</tr>\n')
 
