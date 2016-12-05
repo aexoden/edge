@@ -1979,93 +1979,223 @@ local function _battle_zeromus_excalbur(character, turn)
 end
 
 local function _battle_zeromus_rosa(character, turn)
-	local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp", true)
+	-- Constants
+	local MIDGAME = {
+		STANDARD   = 0,
+		RYDIA_NUKE = 1,
+		CECIL_ONLY = 2,
+		CECIL_NUKE = 3,
+	}
+
+	-- Collect some useful HP values.
 	local rosa_hp = game.character.get_stat(game.CHARACTER.ROSA, "hp", true)
+	local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp", true)
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
+	local edge_hp = game.character.get_stat(game.CHARACTER.EDGE, "hp", true)
+	local rydia_hp = game.character.get_stat(game.CHARACTER.RYDIA, "hp", true)
 
-	local weakest = nil
+	-- Handle the switches between phase and tracking characters' turns within those phases.
+	if not _state.phase then
+		_state.phase = 1
+		_state.last_phase = {}
+		_state.turn_base = {}
+	end
 
-	if kain_hp < rosa_hp then
-		if kain_hp < game.character.get_stat(game.CHARACTER.KAIN, "hp_max", true) then
-			weakest = {game.CHARACTER.KAIN, kain_hp}
-		end
-	else
-		if rosa_hp < game.character.get_stat(game.CHARACTER.ROSA, "hp_max", true) then
-			weakest = {game.CHARACTER.ROSA, rosa_hp}
+	-- Switch to phase 2 when the turns get high enough.
+	if _state.phase == 1 and (turn > 3 or (turn > 2 and character ~= game.CHARACTER.ROSA)) then
+		_state.phase = 2
+
+		if _state.cecil_nuke and kain_hp > 20 and rosa_hp > 20 and edge_hp > 20 then
+			log.log("Cecil nuked. Using Cecil Nuke midgame.")
+			_state.midgame = MIDGAME.CECIL_NUKE
+		elseif kain_hp > 20 and rosa_hp > 20 and cecil_hp > 20 and edge_hp > 20 then
+			log.log("Cecil and Edge alive. Using standard midgame.")
+			_state.midgame = MIDGAME.STANDARD
+		elseif kain_hp > 20 and rosa_hp > 20 and cecil_hp > 20 and _state.rydia_nuke then
+			log.log("Cecil alive, and Rydia nuked. Using Rydia Nuke midgame.")
+			_state.midgame = MIDGAME.RYDIA_NUKE
+		elseif kain_hp > 20 and rosa_hp > 20 and cecil_hp > 20 then
+			log.log("Cecil alive, and Rydia not nuked. Using Cecil Only midgame.")
+			_state.midgame = MIDGAME.CECIL_ONLY
+		else
+			log.log("Do not have a midgame defined for this situation. Expect a rapid death.")
 		end
 	end
 
-	if character == game.CHARACTER.CECIL then
-		if turn == 1 then
-			_command_use_item(game.ITEM.ITEM.CRYSTAL)
-		elseif turn == 2 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-		else
-			if weakest then
-				if weakest[2] == 0 then
-					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, weakest[1])
-				else
-					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, weakest[1])
+	if not _state.last_phase[character] then
+		_state.last_phase[character] = 0
+	end
+
+	if _state.last_phase[character] ~= _state.phase then
+		_state.turn_base[character] = turn - 1
+		_state.last_phase[character] = _state.phase
+	end
+
+	turn = turn - _state.turn_base[character]
+
+	if _state.phase == 1 then
+		if character == game.CHARACTER.CECIL then
+			if turn == 1 then
+				_command_use_item(game.ITEM.ITEM.CRYSTAL)
+			elseif turn == 2 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+			end
+		elseif character == game.CHARACTER.ROSA then
+			if turn == 1 then
+				_command_white(game.MAGIC.WHITE.BERSK, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+			elseif turn == 2 then
+				_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+
+				if rydia_hp == 0 then
+					_state.rydia_nuke = true
+					log.log("Detected Rydia Nuke.")
+				elseif cecil_hp == 0 then
+					_state.cecil_nuke = true
+					log.log("Detected Cecil Nuke.")
 				end
-			else
-				_command_parry()
+			elseif turn == 3 then
+				_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+			end
+		elseif character == game.CHARACTER.EDGE then
+			if turn == 1 then
+				_command_dart(game.ITEM.STAR.NINJA)
+			elseif turn == 2 then
+				if cecil_hp == 0 then
+					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+				else
+					_command_parry()
+				end
+			end
+		elseif character == game.CHARACTER.RYDIA then
+			if turn == 1 then
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+			elseif turn == 2 then
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
 			end
 		end
-	elseif character == game.CHARACTER.ROSA then
-		if turn == 1 then
-			_command_white(game.MAGIC.WHITE.BERSK, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
-		elseif turn == 2 or turn == 5 then
-			if turn == 5 then
-				_command_wait_text("Blk.Hole", 180)
+	elseif _state.phase == 2 then
+		if character == game.CHARACTER.CECIL then
+			if _state.midgame == MIDGAME.STANDARD then
+				if turn == 1 then
+					_command_parry()
+				elseif turn == 2 then
+					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+				elseif turn == 3 then
+					_command_parry()
+				else
+					_state.phase = 3
+					return true
+				end
+			elseif _state.midgame == MIDGAME.RYDIA_NUKE then
+				if turn == 1 then
+					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+					table.insert(_state.q, {menu.wait, {60}})
+					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.ELIXIR}})
+					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.ELIXIR}})
+					table.insert(_state.q, {menu.battle.target, {menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN}})
+				elseif turn == 2 then
+					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+				elseif turn == 3 then
+					_command_parry()
+				else
+					_state.phase = 3
+					return true
+				end
+			elseif _state.midgame == MIDGAME.CECIL_ONLY then
+				if turn == 1 then
+					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+				elseif turn == 2 then
+					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+					table.insert(_state.q, {menu.wait, {90}})
+					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.ELIXIR}})
+					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.ELIXIR}})
+					table.insert(_state.q, {menu.battle.target, {menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA}})
+				elseif turn == 3 then
+					_command_parry()
+				else
+					_state.phase = 3
+					return true
+				end
+			elseif _state.midgame == MIDGAME.CECIL_NUKE then
+				if turn == 1 then
+					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+				elseif turn == 2 then
+					_command_parry()
+				else
+					_state.phase = 3
+					return true
+				end
+			end
+		elseif character == game.CHARACTER.EDGE then
+			if _state.midgame == MIDGAME.CECIL_NUKE then
+				if turn == 1 then
+					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+				elseif turn == 2 then
+					_command_parry()
+				else
+					_state.phase = 3
+					return true
+				end
+			else
+				if turn == 1 then
+					_command_wait_text("White")
+					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+				elseif turn == 2 then
+					_command_parry()
+				else
+					_state.phase = 3
+					return true
+				end
+			end
+		elseif character == game.CHARACTER.ROSA then
+			if turn == 1 then
+				_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+			else
+				_state.phase = 3
+				return true
+			end
+		end
+	else
+		if character == game.CHARACTER.ROSA then
+			if _state.kain_extra_turn then
+				turn = turn - 1
 			end
 
-			_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-		elseif turn == 3 or turn == 4 or turn == 6 then
-			_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-		elseif turn == 7 then
-			if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
+			if turn == 1 then
+				if not _state.kain_extra_turn and game.enemy.get_stat(1, "hp") > 21000 then
+					_state.kain_extra_turn = true
+					log.log(string.format("Zeromus has %s HP, giving Kain an extra turn", game.enemy.get_stat(1, "hp")))
+					_command_parry()
+				else
+					if not _state.kain_extra_turn then
+						log.log(string.format("Zeromus has %s HP, not giving Kain an extra turn", game.enemy.get_stat(1, "hp")))
+						_command_wait_text("BlkHo")
+						_command_wait_frames(300)
+					end
+
+					_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+				end
+			elseif turn == 2 then
+				_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+			elseif turn == 3 then
+				-- TODO: Develop a way to determine if a run buffer was successful. If so, cast White directly here.
+				_command_wait_text("BlkHo", 600)
+				_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+			elseif turn == 4 then
+				_command_white(game.MAGIC.WHITE.WHITE)
+			end
+		elseif character == game.CHARACTER.KAIN then
+			if turn == 1 then
 				_command_run_buffer()
-			end
-
-			_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-		elseif turn == 8 then
-			_command_white(game.MAGIC.WHITE.WHITE)
-		end
-	elseif character == game.CHARACTER.EDGE then
-		if turn == 1 then
-			_command_dart(game.ITEM.STAR.NINJA)
-		elseif turn == 2 then
-			if game.character.get_stat(game.CHARACTER.CECIL, "hp", true) == 0 then
-				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-			else
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+			elseif turn == 2 then
+				_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.ENEMY, 0)
+			elseif turn == 3 then
+				_command_run_buffer()
 				_command_parry()
-			end
-		else
-			if weakest then
-				if weakest[2] == 0 then
-					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, weakest[1])
-				else
-					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, weakest[1])
-				end
 			else
-				_command_parry()
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 			end
-		end
-	elseif character == game.CHARACTER.RYDIA then
-		if turn == 1 then
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
-		elseif turn == 2 then
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
-		end
-	elseif character == game.CHARACTER.KAIN then
-		if turn == 1 then
-			_command_run_buffer()
-			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-		elseif turn == 2 then
-			_command_run_buffer()
-			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.ENEMY, 0)
-		elseif turn == 3 then
-			_command_run_buffer()
-			_command_parry()
 		end
 	end
 end
