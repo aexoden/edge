@@ -144,7 +144,7 @@ while true do
 		sequence.cycle()
 	end
 
-	if sequence.is_end() then
+	if FULL_RUN and sequence.is_end() then
 		log.log("Rebooting...")
 		client.reboot_core()
 	end
