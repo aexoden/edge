@@ -132,15 +132,31 @@ def get_seed_data(logs):
     seeds = {}
 
     for log in logs:
-        if log.success:
-            if log.step_seed not in seeds:
-                seeds[log.step_seed] = {'data': [], 'battles': 0, 'back_attack_count': 0}
+        if log.step_seed not in seeds:
+            seeds[log.step_seed] = {'data': [], 'best_splits': {}, 'battles': 0, 'back_attack_count': 0}
 
+        if log.success:
             seeds[log.step_seed]['data'].append(log.frames)
             seeds[log.step_seed]['battles'] += len(log.battles)
             seeds[log.step_seed]['back_attack_count'] += log.back_attack_count
 
+        for split in log.splits:
+            if split not in seeds[log.step_seed]['best_splits'] or log.splits[split]['current'] < seeds[log.step_seed]['best_splits'][split]:
+                seeds[log.step_seed]['best_splits'][split] = log.splits[split]['current']
+
     return seeds
+
+
+def get_sum_of_best(logs):
+    seeds = get_seed_data(logs)
+    splits = {}
+
+    for data in seeds.values():
+        for split, value in data['best_splits'].items():
+            if split not in splits or value < splits[split]:
+                splits[split] = value
+
+    return sum(splits.values())
 
 
 #-------------------------------------------------------------------------------
@@ -330,6 +346,8 @@ def html_output_basic_statistics(f, logs):
     f.write('\t\t\t<h2>Basic Statistics</h2>\n')
     f.write('\t\t\t<dl class="dl-horizontal">\n')
     f.write('\t\t\t\t<dt>Number of Logs</dt><dd>{}</dd>'.format(len(logs)))
+    f.write('\t\t\t\t<dt>Best Time</dt><dd>{}</dd>'.format(format_time(min([x.frames for x in logs if x.success]))))
+    f.write('\t\t\t\t<dt>Sum of Best</dt><dd>{}</dd>'.format(format_time(get_sum_of_best(logs))))
     f.write('\t\t\t</dl>\n')
 
 
@@ -454,6 +472,7 @@ def html_output_seeds(f, logs):
     f.write('\t\t\t\t\t\t<th>Seed</th>\n')
     f.write('\t\t\t\t\t\t<th>Count</th>\n')
     f.write('\t\t\t\t\t\t<th>Back Attacks</th>\n')
+    f.write('\t\t\t\t\t\t<th>Sum of Best</th>\n')
     f.write('\t\t\t\t\t\t<th>Minimum</th>\n')
     f.write('\t\t\t\t\t\t<th>Maximum</th>\n')
     f.write('\t\t\t\t\t\t<th>Median</th>\n')
@@ -464,14 +483,16 @@ def html_output_seeds(f, logs):
     seeds = get_seed_data(logs)
 
     for seed, data in sorted(seeds.items(), key=lambda x: statistics.median(x[1]['data'])):
-        f.write('\t\t\t\t\t<tr>\n')
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(seed))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(len(data['data'])))
-        f.write('\t\t\t\t\t\t<td>{} / {} ({:.3f}%)</td>\n'.format(data['back_attack_count'], data['battles'], data['back_attack_count'] * 100 / data['battles'] if data['battles'] > 0 else 1))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data']))))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data']))))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data']))))
-        f.write('\t\t\t\t\t</tr>\n')
+        if len(data['data']) > 0:
+            f.write('\t\t\t\t\t<tr>\n')
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(seed))
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(len(data['data'])))
+            f.write('\t\t\t\t\t\t<td>{} / {} ({:.3f}%)</td>\n'.format(data['back_attack_count'], data['battles'], data['back_attack_count'] * 100 / data['battles'] if data['battles'] > 0 else 1))
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(sum(data['best_splits'].values()))))
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data']))))
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data']))))
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data']))))
+            f.write('\t\t\t\t\t</tr>\n')
 
     f.write('\t\t\t\t</tbody>\n')
     f.write('\t\t\t</table>\n')
