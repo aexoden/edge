@@ -1198,7 +1198,11 @@ local function _battle_grind(character, turn)
 						end
 					elseif character == game.CHARACTER.RYDIA then
 						if ROUTE == "no64-rosa" then
-							_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
+							if strongest[1] then
+								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
+							else
+								_command_parry()
+							end
 						else
 							if strongest[1] and strongest[2] > 400 then
 								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
