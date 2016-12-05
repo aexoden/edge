@@ -50,4 +50,7 @@ _M.EXTENDED_ENDING = false
 -- Reset if too far behind PB.
 _M.RESET_FOR_TIME = false
 
+-- Display an informational overlay.
+_M.OVERLAY = false
+
 return _M

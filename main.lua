@@ -149,6 +149,10 @@ while true do
 		client.reboot_core()
 	end
 
+	if CONFIG.OVERLAY then
+		sequence.draw_overlay()
+	end
+
 	bridge.cycle()
 	input.cycle()
 	emu.frameadvance()
