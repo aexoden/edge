@@ -1685,25 +1685,30 @@ local function _battle_mombomb(character, turn)
 		_command_wait_frames(60)
 		return true
 	else
-		local target = 4
-
-		if character == game.CHARACTER.CECIL then
-			_command_fight()
-		elseif character == game.CHARACTER.EDWARD or character == game.CHARACTER.RYDIA then
-			if character == game.CHARACTER.EDWARD and game.enemy.get_stat(5, "hp", true, 60) > 0 then
-				target = 5
-			elseif character == game.CHARACTER.RYDIA and game.enemy.get_stat(6, "hp", true, 60) > 0 then
-				target = 6
-			end
-
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, target)
-		elseif character == game.CHARACTER.ROSA then
+		if character == game.CHARACTER.ROSA then
 			if game.enemy.get_stat(1, "hp") < game.enemy.get_stat(2, "hp") then
 				_command_aim(menu.battle.TARGET.ENEMY, 1)
 			else
 				_command_aim(menu.battle.TARGET.ENEMY, 2)
 			end
-		elseif character == game.CHARACTER.YANG then
+		elseif character == game.CHARACTER.EDWARD or character == game.CHARACTER.RYDIA then
+			local target = 4
+
+			if character == game.CHARACTER.EDWARD and not _state.edward_dagger then
+				target = 5
+				_state.edward_dagger = true
+			elseif character == game.CHARACTER.RYDIA and not _state.rydia_dagger then
+				target = 6
+				_state.rydia_dagger = true
+			end
+
+			if not _state.dagger_wait then
+				_state.dagger_wait = true
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, target, true, 120)
+			else
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, target)
+			end
+		else
 			_command_fight()
 		end
 	end
