@@ -1510,8 +1510,13 @@ local function _battle_milon(character, turn)
 			if turn == 1 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 			elseif turn == 2 then
-				_command_wait_frames(120)
-				_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+				if porom_hp > 0 then
+					_command_wait_frames(120)
+					_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+				else
+					_state.alternate = true
+					return true
+				end
 			elseif turn == 3 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 1)
 			else
