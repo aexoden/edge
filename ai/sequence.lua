@@ -1645,29 +1645,10 @@ local function _sequence_twins()
 	table.insert(_q, {walk.walk, {nil, 220, 56}})
 	table.insert(_q, {walk.walk, {nil, 221, 56}})
 
-	-- Go to the Mysidian item shop.
+	-- Go to the Mysidian armor shop.
 	table.insert(_q, {walk.walk, {nil, 145, 199}})
 	table.insert(_q, {walk.walk, {nil, 154, 199}})
-	table.insert(_q, {walk.walk, {3, 16, 27, true}})
-	table.insert(_q, {walk.walk, {3, 27, 27, true}})
-	table.insert(_q, {walk.walk, {3, 27, 26, true}})
-	table.insert(_q, {walk.walk, {231, 5, 5}})
-	table.insert(_q, {walk.interact, {}})
-
-	-- Purchase items from the shop.
-	table.insert(_q, {menu.shop.buy.open, {90}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.CURE2}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.LIFE}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.HEAL}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.ETHER1}})
-	table.insert(_q, {menu.shop.buy.close, {}})
-	table.insert(_q, {menu.shop.close, {}})
-
-	-- Head to the armor shop.
-	table.insert(_q, {walk.walk, {231, 5, 10}})
-	table.insert(_q, {walk.walk, {3, 27, 27}})
-	table.insert(_q, {walk.walk, {3, 15, 27, true}})
-	table.insert(_q, {walk.walk, {3, 15, 26, true}})
+	table.insert(_q, {walk.walk, {3, 16, 26, true}})
 	table.insert(_q, {walk.walk, {3, 8, 26, true}})
 	table.insert(_q, {walk.walk, {3, 8, 24, true}})
 	table.insert(_q, {walk.walk, {3, 9, 24, true}})
@@ -1701,6 +1682,24 @@ local function _sequence_milon()
 	-- Walk to Mt.Ordeals.
 	table.insert(_q, {_set_healing, {_healing_milon_1}})
 	table.insert(_q, {walk.walk, {22, 14, 12, true}})
+	table.insert(_q, {walk.walk, {3, 16, 27, true}})
+	table.insert(_q, {walk.walk, {3, 27, 27, true}})
+	table.insert(_q, {walk.walk, {3, 27, 26, true}})
+	table.insert(_q, {walk.walk, {231, 5, 5}})
+	table.insert(_q, {walk.interact, {}})
+
+	-- Purchase items from the shop.
+	table.insert(_q, {menu.shop.buy.open, {90}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.CURE2}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.LIFE}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.HEAL}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.ETHER1}})
+	table.insert(_q, {menu.shop.buy.close, {}})
+	table.insert(_q, {menu.shop.close, {}})
+
+	-- Leave the item shop.
+	table.insert(_q, {walk.walk, {231, 5, 10}})
+	table.insert(_q, {walk.walk, {3, 27, 27}})
 	table.insert(_q, {walk.walk, {3, 16, 31, true}})
 	table.insert(_q, {walk.walk, {nil, 157, 200}})
 	table.insert(_q, {walk.walk, {nil, 157, 205}})
