@@ -975,7 +975,7 @@ local function _battle_grind(character, turn)
 					elseif turn == 2 then
 						_command_black(game.MAGIC.BLACK.QUAKE)
 					end
-				elseif _state.character_index == 1 then
+				elseif character == game.CHARACTER.RYDIA then
 					if turn == 1 then
 						_command_wait_text(" Lit-3", 600)
 						_command_parry()
