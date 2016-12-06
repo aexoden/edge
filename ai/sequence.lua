@@ -44,12 +44,6 @@ _RESTORE = {
 	ALL    = 0x7,
 }
 
-_STATUS = {
-	GOOD = 0,
-	BAD = 1,
-	UGLY = 2,
-}
-
 --------------------------------------------------------------------------------
 -- Variables
 --------------------------------------------------------------------------------
@@ -4474,18 +4468,10 @@ function _M.cycle()
 end
 
 function _M.draw_overlay()
-	local color = 0xFF00FF00
-
-	if _state.split_status == _STATUS.BAD then
-		color = 0xFFFFFF00
-	elseif _state.split_status == _STATUS.UGLY then
-		color = 0xFFFF0000
-	end
-
 	gui.text(100, 0, string.format("Route: %s", ROUTE))
 	gui.text(100, 12, string.format("Encounter Seed: %s", ENCOUNTER_SEED))
 	gui.text(300, 0, string.format("RNG Seed: %s", SEED))
-	gui.text(300, 12, string.format("Time: %s", log.get_time()), color)
+	gui.text(300, 12, string.format("Time: %s", log.get_time()), _state.split_color)
 end
 
 function _M.is_end()
@@ -4516,10 +4502,6 @@ function _M.is_active()
 	return _state.active
 end
 
-function _M.get_split_status()
-	return _state.split_status
-end
-
 function _M.set_healing_check()
 	_state.check_healing = true
 end
@@ -4537,12 +4519,24 @@ function _M.split(split)
 			factor = 0
 		end
 
-		if delta <= 0 then
-			_state.split_status = _STATUS.GOOD
-		elseif delta < (60 + 45 * factor) * 60 then
-			_state.split_status = _STATUS.BAD
+		local ratio = delta / ((60 + 90 * factor) * 60)
+
+		if ratio > 1 then
+			ratio = 1
+		end
+
+		if ratio > 0 then
+			local red = math.floor(128 * ratio) + 127
+			local green = math.floor(384 * (1 - ratio))
+
+			if ratio < 0.5 then
+				red = math.floor(384 * ratio)
+				green = math.floor(128 * (1 - ratio) + 127)
+			end
+
+			_state.split_color = 0xFF000000 + (0x00010000 * red) + (0x00000100 * green)
 		else
-			_state.split_status = _STATUS.UGLY
+			_state.split_color = 0xFFFFFF00
 		end
 
 		if delta > (60 + 90 * factor) * 60 then
@@ -4561,7 +4555,7 @@ function _M.reset()
 		active = true,
 		check_autoreload = true,
 		check_healing = false,
-		split_status = _STATUS.GOOD,
+		split_color = 0xFFFFFF00,
 	}
 
 	if FULL_RUN then
