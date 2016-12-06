@@ -1386,8 +1386,9 @@ local function _battle_milon(character, turn)
 	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
 	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
 
-	if turn == 1 and porom_hp > 100 then
+	if character == game.CHARACTER.CECIL and turn == 1 and porom_hp > 100 then
 		_state.alternate = true
+		_state.fixed_ghast = true
 	end
 
 	if _state.alternate then
@@ -1413,6 +1414,18 @@ local function _battle_milon(character, turn)
 		end
 
 		local ghast = game.enemy.get_strongest(game.ENEMY.GHAST)
+
+		if _state.fixed_ghast then
+			if character == game.CHARACTER.CECIL and turn == 1 then
+				ghast = 4
+			elseif character == game.CHARACTER.CECIL and turn == 2 then
+				ghast = 1
+			elseif character == game.CHARACTER.PALOM then
+				ghast = 2
+			else
+				ghast = 3
+			end
+		end
 
 		if character == game.CHARACTER.CECIL or character == game.CHARACTER.TELLAH then
 			if worst_twin and ((worst_twin.hp and worst_twin.hp < 40) or character == game.CHARACTER.TELLAH) then
