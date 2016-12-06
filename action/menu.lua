@@ -1100,7 +1100,7 @@ function _M.battle.command.select(target_command, delay)
 	return false
 end
 
-function _M.battle.equip.use_weapon(index, target_type, target, delay)
+function _M.battle.equip.use_weapon(index, target_type, target, wait, limit, delay)
 	if not _state.select_count then
 		_state.select_count = 0
 	end
@@ -1108,7 +1108,7 @@ function _M.battle.equip.use_weapon(index, target_type, target, delay)
 	if _M.battle.is_open() then
 		if _M.battle.is_target() then
 			_state.select_count = nil
-			return _M.battle.target(target_type, target)
+			return _M.battle.target(target_type, target, wait, limit, delay)
 		elseif _state.select_count == 1 or not _state.select_frame or emu.framecount() - _state.select_frame > 15 then
 			if _M.battle.equip.select(index, delay) then
 				_state.select_count = _state.select_count + 1

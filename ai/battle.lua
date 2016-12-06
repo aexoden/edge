@@ -223,7 +223,7 @@ local function _command_use_item(item, target_type, target)
 	table.insert(_state.q, {menu.battle.target, {target_type, target}})
 end
 
-local function _command_use_weapon(character, target_weapon, target_type, target)
+local function _command_use_weapon(character, target_weapon, target_type, target, wait, limit)
 	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
 
 	local hand, current_weapon = game.character.get_weapon(character, true)
@@ -233,7 +233,7 @@ local function _command_use_weapon(character, target_weapon, target_type, target
 		table.insert(_state.q, {menu.battle.equip.select, {hand}})
 	end
 
-	table.insert(_state.q, {menu.battle.equip.use_weapon, {hand, target_type, target, input.DELAY.MASH}})
+	table.insert(_state.q, {menu.battle.equip.use_weapon, {hand, target_type, target, wait, limit, input.DELAY.MASH}})
 end
 
 local function _command_wait_frames(frames)
@@ -1671,9 +1671,9 @@ local function _battle_mombomb(character, turn)
 		if character == game.CHARACTER.CECIL then
 			_command_fight()
 		elseif character == game.CHARACTER.EDWARD or character == game.CHARACTER.RYDIA then
-			if character == game.CHARACTER.EDWARD and game.enemy.get_stat(5, "hp") > 0 then
+			if character == game.CHARACTER.EDWARD and game.enemy.get_stat(5, "hp", true, 60) > 0 then
 				target = 5
-			elseif character == game.CHARACTER.RYDIA and game.enemy.get_stat(6, "hp") > 0 then
+			elseif character == game.CHARACTER.RYDIA and game.enemy.get_stat(6, "hp", true, 60) > 0 then
 				target = 6
 			end
 
