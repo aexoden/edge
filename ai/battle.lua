@@ -885,6 +885,8 @@ local function _battle_grind(character, turn)
 		if not _state.phase then
 			_state.phase = PHASE.SETUP
 			_state.last_character = nil
+			_state.attempt_timing_fix = true
+			_state.cycle = 1
 
 			if character == game.CHARACTER.EDGE then
 				_state.character_index = -2
@@ -1010,13 +1012,23 @@ local function _battle_grind(character, turn)
 				end
 			elseif _state.character_index == 1 then
 				if dragon_hp > 0 then
-					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
-					table.insert(_state.q, {menu.battle.target, {nil, nil, nil, nil, input.DELAY.NONE}})
+					if _state.cycle > 2 and _state.attempt_timing_fix then
+						_command_wait_text("..Id", 30)
+						table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
+						_command_wait_frames(30)
+						table.insert(_state.q, {menu.battle.target, {nil, nil, nil, nil, input.DELAY.NONE}})
+					else
+						table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
+						table.insert(_state.q, {menu.battle.target, {nil, nil, nil, nil, input.DELAY.NONE}})
+					end
+
 					_state.dragon_hp = dragon_hp
 					_state.dragon_character = character
 				else
 					_command_parry()
 				end
+
+				_state.cycle = _state.cycle + 1
 			elseif _state.character_index == 2 then
 				if dragon_kills < required_dragons - 1 then
 					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.ENEMY, 1)
@@ -1054,6 +1066,8 @@ local function _battle_grind(character, turn)
 				end
 			end
 		elseif _state.phase == PHASE.HEAL then
+			_state.attempt_timing_fix = false
+
 			if _state.dragon_character then
 				if game.character.get_stat(_state.dragon_character, "hp", true) == 0 or character == _state.dragon_character then
 					_state.dragon_hp = _state.dragon_hp + 1
