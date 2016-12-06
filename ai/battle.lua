@@ -1420,9 +1420,9 @@ local function _battle_milon(character, turn)
 				ghast = 4
 			elseif character == game.CHARACTER.CECIL and turn == 2 then
 				ghast = 1
-			elseif character == game.CHARACTER.PALOM then
+			elseif character == game.CHARACTER.PALOM and turn == 1 then
 				ghast = 2
-			else
+			elseif character == game.CHARACTER.TELLAH and turn == 1 then
 				ghast = 3
 			end
 		end
