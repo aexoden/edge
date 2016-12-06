@@ -346,8 +346,9 @@ def html_output_basic_statistics(f, logs):
     f.write('\t\t\t<h2>Basic Statistics</h2>\n')
     f.write('\t\t\t<dl class="dl-horizontal">\n')
     f.write('\t\t\t\t<dt>Number of Logs</dt><dd>{}</dd>'.format(len(logs)))
-    f.write('\t\t\t\t<dt>Best Time</dt><dd>{}</dd>'.format(format_time(min([x.frames for x in logs if x.success]))))
-    f.write('\t\t\t\t<dt>Sum of Best</dt><dd>{}</dd>'.format(format_time(get_sum_of_best(logs))))
+    if len([x for x in logs if x.success]) > 0:
+        f.write('\t\t\t\t<dt>Best Time</dt><dd>{}</dd>'.format(format_time(min([x.frames for x in logs if x.success]))))
+        f.write('\t\t\t\t<dt>Sum of Best</dt><dd>{}</dd>'.format(format_time(get_sum_of_best(logs))))
     f.write('\t\t\t</dl>\n')
 
 
@@ -482,7 +483,7 @@ def html_output_seeds(f, logs):
 
     seeds = get_seed_data(logs)
 
-    for seed, data in sorted(seeds.items(), key=lambda x: statistics.median(x[1]['data'])):
+    for seed, data in sorted(seeds.items(), key=lambda x: statistics.median(x[1]['data']) if len(x[1]['data']) > 0 else 0):
         if len(data['data']) > 0:
             f.write('\t\t\t\t\t<tr>\n')
             f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(seed))
