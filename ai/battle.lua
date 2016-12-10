@@ -1360,8 +1360,7 @@ local function _battle_lugae2(character, turn)
 		end
 	elseif character == game.CHARACTER.ROSA then
 		if turn == 1 and not _state.waited then
-			-- TODO: Wait for Laser
-			_command_wait_frames(300)
+			_command_wait_text("Laser ", 300)
 			_state.waited = true
 			return true
 		end
