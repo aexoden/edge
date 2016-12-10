@@ -2588,12 +2588,8 @@ function _manage_inventory(full_inventory, items)
 				else
 					priority = 1
 				end
-			elseif items[item] and best[item] == i then
-				if items[item] == true then
-					priority = 2
-				else
-					priority = items[item]
-				end
+			elseif items[item] then
+				priority = items[item]
 			end
 
 			if not first_error and priority > last_priority then
