@@ -500,6 +500,7 @@ end
 
 local function _battle_d_knight(character, turn)
 	if turn == 3 then
+		_command_wait_frames(45)
 		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
 		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.SHIELD.PALADIN}})
 		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.L_HAND, input.DELAY.MASH}})
