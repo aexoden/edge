@@ -1939,10 +1939,9 @@ local function _battle_weeper(character, turn)
 	else
 		if character == game.CHARACTER.CECIL and _state.turn_count == 2 and _state.edward then
 			_command_run_buffer()
-			_command_fight(menu.battle.TARGET.ENEMY, 2)
-		else
-			_command_fight()
 		end
+
+		_command_fight(menu.battle.TARGET.ENEMY, 2)
 	end
 end
 
