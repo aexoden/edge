@@ -468,8 +468,12 @@ local function _battle_cpu(character, turn)
 				_command_change()
 			elseif turn == 2 then
 				_command_dart(game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 2)
-			else
+			elseif game.item.get_count(game.ITEM.WEAPON.DANCING, game.INVENTORY.BATTLE) > 0 then
 				_command_dart(game.ITEM.WEAPON.DANCING)
+			elseif game.character.get_stat(game.CHARACTER.EDGE, "mp", true) >= 25 then
+				_command_ninja(game.MAGIC.NINJA.BLITZ)
+			else
+				_command_parry()
 			end
 		elseif character == game.CHARACTER.FUSOYA then
 			if turn == 1 then
@@ -486,7 +490,11 @@ local function _battle_cpu(character, turn)
 				_command_white(game.MAGIC.WHITE.WHITE)
 			end
 		elseif character == game.CHARACTER.RYDIA then
-			_command_call(game.MAGIC.CALL.TITAN)
+			if game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 40 then
+				_command_call(game.MAGIC.CALL.TITAN)
+			else
+				_command_parry()
+			end
 		elseif character == game.CHARACTER.CECIL then
 			if turn == 2 then
 				_command_equip(character, game.ITEM.WEAPON.ICEBRAND)

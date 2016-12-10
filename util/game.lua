@@ -187,6 +187,7 @@ _M.MAGIC = {
 	},
 	NINJA = {
 		FLOOD = 0x43,
+		BLITZ = 0x44,
 		SMOKE = 0x45,
 	},
 	WHITE = {
