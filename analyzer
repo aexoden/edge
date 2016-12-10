@@ -57,7 +57,7 @@ def describe_formation(formation):
         243: 'Golbez (Tellah)',
         245: 'Raven (intro)',
         246: 'D.Knight',
-        247: 'General x1, Fighter x3',
+        247: 'General x1, Fighter x2',
         248: 'Weeper x1, WaterHag x1, Imp Cap. x1',
         249: 'Gargoyle x1',
         250: 'Guard x2',
