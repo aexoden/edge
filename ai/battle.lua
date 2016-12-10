@@ -767,6 +767,7 @@ local function _battle_flamedog(character, turn)
 			_command_run_buffer()
 			_command_cover(game.CHARACTER.TELLAH)
 		elseif game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 then
+			_command_run_buffer()
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		end
 	elseif character == game.CHARACTER.YANG then
