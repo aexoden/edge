@@ -4512,7 +4512,7 @@ end
 function _M.split(split)
 	local result = bridge.split(split)
 
-	if FULL_RUN and CONFIG.RESET_FOR_TIME and result then
+	if FULL_RUN and result then
 		local delta = emu.framecount() - route.get_best_split_frame(split)
 		local split_final_frame = route.get_final_split_frame()
 
@@ -4542,7 +4542,7 @@ function _M.split(split)
 			_state.split_color = 0xFFFFFF00
 		end
 
-		if delta > (60 + 90 * factor) * 60 then
+		if CONFIG.RESET_FOR_TIME and delta > (60 + 90 * factor) * 60 then
 			log.log("Resetting for time...")
 			_M.end_run()
 		end
