@@ -283,11 +283,19 @@ function _M.walk(target_map_id, target_x, target_y, npc_safe, alternate)
 
 	if delta_limit then
 		if math.abs(dx) > delta_limit then
-			dx = (dx * -1) % 256
+			if dx < 0 then
+				dx = (delta_limit * 2) + dx
+			else
+				dx = dx - (delta_limit * 2)
+			end
 		end
 
 		if math.abs(dy) > delta_limit then
-			dy = (dy * -1) % 256
+			if dy < 0 then
+				dy = (delta_limit * 2) + dy
+			else
+				dy = dy - (delta_limit * 2)
+			end
 		end
 	end
 
