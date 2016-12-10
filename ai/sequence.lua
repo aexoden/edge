@@ -649,7 +649,7 @@ local function _healing_fusoya()
 				[game.CHARACTER.CECIL] = _RESTORE.HP,
 				[game.CHARACTER.EDGE] = _RESTORE.HP,
 				[game.CHARACTER.ROSA] = _RESTORE.HP,
-				[game.CHARACTER.YANG] = _RESTORE.HP,
+				[game.CHARACTER.RYDIA] = _RESTORE.HP,
 			}, nil, true, true)
 
 			return true
@@ -669,7 +669,7 @@ local function _healing_grind_start_1()
 				[game.CHARACTER.EDGE] = _RESTORE.ALL,
 				[game.CHARACTER.FUSOYA] = _RESTORE.HP,
 				[game.CHARACTER.ROSA] = _RESTORE.HP,
-				[game.CHARACTER.YANG] = _RESTORE.HP,
+				[game.CHARACTER.RYDIA] = _RESTORE.HP,
 			}, game.CHARACTER.FUSOYA, true, true)
 
 			return true
