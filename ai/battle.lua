@@ -32,52 +32,6 @@ local menu = require "action.menu"
 local sequence = require "ai.sequence"
 
 --------------------------------------------------------------------------------
--- Constants
---------------------------------------------------------------------------------
-
-_M.FORMATION = {
-	MAGE     = 96,
-	GRIND    = 200,
-	ELEMENTS = 220,
-	CPU      = 221,
-	D_MIST   = 222,
-	OCTOMAMM = 223,
-	ANTLION  = 224,
-	MOMBOMB  = 225,
-	MILON    = 226,
-	MILON_Z  = 227,
-	BAIGAN   = 228,
-	KAINAZZO = 229,
-	DARK_ELF = 231,
-    SISTERS  = 232,
-	VALVALIS = 234,
-	GIRL     = 236,
-	OFFICER  = 237,
-	WATERHAG = 239,
-	DRAGOON  = 241,
-	KARATE   = 242,
-	D_KNIGHT = 246,
-	GENERAL  = 247,
-	WEEPER   = 248,
-	GARGOYLE = 249,
-	GUARDS   = 250,
-	EBLAN    = 254,
-	RUBICANT = 255,
-	DARK_IMP = 256,
-	RED_D_1  = 409,
-	RED_D_2  = 410,
-	RED_D_B  = 411,
-	RED_D_3  = 415,
-	CALBRENA = 423,
-	LUGAE1   = 425,
-	ZEMUS    = 435,
-	LUGAE2   = 437,
-	GOLBEZ   = 438,
-	ZEROMUS  = 439,
-	FLAMEDOG = 451,
-}
-
---------------------------------------------------------------------------------
 -- Variables
 --------------------------------------------------------------------------------
 
@@ -2258,52 +2212,52 @@ local function _battle_zeromus(character, turn)
 end
 
 local _formations = {
-	[_M.FORMATION.ANTLION]  = {title = "Antlion",                f = _battle_antlion,  split = true,  full_inventory = true},
-	[_M.FORMATION.BAIGAN]   = {title = "Baigan",                 f = _battle_baigan,   split = true,  full_inventory = true},
-	[_M.FORMATION.CALBRENA] = {title = "Calbrena",               f = _battle_calbrena, split = true},
-	[_M.FORMATION.CPU]      = {title = "CPU",                    f = _battle_cpu,      split = true},
-	[_M.FORMATION.D_KNIGHT] = {title = "D.Knight",               f = _battle_d_knight, split = false},
-	[_M.FORMATION.D_MIST]   = {title = "D.Mist",                 f = _battle_d_mist,   split = true},
-	[_M.FORMATION.DARK_ELF] = {title = "Dark Elf",               f = _battle_dark_elf, split = true},
-	[_M.FORMATION.DARK_IMP] = {title = "Dark Imps",              f = _battle_dark_imp, split = true},
-	[_M.FORMATION.DRAGOON]  = {title = "Dragoon",                f = _battle_dragoon,  split = true},
-	[_M.FORMATION.EBLAN]    = {title = "K.Eblan/Q.Eblan",        f = _battle_eblan,    split = true,  full_inventory = true},
-	[_M.FORMATION.ELEMENTS] = {title = "Elements",               f = _battle_elements, split = true},
-	[_M.FORMATION.FLAMEDOG] = {title = "FlameDog",               f = _battle_flamedog, split = true},
-	[_M.FORMATION.GARGOYLE] = {title = "Gargoyle",               f = _battle_gargoyle, split = false},
-	[_M.FORMATION.GENERAL]  = {title = "General/Fighters",       f = _battle_general,  split = false},
-	[_M.FORMATION.GIRL]     = {title = "Girl",                   f = _battle_girl,     split = true,  full_inventory = true},
-	[_M.FORMATION.GOLBEZ]   = {title = "Golbez",                 f = _battle_golbez,   split = true},
-	[_M.FORMATION.GRIND]    = {title = "Grind Fight",            f = _battle_grind,    split = true, presplit = true},
-	[_M.FORMATION.GUARDS]   = {title = "Guards",                 f = _battle_guards,   split = false},
-	[_M.FORMATION.KAINAZZO] = {title = "Kainazzo",               f = _battle_kainazzo, split = true},
-	[_M.FORMATION.KARATE]   = {title = "Karate",                 f = _battle_karate,   split = true,  full_inventory = true},
-	[_M.FORMATION.LUGAE1]   = {title = "Dr.Lugae/Balnab",        f = _battle_lugae1,   split = true},
-	[_M.FORMATION.LUGAE2]   = {title = "Dr.Lugae",               f = _battle_lugae2,   split = true},
-	[_M.FORMATION.MAGE]     = {title = "Mages",                  f = _battle_mages,    split = false},
-	[_M.FORMATION.MILON]    = {title = "Milon",                  f = _battle_milon,    split = true},
-	[_M.FORMATION.MILON_Z]  = {title = "Milon Z.",               f = _battle_milon_z,  split = true},
-	[_M.FORMATION.MOMBOMB]  = {title = "MomBomb",                f = _battle_mombomb,  split = true,  full_inventory = true},
-	[_M.FORMATION.OCTOMAMM] = {title = "Octomamm",               f = _battle_octomamm, split = true,  full_inventory = true},
-	[_M.FORMATION.OFFICER]  = {title = "Officer/Soldiers",       f = _battle_officer,  split = true},
-	[_M.FORMATION.RED_D_1]  = {title = "Red D. x1",              f = _battle_red_d,    split = false},
-	[_M.FORMATION.RED_D_2]  = {title = "Red D. x2",              f = _battle_red_d,    split = false},
-	[_M.FORMATION.RED_D_B]  = {title = "Red D. x1, Behemoth x1", f = _battle_red_d,    split = false},
-	[_M.FORMATION.RED_D_3]  = {title = "Red D. x3",              f = _battle_red_d,    split = false},
-	[_M.FORMATION.RUBICANT] = {title = "Rubicant",               f = _battle_rubicant, split = true},
-	[_M.FORMATION.SISTERS]  = {title = "Magus Sisters",          f = _battle_sisters,  split = true},
-	[_M.FORMATION.VALVALIS] = {title = "Valvalis",               f = _battle_valvalis, split = true},
-	[_M.FORMATION.WATERHAG] = {title = "WaterHag",               f = _battle_waterhag, split = true},
-	[_M.FORMATION.WEEPER]   = {title = "Weeper/WaterHag/Imp",    f = _battle_weeper,   split = false},
-	[_M.FORMATION.ZEMUS]    = {title = "Zemus",                  f = nil,              split = true},
-	[_M.FORMATION.ZEROMUS]  = {title = "Zeromus",                f = _battle_zeromus,  split = false},
+	[game.battle.FORMATION.ANTLION]  = {title = "Antlion",                f = _battle_antlion,  split = true,  full_inventory = true},
+	[game.battle.FORMATION.BAIGAN]   = {title = "Baigan",                 f = _battle_baigan,   split = true,  full_inventory = true},
+	[game.battle.FORMATION.CALBRENA] = {title = "Calbrena",               f = _battle_calbrena, split = true},
+	[game.battle.FORMATION.CPU]      = {title = "CPU",                    f = _battle_cpu,      split = true},
+	[game.battle.FORMATION.D_KNIGHT] = {title = "D.Knight",               f = _battle_d_knight, split = false},
+	[game.battle.FORMATION.D_MIST]   = {title = "D.Mist",                 f = _battle_d_mist,   split = true},
+	[game.battle.FORMATION.DARK_ELF] = {title = "Dark Elf",               f = _battle_dark_elf, split = true},
+	[game.battle.FORMATION.DARK_IMP] = {title = "Dark Imps",              f = _battle_dark_imp, split = true},
+	[game.battle.FORMATION.DRAGOON]  = {title = "Dragoon",                f = _battle_dragoon,  split = true},
+	[game.battle.FORMATION.EBLAN]    = {title = "K.Eblan/Q.Eblan",        f = _battle_eblan,    split = true,  full_inventory = true},
+	[game.battle.FORMATION.ELEMENTS] = {title = "Elements",               f = _battle_elements, split = true},
+	[game.battle.FORMATION.FLAMEDOG] = {title = "FlameDog",               f = _battle_flamedog, split = true},
+	[game.battle.FORMATION.GARGOYLE] = {title = "Gargoyle",               f = _battle_gargoyle, split = false},
+	[game.battle.FORMATION.GENERAL]  = {title = "General/Fighters",       f = _battle_general,  split = false},
+	[game.battle.FORMATION.GIRL]     = {title = "Girl",                   f = _battle_girl,     split = true,  full_inventory = true},
+	[game.battle.FORMATION.GOLBEZ]   = {title = "Golbez",                 f = _battle_golbez,   split = true},
+	[game.battle.FORMATION.GRIND]    = {title = "Grind Fight",            f = _battle_grind,    split = true, presplit = true},
+	[game.battle.FORMATION.GUARDS]   = {title = "Guards",                 f = _battle_guards,   split = false},
+	[game.battle.FORMATION.KAINAZZO] = {title = "Kainazzo",               f = _battle_kainazzo, split = true},
+	[game.battle.FORMATION.KARATE]   = {title = "Karate",                 f = _battle_karate,   split = true,  full_inventory = true},
+	[game.battle.FORMATION.LUGAE1]   = {title = "Dr.Lugae/Balnab",        f = _battle_lugae1,   split = true},
+	[game.battle.FORMATION.LUGAE2]   = {title = "Dr.Lugae",               f = _battle_lugae2,   split = true},
+	[game.battle.FORMATION.MAGE]     = {title = "Mages",                  f = _battle_mages,    split = false},
+	[game.battle.FORMATION.MILON]    = {title = "Milon",                  f = _battle_milon,    split = true},
+	[game.battle.FORMATION.MILON_Z]  = {title = "Milon Z.",               f = _battle_milon_z,  split = true},
+	[game.battle.FORMATION.MOMBOMB]  = {title = "MomBomb",                f = _battle_mombomb,  split = true,  full_inventory = true},
+	[game.battle.FORMATION.OCTOMAMM] = {title = "Octomamm",               f = _battle_octomamm, split = true,  full_inventory = true},
+	[game.battle.FORMATION.OFFICER]  = {title = "Officer/Soldiers",       f = _battle_officer,  split = true},
+	[game.battle.FORMATION.RED_D_1]  = {title = "Red D. x1",              f = _battle_red_d,    split = false},
+	[game.battle.FORMATION.RED_D_2]  = {title = "Red D. x2",              f = _battle_red_d,    split = false},
+	[game.battle.FORMATION.RED_D_B]  = {title = "Red D. x1, Behemoth x1", f = _battle_red_d,    split = false},
+	[game.battle.FORMATION.RED_D_3]  = {title = "Red D. x3",              f = _battle_red_d,    split = false},
+	[game.battle.FORMATION.RUBICANT] = {title = "Rubicant",               f = _battle_rubicant, split = true},
+	[game.battle.FORMATION.SISTERS]  = {title = "Magus Sisters",          f = _battle_sisters,  split = true},
+	[game.battle.FORMATION.VALVALIS] = {title = "Valvalis",               f = _battle_valvalis, split = true},
+	[game.battle.FORMATION.WATERHAG] = {title = "WaterHag",               f = _battle_waterhag, split = true},
+	[game.battle.FORMATION.WEEPER]   = {title = "Weeper/WaterHag/Imp",    f = _battle_weeper,   split = false},
+	[game.battle.FORMATION.ZEMUS]    = {title = "Zemus",                  f = nil,              split = true},
+	[game.battle.FORMATION.ZEROMUS]  = {title = "Zeromus",                f = _battle_zeromus,  split = false},
 }
 
 --------------------------------------------------------------------------------
 -- Inventory Management
 --------------------------------------------------------------------------------
 
-_formations[_M.FORMATION.GIRL].needed_items = {
+_formations[game.battle.FORMATION.GIRL].needed_items = {
 	[game.ITEM.HELM.TIARA] = 8,
 	[game.ITEM.ARMS.IRON] = 2,
 	[game.ITEM.WEAPON.CHANGE] = 8,
@@ -2312,7 +2266,7 @@ _formations[_M.FORMATION.GIRL].needed_items = {
 	[game.ITEM.ITEM.TRASHCAN] = 8,
 }
 
-_formations[_M.FORMATION.OCTOMAMM].needed_items = {
+_formations[game.battle.FORMATION.OCTOMAMM].needed_items = {
 	[game.ITEM.HELM.CAP] = 4,
 	[game.ITEM.ARMS.IRON] = 2,
 	[game.ITEM.WEAPON.CHANGE] = 8,
@@ -2321,7 +2275,7 @@ _formations[_M.FORMATION.OCTOMAMM].needed_items = {
 	[game.ITEM.ITEM.TRASHCAN] = 8,
 }
 
-_formations[_M.FORMATION.ANTLION].needed_items = {
+_formations[game.battle.FORMATION.ANTLION].needed_items = {
 	[game.ITEM.HELM.CAP] = 4,
 	[game.ITEM.ARMS.IRON] = 2,
 	[game.ITEM.ITEM.LIFE] = 8,
@@ -2331,9 +2285,9 @@ _formations[_M.FORMATION.ANTLION].needed_items = {
 	[game.ITEM.ITEM.TRASHCAN] = 8,
 }
 
-_formations[_M.FORMATION.MOMBOMB].needed_items = _formations[_M.FORMATION.ANTLION].needed_items
+_formations[game.battle.FORMATION.MOMBOMB].needed_items = _formations[game.battle.FORMATION.ANTLION].needed_items
 
-_formations[_M.FORMATION.GENERAL].needed_items = {
+_formations[game.battle.FORMATION.GENERAL].needed_items = {
 	[game.ITEM.HELM.CAP] = 16,
 	[game.ITEM.ARMS.IRON] = 2,
 	[game.ITEM.ITEM.LIFE] = 8,
@@ -2343,11 +2297,11 @@ _formations[_M.FORMATION.GENERAL].needed_items = {
 	[game.ITEM.ITEM.TRASHCAN] = 8,
 }
 
-_formations[_M.FORMATION.WEEPER].needed_items = _formations[_M.FORMATION.GENERAL].needed_items
-_formations[_M.FORMATION.GARGOYLE].needed_items = _formations[_M.FORMATION.GENERAL].needed_items
-_formations[_M.FORMATION.DRAGOON].needed_items = _formations[_M.FORMATION.GENERAL].needed_items
+_formations[game.battle.FORMATION.WEEPER].needed_items = _formations[game.battle.FORMATION.GENERAL].needed_items
+_formations[game.battle.FORMATION.GARGOYLE].needed_items = _formations[game.battle.FORMATION.GENERAL].needed_items
+_formations[game.battle.FORMATION.DRAGOON].needed_items = _formations[game.battle.FORMATION.GENERAL].needed_items
 
-_formations[_M.FORMATION.MILON].needed_items = {
+_formations[game.battle.FORMATION.MILON].needed_items = {
 	[game.ITEM.ARMOR.GAEA] = 2,
 	[game.ITEM.ARMS.PALADIN] = 4,
 	[game.ITEM.ARMS.IRON] = 2,
@@ -2364,9 +2318,9 @@ _formations[_M.FORMATION.MILON].needed_items = {
 	[game.ITEM.WEAPON.DANCING] = 16,
 }
 
-_formations[_M.FORMATION.MILON_Z].needed_items = _formations[_M.FORMATION.MILON].needed_items
+_formations[game.battle.FORMATION.MILON_Z].needed_items = _formations[game.battle.FORMATION.MILON].needed_items
 
-_formations[_M.FORMATION.D_KNIGHT].needed_items = {
+_formations[game.battle.FORMATION.D_KNIGHT].needed_items = {
 	[game.ITEM.ARMOR.GAEA] = 2,
 	[game.ITEM.ARMS.PALADIN] = 4,
 	[game.ITEM.ARMS.IRON] = 2,
@@ -2382,7 +2336,7 @@ _formations[_M.FORMATION.D_KNIGHT].needed_items = {
 	[game.ITEM.WEAPON.LEGEND] = 2,
 }
 
-_formations[_M.FORMATION.GUARDS].needed_items = {
+_formations[game.battle.FORMATION.GUARDS].needed_items = {
 	[game.ITEM.ARMOR.GAEA] = 2,
 	[game.ITEM.ARMS.PALADIN] = 8,
 	[game.ITEM.ARMS.IRON] = 2,
@@ -2397,9 +2351,9 @@ _formations[_M.FORMATION.GUARDS].needed_items = {
 	[game.ITEM.WEAPON.LEGEND] = 16,
 }
 
-_formations[_M.FORMATION.KARATE].needed_items = _formations[_M.FORMATION.GUARDS].needed_items
+_formations[game.battle.FORMATION.KARATE].needed_items = _formations[game.battle.FORMATION.GUARDS].needed_items
 
-_formations[_M.FORMATION.BAIGAN].needed_items = {
+_formations[game.battle.FORMATION.BAIGAN].needed_items = {
 	[game.ITEM.ARMOR.GAEA] = 2,
 	[game.ITEM.ARMOR.KARATE] = 8,
 	[game.ITEM.ARMS.IRON] = 16,
@@ -2417,9 +2371,9 @@ _formations[_M.FORMATION.BAIGAN].needed_items = {
 	[game.ITEM.WEAPON.LEGEND] = 16,
 }
 
-_formations[_M.FORMATION.KAINAZZO].needed_items = _formations[_M.FORMATION.BAIGAN].needed_items
+_formations[game.battle.FORMATION.KAINAZZO].needed_items = _formations[game.battle.FORMATION.BAIGAN].needed_items
 
-_formations[_M.FORMATION.DARK_ELF].needed_items = {
+_formations[game.battle.FORMATION.DARK_ELF].needed_items = {
 	[game.ITEM.ARMOR.GAEA] = 2,
 	[game.ITEM.ARMOR.PRISONER] = 2,
 	[game.ITEM.ARMOR.KARATE] = 8,
@@ -2435,7 +2389,7 @@ _formations[_M.FORMATION.DARK_ELF].needed_items = {
 	[game.ITEM.WEAPON.DANCING] = 16,
 }
 
-_formations[_M.FORMATION.FLAMEDOG].needed_items = {
+_formations[game.battle.FORMATION.FLAMEDOG].needed_items = {
 	[game.ITEM.ARMOR.GAEA] = 2,
 	[game.ITEM.ARMOR.PRISONER] = 2,
 	[game.ITEM.ARMOR.KARATE] = 8,
@@ -2452,7 +2406,7 @@ _formations[_M.FORMATION.FLAMEDOG].needed_items = {
 	[game.ITEM.WEAPON.DANCING] = 16,
 }
 
-_formations[_M.FORMATION.SISTERS].needed_items = {
+_formations[game.battle.FORMATION.SISTERS].needed_items = {
 	[game.ITEM.ARMOR.GAEA] = 8,
 	[game.ITEM.ARMOR.PRISONER] = 2,
 	[game.ITEM.ARMOR.KARATE] = 8,
@@ -2471,7 +2425,7 @@ _formations[_M.FORMATION.SISTERS].needed_items = {
 	[game.ITEM.WEAPON.LEGEND] = 16,
 }
 
-_formations[_M.FORMATION.VALVALIS].needed_items = {
+_formations[game.battle.FORMATION.VALVALIS].needed_items = {
 	[game.ITEM.ARMOR.PRISONER] = 2,
 	[game.ITEM.HELM.GAEA] = 2,
 	[game.ITEM.HELM.TIARA] = 2,
@@ -2485,7 +2439,7 @@ _formations[_M.FORMATION.VALVALIS].needed_items = {
 	[game.ITEM.WEAPON.LEGEND] = 16,
 }
 
-_formations[_M.FORMATION.CALBRENA].needed_items = {
+_formations[game.battle.FORMATION.CALBRENA].needed_items = {
 	[game.ITEM.ARMOR.PRISONER] = 16,
 	[game.ITEM.HELM.GAEA] = 2,
 	[game.ITEM.HELM.TIARA] = 16,
@@ -2498,9 +2452,9 @@ _formations[_M.FORMATION.CALBRENA].needed_items = {
 	[game.ITEM.WEAPON.FIRE] = 16,
 }
 
-_formations[_M.FORMATION.GOLBEZ].needed_items = _formations[_M.FORMATION.CALBRENA].needed_items
+_formations[game.battle.FORMATION.GOLBEZ].needed_items = _formations[game.battle.FORMATION.CALBRENA].needed_items
 
-_formations[_M.FORMATION.LUGAE1].needed_items = {
+_formations[game.battle.FORMATION.LUGAE1].needed_items = {
 	[game.ITEM.HELM.GAEA] = 2,
 	[game.ITEM.ITEM.CURE2] = 8,
 	[game.ITEM.ITEM.DARKNESS] = 16,
@@ -2513,10 +2467,10 @@ _formations[_M.FORMATION.LUGAE1].needed_items = {
 	[game.ITEM.WEAPON.LEGEND] = 16,
 }
 
-_formations[_M.FORMATION.LUGAE2].needed_items = _formations[_M.FORMATION.LUGAE1].needed_items
-_formations[_M.FORMATION.DARK_IMP].needed_items = _formations[_M.FORMATION.LUGAE1].needed_items
+_formations[game.battle.FORMATION.LUGAE2].needed_items = _formations[game.battle.FORMATION.LUGAE1].needed_items
+_formations[game.battle.FORMATION.DARK_IMP].needed_items = _formations[game.battle.FORMATION.LUGAE1].needed_items
 
-_formations[_M.FORMATION.EBLAN].needed_items = {
+_formations[game.battle.FORMATION.EBLAN].needed_items = {
 	[game.ITEM.HELM.GAEA] = 2,
 	[game.ITEM.ITEM.CURE2] = 4,
 	[game.ITEM.ITEM.DARKNESS] = 32,
@@ -2531,7 +2485,7 @@ _formations[_M.FORMATION.EBLAN].needed_items = {
 	[game.ITEM.WEAPON.LEGEND] = 16,
 }
 
-_formations[_M.FORMATION.RUBICANT].needed_items = {
+_formations[game.battle.FORMATION.RUBICANT].needed_items = {
 	[game.ITEM.HELM.GAEA] = 16,
 	[game.ITEM.ITEM.CURE2] = 8,
 	[game.ITEM.ITEM.DARKNESS] = 16,
@@ -2543,7 +2497,7 @@ _formations[_M.FORMATION.RUBICANT].needed_items = {
 	[game.ITEM.WEAPON.LEGEND] = 16,
 }
 
-_formations[_M.FORMATION.ELEMENTS].needed_items = {
+_formations[game.battle.FORMATION.ELEMENTS].needed_items = {
 	[game.ITEM.ITEM.ELIXIR] = 32,
 	[game.ITEM.ITEM.LIFE] = 8,
 	[game.ITEM.ITEM.HEAL] = 4,
@@ -2551,7 +2505,7 @@ _formations[_M.FORMATION.ELEMENTS].needed_items = {
 	[game.ITEM.WEAPON.EXCALBUR] = 64,
 }
 
-_formations[_M.FORMATION.CPU].needed_items = _formations[_M.FORMATION.ELEMENTS].needed_items
+_formations[game.battle.FORMATION.CPU].needed_items = _formations[game.battle.FORMATION.ELEMENTS].needed_items
 
 function _manage_inventory(full_inventory, items)
 	if menu.battle.command.has_command(menu.battle.COMMAND.SHOW) then
@@ -2815,7 +2769,7 @@ function _M.cycle()
 			end
 		end
 
-		if index == _M.FORMATION.ZEROMUS and memory.read("battle", "flash") == 3 and not _state.flash_split then
+		if index == game.battle.FORMATION.ZEROMUS and memory.read("battle", "flash") == 3 and not _state.flash_split then
 			_state.flash_split = true
 			sequence.split("Zeromus Death")
 
