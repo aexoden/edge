@@ -9,9 +9,9 @@ provide a good list of improvements that can be made.
 
 ## Major Features
 
-* Implement additional routes. Currently, no64-excalbur is supported, but
-  support for at the very least yes64 and no64-drain is highly desirable. The
-  new Rosa route could also be implemented, as well as a Paladin specific route.
+* Implement additional routes. Currently, no64-excalbur and no64-rosa are
+  supported, but support for yes64 and no64-drain is highly desirable. A paladin
+  route could also be implemented.
 
 * Find a way to keep track of battle goals and properly queueing characters to
   take care of them. The major motivation is to be able to specify that an
@@ -71,9 +71,6 @@ provide a good list of improvements that can be made.
   animation that kills them takes place. This allows it to queue Life potions
   earlier than a human possibly could.
 
-* Improve menuing code to eliminate the substantial safety delays in place to
-  prevent softlocks.
-
 * Improve the party restoration code to allow target HP or MP values. This would
   allow us to reduce the unneeded restoring of MP to maximum in cases where we
   only need to ensure that the character can cast a particular spell (such as
@@ -90,8 +87,6 @@ provide a good list of improvements that can be made.
 
 * Move the IceClaw dupe away from the Magus Sisters battle to avoid needing to
   revive Yang unconditionally.
-
-* Check that the airship path is correct when traveling to Eblan.
 
 ## Battle-Specific Issues
 
