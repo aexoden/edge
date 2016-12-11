@@ -2611,6 +2611,7 @@ local function _sequence_dr_lugae()
 	-- Step Route: Castle of Dwarves B
 	if steps >= 1 then
 		table.insert(_q, {walk.walk, {264, 16, 7}})
+		table.insert(_q, {walk.walk, {264, 16, 8}})
 		steps = steps - 1
 	else
 		table.insert(_q, {walk.walk, {264, 11, 8}})
