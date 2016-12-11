@@ -1109,7 +1109,11 @@ local function _battle_grind(character, turn)
 
 							_command_parry()
 						else
-							_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
+							if strongest[1] then
+								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
+							else
+								_command_parry()
+							end
 						end
 					elseif character == game.CHARACTER.EDGE then
 						if ROUTE == "no64-rosa" then
