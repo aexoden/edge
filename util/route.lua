@@ -22,6 +22,8 @@
 
 local _M = {}
 
+local game = require "util.game"
+
 --------------------------------------------------------------------------------
 -- Variables
 --------------------------------------------------------------------------------
@@ -247,6 +249,283 @@ _M.splits = {
 		["Zeromus Death"]          = 674303,
 	}
 }
+
+--------------------------------------------------------------------------------
+-- Inventory Management
+--------------------------------------------------------------------------------
+
+_M.inventory = {
+	["no64-excalbur"] = {},
+	["no64-rosa"] = {},
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.GIRL] = {
+	[game.ITEM.HELM.TIARA]      = 8,
+	[game.ITEM.WEAPON.CHANGE]   = 8,
+	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.ITEM.CARROT]     = 4,
+	[game.ITEM.ITEM.TRASHCAN]   = 4,
+	[game.ITEM.ARMS.IRON]       = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.OCTOMAMM] = {
+	[game.ITEM.WEAPON.CHANGE]   = 8,
+	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.ITEM.CARROT]     = 4,
+	[game.ITEM.ITEM.TRASHCAN]   = 4,
+	[game.ITEM.ARMS.IRON]       = 2,
+	[game.ITEM.HELM.CAP]        = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.ANTLION] = {
+	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.ITEM.CARROT]     = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.ITEM.TRASHCAN]   = 4,
+	[game.ITEM.WEAPON.CHANGE]   = 4,
+	[game.ITEM.ARMS.IRON]       = 2,
+	[game.ITEM.HELM.CAP]        = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.MOMBOMB] = _M.inventory["no64-excalbur"][game.battle.FORMATION.ANTLION]
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.GENERAL] = {
+	[game.ITEM.HELM.CAP]        = 16,
+	[game.ITEM.WEAPON.CHANGE]   = 8,
+	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.ITEM.CARROT]     = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.ITEM.TRASHCAN]   = 4,
+	[game.ITEM.ARMS.IRON]       = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.WEEPER] = _M.inventory["no64-excalbur"][game.battle.FORMATION.GENERAL]
+_M.inventory["no64-excalbur"][game.battle.FORMATION.GARGOYLE] = _M.inventory["no64-excalbur"][game.battle.FORMATION.GENERAL]
+_M.inventory["no64-excalbur"][game.battle.FORMATION.DRAGOON] = _M.inventory["no64-excalbur"][game.battle.FORMATION.GENERAL]
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.MILON] = {
+	[game.ITEM.ITEM.CURE2]      = 32,
+	[game.ITEM.WEAPON.DANCING]  = 16,
+	[game.ITEM.SHIELD.PALADIN]  = 8,
+	[game.ITEM.ARMS.PALADIN]    = 4,
+	[game.ITEM.ITEM.CARROT]     = 4,
+	[game.ITEM.ITEM.ETHER1]     = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.ITEM.TRASHCAN]   = 4,
+	[game.ITEM.RING.SILVER]     = 4,
+	[game.ITEM.ARMOR.GAEA]      = 2,
+	[game.ITEM.ARMS.IRON]       = 2,
+	[game.ITEM.HELM.GAEA]       = 2,
+	[game.ITEM.HELM.TIARA]      = 2,
+	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.WEAPON.CHANGE]   = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.MILON_Z] = _M.inventory["no64-excalbur"][game.battle.FORMATION.MILON]
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.D_KNIGHT] = {
+	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.SHIELD.PALADIN]  = 8,
+	[game.ITEM.ARMS.PALADIN]    = 4,
+	[game.ITEM.ITEM.CURE2]      = 4,
+	[game.ITEM.ITEM.ETHER1]     = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.RING.SILVER]     = 4,
+	[game.ITEM.ARMOR.GAEA]      = 2,
+	[game.ITEM.ARMS.IRON]       = 2,
+	[game.ITEM.HELM.GAEA]       = 2,
+	[game.ITEM.HELM.TIARA]      = 2,
+	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.WEAPON.CHANGE]   = 2,
+	[game.ITEM.WEAPON.LEGEND]   = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.GUARDS] = {
+	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.ARMS.PALADIN]    = 4,
+	[game.ITEM.ITEM.CURE2]      = 4,
+	[game.ITEM.ITEM.ETHER1]     = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.RING.SILVER]     = 4,
+	[game.ITEM.ARMOR.GAEA]      = 2,
+	[game.ITEM.ARMS.IRON]       = 2,
+	[game.ITEM.HELM.GAEA]       = 2,
+	[game.ITEM.HELM.TIARA]      = 2,
+	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.WEAPON.CHANGE]   = 2,
+	[game.ITEM.WEAPON.LEGEND]   = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.KARATE] = _M.inventory["no64-excalbur"][game.battle.FORMATION.GUARDS]
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.BAIGAN] = {
+	[game.ITEM.ITEM.ETHER1]     = 16,
+	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.ARMOR.GAEA]      = 4,
+	[game.ITEM.ARMOR.KARATE]    = 4,
+	[game.ITEM.ARMS.IRON]       = 4,
+	[game.ITEM.HELM.GAEA]       = 4,
+	[game.ITEM.HELM.HEADBAND]   = 4,
+	[game.ITEM.ITEM.BARON]      = 4,
+	[game.ITEM.ITEM.CURE2]      = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.RING.SILVER]     = 4,
+	[game.ITEM.HELM.TIARA]      = 2,
+	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.WEAPON.CHANGE]   = 2,
+	[game.ITEM.WEAPON.LEGEND]   = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.KAINAZZO] = _M.inventory["no64-excalbur"][game.battle.FORMATION.BAIGAN]
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.DARK_ELF] = {
+	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.ARMOR.GAEA]      = 4,
+	[game.ITEM.ARMOR.KARATE]    = 4,
+	[game.ITEM.HELM.GAEA]       = 4,
+	[game.ITEM.HELM.HEADBAND]   = 4,
+	[game.ITEM.ITEM.CURE2]      = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.RING.SILVER]     = 4,
+	[game.ITEM.ARMOR.PRISONER]  = 2,
+	[game.ITEM.HELM.TIARA]      = 2,
+	[game.ITEM.ITEM.ETHER1]     = 2,
+	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.WEAPON.CHANGE]   = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.FLAMEDOG] = {
+	[game.ITEM.ITEM.EARTH]      = 16,
+	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.ARMOR.GAEA]      = 4,
+	[game.ITEM.ARMOR.KARATE]    = 4,
+	[game.ITEM.HELM.GAEA]       = 4,
+	[game.ITEM.HELM.HEADBAND]   = 4,
+	[game.ITEM.ITEM.CURE2]      = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.RING.SILVER]     = 4,
+	[game.ITEM.ARMOR.PRISONER]  = 2,
+	[game.ITEM.HELM.TIARA]      = 2,
+	[game.ITEM.ITEM.ETHER1]     = 2,
+	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.WEAPON.CHANGE]   = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.SISTERS] = {
+	[game.ITEM.ITEM.EARTH]      = 16,
+	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.WEAPON.FIRE]     = 8,
+	[game.ITEM.ARMOR.GAEA]      = 4,
+	[game.ITEM.ARMOR.KARATE]    = 4,
+	[game.ITEM.HELM.GAEA]       = 4,
+	[game.ITEM.HELM.HEADBAND]   = 4,
+	[game.ITEM.ITEM.CURE2]      = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.RING.SILVER]     = 4,
+	[game.ITEM.ARMOR.PRISONER]  = 2,
+	[game.ITEM.HELM.TIARA]      = 2,
+	[game.ITEM.ITEM.ETHER1]     = 2,
+	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.WEAPON.CHANGE]   = 2,
+	[game.ITEM.WEAPON.LEGEND]   = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.VALVALIS] = {
+	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.WEAPON.FIRE]     = 8,
+	[game.ITEM.ITEM.CURE2]      = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.ARMOR.PRISONER]  = 2,
+	[game.ITEM.HELM.GAEA]       = 2,
+	[game.ITEM.HELM.TIARA]      = 2,
+	[game.ITEM.ITEM.ETHER1]     = 2,
+	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.WEAPON.CHANGE]   = 2,
+	[game.ITEM.WEAPON.LEGEND]   = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.CALBRENA] = {
+	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.WEAPON.FIRE]     = 8,
+	[game.ITEM.ARMOR.PRISONER]  = 4,
+	[game.ITEM.HELM.TIARA]      = 4,
+	[game.ITEM.ITEM.CURE2]      = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.WEAPON.CHANGE]   = 4,
+	[game.ITEM.HELM.GAEA]       = 2,
+	[game.ITEM.ITEM.ETHER1]     = 2,
+	[game.ITEM.ITEM.HEAL]       = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.GOLBEZ] = _M.inventory["no64-excalbur"][game.battle.FORMATION.CALBRENA]
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.LUGAE1] = {
+	[game.ITEM.ITEM.DARKNESS]   = 16,
+	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.CLAW.CATCLAW]    = 4,
+	[game.ITEM.ITEM.CURE2]      = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.ARMOR.WIZARD]    = 2,
+	[game.ITEM.HELM.GAEA]       = 2,
+	[game.ITEM.ITEM.ETHER1]     = 2,
+	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.WEAPON.CHANGE]   = 2,
+	[game.ITEM.WEAPON.LEGEND]   = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.LUGAE2] = _M.inventory["no64-excalbur"][game.battle.FORMATION.LUGAE1]
+_M.inventory["no64-excalbur"][game.battle.FORMATION.DARK_IMP] = _M.inventory["no64-excalbur"][game.battle.FORMATION.LUGAE1]
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.EBLAN] = {
+	[game.ITEM.ITEM.DARKNESS]   = 32,
+	[game.ITEM.WEAPON.LEGEND]   = 16,
+	[game.ITEM.SHIELD.ICE]      = 8,
+	[game.ITEM.WEAPON.BLIZZARD] = 8,
+	[game.ITEM.WEAPON.ICEBRAND] = 8,
+	[game.ITEM.ARMOR.WIZARD]    = 4,
+	[game.ITEM.WEAPON.DANCING]  = 4,
+	[game.ITEM.HELM.GAEA]       = 4,
+	[game.ITEM.ITEM.CURE2]      = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.ITEM.ETHER1]     = 2,
+	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.WEAPON.CHANGE]   = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.RUBICANT] = {
+	[game.ITEM.ITEM.DARKNESS]   = 32,
+	[game.ITEM.WEAPON.LEGEND]   = 16,
+	[game.ITEM.ARMOR.WIZARD]    = 4,
+	[game.ITEM.HELM.GAEA]       = 4,
+	[game.ITEM.ITEM.CURE2]      = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.WEAPON.DANCING]  = 4,
+	[game.ITEM.ITEM.ETHER1]     = 2,
+	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.WEAPON.CHANGE]   = 2,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.ELEMENTS] = {
+	[game.ITEM.WEAPON.EXCALBUR] = 32,
+	[game.ITEM.ITEM.ELIXIR]     = 16,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.RING.STRENGTH]   = 4,
+	[game.ITEM.ITEM.HEAL]       = 2,
+}
+
+_M.inventory["no64-rosa"][game.battle.FORMATION.ELEMENTS] = {
+	[game.ITEM.ITEM.ELIXIR]     = 16,
+	[game.ITEM.ITEM.HEAL]       = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.RING.STRENGTH]   = 4,
+}
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.CPU] = _M.inventory["no64-excalbur"][game.battle.FORMATION.ELEMENTS]
+_M.inventory["no64-rosa"][game.battle.FORMATION.CPU] = _M.inventory["no64-rosa"][game.battle.FORMATION.ELEMENTS]
+
+--------------------------------------------------------------------------------
+-- Step Route Data
+--------------------------------------------------------------------------------
 
 _M.routes["no64-excalbur"] = {
 	[0] = {
@@ -12138,6 +12417,16 @@ end
 
 function _M.get_final_split_frame()
 	return _M.splits[ROUTE]["Zeromus Death"]
+end
+
+function _M.get_inventory(formation)
+	if _M.inventory[ROUTE][formation] then
+		return _M.inventory[ROUTE][formation]
+	elseif _M.inventory["no64-excalbur"][formation] then
+		return _M.inventory["no64-excalbur"][formation]
+	else
+		return {}
+	end
 end
 
 function _M.get_value(variable)
