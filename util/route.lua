@@ -469,6 +469,7 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.LUGAE1] = {
 	[game.ITEM.HELM.GAEA]       = 2,
 	[game.ITEM.ITEM.ETHER1]     = 2,
 	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.RING.RUNE]       = 2,
 	[game.ITEM.WEAPON.CHANGE]   = 2,
 	[game.ITEM.WEAPON.LEGEND]   = 2,
 }
@@ -489,6 +490,7 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.EBLAN] = {
 	[game.ITEM.ITEM.LIFE]       = 4,
 	[game.ITEM.ITEM.ETHER1]     = 2,
 	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.RING.RUNE]       = 2,
 	[game.ITEM.WEAPON.CHANGE]   = 2,
 }
 
@@ -502,6 +504,7 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.RUBICANT] = {
 	[game.ITEM.WEAPON.DANCING]  = 4,
 	[game.ITEM.ITEM.ETHER1]     = 2,
 	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.RING.RUNE]       = 2,
 	[game.ITEM.WEAPON.CHANGE]   = 2,
 }
 
