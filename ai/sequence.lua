@@ -4474,8 +4474,8 @@ end
 function _M.draw_overlay()
 	gui.text(100, 0, string.format("Route: %s", ROUTE))
 	gui.text(100, 12, string.format("Encounter Seed: %s", ENCOUNTER_SEED))
-	gui.text(300, 0, string.format("RNG Seed: %s", SEED))
-	gui.text(300, 12, string.format("Time: %s", log.get_time()), _state.split_color)
+	gui.text(320, 0, string.format("RNG Seed: %s", SEED))
+	gui.text(320, 12, string.format("Time: %s", log.get_time()), _state.split_color)
 end
 
 function _M.is_end()
