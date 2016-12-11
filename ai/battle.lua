@@ -2327,16 +2327,11 @@ function _manage_inventory(full_inventory, items)
 				if priority_count == priority_map[priority].count then
 					repeat
 						priority = priority + 1
-					until priority_map[priority] or priority == 64
+					until (priority_map[priority] and priority_map[priority].count > 0) or priority == 64
 
 					priority_count = 0
 				end
 			else
-				local pri = item_priority[i]
-				if not pri then
-					pri = "10000"
-				end
-
 				table.sort(priority_map[priority].slots)
 				local source = priority_map[priority].slots[1]
 
