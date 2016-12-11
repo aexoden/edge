@@ -2563,69 +2563,159 @@ function _manage_inventory(full_inventory, items)
 	end
 
 	if (full_inventory and memory.read("battle", "active") == 0) or memory.read("battle", "enemies") == 0 then
-		local best = {}
-		local counts = {}
+		local priority_map = {}
+
+		local item_priority = {}
+		local empty_count = 48
+		local empty_slots = {}
 
 		for i = 0, 47 do
 			local item = memory.read("battle_menu", "item_id", i)
-			local count = memory.read("battle_menu", "item_count", i)
+			local priority
 
-			if items[item] and (not best[item] or count > counts[item]) then
-				best[item] = i
-				counts[item] = count
-			end
-		end
+			if item ~= game.ITEM.NONE then
+				local priority = 0
 
-		local empties = 0
-		local first_error = nil
-		local last_error = nil
-		local last_priority = 256
-		local target_priority = nil
-
-		for i = 0, 47 do
-			local priority = 0
-			local item = memory.read("battle_menu", "item_id", i)
-
-			if item == game.ITEM.NONE then
-				empties = empties + 1
-
-				if empties <= 2 then
-					priority = 7
-				elseif empties <= 4 then
-					priority = 3
-				else
-					priority = 1
+				if items[item] then
+					priority = items[item]
 				end
-			elseif items[item] then
-				priority = items[item]
-			end
 
-			if not first_error and priority > last_priority then
-				first_error = i - 1
-				target_priority = last_priority
-			end
+				if not priority_map[priority] then
+					priority_map[priority] = {
+						slots = {},
+						count = 0
+					}
+				end
 
-			if target_priority and priority > target_priority then
-				last_error = i
+				item_priority[i] = priority
+				table.insert(priority_map[priority].slots, i)
+				priority_map[priority].count = priority_map[priority].count + 1
+				empty_count = empty_count - 1
+			else
+				table.insert(empty_slots, i)
 			end
-
-			last_priority = priority
 		end
 
-		if not first_error then
-			log.log("Inventory: Couldn't find anything to move")
-			_state.disable_inventory = true
-			return false
+		priority_map[7] = { slots = empty_slots, count = math.min(4, empty_count) }
+		empty_count = empty_count - priority_map[7].count
+
+		priority_map[3] = { slots = empty_slots, count = math.min(4, empty_count) }
+		empty_count = empty_count - priority_map[3].count
+
+		priority_map[1] = { slots = empty_slots, count = empty_count }
+
+		local priority = 0
+		local priority_count = 0
+
+		for i = 47, 0, -1 do
+			local item = memory.read("battle_menu", "item_id", i)
+
+			if item_priority[i] == priority or ((priority == 1 or priority == 3 or priority == 7) and item == game.ITEM.NONE) then
+				priority_count = priority_count + 1
+
+				if priority_count == priority_map[priority].count then
+					repeat
+						priority = priority + 1
+					until priority_map[priority] or priority == 64
+
+					priority_count = 0
+				end
+			else
+				local pri = item_priority[i]
+				if not pri then
+					pri = "10000"
+				end
+
+				table.sort(priority_map[priority].slots)
+				local source = priority_map[priority].slots[1]
+
+				log.log(string.format("Inventory: Swapping slots %d and %d", source, i))
+
+				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+				table.insert(_state.q, {menu.battle.item.select, {nil, source}})
+				table.insert(_state.q, {menu.battle.item.select, {nil, i}})
+				table.insert(_state.q, {menu.battle.item.close, {}})
+
+				return true
+			end
 		end
 
-		log.log(string.format("Inventory: Swapping slots %d and %d", first_error, last_error))
+		log.log("Inventory: Couldn't find anything to move")
+		_state.disable_inventory = true
+	end
 
-		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
-		table.insert(_state.q, {menu.battle.item.select, {nil, first_error}})
-		table.insert(_state.q, {menu.battle.item.select, {nil, last_error}})
-		table.insert(_state.q, {menu.battle.item.close, {}})
+	return false
+end
 
-		return true
+function _manage_inventory_old(full_inventory, items)
+	if menu.battle.command.has_command(menu.battle.COMMAND.SHOW) then
+		return false
+	end
+
+	if not items then
+		items = {}
+	end
+
+	if (full_inventory and memory.read("battle", "active") == 0) or memory.read("battle", "enemies") == 0 then
+		local sorted = {}
+		local empty_count = 0
+
+		for i = 0, 47 do
+			local entry = {}
+
+			entry.index = i
+			entry.item = memory.read("battle_menu", "item_id", i)
+			entry.count = memory.read("battle_menu", "item_count", i)
+
+			if entry.item == game.ITEM.NONE then
+				empty_count = empty_count + 1
+
+				if empty_count <= 4 then
+					entry.priority = 7
+				elseif empty_count <= 8 then
+					entry.priority = 3
+				else
+					entry.priority = 1
+				end
+			elseif items[entry.item] then
+				entry.priority = items[entry.item]
+			else
+				entry.priority = 0
+			end
+
+			table.insert(sorted, entry)
+			print("Inserting")
+			print(entry)
+		end
+
+		table.sort(sorted, function (a, b) return a.priority > b.priority end)
+
+		for i = 0, 47 do
+			sorted[i + 1].new_index = i
+		end
+
+		table.sort(sorted, function (a, b) return a.index < b.index end)
+
+		for i = 0, 47 do
+			local entry = sorted[i + 1]
+			--local item = memory.read("battle_menu", "item_id", i)
+			print("Checking")
+			print(entry)
+
+			if entry.index ~= entry.new_index and entry.item ~= game.ITEM.NONE then
+				log.log(string.format("Inventory: Swapping slots %d and %d", entry.index, entry.new_index))
+
+				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+				table.insert(_state.q, {menu.battle.item.select, {nil, entry.index}})
+				table.insert(_state.q, {menu.battle.item.select, {nil, entry.new_index}})
+				table.insert(_state.q, {menu.battle.item.close, {}})
+
+				return true
+			end
+		end
+
+		log.log("Inventory: Couldn't find anything to move")
+		_state.disable_inventory = true
 	end
 
 	return false
