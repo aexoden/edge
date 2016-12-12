@@ -494,6 +494,22 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.EBLAN] = {
 	[game.ITEM.WEAPON.CHANGE]   = 2,
 }
 
+_M.inventory["no64-rosa"][game.battle.FORMATION.EBLAN] = {
+	[game.ITEM.ITEM.DARKNESS]   = 32,
+	[game.ITEM.ITEM.HEAL]       = 16,
+	[game.ITEM.SHIELD.ICE]      = 8,
+	[game.ITEM.WEAPON.BLIZZARD] = 8,
+	[game.ITEM.WEAPON.ICEBRAND] = 8,
+	[game.ITEM.ARMOR.WIZARD]    = 4,
+	[game.ITEM.WEAPON.DANCING]  = 4,
+	[game.ITEM.HELM.GAEA]       = 4,
+	[game.ITEM.ITEM.CURE2]      = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.ITEM.ETHER1]     = 2,
+	[game.ITEM.RING.RUNE]       = 2,
+	[game.ITEM.WEAPON.CHANGE]   = 2,
+}
+
 _M.inventory["no64-excalbur"][game.battle.FORMATION.RUBICANT] = {
 	[game.ITEM.ITEM.DARKNESS]   = 32,
 	[game.ITEM.WEAPON.LEGEND]   = 16,
@@ -504,6 +520,19 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.RUBICANT] = {
 	[game.ITEM.WEAPON.DANCING]  = 4,
 	[game.ITEM.ITEM.ETHER1]     = 2,
 	[game.ITEM.ITEM.HEAL]       = 2,
+	[game.ITEM.RING.RUNE]       = 2,
+	[game.ITEM.WEAPON.CHANGE]   = 2,
+}
+
+_M.inventory["no64-rosa"][game.battle.FORMATION.RUBICANT] = {
+	[game.ITEM.ITEM.DARKNESS]   = 32,
+	[game.ITEM.ITEM.HEAL]       = 16,
+	[game.ITEM.ARMOR.WIZARD]    = 4,
+	[game.ITEM.HELM.GAEA]       = 4,
+	[game.ITEM.ITEM.CURE2]      = 4,
+	[game.ITEM.ITEM.LIFE]       = 4,
+	[game.ITEM.WEAPON.DANCING]  = 4,
+	[game.ITEM.ITEM.ETHER1]     = 2,
 	[game.ITEM.RING.RUNE]       = 2,
 	[game.ITEM.WEAPON.CHANGE]   = 2,
 }
