@@ -441,8 +441,10 @@ local function _battle_cpu(character, turn)
 				_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 			elseif turn == 2 then
 				_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-			else
+			elseif game.character.get_stat(game.CHARACTER.ROSA, "mp", true) >= 46 then
 				_command_white(game.MAGIC.WHITE.WHITE)
+			else
+				_command_parry()
 			end
 		elseif character == game.CHARACTER.RYDIA then
 			if game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 40 then
@@ -455,7 +457,7 @@ local function _battle_cpu(character, turn)
 				_command_equip(character, game.ITEM.WEAPON.ICEBRAND)
 				_command_fight(menu.battle.TARGET.ENEMY, 0)
 			else
-				_command_parry()
+				_command_fight()
 			end
 		end
 	end
