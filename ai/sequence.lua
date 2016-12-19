@@ -513,6 +513,77 @@ local function _post_grind_menu()
 	end
 end
 
+local function _pre_milon_menu()
+	-- Determine which battle strat to use for Milon.
+	local strats = {}
+
+	if game.character.get_stat(game.CHARACTER.POROM, "hp") < 100 then
+		table.insert(strats, "carrot")
+	end
+
+	-- TODO: Implement basic twin strat, otherwise no64 routes are kind of bonkers.
+	table.insert(strats, "twin_changeless")
+
+	local strat = _M.set_battle_strat(game.battle.FORMATION.MILON, strats)
+
+	-- Open the menu and restore the party.
+	local restore_data = {
+		[game.CHARACTER.CECIL] = _RESTORE.HP,
+		[game.CHARACTER.PALOM] = _RESTORE.ALL,
+		[game.CHARACTER.POROM] = _RESTORE.ALL,
+		[game.CHARACTER.TELLAH] = _RESTORE.ALL,
+	}
+
+	if strat == "carrot" then
+		restore_data[game.CHARACTER.POROM] = _RESTORE.LIFE
+	end
+
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {_restore_party, restore_data})
+
+	-- Equip Porom (unless we're doing the carrot strat).
+	if strat ~= "carrot" then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.POROM}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.TIARA}})
+
+		if ROUTE ~= "paladin" then
+			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
+			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
+		end
+
+		table.insert(_q, {menu.field.equip.close, {}})
+	end
+
+	-- Equip Palom and Tellah (for non-paladin routes).
+	if ROUTE ~= "paladin" then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.PALOM}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.CHANGE}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
+		table.insert(_q, {menu.field.equip.close, {}})
+
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
+
+		if game.item.get_count(game.ITEM.WEAPON.CHANGE) > 1 then
+			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
+		end
+
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
+		table.insert(_q, {menu.field.equip.close, {}})
+	end
+
+	-- If doing twin_changeless, change the formation as needed.
+	if strat == "twin_changeless" then
+		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.PALOM}})
+	end
+
+	table.insert(_q, {menu.field.close, {}})
+
+	return true
+end
+
 local function _state_set(key, value)
 	_state[key] = value
 
@@ -1780,53 +1851,7 @@ local function _sequence_milon()
 	table.insert(_q, {walk.walk, {135, 15, 10}})
 
 	-- Heal and equip.
-	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.LIFE, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
-
-	local milon_strat
-
-	if ROUTE == "paladin" then
-		milon_strat = _M.set_battle_strat(game.battle.FORMATION.MILON, {"carrot", "twin_changeless"})
-	else
-		milon_strat = _M.set_battle_strat(game.battle.FORMATION.MILON, {"carrot"})
-	end
-
-	if milon_strat ~= "carrot" then
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.POROM}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.TIARA}})
-
-		if ROUTE ~= "paladin" then
-			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
-			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
-		end
-
-		table.insert(_q, {menu.field.equip.close, {}})
-	end
-
-	if ROUTE ~= "paladin" then
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.PALOM}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.CHANGE}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
-		table.insert(_q, {menu.field.equip.close, {}})
-
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
-
-		if game.item.get_count(game.ITEM.WEAPON.CHANGE) > 1 then
-			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
-		end
-
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
-		table.insert(_q, {menu.field.equip.close, {}})
-	end
-
-	if milon_strat == "twin_changeless" then
-		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.PALOM}})
-	end
-
-	table.insert(_q, {menu.field.close, {}})
+	table.insert(_q, {_pre_milon_menu, {}})
 
 	-- Begin the battle.
 	table.insert(_q, {walk.walk, {135, 14, 10}})

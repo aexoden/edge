@@ -1373,11 +1373,6 @@ local function _battle_milon_carrot(character, turn, strat)
 	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
 	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
 
-	if character == game.CHARACTER.CECIL and turn == 1 and porom_hp > 100 then
-		_state.alternate = true
-		_state.fixed_ghast = true
-	end
-
 	if _state.alternate then
 		if game.enemy.get_stat(0, "hp") == 0 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 1)
