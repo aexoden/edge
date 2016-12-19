@@ -1,7 +1,11 @@
 # Edge
 
 Edge is a script for the BizHawk emulator to speed run Final Fantasy IV. It
-currently follows the Edge+Excalbur route of the Any% No64 run.
+currently can run the following routes:
+
+* Any% No64 (Edge+Excalbur)
+* Any% No64 (Rosa) (partial support)
+* Paladin%
 
 ## Prerequisites
 
@@ -19,7 +23,8 @@ configuration variables:
 
 By default, this is set to nil, which will cause the script to choose a random
 route for its runs. You can also set this to any valid route to do only runs of
-that particular route. The only currently supported route is no64-excalbur.
+that particular route. Currently supported routes are no64-excalbur, no64-rosa,
+and paladin. The route name should be surrounded by double quotation marks.
 
 ### ENCOUNTER_SEED
 
@@ -62,6 +67,16 @@ This option only has meaning when AUTOMATIC is enabled. When enabled, the bot
 will allow the ending to play out before rebooting to the next seed. This is
 useful if streaming the runs. If the bot dies, it will wait five minutes before
 rebooting.
+
+### RESET_FOR_TIME
+
+This option will tell the bot to automatically reset if it falls behind its PB
+for the current route by too much. It is disabled by default.
+
+### OVERLAY
+
+This option displays an informational overlay to provide some basic information
+about the run. It is disabled by default.
 
 ## LiveSplit Integration Requirements (optional and difficult)
 
