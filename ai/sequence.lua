@@ -1775,12 +1775,21 @@ local function _sequence_milon()
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.LIFE, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
 
+	local milon_strat
+
 	if ROUTE == "paladin" then
+		milon_strat = _M.set_battle_strat(game.battle.FORMATION.MILON, {"carrot", "twin_changeless"})
+	else
+		milon_strat = _M.set_battle_strat(game.battle.FORMATION.MILON, {"carrot"})
+	end
+
+	if milon_strat ~= "carrot" then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.POROM}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.TIARA}})
 		table.insert(_q, {menu.field.equip.close, {}})
-		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.PALOM}})
-	else
+	end
+
+	if ROUTE ~= "paladin" then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.PALOM}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.CHANGE}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
@@ -1797,6 +1806,10 @@ local function _sequence_milon()
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
 		table.insert(_q, {menu.field.equip.close, {}})
+	end
+
+	if milon_strat == "twin_changeless" then
+		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.PALOM}})
 	end
 
 	table.insert(_q, {menu.field.close, {}})
@@ -4547,6 +4560,15 @@ function _M.end_run(delay)
 	end
 end
 
+function _M.get_battle_strat(formation)
+	return _state.battle_strats[formation]
+end
+
+function _M.set_battle_strat(formation, choices)
+	_state.battle_strats[formation] = choices[math.random(#choices)]
+	return _state.battle_strats[formation]
+end
+
 function _M.is_active()
 	return _state.active
 end
@@ -4610,6 +4632,7 @@ function _M.reset()
 
 	_state = {
 		active = true,
+		battle_strats = {},
 		check_autoreload = true,
 		check_healing = false,
 		split_color = 0xFFFFFF00,

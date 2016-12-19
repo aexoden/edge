@@ -201,7 +201,7 @@ end
 -- Battles
 --------------------------------------------------------------------------------
 
-local function _battle_antlion(character, turn)
+local function _battle_antlion(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if game.character.get_stat(game.CHARACTER.RYDIA, "hp", true) == 0 and game.item.get_index(game.ITEM.ITEM.LIFE, 0, game.INVENTORY.BATTLE) then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
@@ -219,7 +219,7 @@ local function _battle_antlion(character, turn)
 	end
 end
 
-local function _battle_baigan(character, turn)
+local function _battle_baigan(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
 			_command_run_buffer()
@@ -266,7 +266,7 @@ local function _battle_baigan(character, turn)
 	end
 end
 
-local function _battle_calbrena(character, turn)
+local function _battle_calbrena(character, turn, strat)
 	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
 
 	if not _state.jumps then
@@ -400,7 +400,7 @@ local function _battle_calbrena(character, turn)
 	end
 end
 
-local function _battle_cpu(character, turn)
+local function _battle_cpu(character, turn, strat)
 	if ROUTE == "no64-excalbur" then
 		if character == game.CHARACTER.EDGE then
 			if turn == 1 then
@@ -461,7 +461,7 @@ local function _battle_cpu(character, turn)
 	end
 end
 
-local function _battle_d_knight(character, turn)
+local function _battle_d_knight(character, turn, strat)
 	if turn == 3 then
 		_command_wait_frames(45)
 
@@ -481,7 +481,7 @@ local function _battle_d_knight(character, turn)
 	end
 end
 
-local function _battle_d_mist(character, turn)
+local function _battle_d_mist(character, turn, strat)
 	if character == game.CHARACTER.KAIN then
 		if turn == 2 or game.enemy.get_stat(0, "hp") < 48 then
 			_command_fight()
@@ -507,7 +507,7 @@ local function _battle_d_mist(character, turn)
 	end
 end
 
-local function _battle_dark_elf(character, turn)
+local function _battle_dark_elf(character, turn, strat)
 	local elf_hp = game.enemy.get_stat(0, "hp")
 	local dragon_hp = game.enemy.get_stat(1, "hp")
 
@@ -586,7 +586,7 @@ local function _battle_dark_elf(character, turn)
 	end
 end
 
-local function _battle_dark_imp(character, turn)
+local function _battle_dark_imp(character, turn, strat)
 	if character == game.CHARACTER.RYDIA and game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 5 then
 		_command_black(game.MAGIC.BLACK.ICE1)
 	else
@@ -594,11 +594,11 @@ local function _battle_dark_imp(character, turn)
 	end
 end
 
-local function _battle_dragoon(character, turn)
+local function _battle_dragoon(character, turn, strat)
 	_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 end
 
-local function _battle_eblan(character, turn)
+local function _battle_eblan(character, turn, strat)
 	local _, kain_weapon = game.character.get_weapon(game.CHARACTER.KAIN, true)
 	local _, cecil_weapon = game.character.get_weapon(game.CHARACTER.CECIL, true)
 
@@ -627,7 +627,7 @@ local function _battle_eblan(character, turn)
 	end
 end
 
-local function _battle_elements_excalbur(character, turn)
+local function _battle_elements_excalbur(character, turn, strat)
 	local weakest = {nil, 99999}
 
 	for i = 0, 4 do
@@ -681,7 +681,7 @@ local function _battle_elements_excalbur(character, turn)
 	end
 end
 
-local function _battle_elements_rosa(character, turn)
+local function _battle_elements_rosa(character, turn, strat)
 	if character == game.CHARACTER.EDGE then
 		_command_parry()
 	elseif character == game.CHARACTER.FUSOYA then
@@ -722,15 +722,15 @@ local function _battle_elements_rosa(character, turn)
 	end
 end
 
-local function _battle_elements(character, turn)
+local function _battle_elements(character, turn, strat)
 	if ROUTE == "no64-rosa" then
-		return _battle_elements_rosa(character, turn)
+		return _battle_elements_rosa(character, turn, strat)
 	else
-		return _battle_elements_excalbur(character, turn)
+		return _battle_elements_excalbur(character, turn, strat)
 	end
 end
 
-local function _battle_flamedog(character, turn)
+local function _battle_flamedog(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
 			_command_run_buffer()
@@ -746,7 +746,7 @@ local function _battle_flamedog(character, turn)
 	end
 end
 
-local function _battle_gargoyle(character, turn)
+local function _battle_gargoyle(character, turn, strat)
 	_state.full_inventory = true
 
 	if character == game.CHARACTER.CECIL then
@@ -765,7 +765,7 @@ local function _battle_gargoyle(character, turn)
 	end
 end
 
-local function _battle_general(character, turn)
+local function _battle_general(character, turn, strat)
 	_state.full_inventory = true
 
 	if game.enemy.get_weakest(game.ENEMY.FIGHTER) then
@@ -786,14 +786,14 @@ local function _battle_general(character, turn)
 	end
 end
 
-local function _battle_girl(character, turn)
+local function _battle_girl(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		_command_wait_frames(300)
 		_command_change()
 	end
 end
 
-local function _battle_golbez(character, turn)
+local function _battle_golbez(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
 			_command_equip(character, game.ITEM.WEAPON.FIRE)
@@ -830,7 +830,7 @@ local function _battle_golbez(character, turn)
 	end
 end
 
-local function _battle_grind(character, turn)
+local function _battle_grind(character, turn, strat)
 	local grind_character = game.CHARACTER.EDGE
 	local required_dragons = 15
 	local level = game.character.get_stat(game.CHARACTER.EDGE, "level", true)
@@ -1213,7 +1213,7 @@ local function _battle_grind(character, turn)
 	end
 end
 
-local function _battle_guards(character, turn)
+local function _battle_guards(character, turn, strat)
 	if character == game.CHARACTER.CECIL or character == game.CHARACTER.PALOM then
 		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 	else
@@ -1221,7 +1221,7 @@ local function _battle_guards(character, turn)
 	end
 end
 
-local function _battle_kainazzo(character, turn)
+local function _battle_kainazzo(character, turn, strat)
 	if character == game.CHARACTER.CECIL or character == game.CHARACTER.YANG then
 		if turn == 1 or game.enemy.get_stat(0, "hp") < 150 then
 			_command_fight()
@@ -1241,7 +1241,7 @@ local function _battle_kainazzo(character, turn)
 	end
 end
 
-local function _battle_karate(character, turn)
+local function _battle_karate(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		_command_wait_text("Yang:A")
 		_command_fight()
@@ -1250,7 +1250,7 @@ local function _battle_karate(character, turn)
 	end
 end
 
-local function _battle_lugae1(character, turn)
+local function _battle_lugae1(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if turn == 2 then
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 1)
@@ -1300,7 +1300,7 @@ local function _battle_lugae1(character, turn)
 	end
 end
 
-local function _battle_lugae2(character, turn)
+local function _battle_lugae2(character, turn, strat)
 	local lowest = {nil, 99999}
 
 	for i = 0, 4 do
@@ -1363,13 +1363,13 @@ local function _battle_lugae2(character, turn)
 	end
 end
 
-local function _battle_mages(character, turn)
+local function _battle_mages(character, turn, strat)
 	if not game.character.is_status(game.CHARACTER.CID, game.STATUS.PARALYZE) then
 		return _command_run()
 	end
 end
 
-local function _battle_milon_carrot(character, turn)
+local function _battle_milon_carrot(character, turn, strat)
 	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
 	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
 
@@ -1514,7 +1514,7 @@ local function _battle_milon_carrot(character, turn)
 	end
 end
 
-local function _battle_milon_paladin(character, turn)
+local function _battle_milon_twin_changeless(character, turn, strat)
 	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
 	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
 
@@ -1576,15 +1576,15 @@ local function _battle_milon_paladin(character, turn)
 	end
 end
 
-local function _battle_milon(character, turn)
-	if ROUTE == "paladin" then
-		return _battle_milon_paladin(character, turn)
-	else
-		return _battle_milon_carrot(character, turn)
+local function _battle_milon(character, turn, strat)
+	if strat == "twin_changeless" then
+		return _battle_milon_twin_changeless(character, turn, strat)
+	elseif strat == "carrot" then
+		return _battle_milon_carrot(character, turn, strat)
 	end
 end
 
-local function _battle_milon_z_trashcan(character, turn)
+local function _battle_milon_z_trashcan(character, turn, strat)
 	if _state.alternate or character == game.CHARACTER.CECIL and turn > 3 or character ~= game.CHARACTER.CECIL and turn >= 2 then
 		local count = 0
 		local best = nil
@@ -1677,7 +1677,7 @@ local function _battle_milon_z_trashcan(character, turn)
 	end
 end
 
-local function _battle_milon_z_cure2(character, turn)
+local function _battle_milon_z_cure2(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		_command_fight()
 	else
@@ -1685,15 +1685,15 @@ local function _battle_milon_z_cure2(character, turn)
 	end
 end
 
-local function _battle_milon_z(character, turn)
+local function _battle_milon_z(character, turn, strat)
 	if ROUTE == "paladin" then
-		return _battle_milon_z_cure2(character, turn)
+		return _battle_milon_z_cure2(character, turn, strat)
 	else
-		return _battle_milon_z_trashcan(character, turn)
+		return _battle_milon_z_trashcan(character, turn, strat)
 	end
 end
 
-local function _battle_mombomb(character, turn)
+local function _battle_mombomb(character, turn, strat)
 	local count = 0, last
 
 	for i = 0, 4 do
@@ -1773,7 +1773,7 @@ local function _battle_mombomb(character, turn)
 	end
 end
 
-local function _battle_octomamm(character, turn)
+local function _battle_octomamm(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
 			_command_equip(character, game.ITEM.WEAPON.DARKNESS)
@@ -1816,14 +1816,14 @@ local function _battle_octomamm(character, turn)
 	end
 end
 
-local function _battle_officer(character, turn)
+local function _battle_officer(character, turn, strat)
 	if turn <= 3 then
 		_command_run_buffer()
 		_command_fight()
 	end
 end
 
-local function _battle_red_d(character, turn)
+local function _battle_red_d(character, turn, strat)
 	if character == game.CHARACTER.EDGE then
 		_command_ninja(game.MAGIC.NINJA.SMOKE)
 	else
@@ -1831,7 +1831,7 @@ local function _battle_red_d(character, turn)
 	end
 end
 
-local function _battle_rubicant(character, turn)
+local function _battle_rubicant(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
@@ -1871,7 +1871,7 @@ local function _battle_rubicant(character, turn)
 	end
 end
 
-local function _battle_sisters(character, turn)
+local function _battle_sisters(character, turn, strat)
 	local fight_yang = game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 and game.character.get_stat(game.CHARACTER.KAIN, "exp") < 17154
 	local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp", true)
 
@@ -1940,7 +1940,7 @@ local function _battle_valvalis_support(character)
 	end
 end
 
-local function _battle_valvalis(character, turn)
+local function _battle_valvalis(character, turn, strat)
 	if character == game.CHARACTER.KAIN then
 		if game.enemy.get_stat(0, "hp") < 500 then
 			_command_fight()
@@ -1971,11 +1971,11 @@ local function _battle_valvalis(character, turn)
 	end
 end
 
-local function _battle_waterhag(character, turn)
+local function _battle_waterhag(character, turn, strat)
 	_command_fight()
 end
 
-local function _battle_weeper(character, turn)
+local function _battle_weeper(character, turn, strat)
 	_state.full_inventory = true
 
 	if not _state.turn_count then
@@ -2006,7 +2006,7 @@ local function _battle_weeper(character, turn)
 	end
 end
 
-local function _battle_zeromus_excalbur(character, turn)
+local function _battle_zeromus_excalbur(character, turn, strat)
 	if not _state.cecil_nuke then
 		if character == game.CHARACTER.CECIL then
 			if turn == 1 then
@@ -2081,7 +2081,7 @@ local function _battle_zeromus_excalbur(character, turn)
 	end
 end
 
-local function _battle_zeromus_rosa(character, turn)
+local function _battle_zeromus_rosa(character, turn, strat)
 	-- Constants
 	local MIDGAME = {
 		STANDARD   = 0,
@@ -2303,11 +2303,11 @@ local function _battle_zeromus_rosa(character, turn)
 	end
 end
 
-local function _battle_zeromus(character, turn)
+local function _battle_zeromus(character, turn, strat)
 	if ROUTE == "no64-excalbur" then
-		return _battle_zeromus_excalbur(character, turn)
+		return _battle_zeromus_excalbur(character, turn, strat)
 	else
-		return _battle_zeromus_rosa(character, turn)
+		return _battle_zeromus_rosa(character, turn, strat)
 	end
 end
 
@@ -2465,6 +2465,7 @@ function _M.cycle()
 			_state.formation = formation
 			_state.frame = emu.framecount()
 			_state.full_inventory = false
+			_state.strat = sequence.get_battle_strat(index)
 			_battle_count = _battle_count + 1
 
 			local attack_type = game.battle.get_type()
@@ -2486,6 +2487,10 @@ function _M.cycle()
 			end
 
 			log.log(string.format("Battle Start: %s (%s)", formation.title, stats))
+
+			if _state.strat then
+				log.log(string.format("Battle Strat: %s", _state.strat))
+			end
 
 			local party_text = ""
 
@@ -2571,7 +2576,7 @@ function _M.cycle()
 
 			if open and memory.read("battle_menu", "menu") ~= menu.battle.MENU.NONE then
 			 	if #_state.q == 0 and not _state.queued then
-					if (_state.disable_inventory or not _manage_inventory(formation.full_inventory or _state.full_inventory, route.get_inventory(index))) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1) then
+					if (_state.disable_inventory or not _manage_inventory(formation.full_inventory or _state.full_inventory, route.get_inventory(index))) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1, _state.strat) then
 						_state.turns[slot] = _state.turns[slot] + 1
 						_state.queued = true
 					end
