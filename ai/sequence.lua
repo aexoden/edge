@@ -1786,6 +1786,12 @@ local function _sequence_milon()
 	if milon_strat ~= "carrot" then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.POROM}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.TIARA}})
+
+		if ROUTE ~= "paladin" then
+			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
+			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
+		end
+
 		table.insert(_q, {menu.field.equip.close, {}})
 	end
 
