@@ -514,6 +514,8 @@ local function _post_grind_menu()
 end
 
 local function _pre_milon_menu()
+	local stack = {}
+
 	-- Determine which battle strat to use for Milon.
 	local strats = {}
 
@@ -538,48 +540,53 @@ local function _pre_milon_menu()
 		restore_data[game.CHARACTER.POROM] = _RESTORE.LIFE
 	end
 
-	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, restore_data})
+	table.insert(stack, {menu.field.open, {}})
+	table.insert(stack, {_restore_party, restore_data})
 
 	-- Equip Porom (unless we're doing the carrot strat).
 	if strat ~= "carrot" then
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.POROM}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.TIARA}})
+		table.insert(stack, {menu.field.equip.open, {game.CHARACTER.POROM}})
+		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.TIARA}})
 
 		if ROUTE ~= "paladin" then
-			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
-			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
+			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
+			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
 		end
 
-		table.insert(_q, {menu.field.equip.close, {}})
+		table.insert(stack, {menu.field.equip.close, {}})
 	end
 
 	-- Equip Palom and Tellah (for non-paladin routes).
 	if ROUTE ~= "paladin" then
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.PALOM}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.CHANGE}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
-		table.insert(_q, {menu.field.equip.close, {}})
+		table.insert(stack, {menu.field.equip.open, {game.CHARACTER.PALOM}})
+		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.CHANGE}})
+		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
+		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
+		table.insert(stack, {menu.field.equip.close, {}})
 
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
+		table.insert(stack, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
 
 		if game.item.get_count(game.ITEM.WEAPON.CHANGE) > 1 then
-			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
+			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
 		end
 
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
-		table.insert(_q, {menu.field.equip.close, {}})
+		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
+		table.insert(stack, {menu.field.equip.close, {}})
 	end
 
 	-- If doing twin_changeless, change the formation as needed.
 	if strat == "twin_changeless" then
-		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.PALOM}})
+		table.insert(stack, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.PALOM}})
 	end
 
-	table.insert(_q, {menu.field.close, {}})
+	table.insert(stack, {menu.field.close, {}})
+
+	-- Add the queued commands to the primary command queue.
+	while #stack > 0 do
+		table.insert(_q, 1, table.remove(stack))
+	end
 
 	return true
 end
