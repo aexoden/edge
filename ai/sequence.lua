@@ -1830,15 +1830,23 @@ local function _sequence_milon_z()
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.ALL, [game.CHARACTER.TELLAH] = _RESTORE.ALL}}})
 
-	if ROUTE == "paladin" then
+	local milon_strat = _M.get_battle_strat(game.battle.FORMATION.MILON)
+	local milon_z_strat = _M.set_battle_strat(game.battle.FORMATION.MILON_Z, {"cure2", "trashcan"})
+
+	if milon_z_strat == "cure2" then
 		table.insert(_q, {menu.field.magic.open, {game.CHARACTER.PALOM}})
 		table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
 		table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
 		table.insert(_q, {menu.field.magic.select_character, {nil, true}})
 		table.insert(_q, {menu.field.magic.close, {}})
 		table.insert(_q, {menu.field.change, {}})
-	else
-		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.TELLAH, game.FORMATION.THREE_FRONT}})
+	elseif milon_z_strat == "trashcan" then
+		if milon_strat == "twin_changeless" then
+			table.insert(_q, {menu.field.form.swap, {game.CHARACTER.PALOM, game.CHARACTER.POROM, game.FORMATION.THREE_FRONT}})
+			table.insert(_q, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.TELLAH}})
+		else
+			table.insert(_q, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.TELLAH, game.FORMATION.THREE_FRONT}})
+		end
 	end
 
 	table.insert(_q, {menu.field.close, {}})

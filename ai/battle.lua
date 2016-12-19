@@ -1686,9 +1686,9 @@ local function _battle_milon_z_cure2(character, turn, strat)
 end
 
 local function _battle_milon_z(character, turn, strat)
-	if ROUTE == "paladin" then
+	if strat == "cure2" then
 		return _battle_milon_z_cure2(character, turn, strat)
-	else
+	elseif strat == "trashcan" then
 		return _battle_milon_z_trashcan(character, turn, strat)
 	end
 end
