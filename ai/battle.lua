@@ -1668,10 +1668,13 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 				_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 			end
 		elseif character == game.CHARACTER.POROM then
-			if turn == 1 then
+			if turn == 1 and game.character.get_stat(game.CHARACTER.PALOM, "hp", true) > 0 then
 				_command_wait_frames(10)
 				_command_run_buffer()
 				_command_twin()
+			else
+				_state.alternate = true
+				return true
 			end
 		end
 	end
