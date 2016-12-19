@@ -4618,6 +4618,12 @@ function _M.split(split)
 			_state.split_color = 0xFFFFFF00
 		end
 
+		if (ROUTE == "paladin" and split == "Paladin") or (ROUTE ~= "paladin" and split == "Zeromus Death") then
+			if delta < 0 then
+				log.log("Detected a new personal best!")
+			end
+		end
+
 		if CONFIG.RESET_FOR_TIME and delta > (60 + 90 * factor) * 60 then
 			log.log("Resetting for time...")
 			_M.end_run()
