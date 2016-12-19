@@ -1196,6 +1196,30 @@ function _M.battle.item.select(item, index)
 	return false
 end
 
+function _M.battle.item.use(item, index, target_type, target, wait, limit)
+	if not _state.select_count then
+		_state.select_count = 0
+	end
+
+	if _M.battle.is_open() then
+		if _M.battle.is_target() then
+			_state.select_count = nil
+			return _M.battle.target(target_type, target, wait, limit)
+		elseif _state.select_count == 1 or not _state.select_frame or emu.framecount() - _state.select_frame > 15 then
+			if _M.battle.item.select(item, index) then
+				_state.select_count = _state.select_count + 1
+				_state.select_frame = emu.framecount()
+			end
+
+			if _state.select_count == 3 then
+				_state.select_count = 1
+			end
+		end
+	end
+
+	return false
+end
+
 function _M.battle.magic.select(spell)
 	local menu = memory.read("battle_menu", "menu")
 	local cursor = memory.read("battle_menu", "subcursor")

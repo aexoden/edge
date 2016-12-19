@@ -171,11 +171,9 @@ local function _command_twin()
 	table.insert(_state.q, {menu.battle.target, {menu.battle.TARGET.ENEMY_ALL, nil}})
 end
 
-local function _command_use_item(item, target_type, target)
+local function _command_use_item(item, target_type, target, wait, limit)
 	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
-	table.insert(_state.q, {menu.battle.item.select, {item}})
-	table.insert(_state.q, {menu.battle.item.select, {item}})
-	table.insert(_state.q, {menu.battle.target, {target_type, target}})
+	table.insert(_state.q, {menu.battle.item.use, {item, nil, target_type, target, wait, limit}})
 end
 
 local function _command_use_weapon(character, target_weapon, target_type, target, wait, limit)
