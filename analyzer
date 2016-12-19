@@ -28,6 +28,15 @@ import sys
 
 from collections import OrderedDict
 
+import numpy
+
+from scipy import stats
+
+import matplotlib
+matplotlib.use('Agg')
+
+import matplotlib.pyplot as plt
+
 
 #-------------------------------------------------------------------------------
 # Functions
@@ -81,7 +90,7 @@ def format_time(frames):
     return '{:.0f}:{:02.0f}:{:05.2f}'.format(seconds // 3600, (seconds // 60) % 60, seconds % 60)
 
 
-def get_battle_data(logs, classified=False):
+def get_battle_data(logs, classified=False, strat=True):
     battles = OrderedDict()
 
     for log in logs:
@@ -89,30 +98,48 @@ def get_battle_data(logs, classified=False):
             if battle['result'].startswith('Victory') or battle['result'].startswith('Perished'):
                 key = '{:03}'.format(battle['formation'])
 
-                if battle['strat']:
+                if strat and battle['strat']:
                     key = '{}-{}'.format(key, battle['strat'])
 
                 if key not in battles:
                     if classified:
                         battles[key] = {}
                     else:
-                        battles[key] = {'formation': battle['formation'], 'strat': battle['strat'], 'count': 0, 'data': []}
+                        battles[key] = {'formation': battle['formation'], 'strat': battle['strat'] if strat else set([battle['strat']]) if battle['strat'] else set(), 'count': 0, 'data': [] if strat or not battle['strat'] else {}}
 
                 if classified:
                     subkey = (battle['type'], ' '.join(map(str, battle['enemy_agility'])), battle['party_formation'])
 
                     if subkey not in battles[key]:
-                        battles[key][subkey] = {'formation': battle['formation'], 'strat': battle['strat'], 'count': 0, 'data': []}
+                        battles[key][subkey] = {'formation': battle['formation'], 'strat': battle['strat'] if strat else set([battle['strat']]), 'count': 0, 'data': [] if strat or not battle['strat'] else {}}
 
                     battles[key][subkey]['count'] += 1
 
+                    if not strat and battle['strat'] and battle['strat'] not in battles[key][subkey]['strat']:
+                        battles[key][subkey]['strat'].add(battle['strat'])
+
+                    if not strat and battle['strat'] and battle['strat'] not in battles[key][subkey]['data']:
+                        battles[key][subkey]['data'][battle['strat']] = []
+
                     if battle['result'].startswith('Victory'):
-                        battles[key][subkey]['data'].append(battle['frames'])
+                        if strat or (not strat and not battle['strat']):
+                            battles[key][subkey]['data'].append(battle['frames'])
+                        else:
+                            battles[key][subkey]['data'][battle['strat']].append(battle['frames'])
                 else:
                     battles[key]['count'] += 1
 
+                    if not strat and battle['strat'] and battle['strat'] not in battles[key]['strat']:
+                        battles[key]['strat'].add(battle['strat'])
+
+                    if not strat and battle['strat'] and battle['strat'] not in battles[key]['data']:
+                        battles[key]['data'][battle['strat']] = []
+
                     if battle['result'].startswith('Victory'):
-                        battles[key]['data'].append(battle['frames'])
+                        if strat or (not strat and not battle['strat']):
+                            battles[key]['data'].append(battle['frames'])
+                        else:
+                            battles[key]['data'][battle['strat']].append(battle['frames'])
 
     return battles
 
@@ -328,6 +355,54 @@ class Log(object):
 
 
 #-------------------------------------------------------------------------------
+# Image Functions
+#-------------------------------------------------------------------------------
+
+def img_output_battle(f, key, data):
+    colors = ['red', 'blue', 'green']
+
+    figure = plt.figure()
+    figure.suptitle('{} Battle Time'.format(describe_formation(data['formation'])))
+
+    axis_min = None
+    axis_max = None
+
+    if len(data['strat']) > 0:
+        values = {}
+
+        for strat, strat_data in data['data'].items():
+            values[strat] = [x / 60.0988 for x in strat_data]
+    else:
+        values = {'Default Strat': [x / 60.0988 for x in data['data']]}
+
+    axis_min = min([min(x) for x in values.values()]) - 10
+    axis_max = max([max(x) for x in values.values()]) + 10
+
+    subplot = figure.add_subplot(111)
+    axis = numpy.linspace(axis_min, axis_max)
+
+    for i, (strat, strat_data) in enumerate(values.items()):
+        x = numpy.array(strat_data, dtype=numpy.float)
+
+        try:
+            kde = stats.gaussian_kde(x)
+        except:
+            kde = None
+
+        subplot.plot(x, numpy.zeros(x.shape), 'b+', ms=20, color=colors[i])
+
+        if kde:
+            subplot.plot(axis, kde(axis), 'k-', color=colors[i], label=strat)
+
+    if len(data['strat']) > 0:
+        plt.legend(loc="upper left")
+
+    plt.xlabel("Battle Time (seconds)")
+    plt.ylabel("Probability")
+    plt.savefig(f)
+
+
+#-------------------------------------------------------------------------------
 # HTML Functions
 #-------------------------------------------------------------------------------
 
@@ -414,24 +489,30 @@ def html_output_battles(f, logs):
     f.write('\t\t\t\t<tbody>\n')
 
     battles = OrderedDict()
+    ordering = {}
+    index = 0
 
     for log in logs:
         for battle in log.battles:
             if battle['result'].startswith('Victory') or battle['result'].startswith('Perished'):
+                if battle['formation'] not in ordering:
+                    ordering[battle['formation']] = index
+                    index += 1
+
                 key = '{:03}'.format(battle['formation'])
 
                 if battle['strat']:
                     key = '{}-{}'.format(key, battle['strat'])
 
                 if key not in battles:
-                    battles[key] = {'formation': battle['formation'], 'strat': battle['strat'], 'data': [], 'count': 0}
+                    battles[key] = {'formation': battle['formation'], 'strat': battle['strat'], 'data': [], 'count': 0, 'index': ordering[battle['formation']]}
 
                 if battle['result'].startswith('Victory'):
                     battles[key]['data'].append(battle['frames'])
 
                 battles[key]['count'] += 1
 
-    for key, data in battles.items():
+    for key, data in sorted(battles.items(), key=lambda x: x[1]['index']):
         f.write('\t\t\t\t\t<tr>\n')
         f.write('\t\t\t\t\t\t<td><a href="battles/{}.html">{}</a></td>\n'.format(key, describe_formation(data['formation'])))
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['strat'] if data['strat'] else '-'))
@@ -449,11 +530,14 @@ def html_output_battles(f, logs):
 def html_output_battle(f, key, battle_data):
     first_data = list(battle_data.values())[0]
 
-    if 'strat' in first_data:
+    if 'strat' in first_data and first_data['strat']:
         f.write('\t\t\t<h2>Battle Data for {} using &quot;{}&quot; Strat</h2>\n'.format(describe_formation(first_data['formation']), first_data['strat']))
     else:
         f.write('\t\t\t<h2>Battle Data for {}</h2>\n'.format(describe_formation(first_data['formation'])))
 
+    f.write('\t\t\t<h3>Time Graph</h3>\n')
+    f.write('\t\t\t<p><img src="img/{}.png"></p>'.format(key))
+    f.write('\t\t\t<h3>Data</h3>\n')
     f.write('\t\t\t<table class="table table-striped">\n')
     f.write('\t\t\t\t<thead>\n')
     f.write('\t\t\t\t\t<tr>\n')
@@ -678,3 +762,14 @@ for key, data in battles.items():
         html_output_header(f)
         html_output_battle(f, key, data)
         html_output_footer(f)
+
+battles = get_battle_data(logs, False, False)
+
+os.mkdir(os.path.join(sys.argv[1], 'battles', 'img'))
+
+for key, data in battles.items():
+    if len(data['strat']) > 0:
+        for strat in data['strat']:
+            img_output_battle(os.path.join(sys.argv[1], 'battles', 'img', '{}-{}.png'.format(key, strat)), key, data)
+    else:
+        img_output_battle(os.path.join(sys.argv[1], 'battles', 'img', '{}.png'.format(key)), key, data)
