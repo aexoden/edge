@@ -464,9 +464,14 @@ end
 local function _battle_d_knight(character, turn)
 	if turn == 3 then
 		_command_wait_frames(45)
+
 		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
-		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.SHIELD.PALADIN}})
-		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.L_HAND, input.DELAY.MASH}})
+
+		if ROUTE ~= "paladin" then
+			table.insert(_state.q, {menu.battle.item.select, {game.ITEM.SHIELD.PALADIN}})
+			table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.L_HAND, input.DELAY.MASH}})
+		end
+
 		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND, input.DELAY.MASH}})
 		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND, input.DELAY.MASH}})
 		table.insert(_state.q, {menu.battle.target, {}})
@@ -1364,7 +1369,7 @@ local function _battle_mages(character, turn)
 	end
 end
 
-local function _battle_milon(character, turn)
+local function _battle_milon_carrot(character, turn)
 	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
 	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
 
@@ -1509,7 +1514,77 @@ local function _battle_milon(character, turn)
 	end
 end
 
-local function _battle_milon_z(character, turn)
+local function _battle_milon_paladin(character, turn)
+	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
+	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
+
+	local palom_mp = game.character.get_stat(game.CHARACTER.PALOM, "mp", true)
+	local porom_mp = game.character.get_stat(game.CHARACTER.POROM, "mp", true)
+
+	local worst_twin
+
+	if palom_hp < 70 and palom_hp < porom_hp then
+		worst_twin = {twin = game.CHARACTER.PALOM, hp = palom_hp}
+	elseif porom_hp < 70 and porom_hp < palom_hp then
+		worst_twin = {twin = game.CHARACTER.POROM, hp = porom_hp}
+	elseif palom_mp < 20 and palom_mp < porom_mp then
+		worst_twin = {twin = game.CHARACTER.PALOM, mp = palom_mp}
+	elseif porom_mp < 20 and porom_mp < palom_mp then
+		worst_twin = {twin = game.CHARACTER.POROM, mp = porom_mp}
+	end
+
+	if character == game.CHARACTER.CECIL then
+		if turn == 1 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 4)
+		elseif turn == 2 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 1)
+		elseif worst_twin and worst_twin.hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+		elseif worst_twin and worst_twin.hp then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+		elseif worst_twin then
+			_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+		else
+			_command_parry()
+		end
+	elseif character == game.CHARACTER.PALOM then
+		if turn == 1 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 2)
+		else
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+		end
+	elseif character == game.CHARACTER.TELLAH then
+		if turn == 1 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 3)
+		elseif worst_twin and worst_twin.hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+		elseif worst_twin and worst_twin.hp then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+		elseif worst_twin then
+			_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+		else
+			_command_parry()
+		end
+	elseif character == game.CHARACTER.POROM then
+		if worst_twin and worst_twin.hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+		elseif worst_twin and worst_twin.mp then
+			_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+		else
+			_command_twin()
+		end
+	end
+end
+
+local function _battle_milon(character, turn)
+	if ROUTE == "paladin" then
+		return _battle_milon_paladin(character, turn)
+	else
+		return _battle_milon_carrot(character, turn)
+	end
+end
+
+local function _battle_milon_z_trashcan(character, turn)
 	if _state.alternate or character == game.CHARACTER.CECIL and turn > 3 or character ~= game.CHARACTER.CECIL and turn >= 2 then
 		local count = 0
 		local best = nil
@@ -1599,6 +1674,22 @@ local function _battle_milon_z(character, turn)
 				_command_twin()
 			end
 		end
+	end
+end
+
+local function _battle_milon_z_cure2(character, turn)
+	if character == game.CHARACTER.CECIL then
+		_command_fight()
+	else
+		_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 0)
+	end
+end
+
+local function _battle_milon_z(character, turn)
+	if ROUTE == "paladin" then
+		return _battle_milon_z_cure2(character, turn)
+	else
+		return _battle_milon_z_trashcan(character, turn)
 	end
 end
 
@@ -1692,7 +1783,7 @@ local function _battle_octomamm(character, turn)
 	elseif character == game.CHARACTER.RYDIA then
 		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 	elseif character == game.CHARACTER.TELLAH then
-		if turn == 1 then
+		if turn == 1 and game.item.get_count(game.ITEM.WEAPON.CHANGE, game.INVENTORY.BATTLE) > 0 then
 			_command_equip(character, game.ITEM.WEAPON.CHANGE)
 		end
 
@@ -1707,7 +1798,9 @@ local function _battle_octomamm(character, turn)
 			if not _state.duplicated_change then
 				_state.duplicated_change = true
 
-				_command_duplicate(game.EQUIP.R_HAND)
+				if game.character.get_weapon(character) == game.ITEM.WEAPON.CHANGE then
+					_command_duplicate(game.EQUIP.R_HAND)
+				end
 
 				if tellah_mp >= 15 then
 					_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)

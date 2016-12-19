@@ -55,7 +55,7 @@ local function _get_version()
 end
 
 local function _set_route()
-	ROUTES = {"no64-excalbur", "no64-rosa"}
+	ROUTES = {"no64-excalbur", "no64-rosa", "paladin"}
 
 	if CONFIG.ROUTE then
 		return CONFIG.ROUTE

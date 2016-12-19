@@ -9,9 +9,8 @@ provide a good list of improvements that can be made.
 
 ## Major Features
 
-* Implement additional routes. Currently, no64-excalbur and no64-rosa are
-  supported, but support for yes64 and no64-drain is highly desirable. A paladin
-  route could also be implemented.
+* Implement additional routes. Currently, no64-excalbur, no64-rosa and paladin
+  are supported, but support for yes64 and no64-drain is highly desirable.
 
 * Find a way to keep track of battle goals and properly queueing characters to
   take care of them. The major motivation is to be able to specify that an

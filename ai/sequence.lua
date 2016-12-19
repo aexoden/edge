@@ -935,9 +935,11 @@ local function _sequence_clip()
 	table.insert(_q, {menu.field.open, {input.DELAY.NONE}})
 
 	-- Remove Kain's Iron arms.
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE}})
-	table.insert(_q, {menu.field.equip.close, {}})
+	if ROUTE ~= "paladin" then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE}})
+		table.insert(_q, {menu.field.equip.close, {}})
+	end
 
 	-- Equip and unequip the Shadow shield.
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
@@ -998,14 +1000,18 @@ local function _sequence_girl()
 	table.insert(_q, {walk.walk, {15, 22, 6}})
 	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
 	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {15, 26, 6}})
-	table.insert(_q, {walk.walk, {15, 26, 10}})
-	table.insert(_q, {walk.walk, {15, 22, 10}})
-	table.insert(_q, {walk.walk, {15, 22, 24}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {15, 22, 10}})
-	table.insert(_q, {walk.walk, {15, 26, 10}})
-	table.insert(_q, {walk.walk, {15, 26, 6}})
+
+	if ROUTE ~= "paladin" then
+		table.insert(_q, {walk.walk, {15, 26, 6}})
+		table.insert(_q, {walk.walk, {15, 26, 10}})
+		table.insert(_q, {walk.walk, {15, 22, 10}})
+		table.insert(_q, {walk.walk, {15, 22, 24}})
+		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {walk.walk, {15, 22, 10}})
+		table.insert(_q, {walk.walk, {15, 26, 10}})
+		table.insert(_q, {walk.walk, {15, 26, 6}})
+	end
+
 	table.insert(_q, {walk.walk, {15, 4, 6}})
 	table.insert(_q, {walk.walk, {15, 4, 10}})
 	table.insert(_q, {walk.walk, {15, 3, 10}})
@@ -1639,29 +1645,33 @@ local function _sequence_twins()
 	-- Go to the Mysidian armor shop.
 	table.insert(_q, {walk.walk, {nil, 145, 199}})
 	table.insert(_q, {walk.walk, {nil, 154, 199}})
-	table.insert(_q, {walk.walk, {3, 16, 26}})
-	table.insert(_q, {walk.walk, {3, 9, 26}})
-	table.insert(_q, {walk.walk, {3, 8, 24, true}})
-	table.insert(_q, {walk.walk, {3, 9, 23, true}})
-	table.insert(_q, {walk.walk, {230, 4, 5}})
-	table.insert(_q, {walk.interact, {}})
 
-	-- Buy various needed armor items.
-	table.insert(_q, {menu.shop.buy.open, {10}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.HELM.GAEA}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ARMOR.GAEA}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.RING.SILVER}})
-	table.insert(_q, {menu.shop.switch_quantity, {}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.SHIELD.PALADIN}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ARMS.PALADIN}})
-	table.insert(_q, {menu.shop.buy.close, {}})
-	table.insert(_q, {menu.shop.close, {}})
+	if ROUTE ~= "paladin" then
+		table.insert(_q, {walk.walk, {3, 16, 26}})
+		table.insert(_q, {walk.walk, {3, 9, 26}})
+		table.insert(_q, {walk.walk, {3, 8, 24, true}})
+		table.insert(_q, {walk.walk, {3, 9, 23, true}})
+		table.insert(_q, {walk.walk, {230, 4, 5}})
+		table.insert(_q, {walk.interact, {}})
 
-	-- Head to the Elder.
-	table.insert(_q, {walk.walk, {230, 4, 10, true}})
-	table.insert(_q, {walk.walk, {3, 9, 24}})
-	table.insert(_q, {walk.walk, {3, 8, 26}})
-	table.insert(_q, {walk.walk, {3, 16, 26}})
+		-- Buy various needed armor items.
+		table.insert(_q, {menu.shop.buy.open, {10}})
+		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.HELM.GAEA}})
+		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ARMOR.GAEA}})
+		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.RING.SILVER}})
+		table.insert(_q, {menu.shop.switch_quantity, {}})
+		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.SHIELD.PALADIN}})
+		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ARMS.PALADIN}})
+		table.insert(_q, {menu.shop.buy.close, {}})
+		table.insert(_q, {menu.shop.close, {}})
+
+		-- Head to the Elder.
+		table.insert(_q, {walk.walk, {230, 4, 10, true}})
+		table.insert(_q, {walk.walk, {3, 9, 24}})
+		table.insert(_q, {walk.walk, {3, 8, 26}})
+		table.insert(_q, {walk.walk, {3, 16, 26}})
+	end
+
 	table.insert(_q, {walk.walk, {3, 16, 10}})
 	table.insert(_q, {walk.walk, {3, 16, 8, true}})
 	table.insert(_q, {walk.walk, {22, 14, 6}})
@@ -1679,7 +1689,12 @@ local function _sequence_milon()
 	table.insert(_q, {walk.interact, {}})
 
 	-- Purchase items from the shop.
-	table.insert(_q, {menu.shop.buy.open, {90}})
+	if ROUTE == "paladin" then
+		table.insert(_q, {menu.shop.buy.open, {50}})
+	else
+		table.insert(_q, {menu.shop.buy.open, {90}})
+	end
+
 	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.CURE2}})
 	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.LIFE}})
 	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.HEAL}})
@@ -1759,21 +1774,31 @@ local function _sequence_milon()
 	-- Heal and equip.
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.LIFE, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.PALOM}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.CHANGE}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
-	table.insert(_q, {menu.field.equip.close, {}})
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
 
-	if game.item.get_count(game.ITEM.WEAPON.CHANGE) > 1 then
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
+	if ROUTE == "paladin" then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.POROM}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.TIARA}})
+		table.insert(_q, {menu.field.equip.close, {}})
+		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.PALOM}})
+	else
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.PALOM}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.CHANGE}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
+		table.insert(_q, {menu.field.equip.close, {}})
+
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
+
+		if game.item.get_count(game.ITEM.WEAPON.CHANGE) > 1 then
+			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
+		end
+
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
+		table.insert(_q, {menu.field.equip.close, {}})
 	end
 
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
-	table.insert(_q, {menu.field.equip.close, {}})
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Begin the battle.
@@ -1785,7 +1810,18 @@ local function _sequence_milon_z()
 	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.ALL, [game.CHARACTER.TELLAH] = _RESTORE.ALL}}})
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.TELLAH, game.FORMATION.THREE_FRONT}})
+
+	if ROUTE == "paladin" then
+		table.insert(_q, {menu.field.magic.open, {game.CHARACTER.PALOM}})
+		table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
+		table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
+		table.insert(_q, {menu.field.magic.select_character, {nil, true}})
+		table.insert(_q, {menu.field.magic.close, {}})
+		table.insert(_q, {menu.field.change, {}})
+	else
+		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.TELLAH, game.FORMATION.THREE_FRONT}})
+	end
+
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Walk to Milon Z.
@@ -1800,121 +1836,122 @@ local function _sequence_paladin()
 end
 
 local function _sequence_karate()
-	-- Leave Mt.Ordeals.
-	table.insert(_q, {walk.walk, {135, 6, 11}})
-	table.insert(_q, {_set_healing, {_healing_karate}})
-	table.insert(_q, {walk.walk, {135, 9, 11}})
-	table.insert(_q, {walk.walk, {135, 9, 10}})
-	table.insert(_q, {walk.walk, {135, 16, 10}})
-	table.insert(_q, {walk.walk, {135, 16, 15}})
+	if ROUTE ~= "paladin" then
+		-- Leave Mt.Ordeals.
+		table.insert(_q, {walk.walk, {135, 6, 11}})
+		table.insert(_q, {_set_healing, {_healing_karate}})
+		table.insert(_q, {walk.walk, {135, 9, 11}})
+		table.insert(_q, {walk.walk, {135, 9, 10}})
+		table.insert(_q, {walk.walk, {135, 16, 10}})
+		table.insert(_q, {walk.walk, {135, 16, 15}})
 
-	-- Step Route: Mt.Ordeals Summit
-	if route.get_value("Mt.Ordeals Summit 2") > 0 then
-		table.insert(_q, {walk.walk, {135, 17, 15}})
-	else
-		table.insert(_q, {walk.walk, {135, 16, 16}})
-	end
+		-- Step Route: Mt.Ordeals Summit
+		if route.get_value("Mt.Ordeals Summit 2") > 0 then
+			table.insert(_q, {walk.walk, {135, 17, 15}})
+		else
+			table.insert(_q, {walk.walk, {135, 16, 16}})
+		end
 
-	table.insert(_q, {walk.walk, {135, 17, 16}})
-	table.insert(_q, {walk.walk, {135, 18, 16}})
-	table.insert(_q, {walk.walk, {135, 18, 23}})
-	table.insert(_q, {walk.walk, {135, 15, 23}})
-	table.insert(_q, {walk.walk, {135, 15, 21}})
-	table.insert(_q, {walk.walk, {134, 24, 8}})
-	table.insert(_q, {walk.walk, {134, 24, 17}})
-	table.insert(_q, {walk.walk, {134, 18, 17}})
-	table.insert(_q, {walk.walk, {134, 18, 23}})
-	table.insert(_q, {walk.walk, {134, 19, 23}})
-	table.insert(_q, {walk.walk, {134, 19, 25}})
-	table.insert(_q, {walk.walk, {134, 23, 25}})
-	table.insert(_q, {walk.walk, {134, 23, 22}})
-	table.insert(_q, {walk.walk, {133, 18, 8}})
-	table.insert(_q, {walk.walk, {133, 18, 17}})
-	table.insert(_q, {walk.walk, {133, 8, 17}})
-	table.insert(_q, {walk.walk, {133, 8, 24}})
-	table.insert(_q, {walk.walk, {133, 10, 24}})
-	table.insert(_q, {walk.walk, {133, 10, 23}})
-	table.insert(_q, {walk.walk, {132, 19, 12}})
-	table.insert(_q, {walk.walk, {132, 14, 12}})
-	table.insert(_q, {walk.walk, {132, 14, 18}})
-	table.insert(_q, {walk.walk, {132, 17, 18}})
-	table.insert(_q, {walk.walk, {132, 17, 23}})
-	table.insert(_q, {walk.walk, {132, 11, 23}})
-	table.insert(_q, {walk.walk, {132, 11, 24}})
-	table.insert(_q, {walk.walk, {132, 10, 24}})
-	table.insert(_q, {walk.walk, {132, 10, 28}})
-
-	-- Step Route: Mt.Ordeals
-	for i = 1, route.get_value("Mt.Ordeals") / 2 do
-		table.insert(_q, {walk.walk, {132, 9, 28}})
+		table.insert(_q, {walk.walk, {135, 17, 16}})
+		table.insert(_q, {walk.walk, {135, 18, 16}})
+		table.insert(_q, {walk.walk, {135, 18, 23}})
+		table.insert(_q, {walk.walk, {135, 15, 23}})
+		table.insert(_q, {walk.walk, {135, 15, 21}})
+		table.insert(_q, {walk.walk, {134, 24, 8}})
+		table.insert(_q, {walk.walk, {134, 24, 17}})
+		table.insert(_q, {walk.walk, {134, 18, 17}})
+		table.insert(_q, {walk.walk, {134, 18, 23}})
+		table.insert(_q, {walk.walk, {134, 19, 23}})
+		table.insert(_q, {walk.walk, {134, 19, 25}})
+		table.insert(_q, {walk.walk, {134, 23, 25}})
+		table.insert(_q, {walk.walk, {134, 23, 22}})
+		table.insert(_q, {walk.walk, {133, 18, 8}})
+		table.insert(_q, {walk.walk, {133, 18, 17}})
+		table.insert(_q, {walk.walk, {133, 8, 17}})
+		table.insert(_q, {walk.walk, {133, 8, 24}})
+		table.insert(_q, {walk.walk, {133, 10, 24}})
+		table.insert(_q, {walk.walk, {133, 10, 23}})
+		table.insert(_q, {walk.walk, {132, 19, 12}})
+		table.insert(_q, {walk.walk, {132, 14, 12}})
+		table.insert(_q, {walk.walk, {132, 14, 18}})
+		table.insert(_q, {walk.walk, {132, 17, 18}})
+		table.insert(_q, {walk.walk, {132, 17, 23}})
+		table.insert(_q, {walk.walk, {132, 11, 23}})
+		table.insert(_q, {walk.walk, {132, 11, 24}})
+		table.insert(_q, {walk.walk, {132, 10, 24}})
 		table.insert(_q, {walk.walk, {132, 10, 28}})
-	end
 
-	if route.get_value("Mt.Ordeals") % 2 == 1 then
-		table.insert(_q, {walk.walk, {132, 11, 28}})
-		table.insert(_q, {walk.walk, {132, 10, 28}})
-	end
+		-- Step Route: Mt.Ordeals
+		for i = 1, route.get_value("Mt.Ordeals") / 2 do
+			table.insert(_q, {walk.walk, {132, 9, 28}})
+			table.insert(_q, {walk.walk, {132, 10, 28}})
+		end
 
-	table.insert(_q, {walk.walk, {132, 17, 28}})
-	table.insert(_q, {walk.walk, {132, 17, 30}})
-	table.insert(_q, {walk.walk, {132, 20, 30}})
-	table.insert(_q, {walk.walk, {132, 20, 31}})
+		if route.get_value("Mt.Ordeals") % 2 == 1 then
+			table.insert(_q, {walk.walk, {132, 11, 28}})
+			table.insert(_q, {walk.walk, {132, 10, 28}})
+		end
 
-	-- Walk to the Chocobo forest and get a chocobo.
-	table.insert(_q, {walk.walk, {nil, 218, 209}})
-	table.insert(_q, {walk.walk, {nil, 213, 209}})
-	table.insert(_q, {walk.chase, {209, {6, 7, 8}}})
+		table.insert(_q, {walk.walk, {132, 17, 28}})
+		table.insert(_q, {walk.walk, {132, 17, 30}})
+		table.insert(_q, {walk.walk, {132, 20, 30}})
+		table.insert(_q, {walk.walk, {132, 20, 31}})
 
-	-- Ride the chocobo to Mysidia.
-	table.insert(_q, {walk.walk, {nil, 213, 200}})
-	table.insert(_q, {walk.walk, {nil, 201, 200}})
-	table.insert(_q, {walk.walk, {nil, 201, 192}})
-	table.insert(_q, {walk.walk, {nil, 182, 192}})
-	table.insert(_q, {walk.walk, {nil, 182, 211}})
-	table.insert(_q, {walk.walk, {nil, 175, 211}})
-	table.insert(_q, {walk.walk, {nil, 175, 203}})
-	table.insert(_q, {walk.walk, {nil, 157, 203}})
-	table.insert(_q, {walk.walk, {nil, 157, 199}})
-	table.insert(_q, {walk.walk, {nil, 156, 199}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {walk.walk, {nil, 155, 199}})
+		-- Walk to the Chocobo forest and get a chocobo.
+		table.insert(_q, {walk.walk, {nil, 218, 209}})
+		table.insert(_q, {walk.walk, {nil, 213, 209}})
+		table.insert(_q, {walk.chase, {209, {6, 7, 8}}})
 
-	-- Walk to the Elder.
-	table.insert(_q, {walk.walk, {3, 16, 10}})
-	table.insert(_q, {walk.walk, {3, 16, 8, true}})
-	table.insert(_q, {walk.walk, {22, 14, 6}})
-	table.insert(_q, {walk.interact, {}})
+		-- Ride the chocobo to Mysidia.
+		table.insert(_q, {walk.walk, {nil, 213, 200}})
+		table.insert(_q, {walk.walk, {nil, 201, 200}})
+		table.insert(_q, {walk.walk, {nil, 201, 192}})
+		table.insert(_q, {walk.walk, {nil, 182, 192}})
+		table.insert(_q, {walk.walk, {nil, 182, 211}})
+		table.insert(_q, {walk.walk, {nil, 175, 211}})
+		table.insert(_q, {walk.walk, {nil, 175, 203}})
+		table.insert(_q, {walk.walk, {nil, 157, 203}})
+		table.insert(_q, {walk.walk, {nil, 157, 199}})
+		table.insert(_q, {walk.walk, {nil, 156, 199}})
+		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {walk.walk, {nil, 155, 199}})
 
-	-- Walk to the Serpent Road.
-	table.insert(_q, {walk.walk, {22, 14, 12, true}})
-	table.insert(_q, {walk.walk, {3, 16, 20}})
-	table.insert(_q, {walk.walk, {3, 19, 19}})
-	table.insert(_q, {walk.walk, {3, 24, 19}})
-	table.insert(_q, {walk.walk, {3, 25, 17, true}})
-	table.insert(_q, {walk.walk, {137, 4, 5}})
+		-- Walk to the Elder.
+		table.insert(_q, {walk.walk, {3, 16, 10}})
+		table.insert(_q, {walk.walk, {3, 16, 8, true}})
+		table.insert(_q, {walk.walk, {22, 14, 6}})
+		table.insert(_q, {walk.interact, {}})
 
-	-- Walk to Yang.
-	table.insert(_q, {walk.walk, {151, 5, 10}})
+		-- Walk to the Serpent Road.
+		table.insert(_q, {walk.walk, {22, 14, 12, true}})
+		table.insert(_q, {walk.walk, {3, 16, 20}})
+		table.insert(_q, {walk.walk, {3, 19, 19}})
+		table.insert(_q, {walk.walk, {3, 24, 19}})
+		table.insert(_q, {walk.walk, {3, 25, 17, true}})
+		table.insert(_q, {walk.walk, {137, 4, 5}})
 
-	-- Step Route: Serpent Road
-	for i = 1, route.get_value("Serpent Road") / 2 do
-		table.insert(_q, {walk.walk, {151, 6, 10}})
+		-- Walk to Yang.
 		table.insert(_q, {walk.walk, {151, 5, 10}})
+
+		-- Step Route: Serpent Road
+		for i = 1, route.get_value("Serpent Road") / 2 do
+			table.insert(_q, {walk.walk, {151, 6, 10}})
+			table.insert(_q, {walk.walk, {151, 5, 10}})
+		end
+
+		if route.get_value("Serpent Road") % 2 == 1 then
+			table.insert(_q, {walk.walk, {151, 5, 9}})
+			table.insert(_q, {walk.walk, {151, 5, 10}})
+		end
+
+		table.insert(_q, {walk.walk, {151, 5, 14}})
+		table.insert(_q, {walk.walk, {0, 19, 27}})
+		table.insert(_q, {walk.walk, {0, 20, 26, true}})
+		table.insert(_q, {walk.walk, {11, 18, 8}})
+		table.insert(_q, {walk.walk, {11, 12, 5}})
+		table.insert(_q, {walk.walk, {11, 13, 4, true, true}})
+		table.insert(_q, {walk.interact, {}})
 	end
-
-	if route.get_value("Serpent Road") % 2 == 1 then
-		table.insert(_q, {walk.walk, {151, 5, 9}})
-		table.insert(_q, {walk.walk, {151, 5, 10}})
-	end
-
-	table.insert(_q, {walk.walk, {151, 5, 14}})
-	table.insert(_q, {walk.walk, {0, 19, 27}})
-	table.insert(_q, {walk.walk, {0, 20, 26, true}})
-	table.insert(_q, {walk.walk, {11, 18, 8}})
-	table.insert(_q, {walk.walk, {11, 12, 5}})
-	table.insert(_q, {walk.walk, {11, 13, 4, true, true}})
-	table.insert(_q, {walk.interact, {}})
-
 end
 
 local function _sequence_baigan()
@@ -4520,6 +4557,14 @@ end
 
 function _M.split(split)
 	local result = bridge.split(split)
+
+	if result and ROUTE == "paladin" and split == "Paladin" then
+		if CONFIG.EXTENDED_ENDING then
+			_M.end_run(600)
+		else
+			_M.end_run()
+		end
+	end
 
 	if FULL_RUN and result then
 		local delta = emu.framecount() - route.get_best_split_frame(split)
