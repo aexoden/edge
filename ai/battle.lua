@@ -1777,6 +1777,19 @@ local function _battle_mombomb(character, turn, strat)
 end
 
 local function _battle_octomamm(character, turn, strat)
+	strats = {
+		["tellah-stop-1"] = 1,
+		["tellah-stop-2"] = 2,
+		["tellah-stop-3"] = 3,
+		["tellah-stop-4"] = 4,
+		["tellah-stop-5"] = 5,
+		["tellah-stop-6"] = 6,
+		["tellah-stop-7"] = 7,
+		["tellah-stop-8"] = 8,
+	}
+
+	local max_tellah_turn = strats[strat]
+
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
 			_command_equip(character, game.ITEM.WEAPON.DARKNESS)
@@ -1797,7 +1810,7 @@ local function _battle_octomamm(character, turn, strat)
 			_command_white(game.MAGIC.WHITE.LIFE1, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
 		elseif tellah_mp >= 9 and (rydia_hp > 0 and rydia_hp < 15) or game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 100 then
 			_command_white(game.MAGIC.WHITE.CURE2, menu.battle.TARGET.PARTY_ALL)
-		elseif game.enemy.get_stat(0, "hp") < 800 then
+		elseif turn >= max_tellah_turn then
 			if not _state.duplicated_change then
 				_state.duplicated_change = true
 

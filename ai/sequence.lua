@@ -1196,6 +1196,14 @@ local function _sequence_octomamm()
 		table.insert(_q, {walk.walk, {116, 16, 9}})
 	end
 
+	local octo_strats = {}
+
+	for i = 1, 8 do
+		table.insert(octo_strats, string.format("tellah-stop-%d", i))
+	end
+
+	_M.set_battle_strat(game.battle.FORMATION.OCTOMAMM, octo_strats)
+
 	table.insert(_q, {walk.walk, {116, 16, 11}})
 	table.insert(_q, {walk.walk, {117, 18, 7}})
 	table.insert(_q, {walk.walk, {117, 18, 5}})
