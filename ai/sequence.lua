@@ -541,7 +541,7 @@ local function _pre_milon_menu()
 	end
 
 	table.insert(stack, {menu.field.open, {}})
-	table.insert(stack, {_restore_party, restore_data})
+	table.insert(stack, {_restore_party, {restore_data}})
 
 	-- Equip Porom (unless we're doing the carrot strat).
 	if strat ~= "carrot" then
