@@ -87,27 +87,32 @@ def get_battle_data(logs, classified=False):
     for log in logs:
         for battle in log.battles:
             if battle['result'].startswith('Victory') or battle['result'].startswith('Perished'):
-                if battle['formation'] not in battles:
+                key = '{:03}'.format(battle['formation'])
+
+                if battle['strat']:
+                    key = '{}-{}'.format(key, battle['strat'])
+
+                if key not in battles:
                     if classified:
-                        battles[battle['formation']] = {}
+                        battles[key] = {}
                     else:
-                        battles[battle['formation']] = {'count': 0, 'data': []}
+                        battles[key] = {'formation': battle['formation'], 'strat': battle['strat'], 'count': 0, 'data': []}
 
                 if classified:
-                    key = (battle['type'], ' '.join(map(str, battle['enemy_agility'])), battle['party_formation'])
+                    subkey = (battle['type'], ' '.join(map(str, battle['enemy_agility'])), battle['party_formation'])
 
-                    if key not in battles[battle['formation']]:
-                        battles[battle['formation']][key] = {'count': 0, 'data': []}
+                    if subkey not in battles[key]:
+                        battles[key][subkey] = {'formation': battle['formation'], 'strat': battle['strat'], 'count': 0, 'data': []}
 
-                    battles[battle['formation']][key]['count'] += 1
+                    battles[key][subkey]['count'] += 1
 
                     if battle['result'].startswith('Victory'):
-                        battles[battle['formation']][key]['data'].append(battle['frames'])
+                        battles[key][subkey]['data'].append(battle['frames'])
                 else:
-                    battles[battle['formation']]['count'] += 1
+                    battles[key]['count'] += 1
 
                     if battle['result'].startswith('Victory'):
-                        battles[battle['formation']]['data'].append(battle['frames'])
+                        battles[key]['data'].append(battle['frames'])
 
     return battles
 
@@ -177,9 +182,14 @@ class Log(object):
 
         self._parse_file(filename)
 
-        if 'Zeromus Death' in self._splits:
+        if self._route == 'paladin':
+            final_split = 'Paladin'
+        else:
+            final_split = 'Zeromus Death'
+
+        if final_split in self._splits:
             self._success = True
-            self._frames = self._splits['Zeromus Death']['total']
+            self._frames = self._splits[final_split]['total']
 
     @property
     def back_attack_count(self):
@@ -270,9 +280,12 @@ class Log(object):
                     current_battle = {
                         'formation': int(fields['formation']),
                         'type': fields['type'],
+                        'strat': None,
                         'party_level': None if fields['party_level'] == '-' else int(fields['party_level']),
                         'enemy_level': None if fields['enemy_level'] == '-' else int(fields['enemy_level']),
                     }
+                elif line_type == 'battle_strat':
+                    current_battle['strat'] = fields['strat']
                 elif line_type == 'battle_enemy_agility':
                     current_battle['enemy_agility'] = list(map(int, fields['agility'].split()))
                 elif line_type == 'battle_party_formation':
@@ -289,6 +302,7 @@ class Log(object):
 
         regexes = {
             'battle_start': 'Battle Start: (?P<description>.*) \((?P<formation>.*)/(?P<type>.*)/(?P<party_level>.*)/(?P<enemy_level>.*)\)',
+            'battle_strat': 'Battle Strat: (?P<strat>.*)',
             'battle_enemy_agility': 'Enemy Agility: (?P<agility>.*)',
             'battle_party_formation': 'Party Formation: (?P<formation>.*)',
             'battle_stop': 'Battle Complete: (?P<description>.*) \((?P<formation>.*)/(?P<frames>.*) frames/(?P<dropped_gp>.*) GP dropped/(?P<result>.*)\)',
@@ -300,7 +314,7 @@ class Log(object):
             'sequence': 'Sequence: (?P<sequence>.*)',
             'split': 'Split: (?P<split>.*)',
             'version': 'Version: (?P<version>.*)',
-            '_ignore': '(Edge Final Fantasy IV|--------------------|Beginning Full Run|Setting Initial Seed|Rebooting|Load game screen|New Seed|Setting encounter seed)',
+            '_ignore': '(Edge Final Fantasy IV|--------------------|Beginning Full Run|Setting Initial Seed|Rebooting|Load game screen|New Seed|Setting encounter seed|Detected|Zeromus has|Cecil|Do not have)',
         }
 
         for line_type, regex in regexes.items():
@@ -389,6 +403,7 @@ def html_output_battles(f, logs):
     f.write('\t\t\t\t<thead>\n')
     f.write('\t\t\t\t\t<tr>\n')
     f.write('\t\t\t\t\t\t<th>Description</th>\n')
+    f.write('\t\t\t\t\t\t<th>Strat</th>\n')
     f.write('\t\t\t\t\t\t<th>Count</th>\n')
     f.write('\t\t\t\t\t\t<th>Success Rate</th>\n')
     f.write('\t\t\t\t\t\t<th>Minimum</th>\n')
@@ -403,17 +418,23 @@ def html_output_battles(f, logs):
     for log in logs:
         for battle in log.battles:
             if battle['result'].startswith('Victory') or battle['result'].startswith('Perished'):
-                if battle['formation'] not in battles:
-                    battles[battle['formation']] = {'data': [], 'count': 0}
+                key = '{:03}'.format(battle['formation'])
+
+                if battle['strat']:
+                    key = '{}-{}'.format(key, battle['strat'])
+
+                if key not in battles:
+                    battles[key] = {'formation': battle['formation'], 'strat': battle['strat'], 'data': [], 'count': 0}
 
                 if battle['result'].startswith('Victory'):
-                    battles[battle['formation']]['data'].append(battle['frames'])
+                    battles[key]['data'].append(battle['frames'])
 
-                battles[battle['formation']]['count'] += 1
+                battles[key]['count'] += 1
 
-    for formation, data in battles.items():
+    for key, data in battles.items():
         f.write('\t\t\t\t\t<tr>\n')
-        f.write('\t\t\t\t\t\t<td><a href="battles/{:03}.html">{}</a></td>\n'.format(formation, describe_formation(formation)))
+        f.write('\t\t\t\t\t\t<td><a href="battles/{}.html">{}</a></td>\n'.format(key, describe_formation(data['formation'])))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['strat'] if data['strat'] else '-'))
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['count']))
         f.write('\t\t\t\t\t\t<td>{:.3f}%</td>\n'.format(len(data['data']) * 100 / data['count']))
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data'])) if len(data['data']) > 0 else 'N/A'))
@@ -425,8 +446,14 @@ def html_output_battles(f, logs):
     f.write('\t\t\t</table>\n')
 
 
-def html_output_battle(f, formation, battle_data):
-    f.write('\t\t\t<h2>Battle Data for {}</h2>\n'.format(describe_formation(formation)))
+def html_output_battle(f, key, battle_data):
+    first_data = list(battle_data.values())[0]
+
+    if 'strat' in battle_data:
+        f.write('\t\t\t<h2>Battle Data for {} using &quot;{}&quot; Strat</h2>\n'.format(describe_formation(first_data['formation']), first_data['strat']))
+    else:
+        f.write('\t\t\t<h2>Battle Data for {}</h2>\n'.format(describe_formation(first_data['formation'])))
+
     f.write('\t\t\t<table class="table table-striped">\n')
     f.write('\t\t\t\t<thead>\n')
     f.write('\t\t\t\t\t<tr>\n')
@@ -646,8 +673,8 @@ battles = get_battle_data(logs, True)
 
 os.mkdir(os.path.join(sys.argv[1], 'battles'))
 
-for formation, data in battles.items():
-    with open(os.path.join(sys.argv[1], 'battles', '{:03}.html'.format(formation)), 'w') as f:
+for key, data in battles.items():
+    with open(os.path.join(sys.argv[1], 'battles', '{}.html'.format(key)), 'w') as f:
         html_output_header(f)
-        html_output_battle(f, formation, data)
+        html_output_battle(f, key, data)
         html_output_footer(f)
