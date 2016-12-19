@@ -33,6 +33,7 @@ local memory = require "util.memory"
 
 local _mash_button = "P1 A"
 local _pending_spoils
+local _pending_split
 
 --------------------------------------------------------------------------------
 -- Dialog Splits
@@ -96,7 +97,7 @@ function _M.cycle()
 		local text = _M.get_text(8)
 
 		if _splits[text] and not _splits[text].done then
-			bridge.split(_splits[text].message)
+			_pending_split = _splits[text].message
 			_splits[text].done = true
 		end
 
@@ -120,6 +121,10 @@ function _M.get_battle_text(characters)
 	return _get_text("battle_dialog", "text", 1, characters)
 end
 
+function _M.get_pending_split()
+	return _pending_split
+end
+
 function _M.get_save_text(characters)
 	return _get_text("menu_save", "text", 0, characters)
 end
@@ -134,6 +139,7 @@ function _M.reset()
 	end
 
 	_pending_spoils = nil
+	_pending_split = nil
 
 	_M.set_mash_button("P1 A")
 end
@@ -145,6 +151,10 @@ end
 
 function _M.set_pending_spoils()
 	_pending_spoils = 1
+end
+
+function _M.clear_pending_split()
+	_pending_split = nil
 end
 
 return _M

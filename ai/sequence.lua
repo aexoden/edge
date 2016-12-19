@@ -4446,6 +4446,14 @@ end
 --------------------------------------------------------------------------------
 
 function _M.cycle()
+	local pending_split = dialog.get_pending_split()
+
+	if pending_split then
+		if _M.split(pending_split) then
+			dialog.clear_pending_split()
+		end
+	end
+
 	while true do
 		_check_autoreload()
 		_check_sequence()
