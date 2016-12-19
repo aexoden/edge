@@ -449,7 +449,7 @@ def html_output_battles(f, logs):
 def html_output_battle(f, key, battle_data):
     first_data = list(battle_data.values())[0]
 
-    if 'strat' in battle_data:
+    if 'strat' in first_data:
         f.write('\t\t\t<h2>Battle Data for {} using &quot;{}&quot; Strat</h2>\n'.format(describe_formation(first_data['formation']), first_data['strat']))
     else:
         f.write('\t\t\t<h2>Battle Data for {}</h2>\n'.format(describe_formation(first_data['formation'])))
