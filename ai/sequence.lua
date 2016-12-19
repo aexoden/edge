@@ -585,7 +585,7 @@ local function _pre_milon_menu()
 
 	-- Add the queued commands to the primary command queue.
 	while #stack > 0 do
-		table.insert(_q, 1, table.remove(stack))
+		table.insert(_q, 2, table.remove(stack))
 	end
 
 	return true
