@@ -359,7 +359,7 @@ class Log(object):
 #-------------------------------------------------------------------------------
 
 def img_output_battle(f, key, data):
-    colors = ['red', 'blue', 'green']
+    colors = ["#01b54d", "#e62ce4", "#fabb5a", "#0232c2", "#9d1700", "#41a7ff", "#e10091", "#edb08d"]
 
     figure = plt.figure()
     figure.suptitle('{} Battle Time'.format(describe_formation(data['formation'])))
@@ -400,6 +400,7 @@ def img_output_battle(f, key, data):
     plt.xlabel("Battle Time (seconds)")
     plt.ylabel("Probability")
     plt.savefig(f)
+    plt.close(figure)
 
 
 #-------------------------------------------------------------------------------
@@ -512,7 +513,7 @@ def html_output_battles(f, logs):
 
                 battles[key]['count'] += 1
 
-    for key, data in sorted(battles.items(), key=lambda x: x[1]['index']):
+    for key, data in sorted(battles.items(), key=lambda x: (x[1]['index'], x[1]['strat'])):
         f.write('\t\t\t\t\t<tr>\n')
         f.write('\t\t\t\t\t\t<td><a href="battles/{}.html">{}</a></td>\n'.format(key, describe_formation(data['formation'])))
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['strat'] if data['strat'] else '-'))
