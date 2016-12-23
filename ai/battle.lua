@@ -1453,6 +1453,7 @@ local function _battle_milon_carrot(character, turn, strat)
 
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 2)
 			elseif turn == 3 then
+				_command_run_buffer()
 				_command_parry()
 			elseif turn == 4 then
 				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
