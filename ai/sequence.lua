@@ -1874,11 +1874,14 @@ local function _sequence_milon_z()
 	local milon_z_strat = _M.set_battle_strat(game.battle.FORMATION.MILON_Z, {"cure2", "trashcan"})
 
 	if milon_z_strat == "cure2" then
-		table.insert(_q, {menu.field.magic.open, {game.CHARACTER.PALOM}})
-		table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
-		table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
-		table.insert(_q, {menu.field.magic.select_character, {nil, true}})
-		table.insert(_q, {menu.field.magic.close, {}})
+		if game.character.get_stat(game.CHARACTER.PALOM, "level") >= 11 then
+			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.PALOM}})
+			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
+			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.PIGGY}})
+			table.insert(_q, {menu.field.magic.select_character, {nil, true}})
+			table.insert(_q, {menu.field.magic.close, {}})
+		end
+
 		table.insert(_q, {menu.field.change, {}})
 	elseif milon_z_strat == "trashcan" then
 		if milon_strat == "twin_changeless" then
