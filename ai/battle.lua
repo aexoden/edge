@@ -1410,7 +1410,9 @@ local function _battle_milon_carrot(character, turn, strat)
 		end
 
 		if character == game.CHARACTER.CECIL or character == game.CHARACTER.TELLAH then
-			if worst_twin and ((worst_twin.hp and worst_twin.hp < 40) or character == game.CHARACTER.TELLAH) then
+			if character == game.CHARACTER.CECIL and game.enemy.get_stat(0, "hp") < 150 then
+				_command_fight()
+			elseif worst_twin and ((worst_twin.hp and worst_twin.hp < 40) or character == game.CHARACTER.TELLAH) then
 				if worst_twin.hp == 0 then
 					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
 				elseif worst_twin.hp then
@@ -1534,6 +1536,8 @@ local function _battle_milon_twin_changeless(character, turn, strat)
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 4)
 		elseif turn == 2 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 1)
+		elseif game.enemy.get_stat(0, "hp") < 150 then
+			_command_fight()
 		elseif worst_twin and worst_twin.hp == 0 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
 		elseif worst_twin and worst_twin.hp then
