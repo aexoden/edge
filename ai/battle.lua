@@ -71,7 +71,7 @@ local function _get_damage()
 	if target_group == game.battle.ACTOR.ENEMY then
 		for i = 0, 7 do
 			if _check_target(target_mask, i) then
-				table.insert(damage_data, {string.format("Enemy #%d", i), _read_damage(5 + i)})
+				table.insert(damage_data, {string.format("Enemy #%d", i), _read_damage(5 + i), game.enemy.get_stat(i, "hp")})
 			end
 		end
 	else
@@ -80,7 +80,7 @@ local function _get_damage()
 				local character = game.character.get_character(i)
 
 				if character then
-					table.insert(damage_data, {game.character.get_name(character), _read_damage(i)})
+					table.insert(damage_data, {game.character.get_name(character), _read_damage(i), game.character.get_stat(character, "hp", true)})
 				end
 			end
 		end
@@ -91,16 +91,17 @@ local function _get_damage()
 	for i = 1, #damage_data do
 		local target = damage_data[i][1]
 		local damage = damage_data[i][2]
+		local hp = damage_data[i][3]
 		local new_damage = ""
 
 		if damage == 16384 then
-			new_damage = string.format("misses %s", target)
+			new_damage = string.format("misses %s (%d HP)", target, hp)
 		elseif damage < 0 then
-			new_damage = string.format("heals %s for %d damage", target, damage * -1)
+			new_damage = string.format("heals %s for %d damage (%d HP)", target, damage * -1, hp)
 		elseif damage == 0 then
-			new_damage = string.format("hits %s for no damage", target)
+			new_damage = string.format("hits %s for no damage (%d HP)", target, hp)
 		else
-			new_damage = string.format("hits %s for %d damage", target, damage)
+			new_damage = string.format("hits %s for %d damage (%d HP)", target, damage, hp)
 		end
 
 		table.insert(strings, new_damage)
