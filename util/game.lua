@@ -317,6 +317,13 @@ local _CHARACTER_NAMES = {
 	[_M.CHARACTER.YANG]   = "Yang",
 }
 
+local _ITEMS = {
+	[0x3C] = "Dancing",
+	[0xC0] = "FireBomb",
+	[0xC2] = "Lit-Bolt",
+	[0xCF] = "Cure2",
+}
+
 local _MAGIC = {
 	[0x01] = "Hold",
 	[0x02] = "Mute",
@@ -580,6 +587,16 @@ function _M.item.get_index(item, index, inventory)
 	end
 
 	return nil
+end
+
+function _M.item.get_description(item)
+	local result = _ITEMS[item]
+
+	if not result then
+		result = string.format("Item #%02X", item)
+	end
+
+	return result
 end
 
 function _M.magic.get_spell_description(spell)

@@ -149,8 +149,10 @@ local function _log_action()
 		if action_index == 0 then
 			action = string.format("casts a secret enemy spell")
 		else
-			action = string.format("casts %s", game.magic.get_spell_description(memory.read("battle", "action_index")))
+			action = string.format("casts %s", game.magic.get_spell_description(action_index))
 		end
+	elseif action_type == game.battle.ACTION.ITEM then
+		action = string.format("uses %s", game.item.get_description(action_index))
 	else
 		action = string.format("does an unknown action (%02X)", action_type)
 	end
