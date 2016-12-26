@@ -110,9 +110,15 @@ end
 
 local _addresses = {
 	battle = {
+		action_type         = {f = mainmemory.read_u8,     address = 0x0034C7, record_size = {0x01, 0x01}},
+		action_index        = {f = mainmemory.read_u8,     address = 0x0034C8, record_size = {0x01, 0x01}},
+		actor_group         = {f = mainmemory.read_u8,     address = 0x0034C2, record_size = {0x01, 0x01}},
+		actor_slot          = {f = mainmemory.read_u8,     address = 0x0034C3, record_size = {0x01, 0x01}},
 		active              = {f = mainmemory.read_u8,     address = 0x007508, record_size = {0x01, 0x01}},
 		back                = {f = mainmemory.read_u8,     address = 0x003581, record_size = {0x01, 0x01}},
 		back2               = {f = mainmemory.read_u8,     address = 0x00030B, record_size = {0x01, 0x01}},
+		calculations_left   = {f = mainmemory.read_u8,     address = 0x00354D, record_size = {0x01, 0x01}},
+		damage              = {f = mainmemory.read_u16_le, address = 0x0034D4, record_size = {0x02, 0x01}},
 		dropped_gp          = {f = mainmemory.read_u24_le, address = 0x00359A, record_size = {0x01, 0x01}},
 		ending              = {f = mainmemory.read_u8,     address = 0x0000A8, record_size = {0x01, 0x01}},
 		enemies             = {f = mainmemory.read_u8,     address = 0x0029CD, record_size = {0x01, 0x01}},
@@ -122,6 +128,8 @@ local _addresses = {
 		state               = {f = mainmemory.read_u8,     address = 0x000203, record_size = {0x01, 0x01}},
 		party_level         = {f = mainmemory.read_u8,     address = 0x0038D4, record_size = {0x01, 0x01}},
 		enemy_level         = {f = mainmemory.read_u8,     address = 0x0038D5, record_size = {0x01, 0x01}},
+		target_group        = {f = mainmemory.read_u8,     address = 0x0034C4, record_size = {0x01, 0x01}},
+		target_mask         = {f = mainmemory.read_u8,     address = 0x0034C5, record_size = {0x01, 0x01}},
 		type                = {f = mainmemory.read_u8,     address = 0x0038D8, record_size = {0x01, 0x01}},
 	},
 	battle_dialog = {

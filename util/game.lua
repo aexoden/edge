@@ -26,12 +26,27 @@ _M.battle = {}
 _M.character = {}
 _M.enemy = {}
 _M.item = {}
+_M.magic = {}
 
 local memory = require "util.memory"
 
 --------------------------------------------------------------------------------
 -- Public Constants
 --------------------------------------------------------------------------------
+
+_M.battle.ACTOR = {
+	PARTY   = 0x00,
+	ENEMY   = 0x80,
+}
+
+_M.battle.ACTION = {
+	NONE    =  0x00,
+	COMMAND =  0x10,
+	ITEM    =  0x20,
+	MAGIC   =  0x40,
+	ATTACK  =  0x80,
+	CRITICAL = 0x84,
+}
 
 _M.battle.FORMATION = {
 	MAGE     = 96,
@@ -302,6 +317,23 @@ local _CHARACTER_NAMES = {
 	[_M.CHARACTER.YANG]   = "Yang",
 }
 
+local _MAGIC = {
+	[0x01] = "Hold",
+	[0x02] = "Mute",
+	[0x03] = "Charm",
+	[0x04] = "Blink",
+	[0x05] = "Armor",
+	[0x06] = "Shell",
+	[0x07] = "Slow",
+	[0x08] = "Fast",
+	[0x09] = "Bersk",
+	[0x0A] = "Wall",
+	[0x0B] = "White",
+	[0x0D] = "Peep",
+	[0x0E] = "Cure1",
+	[0x0F] = "Cure2",
+}
+
 local _CHARACTER_IDS = {}
 
 for id, character in ipairs(_CHARACTERS) do
@@ -548,6 +580,16 @@ function _M.item.get_index(item, index, inventory)
 	end
 
 	return nil
+end
+
+function _M.magic.get_spell_description(spell)
+	local result = _MAGIC[spell]
+
+	if not result then
+		result = string.format("Spell #%02X", spell)
+	end
+
+	return result
 end
 
 return _M

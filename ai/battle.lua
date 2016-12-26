@@ -48,6 +48,121 @@ local function _is_battle()
 	return memory.read("battle", "state") > 0
 end
 
+local function _check_target(mask, target)
+	return bit.band(mask, math.pow(2, 7 - target)) > 0
+end
+
+local function _read_damage(index)
+	local value = memory.read("battle", "damage", index)
+
+	if value >= 32768 then
+		value = (value - 32768) * -1
+	end
+
+	return value
+end
+
+local function _get_damage()
+	local target_group = memory.read("battle", "target_group")
+	local target_mask = memory.read("battle", "target_mask")
+
+	local damage_data = {}
+
+	if target_group == game.battle.ACTOR.ENEMY then
+		for i = 0, 7 do
+			if _check_target(target_mask, i) then
+				table.insert(damage_data, {string.format("Enemy #%d", i), _read_damage(5 + i)})
+			end
+		end
+	else
+		for i = 0, 5 do
+			if _check_target(target_mask, i) then
+				local character = game.character.get_character(i)
+
+				if character then
+					table.insert(damage_data, {game.character.get_name(character), _read_damage(i)})
+				end
+			end
+		end
+	end
+
+	local strings = {}
+
+	for i = 1, #damage_data do
+		local target = damage_data[i][1]
+		local damage = damage_data[i][2]
+		local new_damage = ""
+
+		if damage == 16384 then
+			new_damage = string.format("misses %s", target)
+		elseif damage < 0 then
+			new_damage = string.format("heals %s for %d damage", target, damage * -1)
+		elseif damage == 0 then
+			new_damage = string.format("hits %s for no damage", target)
+		else
+			new_damage = string.format("hits %s for %d damage", target, damage)
+		end
+
+		table.insert(strings, new_damage)
+	end
+
+	local result = ""
+
+	for i = 1, #strings do
+		local conjunction = ", "
+
+		if i == #strings and i > 2 then
+			conjunction = ", and "
+		elseif i == #strings and i == 2 then
+			conjunction = " and "
+		elseif i == 1 then
+			conjunction = ""
+		end
+
+		result = string.format("%s%s%s", result, conjunction, strings[i])
+	end
+
+	return result
+end
+
+local function _log_action()
+	local action_type = memory.read("battle", "action_type")
+	local actor_group = memory.read("battle", "actor_group")
+	local actor_slot = memory.read("battle", "actor_slot")
+	local action_index = memory.read("battle", "action_index")
+	local actor
+
+	if actor_group == game.battle.ACTOR.PARTY then
+		actor = game.character.get_name(game.character.get_character(actor_slot))
+	else
+		actor = string.format("Enemy #%d", actor_slot)
+	end
+
+	local action
+
+	if action_type == game.battle.ACTION.CRITICAL then
+		action = "critically attacks"
+	elseif action_type == game.battle.ACTION.ATTACK then
+		action = "attacks"
+	elseif action_type == game.battle.ACTION.MAGIC then
+		if action_index == 0 then
+			action = string.format("casts a secret enemy spell")
+		else
+			action = string.format("casts %s", game.magic.get_spell_description(memory.read("battle", "action_index")))
+		end
+	else
+		action = string.format("does an unknown action (%02X)", action_type)
+	end
+
+	local damage = _get_damage()
+
+	if damage ~= "" then
+		damage = string.format(" and %s", damage)
+	end
+
+	log.log(string.format("Action: %s %s%s", actor, action, damage))
+end
+
 local function _reset_state()
 	_state = {
 		frame = nil,
@@ -55,6 +170,7 @@ local function _reset_state()
 		index = nil,
 		q = {},
 		slot = nil,
+		last_action = nil,
 		queued = false,
 		turns = {
 			[0] = 0,
@@ -2481,7 +2597,9 @@ function _M.cycle()
 			_state.formation = formation
 			_state.frame = emu.framecount()
 			_state.full_inventory = false
+			_state.pending_action = nil
 			_state.strat = sequence.get_battle_strat(index)
+			_state.last_action = nil
 			_battle_count = _battle_count + 1
 
 			local attack_type = game.battle.get_type()
@@ -2569,6 +2687,23 @@ function _M.cycle()
 				sequence.end_run(20 * 60 * 60)
 			else
 				sequence.end_run(65 * 60)
+			end
+		end
+
+		local action_type = memory.read("battle", "action_type")
+
+		if action_type ~= game.battle.ACTION.NONE and action_type ~= _state.last_action then
+			_state.pending_action = 5
+		end
+
+		_state.last_action = action_type
+
+		if _state.pending_action ~= nil then
+		 	if _state.pending_action == 0 and memory.read("battle", "calculations_left") == 0 then
+				_state.pending_action = nil
+				_log_action()
+			elseif _state.pending_action > 0 then
+				_state.pending_action = _state.pending_action - 1
 			end
 		end
 
