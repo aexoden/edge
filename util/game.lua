@@ -339,6 +339,16 @@ local _MAGIC = {
 	[0x0D] = "Peep",
 	[0x0E] = "Cure1",
 	[0x0F] = "Cure2",
+	[0x13] = "Life1",
+	[0x1D] = "Fire1",
+	[0x23] = "Lit-1",
+	[0x2C] = "Stop",
+	[0x41] = "Flare",
+	[0x75] = "Explode (0x75)",
+	[0x8D] = "Call",
+	[0x92] = "Retreat",
+	[0xA0] = "Explode (0xA0)",
+	[0xA1] = "Quake",
 }
 
 local _CHARACTER_IDS = {}
