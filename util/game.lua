@@ -322,6 +322,8 @@ local _ITEMS = {
 	[0xC0] = "FireBomb",
 	[0xC2] = "Lit-Bolt",
 	[0xCF] = "Cure2",
+	[0xD4] = "Life",
+	[0xFF] = "TrashCan",
 }
 
 local _MAGIC = {
