@@ -1949,9 +1949,11 @@ local function _battle_octomamm(character, turn, strat)
 			_command_white(game.MAGIC.WHITE.CURE2, menu.battle.TARGET.PARTY_ALL)
 		elseif turn >= max_tellah_turn then
 			if not _state.duplicated_change then
+				local _, tellah_weapon = game.character.get_weapon(game.CHARACTER.TELLAH, true)
+
 				_state.duplicated_change = true
 
-				if game.character.get_weapon(character) == game.ITEM.WEAPON.CHANGE then
+				if tellah_weapon == game.ITEM.WEAPON.CHANGE then
 					_command_duplicate(game.EQUIP.R_HAND)
 				end
 
