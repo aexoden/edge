@@ -56,9 +56,14 @@ end
 
 local function _set_route()
 	ROUTES = {"no64-excalbur", "no64-rosa", "paladin"}
+	NO64_ROUTES = {"no64-excalbur", "no64-rosa"}
 
 	if CONFIG.ROUTE then
-		return CONFIG.ROUTE
+		if CONFIG.ROUTE == "no64" then
+			return NO64_ROUTES[math.random(#NO64_ROUTES)]
+		else
+			return CONFIG.ROUTE
+		end
 	else
 		return ROUTES[math.random(#ROUTES)]
 	end
