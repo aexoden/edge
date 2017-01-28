@@ -1820,14 +1820,22 @@ local function _battle_milon_z(character, turn, strat)
 end
 
 local function _battle_mombomb(character, turn, strat)
-	local count = 0, last
+	local count = 0
+	local worst_index = nil
+	local worst_hp = nil
 
 	for i = 0, 4 do
 		local hp = memory.read_stat(i, "hp", true)
 
-		if hp < memory.read_stat(i, "hp_max", true) and hp < 100 then
-			count = count + 1
-			last = i
+		if hp < memory.read_stat(i, "hp_max", true) then
+			if hp < 100 then
+				count = count + 1
+			end
+
+			if hp < worst_hp then
+				worst_index = i
+				worst_hp = hp
+			end
 		end
 	end
 
@@ -1858,8 +1866,14 @@ local function _battle_mombomb(character, turn, strat)
 		elseif character == game.CHARACTER.ROSA then
 			if count > 1 then
 				_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY_ALL)
-			elseif count == 1 then
-				_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY, last)
+			elseif worst_index ~= nil then
+				if worst_hp > 0 then
+					_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY, worst_index)
+				elseif game.item.get_count(game.ITEM.ITEM.LIFE, game.INVENTORY.BATTLE) > 0 then
+					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, worst_index)
+				else
+					_command_parry()
+				end
 			else
 				_command_parry()
 			end
