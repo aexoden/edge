@@ -1862,6 +1862,7 @@ local function _sequence_milon()
 
 	-- Begin the battle.
 	table.insert(_q, {walk.walk, {135, 14, 10}})
+	table.insert(_q, {walk.walk, {135, 10, 10}})
 end
 
 local function _sequence_milon_z()
