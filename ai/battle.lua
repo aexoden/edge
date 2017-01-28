@@ -135,6 +135,10 @@ local function _log_action()
 
 	if actor_group == game.battle.ACTOR.PARTY then
 		actor = game.character.get_name(game.character.get_character(actor_slot))
+
+		if actor == nil then
+			actor = "Unknown"
+		end
 	else
 		actor = string.format("Enemy #%d", actor_slot)
 	end
