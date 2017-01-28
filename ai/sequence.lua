@@ -2161,7 +2161,11 @@ local function _sequence_baigan()
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
 		table.insert(_q, {menu.field.equip.close, {}})
 	end
-	
+
+	if game.character.get_slot(game.CHARACTER.TELLAH) ~= 1 then
+		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.TELLAH}})
+	end
+
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Engage Baigan.
