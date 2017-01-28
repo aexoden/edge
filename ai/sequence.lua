@@ -2154,6 +2154,13 @@ local function _sequence_baigan()
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.KARATE}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
 	table.insert(_q, {menu.field.equip.close, {}})
+
+	if game.item.get_count(game.ITEM.HELM.TIARA) < 1 then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.POROM}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+		table.insert(_q, {menu.field.equip.close, {}})
+	end
+	
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Engage Baigan.
