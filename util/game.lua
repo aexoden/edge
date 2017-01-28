@@ -110,6 +110,7 @@ _M.CHARACTER = {
 	CID    = 9,
 	EDGE   = 10,
 	FUSOYA = 11,
+	GOLBEZ = 12,
 }
 
 _M.ENEMY = {
@@ -300,6 +301,7 @@ local _CHARACTERS = {
 	[0x12] = _M.CHARACTER.EDGE,
 	[0x13] = _M.CHARACTER.FUSOYA,
 	[0x14] = _M.CHARACTER.KAIN,
+	[0x15] = _M.CHARACTER.GOLBEZ,
 }
 
 local _CHARACTER_NAMES = {
@@ -308,6 +310,7 @@ local _CHARACTER_NAMES = {
 	[_M.CHARACTER.EDGE]   = "Edge",
 	[_M.CHARACTER.EDWARD] = "Edward",
 	[_M.CHARACTER.FUSOYA] = "FuSoYa",
+	[_M.CHARACTER.GOLBEZ] = "Golbez",
 	[_M.CHARACTER.KAIN]   = "Kain",
 	[_M.CHARACTER.PALOM]  = "Palom",
 	[_M.CHARACTER.POROM]  = "Porom",
