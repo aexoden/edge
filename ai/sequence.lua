@@ -1883,7 +1883,11 @@ local function _sequence_milon_z()
 			table.insert(_q, {menu.field.magic.close, {}})
 		end
 
-		table.insert(_q, {menu.field.change, {}})
+		if milon_strat == "twin_changeless" and ROUTE ~= "paladin" then
+			table.insert(_q, {menu.field.form.swap, {game.CHARACTER.PALOM, game.CHARACTER.POROM, game.FORMATION.THREE_FRONT}})
+		else
+			table.insert(_q, {menu.field.change, {}})
+		end
 	elseif milon_z_strat == "trashcan" then
 		if milon_strat == "twin_changeless" then
 			table.insert(_q, {menu.field.form.swap, {game.CHARACTER.PALOM, game.CHARACTER.POROM, game.FORMATION.THREE_FRONT}})
