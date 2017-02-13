@@ -4483,7 +4483,7 @@ local _sequences = {
 	{title = "Dragoon",        f = _sequence_dragoon,        map_area = 3, map_id = 127, map_x = 21,  map_y = 14},
 	{title = "Twins",          f = _sequence_twins,          map_area = 3, map_id = 74,  map_x = 12,  map_y = 15},
 	{title = "Milon",          f = _sequence_milon,          map_area = 3, map_id = 22,  map_x = 14,  map_y = 7},
-	{title = "Milon Z.",       f = _sequence_milon_z,        map_area = 3, map_id = 135, map_x = 14,  map_y = 10},
+	{title = "Milon Z.",       f = _sequence_milon_z,        map_area = 3, map_id = 135, map_x = 10,  map_y = 10},
 	{title = "Paladin",        f = _sequence_paladin,        map_area = 3, map_id = 135, map_x = 9,   map_y = 10},
 	{title = "Karate",         f = _sequence_karate,         map_area = 3, map_id = 135, map_x = 6,   map_y = 10},
 	{title = "Baigan",         f = _sequence_baigan,         map_area = 3, map_id = 11,  map_x = 14,  map_y = 15},
