@@ -1832,7 +1832,7 @@ local function _battle_mombomb(character, turn, strat)
 				count = count + 1
 			end
 
-			if hp < worst_hp then
+			if worst_hp == nil or hp < worst_hp then
 				worst_index = i
 				worst_hp = hp
 			end
@@ -1852,7 +1852,7 @@ local function _battle_mombomb(character, turn, strat)
 			if count > 1 then
 				_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY_ALL)
 			elseif count == 1 then
-				_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY, last)
+				_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY, worst_index)
 			else
 				_command_parry()
 			end
