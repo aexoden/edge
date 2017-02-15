@@ -1859,7 +1859,8 @@ local function _sequence_milon()
 
 	-- Heal and equip.
 	table.insert(_q, {_pre_milon_menu, {}})
-
+	table.insert(_q, {_set_healing, {nil}})
+	
 	-- Begin the battle.
 	table.insert(_q, {walk.walk, {135, 14, 10}})
 	table.insert(_q, {walk.walk, {135, 10, 10}})
@@ -1867,7 +1868,6 @@ end
 
 local function _sequence_milon_z()
 	-- Heal and prepare the party.
-	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.ALL, [game.CHARACTER.TELLAH] = _RESTORE.ALL}}})
 
