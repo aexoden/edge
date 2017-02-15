@@ -1978,10 +1978,14 @@ local function _battle_officer(character, turn, strat)
 end
 
 local function _battle_red_d(character, turn, strat)
-	if character == game.CHARACTER.EDGE then
-		_command_ninja(game.MAGIC.NINJA.SMOKE)
+	if ROUTE == "no64-rosa" then
+		return _command_run()
 	else
-		_command_parry()
+		if character == game.CHARACTER.EDGE then
+			_command_ninja(game.MAGIC.NINJA.SMOKE)
+		else
+			_command_parry()
+		end
 	end
 end
 
