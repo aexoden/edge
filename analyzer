@@ -42,9 +42,21 @@ import matplotlib.pyplot as plt
 # Functions
 #-------------------------------------------------------------------------------
 
+def is_scripted(formation):
+    if formation >= 220 and formation <= 256:
+        return True
+    elif formation >= 420 and formation <= 442:
+        return True
+    else:
+        return False
+
 def describe_formation(formation):
     formations = {
         42: 'Gargoyle x1, Cocktric x2',
+        109: 'Centaur x1, IceBeast x2',
+        111: 'Centaur x3',
+        117: 'Carapace x2, Ice Liz x2',
+        199: 'D.Machin x1',
         200: 'Grind Fight',
         220: 'Elements',
         221: 'CPU',
@@ -73,6 +85,9 @@ def describe_formation(formation):
         254: 'Q.Eblan/K.Eblan',
         255: 'Rubicant',
         256: 'Dark Imp x3',
+        344: 'Arachne x1',
+        345: 'Arachne x2',
+        409: 'Red D. x1',
         423: 'Calbrena',
         425: 'Dr. Lugae/Balnab',
         435: 'Zemus',
@@ -169,7 +184,7 @@ def get_seed_data(logs):
 
         if log.success:
             seeds[log.step_seed]['data'].append(log.frames)
-            seeds[log.step_seed]['battles'] += len(log.battles)
+            seeds[log.step_seed]['battles'] += log.random_battle_count
             seeds[log.step_seed]['back_attack_count'] += log.back_attack_count
 
         for split in log.splits:
@@ -220,7 +235,11 @@ class Log(object):
 
     @property
     def back_attack_count(self):
-        return sum([1 if x['type'] in ['Back Attack', 'Surprised'] else 0 for x in self._battles])
+        return sum([1 if x['type'] in ['Back Attack', 'Surprised'] and not x['scripted'] else 0 for x in self._battles])
+
+    @property
+    def random_battle_count(self):
+        return sum([1 if not x['scripted'] else 0 for x in self._battles])
 
     @property
     def battles(self):
@@ -308,6 +327,7 @@ class Log(object):
                         'formation': int(fields['formation']),
                         'type': fields['type'],
                         'strat': None,
+                        'scripted': is_scripted(int(fields['formation'])),
                         'party_level': None if fields['party_level'] == '-' else int(fields['party_level']),
                         'enemy_level': None if fields['enemy_level'] == '-' else int(fields['enemy_level']),
                     }
@@ -341,7 +361,7 @@ class Log(object):
             'sequence': 'Sequence: (?P<sequence>.*)',
             'split': 'Split: (?P<split>.*)',
             'version': 'Version: (?P<version>.*)',
-            '_ignore': '(Edge Final Fantasy IV|--------------------|Beginning Full Run|Setting Initial Seed|Rebooting|Load game screen|New Seed|Setting encounter seed|Detected|Zeromus has|Cecil|Do not have)',
+            '_ignore': '(Edge Final Fantasy IV|--------------------|Beginning Full Run|Setting Initial Seed|Rebooting|Load game screen|New Seed|Setting encounter seed|Detected|Zeromus has|Cecil|Do not have|Action)',
         }
 
         for line_type, regex in regexes.items():
@@ -386,7 +406,7 @@ def img_output_battle(f, key, data):
 
         try:
             kde = stats.gaussian_kde(x)
-        except:
+        except Exception:
             kde = None
 
         subplot.plot(x, numpy.zeros(x.shape), 'b+', ms=20, color=colors[i])
@@ -712,7 +732,7 @@ def html_output_runs(f, logs):
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.version))
         f.write('\t\t\t\t\t\t<td><a href="runs/{}-{:03}-{:010}.html">{}</a></td>\n'.format(log.route, log.step_seed, log.rng_seed, log.rng_seed))
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.step_seed))
-        f.write('\t\t\t\t\t\t<td>{} / {} ({:.3f}%)</td>\n'.format(log.back_attack_count, len(log.battles), log.back_attack_count * 100 / len(log.battles) if len(log.battles) > 0 else 1))
+        f.write('\t\t\t\t\t\t<td>{} / {} ({:.3f}%)</td>\n'.format(log.back_attack_count, log.random_battle_count, log.back_attack_count * 100 / log.random_battle_count if len(log.battles) > 0 else 1))
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(log.non_battle_frames) if log.non_battle_frames else 'N/A'))
         f.write('\t\t\t\t\t\t<td class="{}">{}</td>\n'.format(result_class, log.result))
         f.write('\t\t\t\t\t</tr>\n')
