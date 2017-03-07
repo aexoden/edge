@@ -379,7 +379,7 @@ class Log(object):
 #-------------------------------------------------------------------------------
 
 def img_output_battle(f, key, data):
-    colors = ["#01b54d", "#e62ce4", "#fabb5a", "#0232c2", "#9d1700", "#41a7ff", "#e10091", "#edb08d"]
+    colors = ["#01b54d", "#e62ce4", "#fabb5a", "#0232c2", "#9d1700", "#41a7ff", "#e10091", "#edb08d", "#ff8000", "#40ff40"]
 
     figure = plt.figure()
     figure.suptitle('{} Battle Time'.format(describe_formation(data['formation'])))
