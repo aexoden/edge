@@ -1277,7 +1277,8 @@ local function _sequence_octomamm()
 	local octo_strats = {}
 
 	for i = 1, 8 do
-		table.insert(octo_strats, string.format("tellah-stop-%d", i))
+		table.insert(octo_strats, string.format("change-tellah-%d", i))
+		table.insert(octo_strats, string.format("staff-tellah-%d", i))
 	end
 
 	_M.set_battle_strat(game.battle.FORMATION.OCTOMAMM, octo_strats)
@@ -1309,16 +1310,10 @@ local function _sequence_edward()
 	-- Open the menu.
 	table.insert(_q, {menu.field.open, {}})
 
-	-- Deal with the Change rod.
+	-- Remove the Change rod if equipped.
 	local weapon, quantity = game.character.get_equipment(game.character.get_slot(game.CHARACTER.TELLAH), game.EQUIP.R_HAND)
 
-	if quantity == 255 then
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.NONE}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
-		table.insert(_q, {menu.field.equip.close, {}})
-	elseif weapon == game.ITEM.WEAPON.CHANGE then
+	if weapon == game.ITEM.WEAPON.CHANGE then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.STAFF}})
 		table.insert(_q, {menu.field.equip.close, {}})
@@ -1860,7 +1855,7 @@ local function _sequence_milon()
 	-- Heal and equip.
 	table.insert(_q, {_pre_milon_menu, {}})
 	table.insert(_q, {_set_healing, {nil}})
-	
+
 	-- Begin the battle.
 	table.insert(_q, {walk.walk, {135, 14, 10}})
 	table.insert(_q, {walk.walk, {135, 10, 10}})

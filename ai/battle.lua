@@ -1913,18 +1913,13 @@ local function _battle_mombomb(character, turn, strat)
 end
 
 local function _battle_octomamm(character, turn, strat)
-	strats = {
-		["tellah-stop-1"] = 1,
-		["tellah-stop-2"] = 2,
-		["tellah-stop-3"] = 3,
-		["tellah-stop-4"] = 4,
-		["tellah-stop-5"] = 5,
-		["tellah-stop-6"] = 6,
-		["tellah-stop-7"] = 7,
-		["tellah-stop-8"] = 8,
-	}
+	local change = false
 
-	local max_tellah_turn = strats[strat]
+	if string.sub(strat, 1, 6) == 'change' then
+		change = true
+	end
+
+	local max_tellah_turn = tonumber(string.sub(strat, -1, -1))
 
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
@@ -1935,7 +1930,7 @@ local function _battle_octomamm(character, turn, strat)
 	elseif character == game.CHARACTER.RYDIA then
 		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 	elseif character == game.CHARACTER.TELLAH then
-		if turn == 1 and game.item.get_count(game.ITEM.WEAPON.CHANGE, game.INVENTORY.BATTLE) > 0 then
+		if change and turn == 1 and game.item.get_count(game.ITEM.WEAPON.CHANGE, game.INVENTORY.BATTLE) > 0 then
 			_command_equip(character, game.ITEM.WEAPON.CHANGE)
 		end
 
@@ -1944,23 +1939,16 @@ local function _battle_octomamm(character, turn, strat)
 
 		if rydia_hp == 0 and tellah_mp >= 8 then
 			_command_white(game.MAGIC.WHITE.LIFE1, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
-		elseif tellah_mp >= 9 and ((rydia_hp > 0 and rydia_hp < 15) or game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 100) then
+		elseif tellah_mp >= 9 and ((rydia_hp > 0 and rydia_hp < 15) or game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 80) then
 			_command_white(game.MAGIC.WHITE.CURE2, menu.battle.TARGET.PARTY_ALL)
 		elseif turn >= max_tellah_turn then
-			if not _state.duplicated_change then
-				local _, tellah_weapon = game.character.get_weapon(game.CHARACTER.TELLAH, true)
+			if change then
+				_command_equip(character, game.ITEM.WEAPON.STAFF)
+			end
 
-				_state.duplicated_change = true
-
-				if tellah_weapon == game.ITEM.WEAPON.CHANGE then
-					_command_duplicate(game.EQUIP.R_HAND)
-				end
-
-				if tellah_mp >= 15 then
-					_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-				else
-					_command_parry()
-				end
+			if not _state.tellah_stop and tellah_mp >= 15 then
+				_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+				_state.tellah_stop = true
 			else
 				_command_parry()
 			end
