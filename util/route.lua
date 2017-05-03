@@ -304,6 +304,7 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.GIRL] = {
 _M.inventory["no64-excalbur"][game.battle.FORMATION.OCTOMAMM] = {
 	[game.ITEM.WEAPON.CHANGE]   = 8,
 	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.WEAPON.STAFF]    = 8,
 	[game.ITEM.ITEM.CARROT]     = 4,
 	[game.ITEM.ITEM.TRASHCAN]   = 4,
 	[game.ITEM.ARMS.IRON]       = 2,
