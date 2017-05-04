@@ -1778,8 +1778,8 @@ local function _sequence_milon()
 
 	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.CURE2}})
 	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.LIFE}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.HEAL}})
 	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.ETHER1}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.HEAL}})
 	table.insert(_q, {menu.shop.buy.close, {}})
 	table.insert(_q, {menu.shop.close, {}})
 
