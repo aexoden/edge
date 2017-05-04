@@ -326,8 +326,10 @@ end
 
 local function _battle_antlion(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
-		if game.character.get_stat(game.CHARACTER.RYDIA, "hp", true) == 0 and game.item.get_index(game.ITEM.ITEM.LIFE, 0, game.INVENTORY.BATTLE) then
+		if turn == 1 and game.character.get_stat(game.CHARACTER.RYDIA, "hp", true) == 0 and game.item.get_index(game.ITEM.ITEM.LIFE, 0, game.INVENTORY.BATTLE) then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+		elseif game.enemy.get_stat(0, "hp") < 40 then
+			_command_fight()
 		else
 			_command_parry()
 		end
