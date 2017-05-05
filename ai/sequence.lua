@@ -519,12 +519,13 @@ local function _pre_milon_menu()
 	-- Determine which battle strat to use for Milon.
 	local strats = {}
 
-	if game.character.get_stat(game.CHARACTER.POROM, "hp") < 100 then
+	if game.character.get_stat(game.CHARACTER.POROM, "hp") < 80 then
 		table.insert(strats, "carrot")
+	elseif ROUTE == "paladin" then
+		table.insert(strats, "twin_changeless")
+	else
+		table.insert(strats, "twin")
 	end
-
-	-- TODO: Implement basic twin strat, otherwise no64 routes are kind of bonkers.
-	table.insert(strats, "twin_changeless")
 
 	local strat = _M.set_battle_strat(game.battle.FORMATION.MILON, strats)
 
@@ -566,11 +567,6 @@ local function _pre_milon_menu()
 		table.insert(stack, {menu.field.equip.close, {}})
 
 		table.insert(stack, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
-
-		if game.item.get_count(game.ITEM.WEAPON.CHANGE) > 1 then
-			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
-		end
-
 		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
 		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
 		table.insert(stack, {menu.field.equip.close, {}})

@@ -1204,6 +1204,7 @@ function _M.battle.item.use(item, index, target_type, target, wait, limit)
 	if _M.battle.is_open() then
 		if _M.battle.is_target() then
 			_state.select_count = nil
+			_state.target_attempted = true
 			return _M.battle.target(target_type, target, wait, limit)
 		elseif _state.select_count == 1 or not _state.select_frame or emu.framecount() - _state.select_frame > 15 then
 			if _M.battle.item.select(item, index) then
@@ -1215,6 +1216,9 @@ function _M.battle.item.use(item, index, target_type, target, wait, limit)
 				_state.select_count = 1
 			end
 		end
+	elseif _state.target_attempted then
+		_state.target_attempted = nil
+		return true
 	end
 
 	return false

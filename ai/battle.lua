@@ -1579,7 +1579,7 @@ local function _battle_milon_carrot(character, turn, strat)
 
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 2)
 			elseif turn == 3 then
-				_command_run_buffer()
+				_command_wait_text(" Cure2", 60)
 				_command_parry()
 			elseif turn == 4 then
 				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
@@ -1592,7 +1592,7 @@ local function _battle_milon_carrot(character, turn, strat)
 				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CARROT}})
 				table.insert(_state.q, {menu.battle.item.close, {}})
 
-				_command_wait_frames(480)
+				_command_wait_frames(600)
 				_state.alternate = true
 
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 1)
@@ -1610,7 +1610,9 @@ local function _battle_milon_carrot(character, turn, strat)
 				_command_twin()
 			elseif turn == 2 then
 				_command_run_buffer()
-				_command_fight(menu.battle.TARGET.ENEMY, 0)
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 1)
+				_command_run_buffer()
+				_state.flush_queue = true
 			else
 				_state.alternate = true
 				return true
@@ -1620,14 +1622,11 @@ local function _battle_milon_carrot(character, turn, strat)
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 			elseif turn == 2 then
 				if porom_hp > 0 then
-					_command_wait_frames(120)
 					_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 				else
 					_state.alternate = true
 					return true
 				end
-			elseif turn == 3 then
-				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 1)
 			else
 				_state.alternate = true
 				return true
@@ -1636,7 +1635,7 @@ local function _battle_milon_carrot(character, turn, strat)
 	end
 end
 
-local function _battle_milon_twin_changeless(character, turn, strat)
+local function _battle_milon_twin(character, turn, strat)
 	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
 	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
 
@@ -1662,6 +1661,8 @@ local function _battle_milon_twin_changeless(character, turn, strat)
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 1)
 		elseif game.enemy.get_stat(0, "hp") < 150 then
 			_command_fight()
+		elseif strat == "twin" then
+			_command_fight()
 		elseif worst_twin and worst_twin.hp == 0 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
 		elseif worst_twin and worst_twin.hp then
@@ -1674,8 +1675,14 @@ local function _battle_milon_twin_changeless(character, turn, strat)
 	elseif character == game.CHARACTER.PALOM then
 		if turn == 1 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 2)
-		else
+		elseif strat == "twin_changeless" then
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+		elseif worst_twin and worst_twin.hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+		elseif worst_twin and worst_twin.mp then
+			_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, worst_twin.twin)
+		else
+			_command_twin()
 		end
 	elseif character == game.CHARACTER.TELLAH then
 		if turn == 1 then
@@ -1701,8 +1708,9 @@ local function _battle_milon_twin_changeless(character, turn, strat)
 end
 
 local function _battle_milon(character, turn, strat)
-	if strat == "twin_changeless" then
-		return _battle_milon_twin_changeless(character, turn, strat)
+	local strat = "twin"
+	if strat == "twin_changeless" or strat == "twin" then
+		return _battle_milon_twin(character, turn, strat)
 	elseif strat == "carrot" then
 		return _battle_milon_carrot(character, turn, strat)
 	end
@@ -2715,21 +2723,23 @@ function _M.cycle()
 			local open = memory.read("battle_menu", "open") > 0
 			local slot = memory.read("battle_menu", "slot")
 
-			if slot ~= _state.slot then
-				_state.q = {}
-				_state.slot = slot
-				_state.queued = false
-				_state.disable_inventory = nil
-				menu.reset()
-			elseif not open then
-				_state.q = {}
-				_state.slot = -1
-				_state.queued = false
-				_state.disable_inventory = nil
-				menu.reset()
+			if not _state.flush_queue then
+				if slot ~= _state.slot then
+					_state.q = {}
+					_state.slot = slot
+					_state.queued = false
+					_state.disable_inventory = nil
+					menu.reset()
+				elseif not open then
+					_state.q = {}
+					_state.slot = -1
+					_state.queued = false
+					_state.disable_inventory = nil
+					menu.reset()
+				end
 			end
 
-			if open and memory.read("battle_menu", "menu") ~= menu.battle.MENU.NONE then
+			if (open and memory.read("battle_menu", "menu") ~= menu.battle.MENU.NONE) or _state.flush_queue then
 			 	if #_state.q == 0 and not _state.queued then
 					if (_state.disable_inventory or not _manage_inventory(formation.full_inventory or _state.full_inventory, route.get_inventory(index))) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1, _state.strat) then
 						_state.turns[slot] = _state.turns[slot] + 1
@@ -2744,6 +2754,10 @@ function _M.cycle()
 						if command[1](unpack(command[2])) then
 							table.remove(_state.q, 1)
 						end
+					end
+
+					if #_state.q == 0 then
+						_state.flush_queue = nil
 					end
 				end
 			end
