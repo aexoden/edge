@@ -1940,7 +1940,7 @@ local function _battle_octomamm(character, turn, strat)
 	elseif character == game.CHARACTER.RYDIA then
 		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 	elseif character == game.CHARACTER.TELLAH then
-		if change and turn == 1 and game.item.get_count(game.ITEM.WEAPON.CHANGE, game.INVENTORY.BATTLE) > 0 then
+		if change and turn == 1 and max_tellah_turn ~= 1 and game.item.get_count(game.ITEM.WEAPON.CHANGE, game.INVENTORY.BATTLE) > 0 then
 			_command_equip(character, game.ITEM.WEAPON.CHANGE)
 		end
 
