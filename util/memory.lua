@@ -282,6 +282,7 @@ local _stats = {
 	agility         = {f = mainmemory.read_u8,     address = 0x000015},
 	stamina         = {f = mainmemory.read_u8,     address = 0x000016},
 	will            = {f = mainmemory.read_u8,     address = 0x000018},
+	defense_base    = {f = mainmemory.read_u8,     address = 0x00002A},
 	head            = {f = mainmemory.read_u8,     address = 0x000030},
 	body            = {f = mainmemory.read_u8,     address = 0x000031},
 	arms            = {f = mainmemory.read_u8,     address = 0x000032},

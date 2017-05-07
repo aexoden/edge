@@ -320,6 +320,10 @@ local function _command_wait_text(text, limit)
 	table.insert(_state.q, {menu.battle.dialog.wait, {text, limit}})
 end
 
+local function _command_wait_actor(target, limit)
+	table.insert(_state.q, {menu.wait_actor, {target, limit}})
+end
+
 --------------------------------------------------------------------------------
 -- Battles
 --------------------------------------------------------------------------------
@@ -2038,31 +2042,45 @@ local function _battle_sisters(character, turn, strat)
 end
 
 local function _battle_valvalis_support(character)
-	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
-	local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp", true)
 
-	if kain_hp == 0 then
-		_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
-	elseif cecil_hp == 0 then
-		_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-	elseif game.character.is_status(game.CHARACTER.KAIN, game.STATUS.STONE) then
-		_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
-	elseif game.character.is_status(game.CHARACTER.CECIL, game.STATUS.STONE) then
-		_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-	elseif cecil_hp < 400 then
-		_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-	elseif character == game.CHARACTER.CECIL then
-		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
-	elseif character == game.CHARACTER.ROSA then
-		_command_parry()
-	else
-		_command_fight()
-	end
+
 end
 
 local function _battle_valvalis(character, turn, strat)
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
+	local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp", true)
+	local rosa_hp = game.character.get_stat(game.CHARACTER.ROSA, "hp", true)
+
+	if cecil_hp == 0 or kain_hp == 0 or rosa_hp == 0 then
+		_state.alternate = true
+	end
+
+	if _state.alternate then
+		if kain_hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		elseif cecil_hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		elseif game.character.is_status(game.CHARACTER.KAIN, game.STATUS.STONE) then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		elseif game.character.is_status(game.CHARACTER.CECIL, game.STATUS.STONE) then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		elseif cecil_hp < 400 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		elseif character == game.CHARACTER.CECIL then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+		elseif character == game.CHARACTER.ROSA then
+			_command_parry()
+		elseif character == game.CHARACTER.KAIN then
+			_command_jump()
+		else
+			_command_fight()
+		end
+
+		return false
+	end
+
 	if character == game.CHARACTER.KAIN then
-		if game.enemy.get_stat(0, "hp") < 500 then
+		if game.enemy.get_stat(0, "hp") < 300 then
 			_command_fight()
 		else
 			_command_jump()
@@ -2072,22 +2090,58 @@ local function _battle_valvalis(character, turn, strat)
 			_command_wait_text(" Weak ", 300)
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 		else
-			_battle_valvalis_support(character)
+			if game.enemy.get_stat(0, "defense_base") > 0 then
+				_command_wait_frames(120)
+				_command_wait_actor(game.CHARACTER.KAIN, 300)
+			end
+
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 		end
 	elseif character == game.CHARACTER.YANG then
 		if turn == 1 then
-			_command_parry()
+			_command_wait_text(" Cure2", 180)
+			_command_wait_actor(game.CHARACTER.KAIN, 300)
+			_command_wait_frames(60)
+			_command_fight()
+		elseif turn == 2 then
+			_command_fight()
+		elseif turn == 3 then
+			_command_run_buffer()
+			_command_kick()
 		else
-			_battle_valvalis_support(character)
+			_command_wait_frames(15)
+			_command_fight()
 		end
 	elseif character == game.CHARACTER.ROSA then
+		if turn == 2 then
+			_command_wait_actor(game.CHARACTER.KAIN, 300)
+			_command_wait_frames(30)
+		end
+
+		if turn == 3 then
+			if not _state.rosa_max then
+				_state.rosa_max = emu.framecount() + 300
+			end
+
+			if emu.framecount() < _state.rosa_max and game.enemy.get_stat(0, "defense_base") == 0 then
+				_command_wait_frames(15)
+				return true
+			end
+
+			_command_wait_frames(120)
+			_state.rosa_max = nil
+		end
+
 		if game.enemy.get_stat(0, "speed_modifier") < 32 then
 			_command_white(game.MAGIC.WHITE.SLOW)
+		elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 700 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 		else
-			_battle_valvalis_support(character)
+			_command_parry()
 		end
 	elseif character == game.CHARACTER.CID then
-		_battle_valvalis_support(character)
+		_command_wait_frames(15)
+		_command_fight()
 	end
 end
 

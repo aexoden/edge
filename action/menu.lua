@@ -1319,6 +1319,29 @@ function _M.confirm()
 	return false
 end
 
+function _M.wait_actor(target, frames)
+	if not _state.wait_actor_frame then
+		_state.wait_actor_frame = emu.framecount() + frames
+	end
+
+	local actor_group = memory.read("battle", "actor_group")
+	local actor_slot = memory.read("battle", "actor_slot")
+	local actor
+
+	if actor_group == game.battle.ACTOR.PARTY then
+		actor = game.character.get_character(actor_slot)
+	end
+
+	print(emu.framecount(), _state.wait_actor_frame, target, actor)
+
+	if target == actor or emu.framecount() >= _state.wait_actor_frame then
+		_state.wait_actor_frame = nil
+		return true
+	end
+
+	return false
+end
+
 function _M.wait(frames)
 	if input.is_clear() then
 		if _wait_frame then
