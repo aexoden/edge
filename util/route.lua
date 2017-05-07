@@ -407,6 +407,7 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.BAIGAN] = {
 	[game.ITEM.HELM.TIARA]      = 2,
 	[game.ITEM.ITEM.HEAL]       = 2,
 	[game.ITEM.WEAPON.CHANGE]   = 2,
+	[game.ITEM.WEAPON.THUNDER]  = 2,
 	[game.ITEM.WEAPON.LEGEND]   = 2,
 }
 
@@ -426,6 +427,7 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.DARK_ELF] = {
 	[game.ITEM.ITEM.ETHER1]     = 2,
 	[game.ITEM.ITEM.HEAL]       = 2,
 	[game.ITEM.WEAPON.CHANGE]   = 2,
+	[game.ITEM.WEAPON.THUNDER]  = 2,
 }
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.FLAMEDOG] = {

@@ -628,81 +628,36 @@ local function _battle_d_mist(character, turn, strat)
 end
 
 local function _battle_dark_elf(character, turn, strat)
-	local elf_hp = game.enemy.get_stat(0, "hp")
-	local dragon_hp = game.enemy.get_stat(1, "hp")
-
-	local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp", true)
-	local tellah_mp = game.character.get_stat(game.CHARACTER.TELLAH, "mp", true)
-
-	local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp", true)
-	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
-
-	local alternate = false
-
-	if character == game.CHARACTER.YANG and elf_hp == 0 and not _state.yang_waited then
-		_state.yang_waited = true
-		_command_wait_frames(120)
-		return true
-	end
-
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
 			_command_run_buffer()
-			_command_fight()
-		elseif elf_hp > 0 then
-			_command_fight()
-		else
-			alternate = true
 		end
-	elseif character == game.CHARACTER.YANG then
-		if elf_hp > 0 and turn == 1 then
-			_command_fight()
-		else
-			alternate = true
-		end
-	elseif character == game.CHARACTER.CID then
+
 		_command_fight()
+	elseif character == game.CHARACTER.YANG then
+		if turn == 1 or turn >= 3 then
+			if turn == 3 then
+				_command_duplicate(game.EQUIP.L_HAND)
+			end
+
+			if game.character.get_stat(game.CHARACTER.TELLAH, "hp", true) < 50 then
+				_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+			end
+
+			_command_fight()
+		elseif turn == 2 then
+			_command_parry()
+		end
 	elseif character == game.CHARACTER.TELLAH then
 		if turn == 1 then
 			_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.CID)
-		elseif game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.PIG) then
-			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 		elseif turn == 2 then
-			if dragon_hp == 0 then
-				_command_wait_text("Da", 300)
-			end
-
+			_command_wait_text("Da", 300)
+			_command_equip(character, game.ITEM.WEAPON.THUNDER)
 			_command_black(game.MAGIC.BLACK.WEAK)
-		else
-			alternate = true
 		end
-	end
-
-	if alternate then
-		if dragon_hp > 0 and dragon_hp < 50 then
-			if character == game.CHARACTER.YANG and yang_hp > 0 and yang_hp < 50 then
-				_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
-			elseif (cecil_hp > 0 and cecil_hp < 50) or (tellah_hp > 0 and tellah_hp < 50) then
-				_command_wait_text("D.B", 600)
-				_command_fight()
-			else
-				_command_fight()
-			end
-		elseif game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.PIG) then
-			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-		elseif tellah_hp == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-		elseif tellah_mp < 25 then
-			_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-		elseif character == game.CHARACTER.TELLAH and dragon_hp > 50 then
-			_command_black(game.MAGIC.BLACK.WEAK)
-		elseif tellah_hp < 200 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-		elseif yang_hp > 0 and yang_hp < 50 then
-			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
-		else
-			_command_parry()
-		end
+	elseif character == game.CHARACTER.CID then
+		_command_fight()
 	end
 end
 
