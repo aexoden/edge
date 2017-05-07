@@ -1717,6 +1717,24 @@ local function _battle_milon(character, turn, strat)
 end
 
 local function _battle_milon_z_trashcan(character, turn, strat)
+	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
+	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
+
+	local palom_mp = game.character.get_stat(game.CHARACTER.PALOM, "mp", true)
+	local porom_mp = game.character.get_stat(game.CHARACTER.POROM, "mp", true)
+
+	local worst_twin
+
+	if palom_hp < 70 and palom_hp < porom_hp then
+		worst_twin = {twin = game.CHARACTER.PALOM, hp = palom_hp}
+	elseif porom_hp < 70 and porom_hp < palom_hp then
+		worst_twin = {twin = game.CHARACTER.POROM, hp = porom_hp}
+	elseif palom_mp < 20 and palom_mp < porom_mp then
+		worst_twin = {twin = game.CHARACTER.PALOM, mp = palom_mp}
+	elseif porom_mp < 20 and porom_mp < palom_mp then
+		worst_twin = {twin = game.CHARACTER.POROM, mp = porom_mp}
+	end
+
 	if _state.alternate or character == game.CHARACTER.CECIL and turn > 3 or character ~= game.CHARACTER.CECIL and turn >= 2 then
 		local count = 0
 		local best = nil
@@ -1738,6 +1756,8 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, best)
 		elseif character == game.CHARACTER.CECIL then
 			_command_fight()
+		elseif character == game.CHARACTER.POROM or character == game.CHARACTER.PALOM and palom_hp > 0 and porom_hp > 0 then
+			_command_twin()
 		else
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY)
 		end
@@ -1745,25 +1765,22 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 		if character == game.CHARACTER.CECIL then
 			if turn == 1 then
 				if not _state.cecil_waited then
-					_command_wait_text("Poiso", 85)
-					_command_wait_text(nil)
-					_command_wait_frames(40 + 30)
+					_command_wait_frames(180)
 					_state.cecil_waited = true
 					return true
 				else
-					local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
-					local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
-
 					if porom_hp < palom_hp and porom_hp < 75 then
 						_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 					elseif palom_hp < porom_hp and palom_hp < 75 then
 						_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
+					elseif game.character.is_status(game.CHARACTER.POROM, game.STATUS.POISON) then
+						_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 					else
-						_command_parry()
+						_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
 					end
 				end
 			elseif turn >= 2 then
-				if _state.palom then
+				if _state.palom_acted then
 					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
 					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
 					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
@@ -1774,33 +1791,34 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.TRASHCAN}})
 					table.insert(_state.q, {menu.battle.item.close, {}})
 
-					_command_wait_frames(480)
+					_state.alternate = true
 					_state.full_inventory = true
 
-					_command_fight()
+					_command_wait_frames(480)
+					return true
 				else
-					_command_run_buffer()
 					_command_parry()
 				end
 			end
 		elseif character == game.CHARACTER.PALOM then
-			_state.palom = true
+			_state.palom_acted = true
 
-			if turn == 1 then
-				if game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
-					_command_black(game.MAGIC.BLACK.ICE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
-				else
-					_state.alternate = true
-					_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY)
-				end
+			if porom_hp > 0 then
+				_command_black(game.MAGIC.BLACK.ICE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+			else
+				_state.alternate = true
+				return true
 			end
 		elseif character == game.CHARACTER.TELLAH then
-			if turn == 1 then
+			if palom_hp > 0 then
 				_command_run_buffer()
 				_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			else
+				_state.alternate = true
+				return true
 			end
 		elseif character == game.CHARACTER.POROM then
-			if turn == 1 and game.character.get_stat(game.CHARACTER.PALOM, "hp", true) > 0 then
+			if palom_hp > 0 then
 				_command_wait_frames(10)
 				_command_run_buffer()
 				_command_twin()
@@ -1812,20 +1830,8 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 	end
 end
 
-local function _battle_milon_z_cure2(character, turn, strat)
-	if character == game.CHARACTER.CECIL then
-		_command_fight()
-	else
-		_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 0)
-	end
-end
-
 local function _battle_milon_z(character, turn, strat)
-	if strat == "cure2" then
-		return _battle_milon_z_cure2(character, turn, strat)
-	elseif strat == "trashcan" then
-		return _battle_milon_z_trashcan(character, turn, strat)
-	end
+	return _battle_milon_z_trashcan(character, turn, strat)
 end
 
 local function _battle_mombomb(character, turn, strat)
