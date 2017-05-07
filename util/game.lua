@@ -226,6 +226,7 @@ _M.MAGIC = {
 		PIGGY = 0x1A,
 		WARP  = 0x1B,
 		FIRE1 = 0x1D,
+		FIRE2 = 0x1E,
 		FIRE3 = 0x1F,
 		ICE1  = 0x20,
 		ICE2  = 0x21,
