@@ -2047,11 +2047,7 @@ local function _sequence_baigan()
 	table.insert(_q, {walk.chase, {12, {0}, true}})
 
 	table.insert(_q, {menu.shop.buy.open, {1}})
-
-	if game.item.get_count(game.ITEM.WEAPON.CHANGE) <= 1 then
-		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.WEAPON.THUNDER}})
-	end
-
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.WEAPON.THUNDER}})
 	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.CLAW.ICECLAW}})
 	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.CLAW.THUNDER}})
 	table.insert(_q, {menu.shop.buy.close, {}})
@@ -2154,6 +2150,21 @@ local function _sequence_baigan()
 	if game.item.get_count(game.ITEM.HELM.TIARA) < 1 then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.POROM}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+		table.insert(_q, {menu.field.equip.close, {}})
+	end
+
+	local palom_hand, palom_weapon = game.character.get_weapon(game.CHARACTER.PALOM)
+	local tellah_hand, tellah_weapon = game.character.get_weapon(game.CHARACTER.TELLAH)
+
+	if palom_weapon == game.ITEM.WEAPON.CHANGE then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.PALOM}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.DANCING}})
+		table.insert(_q, {menu.field.equip.close, {}})
+	end
+
+	if tellah_weapon ~= game.ITEM.WEAPON.CHANGE then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
 		table.insert(_q, {menu.field.equip.close, {}})
 	end
 
