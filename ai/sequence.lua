@@ -707,7 +707,6 @@ local function _healing_flamedog()
 		_restore_party({
 			[game.CHARACTER.CECIL] = _RESTORE.HP,
 			[game.CHARACTER.TELLAH] = _RESTORE.HP,
-			[game.CHARACTER.YANG] = _RESTORE.HP,
 		}, game.CHARACTER.TELLAH, true, true)
 	end
 
@@ -2557,7 +2556,13 @@ local function _sequence_magus_sisters()
 	table.insert(_q, {walk.walk, {157, 15, 19}})
 
 	-- Prepare the party for battle.
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.LIFE}, game.CHARACTER.TELLAH, true}})
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.close, {}})
 
 	-- Engage the sisters.
 	table.insert(_q, {walk.walk, {157, 15, 17}})
@@ -2579,10 +2584,6 @@ local function _sequence_valvalis()
 
 	-- Complete the pre-Valvalis menu.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
-	table.insert(_q, {menu.field.equip.close, {}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.ROSA}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})

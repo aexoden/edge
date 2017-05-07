@@ -2002,45 +2002,35 @@ local function _battle_rubicant(character, turn, strat)
 end
 
 local function _battle_sisters(character, turn, strat)
-	local fight_yang = game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 and game.character.get_stat(game.CHARACTER.KAIN, "exp") < 17154
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
 	local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp", true)
+	local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp", true)
 
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
 			_command_run_buffer()
 			_command_cover(game.CHARACTER.TELLAH)
 		else
-			if turn == 2 and not _state.duplicated then
-				_command_duplicate(game.EQUIP.R_HAND, true)
-				_state.duplicated = true
-				return true
-			end
-
 			if tellah_hp == 0 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-			elseif tellah_hp < 300 then
+			elseif tellah_hp < 310 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-			elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 500 then
+			elseif cecil_hp < 300 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-			elseif fight_yang then
-				_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+			elseif yang_hp > 0 then
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 			else
+				_state.full_inventory = true
 				return true
 			end
 		end
 	elseif character == game.CHARACTER.YANG then
-		if turn == 1 then
-			_command_duplicate(game.EQUIP.L_HAND)
-		end
-
 		if tellah_hp == 0 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-		elseif tellah_hp < 200 then
+		elseif tellah_hp < 310 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-		elseif fight_yang then
-			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		else
-			_command_parry()
+			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		end
 	else
 		_command_black(game.MAGIC.BLACK.METEO)
