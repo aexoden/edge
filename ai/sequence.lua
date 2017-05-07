@@ -2667,8 +2667,8 @@ local function _sequence_calbrena()
 
 	-- Swap party formation.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.CID, game.CHARACTER.CECIL}})
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.ROSA, game.CHARACTER.CID}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.CID, game.CHARACTER.ROSA}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.ROSA, game.CHARACTER.CECIL}})
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Talk to King Giott.
@@ -2789,18 +2789,20 @@ local function _sequence_dr_lugae()
 	end
 
 	table.insert(_q, {walk.walk, {270, 13, 4, true}})
-	table.insert(_q, {walk.walk, {272, 10, 8}})
-	table.insert(_q, {walk.walk, {272, 8, 8}})
+	table.insert(_q, {walk.walk, {272, 10, 6}})
 
 	-- Step Route: Castle of Dwarves D
 	if steps >= 1 then
-		table.insert(_q, {walk.walk, {272, 8, 7}})
+		table.insert(_q, {walk.walk, {272, 10, 5}})
 		steps = steps - 1
 	else
-		table.insert(_q, {walk.walk, {272, 6, 8}})
+		table.insert(_q, {walk.walk, {272, 9, 6}})
 	end
 
-	table.insert(_q, {walk.walk, {272, 6, 7}})
+	table.insert(_q, {walk.walk, {272, 9, 4}})
+	table.insert(_q, {walk.walk, {272, 6, 4}})
+	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {272, 6, 5}})
 	table.insert(_q, {walk.walk, {283, 24, 23}})
 	table.insert(_q, {walk.walk, {281, 6, 4}})
@@ -2839,6 +2841,22 @@ local function _sequence_dr_lugae()
 
 	table.insert(_q, {menu.shop.buy.close, {}})
 	table.insert(_q, {menu.shop.close, {}})
+
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DWARF}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.STRENGTH}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.RYDIA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.TIARA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.PRISONER}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.RUNE}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.CECIL, game.CHARACTER.ROSA}})
+	table.insert(_q, {menu.field.close, {}})
 
 	-- Exit the dwarf castle.
 	table.insert(_q, {walk.walk, {270, 2, 6}})
@@ -3022,16 +3040,6 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.NONE}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.CLAW.CATCLAW}})
 	table.insert(_q, {menu.field.equip.close, {}})
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.STRENGTH}})
-	table.insert(_q, {menu.field.equip.close, {}})
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.RYDIA}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.TIARA}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.PRISONER}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.RUNE}})
-	table.insert(_q, {menu.field.equip.close, {}})
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.KAIN, game.CHARACTER.YANG}})
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.KAIN] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.ALL, [game.CHARACTER.YANG] = _RESTORE.HP}}})
 	table.insert(_q, {menu.field.close, {}})
 

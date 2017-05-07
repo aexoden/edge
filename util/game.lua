@@ -211,6 +211,7 @@ _M.ITEM = {
 		CHANGE   = 0x0B,
 		DANCING  = 0x3C,
 		DARKNESS = 0x17,
+		DWARF    = 0x39,
 		EXCALBUR = 0x1B,
 		FIRE     = 0x1C,
 		ICEBRAND = 0x1D,
