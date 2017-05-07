@@ -2182,18 +2182,8 @@ local function _sequence_kainazzo()
 	-- Heal the party as needed.
 	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.LIFE}}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.HP}}})
 	table.insert(_q, {menu.field.change, {}})
-
-	if game.item.get_count(game.ITEM.WEAPON.CHANGE) < 1 then
-		local hand, weapon = game.character.get_weapon(game.CHARACTER.PALOM)
-
-		if weapon == game.ITEM.WEAPON.CHANGE then
-			table.insert(_q, {menu.field.equip.open, {game.CHARACTER.PALOM}})
-			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.DANCING}})
-			table.insert(_q, {menu.field.equip.close, {}})
-		end
-	end
 
 	local hand, weapon = game.character.get_weapon(game.CHARACTER.CECIL)
 
