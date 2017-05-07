@@ -381,10 +381,6 @@ local function _battle_baigan(character, turn, strat)
 			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		end
 	elseif character == game.CHARACTER.TELLAH then
-		if game.item.get_count(game.ITEM.WEAPON.CHANGE, game.INVENTORY.BATTLE) < 2 then
-			_command_equip(character, game.ITEM.WEAPON.THUNDER)
-		end
-
 		_command_black(game.MAGIC.BLACK.METEO, menu.battle.TARGET.ENEMY_ALL)
 	else
 		_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
