@@ -1301,7 +1301,7 @@ local function _battle_guards(character, turn, strat)
 			_command_equip(character, game.ITEM.WEAPON.CHANGE)
 		end
 
-		if game.character.get_stat(game.CHARACTER.PALOM, "hp", true) == 0 and game.enemy.get_stat("hp", 0) > 0 then
+		if game.character.get_stat(game.CHARACTER.PALOM, "hp", true) == 0 and game.enemy.get_stat(0, "hp") > 0 then
 			_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.ENEMY_ALL)
 		end
 	else
@@ -1323,7 +1323,7 @@ local function _battle_kainazzo(character, turn, strat)
 			_command_parry()
 		end
 	elseif character == game.CHARACTER.TELLAH then
-		if turn == 1 or game.enemy.get_stat("hp", 0) > 300 then
+		if turn == 1 or game.enemy.get_stat(0, "hp") > 300 then
 			_command_black(game.MAGIC.BLACK.LIT3)
 		else
 			_command_black(game.MAGIC.BLACK.VIRUS)
