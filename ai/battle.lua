@@ -1337,51 +1337,27 @@ local function _battle_karate(character, turn, strat)
 end
 
 local function _battle_lugae1(character, turn, strat)
-	if character == game.CHARACTER.CECIL then
-		if turn == 2 then
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 1)
+	if character == game.CHARACTER.KAIN then
+		if turn == 1 then
+			_command_jump(menu.battle.TARGET.ENEMY, 0)
 		else
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 0)
+			_command_fight()
 		end
-	elseif character == game.CHARACTER.KAIN then
-		_command_jump(menu.battle.TARGET.ENEMY, 0)
-	elseif character == game.CHARACTER.ROSA then
-		local index = nil
-		local dead = false
-
-		for i = 0, 4 do
-			if not game.character.is_status_by_slot(i, game.STATUS.JUMPING) then
-				if memory.read_stat(i, "hp", true) == 0 then
-					index = i
-					dead = true
-				elseif memory.read_stat(i, "hp", true) < memory.read_stat(i, "hp_max", true) and bit.band(memory.read_stat(i, "status", true), game.STATUS.CRITICAL) == 0 then
-					index = i
-				end
-			end
-		end
-
-		if index then
-			if dead then
-				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, index)
-			else
-				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.PARTY, index)
-			end
-		elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 650 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-		else
-			_command_parry()
-		end
+	elseif character == game.CHARACTER.YANG then
+		_command_fight()
 	elseif character == game.CHARACTER.RYDIA then
-		if game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 40 then
+		if turn == 1 then
 			_command_call(game.MAGIC.CALL.TITAN)
 		else
-			_command_parry()
+			_command_fight()
 		end
-	else
-		if turn == 2 then
-			_command_fight(menu.battle.TARGET.ENEMY, 0)
+	elseif character == game.CHARACTER.CECIL then
+		_command_fight(menu.battle.TARGET.ENEMY, 0)
+	elseif character == game.CHARACTER.ROSA then
+		if turn == 1 then
+			_command_white(game.MAGIC.WHITE.MUTE, menu.battle.TARGET.ENEMY, 0)
 		else
-			_command_fight(menu.battle.TARGET.ENEMY, 1)
+			_command_fight()
 		end
 	end
 end
