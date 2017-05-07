@@ -1339,7 +1339,19 @@ end
 
 local function _battle_guards(character, turn, strat)
 	if character == game.CHARACTER.CECIL or character == game.CHARACTER.PALOM then
+		if character == game.CHARACTER.CECIL and turn == 1 then
+			_command_run_buffer()
+		end
+
 		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+	elseif character == game.CHARACTER.TELLAH then
+		if game.item.get_count(game.ITEM.WEAPON.CHANGE, game.INVENTORY.BATTLE) > 0 then
+			_command_equip(character, game.ITEM.WEAPON.CHANGE)
+		end
+
+		if game.character.get_stat(game.CHARACTER.PALOM, "hp", true) == 0 and game.enemy.get_stat("hp", 0) > 0 then
+			_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.ENEMY_ALL)
+		end
 	else
 		_command_parry()
 	end
