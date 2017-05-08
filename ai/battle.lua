@@ -1929,41 +1929,93 @@ local function _battle_red_d(character, turn, strat)
 end
 
 local function _battle_rubicant(character, turn, strat)
-	if character == game.CHARACTER.CECIL then
-		if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
-		else
-			_command_fight()
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
+	local rosa_hp = game.character.get_stat(game.CHARACTER.ROSA, "hp", true)
+	local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp", true)
+	local rydia_hp = game.character.get_stat(game.CHARACTER.RYDIA, "hp", true)
+	local edge_hp = game.character.get_stat(game.CHARACTER.EDGE, "hp", true)
+
+	if character == game.CHARACTER.EDGE then
+		if turn == 3 and _state.glare_target ~= game.CHARACTER.KAIN and _state.glare_target ~= game.CHARACTER.EDGE then
+			_command_wait_actor(game.CHARACTER.KAIN, 300)
 		end
-	elseif character == game.CHARACTER.EDGE then
-		if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
-		elseif game.character.get_stat(game.CHARACTER.EDGE, "mp", true) >= 20 then
-			_command_ninja(game.MAGIC.NINJA.FLOOD)
-		else
-			_command_parry()
-		end
+
+		_command_wait_frames(60)
+		_command_ninja(game.MAGIC.NINJA.FLOOD)
 	elseif character == game.CHARACTER.KAIN then
 		if turn == 1 then
 			_command_run_buffer()
-		end
+			_command_jump()
+		elseif turn == 2 then
+			if cecil_hp == 0 then
+				_state.glare_target = game.CHARACTER.CECIL
+			end
 
-		_command_jump()
-	elseif character == game.CHARACTER.ROSA then
-		if game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
-		elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-		elseif game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 600 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			_command_jump()
 		else
-			_command_parry()
+			_command_fight()
+		end
+	elseif character == game.CHARACTER.CECIL then
+		if turn == 1 then
+			_command_run_buffer()
+			_command_fight()
+		elseif turn == 2 then
+			if _state.glare_target == game.CHARACTER.CECIL then
+				_command_wait_text(" Ice-2", 300)
+				_command_fight()
+			else
+				if rydia_hp == 0 then
+					_state.glare_target = game.CHARACTER.RYDIA
+					_command_fight()
+				else
+					if kain_hp == 0 then
+						_state.glare_target = game.CHARACTER.KAIN
+					elseif rosa_hp == 0 then
+						_state.glare_target = game.CHARACTER.ROSA
+					elseif edge_hp == 0 then
+						_state.glare_target = game.CHARACTER.EDGE
+					end
+
+					_command_cover(menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+				end
+			end
+		elseif turn == 3 and _state.glare_target == game.CHARACTER.ROSA then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		elseif turn == 3 and _state.glare_target == game.CHARACTER.EDGE then
+			_command_wait_text(" Ice-2")
+			_command_fight()
+		else
+			_command_fight()
 		end
 	elseif character == game.CHARACTER.RYDIA then
-		if turn == 1 then
+		if turn == 2 and _state.glare_target == game.CHARACTER.KAIN then
+			_command_call(game.MAGIC.CALL.SHIVA)
+		elseif turn == 2 and _state.glare_target == game.CHARACTER.EDGE then
+			_command_wait_actor(game.CHARACTER.KAIN, 300)
+			_command_wait_frames(60)
 			_command_black(game.MAGIC.BLACK.ICE2)
 		else
-			_command_call(game.MAGIC.CALL.SHIVA)
+			_command_black(game.MAGIC.BLACK.ICE2)
+		end
+	elseif character == game.CHARACTER.ROSA then
+		if turn == 2 then
+			if _state.glare_target == game.CHARACTER.CECIL then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			elseif _state.glare_target == game.CHARACTER.RYDIA then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+			elseif _state.glare_target == game.CHARACTER.KAIN then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+			elseif _state.glare_target == game.CHARACTER.EDGE then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+			elseif _state.glare_target == game.CHARACTER.ROSA then
+				_command_parry()
+			else
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			end
+		elseif turn == 3 and rydia_hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+		else
+			_command_parry()
 		end
 	end
 end
