@@ -395,6 +395,7 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.KARATE] = _M.inventory["no64
 _M.inventory["no64-excalbur"][game.battle.FORMATION.BAIGAN] = {
 	[game.ITEM.ITEM.ETHER1]     = 16,
 	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.WEAPON.THUNDER]  = 8,
 	[game.ITEM.ARMOR.GAEA]      = 4,
 	[game.ITEM.ARMOR.KARATE]    = 4,
 	[game.ITEM.ARMS.IRON]       = 4,
@@ -407,7 +408,6 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.BAIGAN] = {
 	[game.ITEM.HELM.TIARA]      = 2,
 	[game.ITEM.ITEM.HEAL]       = 2,
 	[game.ITEM.WEAPON.CHANGE]   = 2,
-	[game.ITEM.WEAPON.THUNDER]  = 2,
 	[game.ITEM.WEAPON.LEGEND]   = 2,
 }
 
@@ -415,6 +415,7 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.KAINAZZO] = _M.inventory["no
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.DARK_ELF] = {
 	[game.ITEM.WEAPON.DANCING]  = 8,
+	[game.ITEM.WEAPON.THUNDER]  = 8,
 	[game.ITEM.ARMOR.GAEA]      = 4,
 	[game.ITEM.ARMOR.KARATE]    = 4,
 	[game.ITEM.HELM.GAEA]       = 4,
@@ -427,7 +428,6 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.DARK_ELF] = {
 	[game.ITEM.ITEM.ETHER1]     = 2,
 	[game.ITEM.ITEM.HEAL]       = 2,
 	[game.ITEM.WEAPON.CHANGE]   = 2,
-	[game.ITEM.WEAPON.THUNDER]  = 2,
 }
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.FLAMEDOG] = {
