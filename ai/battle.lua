@@ -1376,7 +1376,7 @@ local function _battle_lugae2(character, turn, strat)
 			_command_fight()
 		else
 			if turn == 3 then
-				_command_wait_text(" Heal", 600)
+				_command_wait_text("Heal  ", 600)
 			end
 
 			_command_fight()
@@ -1976,7 +1976,7 @@ local function _battle_rubicant(character, turn, strat)
 						_state.glare_target = game.CHARACTER.EDGE
 					end
 
-					_command_cover(menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+					_command_cover(game.CHARACTER.RYDIA)
 				end
 			end
 		elseif turn == 3 and _state.glare_target == game.CHARACTER.ROSA then
