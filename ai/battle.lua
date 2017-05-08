@@ -1937,11 +1937,15 @@ local function _battle_rubicant(character, turn, strat)
 
 	if character == game.CHARACTER.EDGE then
 		if turn == 3 and _state.glare_target ~= game.CHARACTER.KAIN and _state.glare_target ~= game.CHARACTER.EDGE then
-			_command_wait_actor(game.CHARACTER.KAIN, 300)
+			_command_wait_actor(game.CHARACTER.KAIN, 600)
+			_command_wait_frames(60)
 		end
 
-		_command_wait_frames(60)
-		_command_ninja(game.MAGIC.NINJA.FLOOD)
+		if game.character.get_stat(game.CHARACTER.EDGE, "mp", true) >= 20 then
+			_command_ninja(game.MAGIC.NINJA.FLOOD)
+		else
+			_command_fight()
+		end
 	elseif character == game.CHARACTER.KAIN then
 		if turn == 1 then
 			_command_run_buffer()
@@ -1964,6 +1968,13 @@ local function _battle_rubicant(character, turn, strat)
 				_command_wait_text(" Ice-2", 300)
 				_command_fight()
 			else
+				if not _state.cecil_waited then
+					_command_wait_text("Glare ", 600)
+					_command_wait_frames(60)
+					_state.cecil_waited = true
+					return true
+				end
+
 				if rydia_hp == 0 then
 					_state.glare_target = game.CHARACTER.RYDIA
 					_command_fight()
