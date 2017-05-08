@@ -679,27 +679,15 @@ end
 
 local function _battle_eblan(character, turn, strat)
 	local _, kain_weapon = game.character.get_weapon(game.CHARACTER.KAIN, true)
-	local _, cecil_weapon = game.character.get_weapon(game.CHARACTER.CECIL, true)
 
 	local kain_equipped = kain_weapon == game.ITEM.WEAPON.BLIZZARD
-	local cecil_equipped = cecil_weapon == game.ITEM.WEAPON.ICEBRAND
 
 	if character == game.CHARACTER.KAIN and not kain_equipped then
 		_command_equip(character, game.ITEM.WEAPON.BLIZZARD)
 		_command_parry()
-	elseif character == game.CHARACTER.CECIL and not cecil_equipped then
-		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
-		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.SHIELD.ICE}})
-		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.L_HAND, input.DELAY.MASH}})
-		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND, input.DELAY.MASH}})
-		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.WEAPON.ICEBRAND}})
-		table.insert(_state.q, {menu.battle.item.close, {}})
-		_command_parry()
 	elseif not kain_equipped and game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
 		_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
-	elseif not cecil_equipped and game.character.get_stat(game.CHARACTER.CECIL, "hp", true) == 0 then
-		_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-	elseif not cecil_equipped or not kain_equipped then
+	elseif not kain_equipped then
 		_command_parry()
 	else
 		return true
