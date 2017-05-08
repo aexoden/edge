@@ -3048,6 +3048,15 @@ local function _sequence_dr_lugae()
 end
 
 local function _sequence_dark_imps()
+	-- Do the post-Lugae menu.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.YANG}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.CLAW.CATCLAW}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.KAIN] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.ALL, [game.CHARACTER.YANG] = _RESTORE.HP}}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.ROSA, game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.close, {}})
+
 	-- Walk to the Dark Imps.
 	table.insert(_q, {walk.walk, {296, 16, 25}})
 	table.insert(_q, {walk.walk, {296, 28, 25}})
