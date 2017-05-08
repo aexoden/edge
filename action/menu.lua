@@ -1332,8 +1332,6 @@ function _M.wait_actor(target, frames)
 		actor = game.character.get_character(actor_slot)
 	end
 
-	print(emu.framecount(), _state.wait_actor_frame, target, actor)
-
 	if target == actor or emu.framecount() >= _state.wait_actor_frame then
 		_state.wait_actor_frame = nil
 		return true
