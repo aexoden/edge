@@ -1367,7 +1367,7 @@ local function _battle_lugae2(character, turn, strat)
 		if turn == 1 then
 			_command_wait_text("Now", 300)
 			_command_jump()
-		elseif turn == 2 then
+		else
 			_command_fight()
 		end
 	elseif character == game.CHARACTER.YANG then
@@ -1375,7 +1375,10 @@ local function _battle_lugae2(character, turn, strat)
 			_command_wait_frames(15)
 			_command_fight()
 		else
-			_command_wait_text(" Heal", 300)
+			if turn == 3 then
+				_command_wait_text(" Heal", 600)
+			end
+
 			_command_fight()
 		end
 	elseif character == game.CHARACTER.RYDIA then
