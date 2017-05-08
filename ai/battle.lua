@@ -1375,52 +1375,58 @@ local function _battle_lugae2(character, turn, strat)
 		end
 	end
 
-	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
-	local rosa_hp = game.character.get_stat(game.CHARACTER.ROSA, "hp", true)
-
-	if character == game.CHARACTER.CECIL then
-		if lowest[2] == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
-		elseif lowest[2] < 40 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.PARTY, lowest[1])
-		else
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
-		end
-	elseif character == game.CHARACTER.KAIN then
-		if cecil_hp == 0 and rosa_hp == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
-		else
+	if character == game.CHARACTER.KAIN then
+		if turn == 1 then
+			_command_wait_text("Now", 300)
 			_command_jump()
-		end
-	elseif character == game.CHARACTER.ROSA then
-		if turn == 1 and not _state.waited then
-			_command_wait_text("Laser ", 300)
-			_state.waited = true
-			return true
-		end
-
-		if lowest[1] then
-			if lowest[2] == 0 then
-				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
-			else
-				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.PARTY, lowest[1])
-			end
-		else
-			_command_parry()
-		end
-	elseif character == game.CHARACTER.RYDIA then
-		if cecil_hp == 0 and rosa_hp == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
-		elseif game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 40 then
-			_command_call(game.MAGIC.CALL.TITAN)
-		else
-			_command_parry()
+		elseif turn == 2 then
+			_command_fight()
 		end
 	elseif character == game.CHARACTER.YANG then
-		if cecil_hp == 0 and rosa_hp == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
+		if turn <= 2 then
+			_command_wait_frames(15)
+			_command_fight()
+		else
+			_command_wait_text(" Heal", 300)
+			_command_fight()
+		end
+	elseif character == game.CHARACTER.RYDIA then
+		if turn == 1 then
+			if game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 40 then
+				_command_call(game.MAGIC.CALL.TITAN)
+			else
+				_command_parry()
+			end
 		else
 			_command_fight()
+		end
+	elseif character == game.CHARACTER.CECIL then
+		if turn == 1 then
+			_command_fight()
+		elseif turn == 2 then
+			if not _state.waited then
+				_command_wait_text("Laser ", 300)
+				_state.waited = true
+				return true
+			end
+
+			if lowest[1] then
+				if lowest[2] == 0 then
+					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
+				else
+					_command_parry()
+				end
+			else
+				_command_parry()
+			end
+		else
+			_command_fight()
+		end
+	elseif character == game.CHARACTER.ROSA then
+		if game.character.get_stat(game.CHARACTER.CECIL, "hp", true) == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		else
+			_command_parry()
 		end
 	end
 end
