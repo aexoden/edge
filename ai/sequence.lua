@@ -3343,9 +3343,6 @@ local function _sequence_rubicant()
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.CLAW.CATCLAW}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.CLAW.CATCLAW}})
 	table.insert(_q, {menu.field.equip.close, {}})
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.RYDIA, game.CHARACTER.EDGE}})
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.EDGE, game.CHARACTER.KAIN}})
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.KAIN, game.CHARACTER.ROSA}})
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Walk to the top of the tower.
@@ -3423,6 +3420,17 @@ local function _sequence_rubicant()
 	table.insert(_q, {walk.walk, {172, 21, 8}})
 	table.insert(_q, {walk.walk, {172, 21, 24}})
 	table.insert(_q, {walk.walk, {172, 14, 24}})
+	table.insert(_q, {walk.walk, {172, 14, 21}})
+
+	-- Remove the Dwarf axe.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.ICEBRAND}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.SHIELD.ICE}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.close, {}})
+
+	-- Engage Edge's parents.
 	table.insert(_q, {walk.walk, {172, 14, 20}})
 
 	-- After the Eblan battle, talk to Rubicant.
