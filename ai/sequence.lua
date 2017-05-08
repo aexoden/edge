@@ -3438,6 +3438,13 @@ local function _sequence_rubicant()
 end
 
 local function _sequence_falcon_upgrade()
+	-- Equip the Dwarf axe again.
+	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DWARF}})
+	table.insert(_q, {menu.field.equip.close, {}})
+	table.insert(_q, {menu.field.close, {}})
+
 	-- Exit the Tower of Bab-il.
 	table.insert(_q, {walk.walk, {172, 14, 15}})
 	table.insert(_q, {walk.walk, {171, 16, 20}})
@@ -3990,6 +3997,9 @@ local function _sequence_grind_start()
 	table.insert(_q, {dialog.set_mash_button, {"P1 B"}})
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.ALL, [game.CHARACTER.FUSOYA] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP}, game.CHARACTER.FUSOYA}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
+	table.insert(_q, {menu.field.equip.close, {}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.RYDIA}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
 	table.insert(_q, {menu.field.equip.close, {}})
@@ -4012,9 +4022,9 @@ local function _sequence_grind_start()
 	end
 
 	table.insert(_q, {menu.field.equip.close, {}})
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.CECIL, game.CHARACTER.EDGE}})
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.RYDIA, game.CHARACTER.FUSOYA}})
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.RYDIA, game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.CECIL, game.CHARACTER.ROSA}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.ROSA, game.CHARACTER.EDGE}})
+	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.RYDIA, game.CHARACTER.ROSA}})
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Walk to just before the elements battle.
