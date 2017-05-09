@@ -640,15 +640,28 @@ local function _battle_dark_elf(character, turn, strat)
 		_command_fight()
 	elseif character == game.CHARACTER.YANG then
 		if turn == 1 or turn >= 3 then
-			if turn == 3 then
+			if not _state.yang_waited and turn == 3 then
+				_command_wait_text(" Weak ", 300)
 				_command_duplicate(game.EQUIP.L_HAND)
+				_state.yang_waited = true
+				return true
 			end
 
-			if game.character.get_stat(game.CHARACTER.TELLAH, "hp", true) < 50 then
-				_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+			if _state.yang_waited then
+				if game.enemy.get_stat(1, "hp") < 50 then
+					if game.character.get_stat(game.CHARACTER.TELLAH, "hp", true) < 50 then
+						_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+					else
+						_command_fight()
+					end
+				elseif game.character.get_stat(game.CHARACTER.TELLAH, "mp", true) < 25 then
+					_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+				else
+					_command_parry()
+				end
+			else
+				_command_fight()
 			end
-
-			_command_fight()
 		elseif turn == 2 then
 			_command_parry()
 		end
@@ -659,6 +672,12 @@ local function _battle_dark_elf(character, turn, strat)
 			_command_wait_text("Da", 300)
 			_command_equip(character, game.ITEM.WEAPON.THUNDER)
 			_command_black(game.MAGIC.BLACK.WEAK)
+		else
+			if game.character.get_stat(game.CHARACTER.TELLAH, "mp", true) >= 25 then
+				_command_black(game.MAGIC.BLACK.WEAK)
+			else
+				_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+			end
 		end
 	elseif character == game.CHARACTER.CID then
 		_command_fight()
