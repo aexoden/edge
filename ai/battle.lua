@@ -2885,6 +2885,7 @@ end
 
 function _M.reset()
 	_reset_state()
+	_battle_count = 0
 	_splits = {}
 end
 
