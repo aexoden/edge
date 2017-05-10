@@ -883,7 +883,10 @@ end
 local function _battle_golbez(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
-			_command_equip(character, game.ITEM.WEAPON.FIRE)
+			if game.item.get_count(game.ITEM.WEAPON.FIRE, game.INVENTORY.BATTLE) > 0 then
+				_command_equip(character, game.ITEM.WEAPON.FIRE)
+			end
+
 			_command_wait_text("Golbez:An")
 		end
 
