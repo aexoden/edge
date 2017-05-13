@@ -1665,7 +1665,6 @@ local function _battle_milon_twin(character, turn, strat)
 end
 
 local function _battle_milon(character, turn, strat)
-	local strat = "twin"
 	if strat == "twin_changeless" or strat == "twin" then
 		return _battle_milon_twin(character, turn, strat)
 	elseif strat == "carrot" then
