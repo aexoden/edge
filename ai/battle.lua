@@ -2088,17 +2088,12 @@ local function _battle_sisters(character, turn, strat)
 	end
 end
 
-local function _battle_valvalis_support(character)
-
-
-end
-
 local function _battle_valvalis(character, turn, strat)
 	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
 	local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp", true)
 	local rosa_hp = game.character.get_stat(game.CHARACTER.ROSA, "hp", true)
 
-	if cecil_hp == 0 or kain_hp == 0 or rosa_hp == 0 then
+	if cecil_hp == 0 or kain_hp == 0 or rosa_hp == 0 or game.character.is_status(game.CHARACTER.CECIL, game.STATUS.STONE) or game.character.is_status(game.CHARACTER.KAIN, game.STATUS.STONE) then
 		_state.alternate = true
 	end
 
