@@ -2799,7 +2799,27 @@ function _M.cycle()
 				end
 			end
 
-			if (open and memory.read("battle_menu", "menu") ~= menu.battle.MENU.NONE) or _state.flush_queue then
+			local run = false
+
+			if index == game.battle.FORMATION.ZEROMUS then
+				local final_dialog = dialog.get_battle_text(4) == " Zer"
+
+				if final_dialog then
+					_state.final_dialog = true
+				end
+
+				if _state.final_dialog and not final_dialog and not _state.run_frame then
+					_state.run_frame = emu.framecount() + 240
+				end
+
+				if not _state.run_frame or emu.framecount() < _state.run_frame then
+					run = true
+				end
+			end
+
+			if run then
+				input.press({"P1 L", "P1 R"}, input.DELAY.NONE)
+			elseif (open and memory.read("battle_menu", "menu") ~= menu.battle.MENU.NONE) or _state.flush_queue then
 			 	if #_state.q == 0 and not _state.queued then
 					if (_state.disable_inventory or not _manage_inventory(formation.full_inventory or _state.full_inventory, route.get_inventory(index))) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1, _state.strat) then
 						_state.turns[slot] = _state.turns[slot] + 1
