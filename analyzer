@@ -37,6 +37,8 @@ matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
 
+from matplotlib.font_manager import FontProperties
+
 
 #-------------------------------------------------------------------------------
 # Functions
@@ -399,8 +401,11 @@ def img_output_battle(f, key, data):
     else:
         values = {'Default Strat': [x / 60.0988 for x in data['data']]}
 
-    axis_min = min([min(x) for x in values.values()]) - 10
-    axis_max = max([max(x) for x in values.values()]) + 10
+    mintmp = [min(x) for x in values.values() if len(x) > 0]
+    maxtmp = [max(x) for x in values.values() if len(x) > 0]
+
+    axis_min = min(mintmp) - 10 if len(mintmp) > 0 else 0
+    axis_max = max(maxtmp) + 10 if len(maxtmp) > 0 else 300
 
     subplot = figure.add_subplot(111)
     axis = numpy.linspace(axis_min, axis_max)
@@ -418,8 +423,13 @@ def img_output_battle(f, key, data):
         if kde:
             subplot.plot(axis, kde(axis), 'k-', color=colors[i], label=strat)
 
+    fontprop = FontProperties()
+    fontprop.set_size('small')
+
     if len(data['strat']) > 0:
-        plt.legend(loc="upper left")
+        box = subplot.get_position()
+        subplot.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+        plt.legend(loc="center left", bbox_to_anchor=(1, 0.5), prop=fontprop)
 
     plt.xlabel("Battle Time (seconds)")
     plt.ylabel("Probability")
@@ -438,6 +448,10 @@ def html_output_header(f):
     f.write('\t\t<meta charset="utf-8">\n')
     f.write('\t\t<title>Edge Log Analysis</title>\n')
     f.write('\t\t<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">\n')
+    f.write('\t\t<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.9/css/theme.bootstrap_3.min.css" integrity="sha256-kHFAS2GpR7DKNTb9SMX1aaoBxjLsZyeAX2Dh7h4UB1g=" crossorigin="anonymous" />\n')
+    f.write('\t\t<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>\n')
+    f.write('\t\t<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.9/js/jquery.tablesorter.min.js" integrity="sha256-kgWKzrQM9EptuijrOz9DZw4YTl/iEtgLzcfCB2WfV2I=" crossorigin="anonymous"></script>\n')
+    f.write('\t\t<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.9/js/jquery.tablesorter.widgets.min.js" integrity="sha256-68t49lPEpa0S/ohrRPVYgcHaMn4HyOKfVomAVMAXNoM=" crossorigin="anonymous"></script>\n')
     f.write('\t\t<meta name="viewport" content="width=device-width, initial-scale=1">\n')
     f.write('\t\t<style type="text/css">\n')
     f.write('\t\t\t.bold { font-weight: bold; }\n')
@@ -452,6 +466,20 @@ def html_output_header(f):
 
 def html_output_footer(f):
     f.write('\t\t</div>\n')
+    f.write('\t\t<script>\n')
+    f.write('''$.extend($.tablesorter.themes.bootstrap, {table: 'table table-bordered table-striped'});''')
+    f.write('\t\t\t$(document).ready(function()\n')
+    f.write('\t\t\t\t{\n')
+    f.write('''var options = {
+        theme: "bootstrap",
+        headerTemplate: "{content} {icon}",
+        widgets: ["uitheme", "zebra"]
+    };\n''')
+    f.write('\t\t\t\t\t$("#seeds").tablesorter(options);\n')
+    f.write('\t\t\t\t\t$("#runs").tablesorter(options);\n')
+    f.write('\t\t\t\t}\n')
+    f.write('\t\t\t);\n')
+    f.write('\t\t</script>\n')
     f.write('\t</body>\n')
     f.write('</html>\n')
 
@@ -459,10 +487,10 @@ def html_output_footer(f):
 def html_output_basic_statistics(f, logs):
     f.write('\t\t\t<h2>Basic Statistics</h2>\n')
     f.write('\t\t\t<dl class="dl-horizontal">\n')
-    f.write('\t\t\t\t<dt>Number of Logs</dt><dd>{}</dd>'.format(len(logs)))
+    f.write('\t\t\t\t<dt>Number of Logs</dt><dd>{}</dd>\n'.format(len(logs)))
     if len([x for x in logs if x.success]) > 0:
-        f.write('\t\t\t\t<dt>Best Time</dt><dd>{}</dd>'.format(format_time(min([x.frames for x in logs if x.success]))))
-        f.write('\t\t\t\t<dt>Sum of Best</dt><dd>{}</dd>'.format(format_time(get_sum_of_best(logs))))
+        f.write('\t\t\t\t<dt>Best Time</dt><dd>{}</dd>\n'.format(format_time(min([x.frames for x in logs if x.success]))))
+        f.write('\t\t\t\t<dt>Sum of Best</dt><dd>{}</dd>\n'.format(format_time(get_sum_of_best(logs))))
     f.write('\t\t\t</dl>\n')
 
 
@@ -603,7 +631,7 @@ def html_output_battle(f, key, battle_data):
 
 def html_output_seeds(f, logs):
     f.write('\t\t\t<h2>Step Seeds</h2>\n')
-    f.write('\t\t\t<table class="table table-striped">\n')
+    f.write('\t\t\t<table class="tablesorter-bootstrap" id="seeds">\n')
     f.write('\t\t\t\t<thead>\n')
     f.write('\t\t\t\t\t<tr>\n')
     f.write('\t\t\t\t\t\t<th>Route</th>\n')
@@ -721,7 +749,7 @@ def html_output_run(f, splits, battles, log):
 
 def html_output_runs(f, logs):
     f.write('\t\t\t<h2>Runs</h2>\n')
-    f.write('\t\t\t<table class="table table-striped">\n')
+    f.write('\t\t\t<table class="tablesorter-bootstrap" id="runs">\n')
     f.write('\t\t\t\t<thead>\n')
     f.write('\t\t\t\t\t<tr>\n')
     f.write('\t\t\t\t\t\t<th>Edge Version</th>\n')
@@ -753,9 +781,9 @@ def html_output_runs(f, logs):
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.route))
         f.write('\t\t\t\t\t\t<td><a href="runs/{}-{:03}-{:010}.html">{}</a></td>\n'.format(log.route, log.step_seed, log.rng_seed, log.rng_seed))
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.step_seed))
-        f.write('\t\t\t\t\t\t<td>{} / {} ({:.3f}%)</td>\n'.format(log.back_attack_count, log.random_battle_count, log.back_attack_count * 100 / log.random_battle_count if log.random_battle_count > 0 else 100))
+        f.write('\t\t\t\t\t\t<td data-text="{}">{} / {} ({:.3f}%)</td>\n'.format(log.back_attack_count / log.random_battle_count if log.random_battle_count > 0 else 100, log.back_attack_count, log.random_battle_count, log.back_attack_count * 100 / log.random_battle_count if log.random_battle_count > 0 else 100))
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(log.non_battle_frames) if log.non_battle_frames else 'N/A'))
-        f.write('\t\t\t\t\t\t<td class="{}">{}</td>\n'.format(result_class, log.result))
+        f.write('\t\t\t\t\t\t<td data-text="{}" class="{}">{}</td>\n'.format(log.frames if log.frames else (10 ** 8) - log.max_frame, result_class, log.result))
         f.write('\t\t\t\t\t</tr>\n')
 
     f.write('\t\t\t\t</tbody>\n')
