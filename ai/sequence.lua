@@ -428,7 +428,13 @@ local function _post_grind_menu()
 		rosa_menu = true
 	end
 
-	if heal or duplicate or revive or rosa_menu then
+	local hand, weapon = game.character.get_weapon(game.CHARACTER.CECIL)
+
+	if ROUTE == "no64-rosa" and weapon ~= game.ITEM.WEAPON.DWARF then
+		equip = true
+	end
+
+	if heal or duplicate or revive or rosa_menu or equip then
 		table.insert(stack, {menu.field.open, {}})
 
 		if duplicate then
@@ -436,6 +442,12 @@ local function _post_grind_menu()
 			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.EXCALBUR}})
 			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.NONE}})
 			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.EXCALBUR}})
+			table.insert(stack, {menu.field.equip.close, {}})
+		end
+
+		if equip then
+			table.insert(stack, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DWARF}})
 			table.insert(stack, {menu.field.equip.close, {}})
 		end
 
