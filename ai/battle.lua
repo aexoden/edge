@@ -799,12 +799,16 @@ local function _battle_elements_rosa(character, turn, strat)
 		end
 	elseif character == game.CHARACTER.CECIL then
 		if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) > 0 then
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
 		else
 			_command_parry()
 		end
 	elseif character == game.CHARACTER.RYDIA then
-		_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+		if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) > 0 then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+		else
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+		end
 	end
 end
 
