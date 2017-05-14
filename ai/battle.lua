@@ -2283,7 +2283,125 @@ local function _battle_zeromus_excalbur(character, turn, strat)
 	end
 end
 
-local function _battle_zeromus_rosa(character, turn, strat)
+local function _battle_zeromus_rosa_new(character, turn, strat)
+	if character == game.CHARACTER.CECIL then
+		local rosa_delta = game.character.get_stat(game.CHARACTER.ROSA, "hp_max", true) - game.character.get_stat(game.CHARACTER.ROSA, "hp", true)
+		local kain_delta = game.character.get_stat(game.CHARACTER.KAIN, "hp_max", true) - game.character.get_stat(game.CHARACTER.KAIN, "hp", true)
+
+		if _state.cecil_nuke then
+			turn = turn + 1
+		end
+
+		if turn == 1 then
+			_command_use_item(game.ITEM.ITEM.CRYSTAL)
+		elseif turn == 2 then
+			if rosa_delta > 50 and rosa_delta > kain_delta then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+			elseif kain_delta > 50 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+			else
+				_command_parry()
+			end
+		elseif turn == 3 then
+			if not _state.cecil_nuke then
+				_command_wait_text("Big Ba")
+			end
+
+			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		elseif turn == 4 then
+			local item = game.ITEM.ITEM.CURE2
+
+			if game.item.get_count(game.ITEM.ITEM.ELIXIR, game.INVENTORY.BATTLE) > 1 then
+				item = game.ITEM.ITEM.ELIXIR
+			end
+
+			if rosa_delta > kain_delta then
+				_command_use_item(item, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+			else
+				_command_use_item(item, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+			end
+		else
+			_command_parry()
+		end
+	elseif character == game.CHARACTER.ROSA then
+		if _state.held_for_hole then
+			turn = turn + 1
+		end
+
+		if turn == 1 then
+			_command_white(game.MAGIC.WHITE.BERSK, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		elseif turn == 2 or turn == 6 then
+			if turn == 6 and game.character.is_status(game.CHARACTER.ROSA, game.STATUS.WALL) then
+				_command_wait_text("BlkHo")
+				_command_wait_frames(180)
+			end
+
+			_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		elseif turn == 3 or turn == 4 or turn == 7 then
+			_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		elseif turn == 5 then
+			if game.enemy.get_stat(1, "hp") < 30000 then
+				_command_change()
+			else
+				_command_wait_text("BlkHo")
+				_command_wait_frames(180)
+				_state.held_for_hole = true
+				return true
+			end
+		elseif turn == 8 then
+			if game.enemy.get_stat(1, "hp") < 7500 then
+				_command_white(game.MAGIC.WHITE.WHITE)
+			else
+				_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.ENEMY, 0)
+			end
+		elseif turn == 9 then
+			_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		elseif turn >= 10 then
+			_command_white(game.MAGIC.WHITE.WHITE)
+		end
+	elseif character == game.CHARACTER.EDGE then
+		if turn == 1 then
+			_command_dart(game.ITEM.STAR.NINJA)
+		elseif turn == 2 then
+			if game.character.get_stat(game.CHARACTER.CECIL, "hp", true) == 0 then
+				_state.cecil_nuke = true
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			else
+				_command_parry()
+			end
+		elseif turn == 3 then
+			if _state.cecil_nuke then
+				_command_wait_text("Big Ba")
+			end
+
+			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		else
+			_command_parry()
+		end
+	elseif character == game.CHARACTER.RYDIA then
+		if turn == 1 then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+		elseif turn == 2 then
+			if _state.cecil_nuke then
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			else
+				_command_parry()
+			end
+		end
+	elseif character == game.CHARACTER.KAIN then
+		if turn == 1 then
+			_command_run_buffer()
+			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		elseif turn == 2 then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.ENEMY, 0)
+		elseif turn == 3 then
+			_command_run_buffer()
+			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		end
+	end
+end
+
+local function _battle_zeromus_rosa_old(character, turn, strat)
 	-- Constants
 	local MIDGAME = {
 		STANDARD   = 0,
@@ -2508,8 +2626,10 @@ end
 local function _battle_zeromus(character, turn, strat)
 	if ROUTE == "no64-excalbur" then
 		return _battle_zeromus_excalbur(character, turn, strat)
+	elseif strat == "rosa-new" then
+		return _battle_zeromus_rosa_new(character, turn, strat)
 	else
-		return _battle_zeromus_rosa(character, turn, strat)
+		return _battle_zeromus_rosa_old(character, turn, strat)
 	end
 end
 
