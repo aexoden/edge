@@ -542,11 +542,7 @@ local function _battle_cpu(character, turn, strat)
 		end
 	elseif ROUTE == "no64-rosa" then
 		if character == game.CHARACTER.EDGE then
-			if turn == 1 then
-				_command_change()
-			elseif turn == 2 then
-				_command_dart(game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 2)
-			elseif game.item.get_count(game.ITEM.WEAPON.DANCING, game.INVENTORY.BATTLE) > 0 then
+			if game.item.get_count(game.ITEM.WEAPON.DANCING, game.INVENTORY.BATTLE) > 0 then
 				_command_dart(game.ITEM.WEAPON.DANCING)
 			elseif game.character.get_stat(game.CHARACTER.EDGE, "mp", true) >= 25 then
 				_command_ninja(game.MAGIC.NINJA.BLITZ)
@@ -576,12 +572,7 @@ local function _battle_cpu(character, turn, strat)
 				_command_parry()
 			end
 		elseif character == game.CHARACTER.CECIL then
-			if turn == 2 then
-				_command_equip(character, game.ITEM.WEAPON.ICEBRAND)
-				_command_fight(menu.battle.TARGET.ENEMY, 0)
-			else
-				_command_fight()
-			end
+			_command_fight(menu.battle.TARGET.ENEMY, 0)
 		end
 	end
 end
