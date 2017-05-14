@@ -726,6 +726,7 @@ def html_output_runs(f, logs):
     f.write('\t\t\t\t<thead>\n')
     f.write('\t\t\t\t\t<tr>\n')
     f.write('\t\t\t\t\t\t<th>Edge Version</th>\n')
+    f.write('\t\t\t\t\t\t<th>Route</th>\n')
     f.write('\t\t\t\t\t\t<th>RNG Seed</th>\n')
     f.write('\t\t\t\t\t\t<th>Step Seed</th>\n')
     f.write('\t\t\t\t\t\t<th>Surprised/Back Attacks</th>\n')
@@ -748,8 +749,9 @@ def html_output_runs(f, logs):
         else:
             result_class = 'text-danger bold'
 
-        f.write('\t\t\t\t\t<tr>\n'.format(log.rng_seed))
+        f.write('\t\t\t\t\t<tr>\n')
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.version))
+        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.route))
         f.write('\t\t\t\t\t\t<td><a href="runs/{}-{:03}-{:010}.html">{}</a></td>\n'.format(log.route, log.step_seed, log.rng_seed, log.rng_seed))
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.step_seed))
         f.write('\t\t\t\t\t\t<td>{} / {} ({:.3f}%)</td>\n'.format(log.back_attack_count, log.random_battle_count, log.back_attack_count * 100 / log.random_battle_count if log.random_battle_count > 0 else 100))
