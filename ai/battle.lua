@@ -757,7 +757,7 @@ local function _battle_elements_excalbur(character, turn, strat)
 			_command_black(game.MAGIC.BLACK.ICE3, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 		end
 	elseif character == game.CHARACTER.ROSA then
-		if turn == 1 then
+		if turn == 1 and strat == 'excalbur-slow' then
 			_command_white(game.MAGIC.WHITE.SLOW)
 		else
 			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.PARTY, weakest[1])

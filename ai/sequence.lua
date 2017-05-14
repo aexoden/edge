@@ -4084,7 +4084,12 @@ local function _sequence_elements()
 	local level = game.character.get_stat(game.CHARACTER.EDGE, "level")
 
 	if ROUTE == "no64-rosa" then
+		_M.set_battle_strat(game.battle.FORMATION.ELEMENTS, {"rosa"})
 		level = game.character.get_stat(game.CHARACTER.ROSA, "level")
+	end
+
+	if ROUTE == "no64-excalbur" then
+		_M.set_battle_strat(game.battle.FORMATION.ELEMENTS, {"excalbur", "excalbur-slow"})
 	end
 
 	if level < 45 then
