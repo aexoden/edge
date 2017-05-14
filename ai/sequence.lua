@@ -4121,6 +4121,8 @@ local function _sequence_cpu()
 	table.insert(_q, {menu.field.open, {}})
 
 	if ROUTE == "no64-excalbur" then
+		_M.set_battle_strat(game.battle.FORMATION.CPU, {"excalbur-quake"})
+
 		if game.character.get_stat(game.CHARACTER.ROSA, "level") < 20 then
 			table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.ALL, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP}}})
 		else
@@ -4129,6 +4131,8 @@ local function _sequence_cpu()
 
 		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.FUSOYA, game.CHARACTER.CECIL}})
 	else
+		_M.set_battle_strat(game.battle.FORMATION.CPU, {"rosa"})
+
 		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.HP}, game.CHARACTER.FUSOYA}})
 	end
 
@@ -4296,6 +4300,8 @@ local function _sequence_core()
 
 	-- Complete the Excalbur pre-Zeromus menu.
 	if ROUTE == "no64-excalbur" then
+		_M.set_battle_strat(game.battle.FORMATION.ZEROMUS, {"excalbur"})
+
 		table.insert(_q, {menu.field.open, {}})
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.EDGE}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.NONE}})
@@ -4342,6 +4348,8 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {374, 6, 7}})
 
 	if ROUTE == "no64-rosa" then
+		_M.set_battle_strat(game.battle.FORMATION.ZEROMUS, {"rosa"})
+
 		table.insert(_q, {walk.walk, {374, 3, 7}})
 		table.insert(_q, {walk.walk, {374, 3, 13}})
 		table.insert(_q, {walk.interact, {"Found"}})
