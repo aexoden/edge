@@ -179,17 +179,20 @@ def get_seed_data(logs):
     seeds = {}
 
     for log in logs:
-        if log.step_seed not in seeds:
-            seeds[log.step_seed] = {'data': [], 'best_splits': {}, 'battles': 0, 'back_attack_count': 0}
+        if log.route not in seeds:
+            seeds[log.route] = {}
+
+        if log.step_seed not in seeds[log.route]:
+            seeds[log.route][log.step_seed] = {'data': [], 'best_splits': {}, 'battles': 0, 'back_attack_count': 0}
 
         if log.success:
-            seeds[log.step_seed]['data'].append(log.frames)
-            seeds[log.step_seed]['battles'] += log.random_battle_count
-            seeds[log.step_seed]['back_attack_count'] += log.back_attack_count
+            seeds[log.route][log.step_seed]['data'].append(log.frames)
+            seeds[log.route][log.step_seed]['battles'] += log.random_battle_count
+            seeds[log.route][log.step_seed]['back_attack_count'] += log.back_attack_count
 
         for split in log.splits:
-            if split not in seeds[log.step_seed]['best_splits'] or log.splits[split]['current'] < seeds[log.step_seed]['best_splits'][split]:
-                seeds[log.step_seed]['best_splits'][split] = log.splits[split]['current']
+            if split not in seeds[log.route][log.step_seed]['best_splits'] or log.splits[split]['current'] < seeds[log.route][log.step_seed]['best_splits'][split]:
+                seeds[log.route][log.step_seed]['best_splits'][split] = log.splits[split]['current']
 
     return seeds
 
@@ -198,10 +201,11 @@ def get_sum_of_best(logs):
     seeds = get_seed_data(logs)
     splits = {}
 
-    for data in seeds.values():
-        for split, value in data['best_splits'].items():
-            if split not in splits or value < splits[split]:
-                splits[split] = value
+    for route in seeds.values():
+        for data in route.values():
+            for split, value in data['best_splits'].items():
+                if split not in splits or value < splits[split]:
+                    splits[split] = value
 
     return sum(splits.values())
 
@@ -615,17 +619,21 @@ def html_output_seeds(f, logs):
 
     seeds = get_seed_data(logs)
 
-    for seed, data in sorted(seeds.items(), key=lambda x: statistics.median(x[1]['data']) if len(x[1]['data']) > 0 else 0):
-        if len(data['data']) > 0:
-            f.write('\t\t\t\t\t<tr>\n')
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(seed))
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(len(data['data'])))
-            f.write('\t\t\t\t\t\t<td>{} / {} ({:.3f}%)</td>\n'.format(data['back_attack_count'], data['battles'], data['back_attack_count'] * 100 / data['battles'] if data['battles'] > 0 else 100))
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(sum(data['best_splits'].values()))))
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data']))))
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data']))))
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data']))))
-            f.write('\t\t\t\t\t</tr>\n')
+    for route in seeds:
+        if len(seeds) > 1:
+            f.write('\t\t\t\t\t<h3>{}</h3>'.format(route))
+
+        for seed, data in sorted(seeds[route].items(), key=lambda x: statistics.median(x[1]['data']) if len(x[1]['data']) > 0 else 0):
+            if len(data['data']) > 0:
+                f.write('\t\t\t\t\t<tr>\n')
+                f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(seed))
+                f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(len(data['data'])))
+                f.write('\t\t\t\t\t\t<td>{} / {} ({:.3f}%)</td>\n'.format(data['back_attack_count'], data['battles'], data['back_attack_count'] * 100 / data['battles'] if data['battles'] > 0 else 100))
+                f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(sum(data['best_splits'].values()))))
+                f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data']))))
+                f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data']))))
+                f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data']))))
+                f.write('\t\t\t\t\t</tr>\n')
 
     f.write('\t\t\t\t</tbody>\n')
     f.write('\t\t\t</table>\n')
