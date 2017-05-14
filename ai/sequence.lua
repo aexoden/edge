@@ -4348,7 +4348,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {374, 6, 7}})
 
 	if ROUTE == "no64-rosa" then
-		_M.set_battle_strat(game.battle.FORMATION.ZEROMUS, {"rosa"})
+		_M.set_battle_strat(game.battle.FORMATION.ZEROMUS, {"rosa-old", "rosa-new"})
 
 		table.insert(_q, {walk.walk, {374, 3, 7}})
 		table.insert(_q, {walk.walk, {374, 3, 13}})
