@@ -606,6 +606,7 @@ def html_output_seeds(f, logs):
     f.write('\t\t\t<table class="table table-striped">\n')
     f.write('\t\t\t\t<thead>\n')
     f.write('\t\t\t\t\t<tr>\n')
+    f.write('\t\t\t\t\t\t<th>Route</th>\n')
     f.write('\t\t\t\t\t\t<th>Seed</th>\n')
     f.write('\t\t\t\t\t\t<th>Count</th>\n')
     f.write('\t\t\t\t\t\t<th>Back Attacks</th>\n')
@@ -620,12 +621,10 @@ def html_output_seeds(f, logs):
     seeds = get_seed_data(logs)
 
     for route in seeds:
-        if len(seeds) > 1:
-            f.write('\t\t\t\t\t<h3>{}</h3>'.format(route))
-
         for seed, data in sorted(seeds[route].items(), key=lambda x: statistics.median(x[1]['data']) if len(x[1]['data']) > 0 else 0):
             if len(data['data']) > 0:
                 f.write('\t\t\t\t\t<tr>\n')
+                f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(route))
                 f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(seed))
                 f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(len(data['data'])))
                 f.write('\t\t\t\t\t\t<td>{} / {} ({:.3f}%)</td>\n'.format(data['back_attack_count'], data['battles'], data['back_attack_count'] * 100 / data['battles'] if data['battles'] > 0 else 100))
