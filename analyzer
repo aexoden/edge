@@ -640,6 +640,11 @@ def html_output_seeds(f, logs):
 
 
 def html_output_run(f, splits, battles, log):
+    f.write('\t\t\t<h2>Summary</h2>\n')
+    f.write('\t\t\t\t<dl class="dl-horizontal">\n')
+    f.write('\t\t\t\t\t<dt>Route</dt><dd>{}</dd>\n'.format(log.route))
+    f.write('\t\t\t\t</dl>\n')
+
     f.write('\t\t\t<h2>Splits</h2>\n')
     f.write('\t\t\t<table class="table table-striped">\n')
     f.write('\t\t\t\t<thead>\n')
@@ -679,6 +684,7 @@ def html_output_run(f, splits, battles, log):
     f.write('\t\t\t\t<thead>\n')
     f.write('\t\t\t\t\t<tr>\n')
     f.write('\t\t\t\t\t\t<th>Formation</th>\n')
+    f.write('\t\t\t\t\t\t<th>Strat</th>\n')
     f.write('\t\t\t\t\t\t<th>Time</th>\n')
     f.write('\t\t\t\t\t\t<th>Best Time</th>\n')
     f.write('\t\t\t\t\t\t<th>Worst Time</th>\n')
@@ -688,20 +694,26 @@ def html_output_run(f, splits, battles, log):
     f.write('\t\t\t\t<tbody>\n')
 
     for data in log.battles:
-        if data['formation'] in battles and len(battles[data['formation']]['data']) > 0:
-            if data['frames'] < sorted(battles[data['formation']]['data'])[int(len(battles[data['formation']]['data']) * 0.3333)]:
+        key = '{:03}'.format(data['formation'])
+
+        if data['strat']:
+            key = '{}-{}'.format(key, data['strat'])
+
+        if key in battles and len(battles[key]['data']) > 0:
+            if data['frames'] < sorted(battles[key]['data'])[int(len(battles[key]['data']) * 0.3333)]:
                 result_class = 'text-success'
-            elif data['frames'] < sorted(battles[data['formation']]['data'])[int(len(battles[data['formation']]['data']) * 0.6667)]:
+            elif data['frames'] < sorted(battles[key]['data'])[int(len(battles[key]['data']) * 0.6667)]:
                 result_class = 'text-warning'
             else:
                 result_class = 'text-danger'
 
             f.write('\t\t\t\t\t<tr>\n')
             f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(describe_formation(data['formation'])))
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['strat'] if data['strat'] else '-'))
             f.write('\t\t\t\t\t\t<td class="{}">{}</td>\n'.format(result_class, format_time(data['frames'])))
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(battles[data['formation']]['data']))))
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(battles[data['formation']]['data']))))
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(battles[data['formation']]['data']))))
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(battles[key]['data']))))
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(battles[key]['data']))))
+            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(battles[key]['data']))))
             f.write('\t\t\t\t\t</tr>\n')
 
     f.write('\t\t\t\t</tbody>\n')
