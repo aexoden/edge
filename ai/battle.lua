@@ -1192,11 +1192,9 @@ local function _battle_grind(character, turn, strat)
 							if not _state.equipped then
 								_command_equip(character, game.ITEM.WEAPON.DWARF)
 								_state.equipped = true
-							elseif strongest[1] then
-								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
-							else
-								_command_parry()
 							end
+
+							_command_parry()
 						end
 					elseif character == game.CHARACTER.EDGE then
 						if ROUTE == "no64-rosa" then
