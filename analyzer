@@ -192,9 +192,9 @@ def get_seed_data(logs):
             seeds[log.route][log.step_seed]['battles'] += log.random_battle_count
             seeds[log.route][log.step_seed]['back_attack_count'] += log.back_attack_count
 
-        for split in log.splits:
-            if split not in seeds[log.route][log.step_seed]['best_splits'] or log.splits[split]['current'] < seeds[log.route][log.step_seed]['best_splits'][split]:
-                seeds[log.route][log.step_seed]['best_splits'][split] = log.splits[split]['current']
+            for split in log.splits:
+                if split not in seeds[log.route][log.step_seed]['best_splits'] or log.splits[split]['current'] < seeds[log.route][log.step_seed]['best_splits'][split]:
+                    seeds[log.route][log.step_seed]['best_splits'][split] = log.splits[split]['current']
 
     return seeds
 
