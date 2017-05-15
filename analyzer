@@ -260,6 +260,10 @@ class Log(object):
         return max([x['total'] for x in self._splits.values()]) if len(self._splits) > 0 else 0
 
     @property
+    def last_frame(self):
+        return self._last_frame
+
+    @property
     def route(self):
         return self._route
 
@@ -291,11 +295,11 @@ class Log(object):
         if self.success:
             return format_time(self.frames)
         elif self._reset_for_time:
-            return 'Ragequit after {}'.format(sorted(self._splits.items(), key=lambda x: x[1]['total'])[-1][0])
+            return 'Ragequit after {} ({})'.format(sorted(self._splits.items(), key=lambda x: x[1]['total'])[-1][0], format_time(self.last_frame))
         elif len(self._battles) > 0 and self._battles[-1]['result'].startswith('Perished'):
-            return 'Died to {}'.format(describe_formation(self._battles[-1]['formation']))
+            return 'Died to {} ({})'.format(describe_formation(self._battles[-1]['formation']), format_time(self.last_frame))
         else:
-            return 'Unknown Failure'
+            return 'Unknown Failure ({})'.format(format_time(self.last_frame))
 
     @property
     def version(self):
@@ -304,9 +308,13 @@ class Log(object):
     def _parse_file(self, filename):
         with open(filename) as f:
             current_battle = None
+            base_frame = None
 
             for line in f:
                 line_type, fields = self._parse_line(line.strip())
+
+                if base_frame is not None:
+                    self._last_frame = int(fields['frame']) - base_frame
 
                 if line_type == 'split':
                     if fields['split'] == 'Start':
@@ -765,7 +773,7 @@ def html_output_runs(f, logs):
 
     frames = [log.frames for log in logs if log.success]
 
-    for log in sorted(logs, key=lambda x: x.frames if x.frames else (10 ** 8) - x.max_frame):
+    for log in sorted(logs, key=lambda x: x.frames if x.frames else (10 ** 8) - x.last_frame):
         if log.success:
             if log.frames < sorted(frames)[int(len(frames) * 0.3333)]:
                 result_class = 'text-success'
@@ -783,7 +791,7 @@ def html_output_runs(f, logs):
         f.write('\t\t\t\t\t\t<td><a href="runs/{}-{:03}-{:010}.html">{}</a></td>\n'.format(log.route, log.step_seed, log.rng_seed, log.rng_seed))
         f.write('\t\t\t\t\t\t<td data-text="{}">{} / {} ({:.3f}%)</td>\n'.format(log.back_attack_count / log.random_battle_count if log.random_battle_count > 0 else 100, log.back_attack_count, log.random_battle_count, log.back_attack_count * 100 / log.random_battle_count if log.random_battle_count > 0 else 100))
         f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(log.non_battle_frames) if log.non_battle_frames else 'N/A'))
-        f.write('\t\t\t\t\t\t<td data-text="{}" class="{}">{}</td>\n'.format(log.frames if log.frames else (10 ** 8) - log.max_frame, result_class, log.result))
+        f.write('\t\t\t\t\t\t<td data-text="{}" class="{}">{}</td>\n'.format(log.frames if log.frames else (10 ** 8) - log.last_frame, result_class, log.result))
         f.write('\t\t\t\t\t</tr>\n')
 
     f.write('\t\t\t\t</tbody>\n')
