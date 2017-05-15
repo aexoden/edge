@@ -58,6 +58,8 @@ local function _set_route()
 	ROUTES = {"no64-excalbur", "no64-rosa", "paladin"}
 	NO64_ROUTES = {"no64-excalbur", "no64-rosa"}
 
+	math.randomseed(os.time())
+
 	if CONFIG.ROUTE then
 		if CONFIG.ROUTE == "no64" then
 			return NO64_ROUTES[math.random(#NO64_ROUTES)]
