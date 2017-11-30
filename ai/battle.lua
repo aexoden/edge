@@ -765,41 +765,32 @@ local function _battle_elements_rosa(character, turn, strat)
 		if turn == 1 then
 			_command_black(game.MAGIC.BLACK.NUKE)
 		elseif turn == 2 then
-			_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+			_command_black(game.MAGIC.BLACK.FIRE3, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 3 then
-			_command_black(game.MAGIC.BLACK.FIRE3, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+			_command_black(game.MAGIC.BLACK.FIRE3, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 4 then
-			if game.enemy.get_stat(0, "hp") <= 9999 then
-				_command_black(game.MAGIC.BLACK.FIRE3, menu.battle.TARGET.ENEMY, 0)
+			if game.character.get_stat(game.CHARACTER.EDGE, "hp") == 0 then
+				_command_black(game.MAGIC.BLACK.NUKE, menu.battle.TARGET.ENEMY, 0)
 			else
-				_command_black(game.MAGIC.BLACK.NUKE, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
-				_state.nuke = true
+				_command_black(game.MAGIC.BLACK.ICE3, menu.battle.TARGET.ENEMY, 0)
 			end
-		elseif turn == 5 then
-			_command_black(game.MAGIC.BLACK.ICE3)
 		end
 	elseif character == game.CHARACTER.ROSA then
 		if turn == 1 or turn == 5 then
-			if turn == 1 or _state.nuke then
+			if game.character.get_stat(game.CHARACTER.EDGE, "hp") == 0 then
+				_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+			else
 				_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.ENEMY, 0)
 			end
-		elseif turn >= 6 then
-			_command_parry()
+		elseif turn == 2 then
+			_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		else
-			_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+			_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		end
 	elseif character == game.CHARACTER.CECIL then
-		if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) > 0 then
-			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
-		else
-			_command_parry()
-		end
+		_command_parry()
 	elseif character == game.CHARACTER.RYDIA then
-		if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) > 0 then
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
-		else
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
-		end
+		_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
 	end
 end
 
