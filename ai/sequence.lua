@@ -5266,6 +5266,11 @@ local function _excalbur_zeromus_menu()
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.NONE}})
 	table.insert(_q, {menu.field.equip.close, {}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+
+	if route.get_value("Lunar Overworld Dwarf Axe Choice") == 1 then
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.EXCALBUR}})
+	end
+
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.BANDANNA}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.BL_BELT}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.STRENGTH}})
