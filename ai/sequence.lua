@@ -5125,7 +5125,7 @@ local function _sequence_cpu()
 	else
 		_M.set_battle_strat(game.battle.FORMATION.CPU, {"rosa"})
 
-		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.HP}, game.CHARACTER.FUSOYA}})
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.HP}, game.CHARACTER.FUSOYA}})
 	end
 
 	table.insert(_q, {menu.field.close, {}})

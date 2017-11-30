@@ -542,37 +542,51 @@ local function _battle_cpu(character, turn, strat)
 		end
 	elseif ROUTE == "no64-rosa" then
 		if character == game.CHARACTER.EDGE then
-			if game.item.get_count(game.ITEM.WEAPON.DANCING, game.INVENTORY.BATTLE) > 0 then
-				_command_dart(game.ITEM.WEAPON.DANCING)
-			elseif game.character.get_stat(game.CHARACTER.EDGE, "mp", true) >= 25 then
-				_command_ninja(game.MAGIC.NINJA.BLITZ)
-			else
+			if turn == 1 or turn == 2 then
+				_command_run_buffer()
 				_command_parry()
+			elseif turn == 3 then
+				if _state.edge_waited then
+					if game.enemy.get_stat(0, "hp") < 650 then
+						_command_dart(game.ITEM.WEAPON.DANCING)
+					else
+						_command_parry()
+					end
+				else
+					_command_wait_text("White")
+					_state.edge_waited = true
+					return true
+				end
+			else
+				_command_dart(game.ITEM.WEAPON.DANCING)
 			end
 		elseif character == game.CHARACTER.FUSOYA then
 			if turn == 1 then
+				_command_run_buffer()
 				_command_black(game.MAGIC.BLACK.METEO)
+				_command_run_buffer()
+				_state.flush_queue = true
 			else
-				_command_black(game.MAGIC.BLACK.QUAKE)
+				_command_run_buffer()
+
+				if game.enemy.get_stat(0, "hp") < 1000 then
+					_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+				else
+					_command_black(game.MAGIC.BLACK.NUKE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+				end
+				_command_run_buffer()
+				_state.flush_queue = true
 			end
 		elseif character == game.CHARACTER.ROSA then
 			if turn == 1 then
+				_command_wait_text("Wall ")
 				_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 			elseif turn == 2 then
+				_command_run_buffer()
 				_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-			elseif game.character.get_stat(game.CHARACTER.ROSA, "mp", true) >= 46 then
-				_command_white(game.MAGIC.WHITE.WHITE)
-			else
-				_command_parry()
-			end
-		elseif character == game.CHARACTER.RYDIA then
-			if game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 40 then
-				_command_call(game.MAGIC.CALL.TITAN)
-			else
-				_command_parry()
 			end
 		elseif character == game.CHARACTER.CECIL then
-			_command_fight(menu.battle.TARGET.ENEMY, 0)
+			_command_parry()
 		end
 	end
 end
