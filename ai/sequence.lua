@@ -331,7 +331,7 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 		end
 
 		-- Use Elixirs (if available) to restore designated characters.
-		if game.item.get_index(game.ITEM.ITEM.ELIXIR, 0, game.INVENTORY.FIELD) then
+		if ROUTE ~= "no64-rosa" and game.item.get_index(game.ITEM.ITEM.ELIXIR, 0, game.INVENTORY.FIELD) then
 			for character, hp in pairs(target_hp) do
 				if character ~= underflow_target then
 					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
