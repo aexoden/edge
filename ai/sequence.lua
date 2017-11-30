@@ -3321,6 +3321,14 @@ local function _sequence_dr_lugae()
 	table.insert(_q, {walk.walk, {281, 6, 4}})
 	table.insert(_q, {walk.interact, {}})
 
+	if ROUTE == "no64-rosa" then
+		table.insert(_q, {walk.walk, {281, 4, 4}})
+		table.insert(_q, {walk.walk, {281, 4, 8}})
+		table.insert(_q, {walk.walk, {281, 6, 8}})
+		table.insert(_q, {walk.walk, {281, 6, 10}})
+		table.insert(_q, {walk.interact, {}})
+	end
+
 	-- Walk back to the shop and purchase Rune rings.
 	table.insert(_q, {walk.walk, {281, 6, 7}})
 	table.insert(_q, {walk.walk, {283, 24, 21}})
