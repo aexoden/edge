@@ -1937,7 +1937,15 @@ local function _battle_red_d(character, turn, strat)
 	if ROUTE == "no64-rosa" then
 		return _command_run()
 	else
-		if character == game.CHARACTER.EDGE then
+		local formation = memory.read("battle", "formation")
+
+		if route.get_value("Lunar Subterrane B5 Passage A Choice") == 0 then
+			return _command_run()
+		elseif formation == game.battle.FORMATION.RED_D_2 then
+			return _command_run()
+		elseif formation == game.battle.FORMATION.RED_D_B and route.get_value("Lunar Overworld Dwarf Axe Choice") == 0 then
+			return _command_run()
+		elseif character == game.CHARACTER.EDGE then
 			_command_ninja(game.MAGIC.NINJA.SMOKE)
 		else
 			_command_parry()
