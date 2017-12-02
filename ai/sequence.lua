@@ -496,8 +496,14 @@ local function _post_grind_menu()
 		end
 
 		if heal then
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ELIXIR}})
+			local cure_item = game.ITEM.ITEM.ELIXIR
+
+			if ROUTE == "no64-rosa" then
+				cure_item = game.ITEM.ITEM.CURE2
+			end
+
+			table.insert(stack, {menu.field.item.select, {cure_item}})
+			table.insert(stack, {menu.field.item.select, {cure_item}})
 			table.insert(stack, {menu.field.item.select_character, {grind_character}})
 		end
 
@@ -5406,8 +5412,11 @@ local function _sequence_core()
 	end
 
 	table.insert(_q, {walk.walk, {373, 13, 5}})
-	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
-	table.insert(_q, {walk.interact, {}})
+
+	if ROUTE == "no64-excalbur" then
+		table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+		table.insert(_q, {walk.interact, {}})
+	end
 
 	-- Complete the Excalbur pre-Zeromus menu.
 	if ROUTE == "no64-excalbur" and route.get_value("Lunar Subterrane B5 Passage A Choice") == 0 then
@@ -5674,14 +5683,14 @@ local function _sequence_zemus()
 		_excalbur_zeromus_menu()
 	elseif ROUTE == "no64-rosa" then
 		table.insert(_q, {menu.field.open, {}})
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.EDGE}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.PROTECT}})
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.HEADBAND}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.STRENGTH}})
 		table.insert(_q, {menu.field.equip.close, {}})
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.ROSA}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.WHITE}})
 		table.insert(_q, {menu.field.equip.close, {}})
-		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.EDGE, game.CHARACTER.KAIN}})
-		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.EDGE, game.CHARACTER.CECIL}})
+		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.CECIL, game.CHARACTER.KAIN, game.FORMATION.THREE_FRONT}})
 		table.insert(_q, {menu.field.close, {}})
 	end
 

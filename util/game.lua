@@ -214,6 +214,7 @@ _M.ITEM = {
 		DWARF    = 0x39,
 		EXCALBUR = 0x1B,
 		FIRE     = 0x1C,
+		GUNGNIR  = 0x2A,
 		ICEBRAND = 0x1D,
 		LEGEND   = 0x19,
 		LUNAR    = 0x13,
