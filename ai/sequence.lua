@@ -4317,12 +4317,9 @@ local function _sequence_falcon_upgrade()
 
 	-- Remove the Strength ring from Kain and cast Exit.
 	table.insert(_q, {menu.field.open, {}})
-
-	if ROUTE ~= "no64-rosa" then
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE}})
-		table.insert(_q, {menu.field.equip.close, {}})
-	end
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE}})
+	table.insert(_q, {menu.field.equip.close, {}})
 
 	-- Equip the Dwarf axe again (if necessary).
 	if ROUTE == "no64-excalbur" and route.get_value("Tower of Bab-il B5F Dwarf Axe Choice") == 0 then
@@ -5466,11 +5463,12 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {374, 6, 7}})
 
 	if ROUTE == "no64-rosa" then
-		_M.set_battle_strat(game.battle.FORMATION.ZEROMUS, {"rosa-old", "rosa-new"})
+		_M.set_battle_strat(game.battle.FORMATION.ZEROMUS, {"rosa"})
 
 		table.insert(_q, {walk.walk, {374, 3, 7}})
 		table.insert(_q, {walk.walk, {374, 3, 13}})
 		table.insert(_q, {walk.interact, {"Found"}})
+		table.insert(_q, {walk.walk, {374, 3, 7}})
 	end
 
 	table.insert(_q, {walk.walk, {374, 6, 3}})
@@ -5685,9 +5683,6 @@ local function _sequence_zemus()
 		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.EDGE, game.CHARACTER.KAIN}})
 		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.EDGE, game.CHARACTER.CECIL}})
 		table.insert(_q, {menu.field.close, {}})
-
-		table.insert(_q, {walk.walk, {374, 3, 7}})
-		table.insert(_q, {walk.walk, {374, 6, 7}})
 	end
 
 	table.insert(_q, {walk.walk, {370, 15, 15}})
