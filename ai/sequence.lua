@@ -196,7 +196,7 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 
 		if underflow_target_mp < 1000 then
 			-- Ensure the underflow target has at least 3 MP.
-			if underflow_target_hp == 0 or underflow_target_mp < 3 then
+			if underflow_target_hp == 0 or underflow_target_mp < 3 or underflow_target_mp % 40 == 0 then
 				table.insert(stack, {menu.field.item.open, {}})
 
 				if underflow_target_hp == 0 then
@@ -215,7 +215,7 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 					end
 				end
 
-				if underflow_target_mp < 3 then
+				if underflow_target_mp < 3 or underflow_target_mp % 40 == 0 then
 					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ETHER1}})
 					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.ETHER1}})
 					table.insert(stack, {menu.field.item.select_character, {underflow_target}})
@@ -245,10 +245,10 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 			local will = game.character.get_stat(underflow_target, "will")
 			local healing = (math.floor(will / 8) + 2) * (math.floor(will / 2) + 288)
 
-			while underflow_target_mp > 0 do
+			while underflow_target_mp >= 0 do
 				table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE4}})
 
-				if underflow_target_mp >= 40 then
+				if underflow_target_mp > 40 then
 					table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE4}})
 				elseif underflow_target == game.CHARACTER.TELLAH then
 					table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.SIGHT, "P1 Up"}})

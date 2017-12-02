@@ -913,11 +913,13 @@ end
 local function _battle_grind(character, turn, strat)
 	local grind_character = game.CHARACTER.EDGE
 	local required_dragons = 15
+	local cure_item = game.ITEM.ITEM.ELIXIR
 	local level = game.character.get_stat(game.CHARACTER.EDGE, "level", true)
 
 	if ROUTE == "no64-rosa" then
 		grind_character = game.CHARACTER.ROSA
 		required_dragons = 17
+		cure_item = game.ITEM.ITEM.CURE2
 		level = game.character.get_stat(game.CHARACTER.ROSA, "level", true)
 	end
 
@@ -1089,7 +1091,7 @@ local function _battle_grind(character, turn, strat)
 				if dragon_hp > 50 and dragon_hp < 15000 then
 					_command_fight()
 				elseif game.enemy.get_stat(0, "hp") < 800 then
-					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.ENEMY, 0)
+					_command_use_item(cure_item, menu.battle.TARGET.ENEMY, 0)
 				elseif dragon_kills < required_dragons - 1 then
 					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.ENEMY, 1)
 				else
@@ -1148,11 +1150,11 @@ local function _battle_grind(character, turn, strat)
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 				_state.fusoya_character = character
 			elseif dragon_hp > 0 and fusoya_hp < 760 then
-				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+				_command_use_item(cure_item, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 			elseif game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 100 then
-				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+				_command_use_item(cure_item, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 			elseif game.enemy.get_stat(0, "hp") < 600 then
-				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.ENEMY, 0)
+				_command_use_item(cure_item, menu.battle.TARGET.ENEMY, 0)
 			elseif weakest[1] and weakest[2] == 0 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, weakest[1])
 			elseif character == game.CHARACTER.FUSOYA and not _state.casted then
@@ -1216,7 +1218,11 @@ local function _battle_grind(character, turn, strat)
 						end
 					elseif character == game.CHARACTER.FUSOYA then
 						if game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 45 then
-							_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+							if ROUTE == "no64-rosa" then
+								_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+							else
+								_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
+							end
 						elseif game.enemy.get_stat(0, "hp") > 50 then
 							_command_black(game.MAGIC.BLACK.WEAK)
 						elseif ROUTE == "no64-rosa" then
