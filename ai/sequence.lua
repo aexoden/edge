@@ -5846,7 +5846,7 @@ function _M.end_run(delay)
 	_state.active = false
 
 	if CONFIG.AUTOMATIC then
-		for i = 0, 0x2000, 4 do
+		for i = 0, 0x1FFC, 4 do
 			corememory.write_u32_le(i, 0, "CARTRAM")
 		end
 
