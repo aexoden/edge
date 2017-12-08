@@ -4860,24 +4860,29 @@ local function _sequence_fusoya()
 	table.insert(_q, {walk.interact, {}})
 
 	-- Step Route: Hummingway or FuSoYa
-	local choice = route.get_value("Lunar Overworld Choice")
-	if ROUTE ~= "no64-rosa" and choice == 0 then
-		_sequence_fusoya_hummingway()
-	else
+	if ROUTE == "no64-rosa" then
 		_sequence_fusoya_fusoya()
-	end
-
-	if ROUTE ~= "no64-rosa" then
-		table.insert(_q, {walk.walk, {303, 5, 13}})
-		table.insert(_q, {walk.walk, {303, 5, 7}})
-		table.insert(_q, {walk.walk, {303, 7, 7}})
-		table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
-		table.insert(_q, {walk.interact, {}})
+	else
+		local choice = route.get_value("Lunar Overworld Choice")
 
 		if choice == 0 then
-			_sequence_fusoya_fusoya()
-		else
 			_sequence_fusoya_hummingway()
+		else
+			_sequence_fusoya_fusoya()
+		end
+
+		if ROUTE ~= "no64-rosa" then
+			table.insert(_q, {walk.walk, {303, 5, 13}})
+			table.insert(_q, {walk.walk, {303, 5, 7}})
+			table.insert(_q, {walk.walk, {303, 7, 7}})
+			table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+			table.insert(_q, {walk.interact, {}})
+
+			if choice == 0 then
+				_sequence_fusoya_fusoya()
+			else
+				_sequence_fusoya_hummingway()
+			end
 		end
 	end
 end
