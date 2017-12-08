@@ -806,8 +806,10 @@ local function _battle_elements_rosa(character, turn, strat)
 			end
 		elseif turn == 2 then
 			_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-		else
+		elseif turn == 3 or turn == 4 then
 			_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		else
+			_command_white(game.MAGIC.WHITE.WHITE)
 		end
 	elseif character == game.CHARACTER.CECIL then
 		_command_parry()
