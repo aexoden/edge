@@ -2333,9 +2333,8 @@ local function _battle_zeromus_rosa(character, turn, strat)
 			_command_run_buffer()
 			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 3 then
-			-- wait for shake
-			-- attack only on a low white roll ???
-			if game.enemy.get_stat(0, "hp") > 6000 then
+			-- TODO: This threshold is probably useless.
+			if game.enemy.get_stat(1, "hp") > 6000 then
 				_command_fight()
 			else
 				_command_parry()
