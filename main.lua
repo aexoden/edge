@@ -44,14 +44,7 @@ INITIALIZED = false
 --------------------------------------------------------------------------------
 
 local function _get_version()
-	local file = io.popen("git describe --tags --dirty", "r")
-	local version = string.match(string.match(file:read('*all'), "%S.*"), ".*%S")
-
-	if version == "" then
-		return "v0.0.8"
-	else
-		return version
-	end
+	return "v0.0.9-dev-1"
 end
 
 local function _set_route()
