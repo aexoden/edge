@@ -986,11 +986,11 @@ local function _battle_grind(character, turn, strat)
 		-- Change phases on FuSoYa's turn or at the end of the cycle if he's dead.
 		if _state.phase == PHASE.SETUP and _state.character_index == 0 and _state.setup_complete then
 			_state.phase = PHASE.GRIND
-		elseif _state.phase == PHASE.GRIND and (_state.character_index == 0 or _state.character_index == 4 or weakest[2] == 0) and (weakest[2] == 0 or fusoya_hp <= 760 or game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 25) then
+		elseif _state.phase == PHASE.GRIND and (_state.character_index == 0 or _state.character_index == 4 or weakest[2] == 0) and (weakest[2] == 0 or fusoya_hp <= 760 or game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 25 or (ROUTE == "no64-rosa" and game.enemy.get_stat(0, "hp") < 600)) then
 			_state.phase = PHASE.HEAL
 			_state.dragon_hp = dragon_hp
 			_state.waited = nil
-		elseif _state.phase == PHASE.HEAL and _state.character_index == 4 and _state.cured and _state.casted then
+		elseif _state.phase == PHASE.HEAL and _state.character_index == 4 and _state.cured and _state.casted and game.enemy.get_stat(0, "hp") >= 600 then
 			_state.cured = nil
 			_state.casted = nil
 			_state.phase = PHASE.GRIND
@@ -1163,8 +1163,10 @@ local function _battle_grind(character, turn, strat)
 				_command_use_item(cure_item, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 			elseif game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 100 then
 				_command_use_item(cure_item, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
-			elseif game.enemy.get_stat(0, "hp") < 600 then
+			elseif ROUTE == "no64-excalbur" and game.enemy.get_stat(0, "hp") < 600 then
 				_command_use_item(cure_item, menu.battle.TARGET.ENEMY, 0)
+			elseif ROUTE == "no64-rosa" and character == game.CHARACTER.FUSOYA and game.enemy.get_stat(0, "hp") < 600 then
+				_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.ENEMY, 0)
 			elseif weakest[1] and weakest[2] == 0 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, weakest[1])
 			elseif character == game.CHARACTER.FUSOYA and not _state.casted then
