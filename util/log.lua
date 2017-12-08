@@ -54,7 +54,7 @@ function _M.get_time()
 	if _base_frame then
 		local time = (emu.framecount() - _base_frame) / 60.0988
 
-		return string.format("%s:%05.2f", os.date("!%H:%M", time), time % 60)
+		return string.format("%02d:%02d:%05.2f", time / 3600, (time / 60) % 60, time % 60)
 	else
 		return string.format("%11s", "-")
 	end
