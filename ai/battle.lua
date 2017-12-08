@@ -157,6 +157,8 @@ local function _log_action()
 		end
 	elseif action_type == game.battle.ACTION.ITEM then
 		action = string.format("uses %s", game.item.get_description(action_index))
+	elseif action_type == game.battle.ACTION.COMMAND then
+		action = string.format("uses a command")
 	else
 		action = string.format("does an unknown action (%02X)", action_type)
 	end
