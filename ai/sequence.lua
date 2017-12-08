@@ -273,7 +273,7 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 				table.insert(stack, {menu.field.magic.select_character, target})
 
 				if cure_count < max_count then
-					if target_hp[target[1]] then
+					if not life[target[1]] and target_hp[target[1]] then
 						target_hp[target[1]] = target_hp[target[1]] - healing
 
 						if target_hp[target[1]] and target_hp[target[1]] <= 0 then
