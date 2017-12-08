@@ -380,6 +380,7 @@ local _MAGIC = {
 	[0x5E] = "W.Meteo",
 	[0x68] = "Curse",
 	[0x69] = "Ray",
+	[0x6D] = "Blast",
 	[0x70] = "Whisper",
 	[0x71] = "Entangle",
 	[0x74] = "ColdMist",
@@ -398,7 +399,10 @@ local _MAGIC = {
 	[0x8D] = "Call",
 	[0x92] = "Retreat",
 	[0x94] = "Beam",
+	[0x95] = "Globe199",
 	[0x96] = "Fire",
+	[0x97] = "Blaze",
+	[0x9A] = "D.Breath",
 	[0x9D] = "Wave",
 	[0x9E] = "Tornado",
 	[0x9F] = "Laser",
@@ -406,6 +410,7 @@ local _MAGIC = {
 	[0xA1] = "Quake",
 	[0xA2] = "Emission",
 	[0xA4] = "Glare",
+	[0xAB] = "Recover",
 }
 
 local _CHARACTER_IDS = {}
