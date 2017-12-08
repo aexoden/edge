@@ -433,6 +433,8 @@ local function _battle_calbrena(character, turn, strat)
 		local strongest_cal = {nil, -1}
 		local strongest_brena = {nil, -1}
 
+		local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp", true)
+
 		for i = 0, 5 do
 			local hp = game.enemy.get_stat(i, "hp")
 
@@ -476,7 +478,7 @@ local function _battle_calbrena(character, turn, strat)
 					local hp = game.enemy.get_stat(i, "hp")
 					local min = 0
 
-					if game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 then
+					if yang_hp > 0 then
 						min = 80
 					end
 
@@ -487,6 +489,10 @@ local function _battle_calbrena(character, turn, strat)
 
 				if target[1] then
 					_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, target[1])
+				elseif brenas > 1 and yang_hp == 0 then
+					_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, strongest_brena[0])
+				elseif cals > 1 and yang_hp == 0 then
+					_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, strongest_cal[0])
 				else
 					_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 				end
