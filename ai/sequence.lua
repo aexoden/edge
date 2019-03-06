@@ -4237,7 +4237,7 @@ local function _sequence_falcon_upgrade()
 
 	-- Step Route: Tower of Bab-il 8F [Revisit]
 	for i = 1, route.get_value("Tower of Bab-il 8F [Revisit]") / 2 do
-		table.insert(_q, {walk.walk, {285, 2, 20}})
+		table.insert(_q, {walk.walk, {285, 3, 21}})
 		table.insert(_q, {walk.walk, {285, 2, 21}})
 	end
 
