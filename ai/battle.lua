@@ -263,6 +263,13 @@ local function _command_equip(character, target_weapon)
 	end
 end
 
+local function _command_dequip(hand)
+	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+	table.insert(_state.q, {menu.battle.equip.select, {hand}})
+	table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE, 0}})
+	table.insert(_state.q, {menu.battle.item.close, {}})
+end
+
 local function _command_fight(target_type, target, wait, limit)
 	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT}})
 	table.insert(_state.q, {menu.battle.target, {target_type, target, wait, limit}})
@@ -356,6 +363,11 @@ local function _battle_baigan(character, turn, strat)
 			_command_run_buffer()
 			_command_cover(game.CHARACTER.TELLAH)
 		elseif turn == 2 or turn == 3 then
+			if not _state.cecil_dequiped then
+				_command_dequip(game.EQUIP.L_HAND)
+				_state.cecil_dequiped = true
+			end
+
 			if game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 then
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 			elseif game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
@@ -433,6 +445,8 @@ local function _battle_calbrena(character, turn, strat)
 		local strongest_cal = {nil, -1}
 		local strongest_brena = {nil, -1}
 
+		local weakest_cal = {nil, 65536}
+
 		local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp", true)
 
 		for i = 0, 5 do
@@ -444,6 +458,10 @@ local function _battle_calbrena(character, turn, strat)
 
 					if hp > strongest_cal[2] then
 						strongest_cal = {i, hp}
+					end
+
+					if hp < weakest_cal[2] then
+						weakest_cal = {i, hp}
 					end
 				end
 			else
@@ -467,10 +485,10 @@ local function _battle_calbrena(character, turn, strat)
 					end
 				end
 
-				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, strongest_brena[1])
+				_command_fight(menu.battle.TARGET.ENEMY, strongest_brena[1])
 				_state.daggers = _state.daggers + 1
 			elseif cals == 1 then
-				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, strongest_cal[1])
+				_command_fight(menu.battle.TARGET.ENEMY, strongest_cal[1])
 			else
 				local target = {nil, 1000}
 
@@ -488,11 +506,11 @@ local function _battle_calbrena(character, turn, strat)
 				end
 
 				if target[1] then
-					_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, target[1])
-				elseif brenas > 1 and yang_hp == 0 then
-					_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, strongest_brena[0])
-				elseif cals > 1 and yang_hp == 0 then
-					_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, strongest_cal[0])
+					_command_fight(menu.battle.TARGET.ENEMY, target[1])
+				elseif brenas > 1 and (yang_hp == 0 or _state.yang_no_kick) then
+					_command_fight(menu.battle.TARGET.ENEMY, strongest_brena[1])
+				elseif cals > 1 and (yang_hp == 0 or _state.yang_no_kick) then
+					_command_fight(menu.battle.TARGET.ENEMY, weakest_cal[1])
 				else
 					_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 				end
@@ -524,10 +542,14 @@ local function _battle_calbrena(character, turn, strat)
 		elseif character == game.CHARACTER.YANG then
 			if cecil_hp == 0 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			elseif turn <= 3 then
+				_command_kick()
 			elseif cecil_hp < 600 then
+				_state.yang_no_kick = true
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 			else
-				_command_kick()
+				_state.yang_no_kick = true
+				_command_parry()
 			end
 		end
 	end
@@ -893,10 +915,6 @@ end
 local function _battle_golbez(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
-			if game.item.get_count(game.ITEM.WEAPON.FIRE, game.INVENTORY.BATTLE) > 0 then
-				_command_equip(character, game.ITEM.WEAPON.FIRE)
-			end
-
 			_command_wait_text("Golbez:An")
 		end
 
@@ -1358,7 +1376,18 @@ end
 
 local function _battle_karate(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
+		_command_wait_text("Yang:S")
+		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE}})
+		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.L_HAND}})
+		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.WEAPON.IRON}})
+		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND}})
+		table.insert(_state.q, {menu.battle.item.close, {}})
 		_command_wait_text("Yang:A")
+		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.WEAPON.SHORTBOW}})
+		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.L_HAND}})
+		table.insert(_state.q, {menu.battle.item.close, {}})
 		_command_fight()
 	else
 		_command_parry()
@@ -1829,6 +1858,14 @@ local function _battle_mombomb(character, turn, strat)
 		end
 	end
 
+	if ROUTE ~= "paladin" and character == game.CHARACTER.ROSA then
+		if turn == 1 then
+			_command_dequip(game.EQUIP.R_HAND)
+		elseif turn == 2 then
+			_command_dequip(game.EQUIP.L_HAND)
+		end
+	end
+
 	if game.enemy.get_stat(0, "hp") > 10000 then
 		if character == game.CHARACTER.CECIL or character == game.CHARACTER.YANG then
 			_command_fight()
@@ -1875,10 +1912,15 @@ local function _battle_mombomb(character, turn, strat)
 		return true
 	else
 		if character == game.CHARACTER.ROSA then
-			if game.enemy.get_stat(1, "hp") < game.enemy.get_stat(2, "hp") then
-				_command_aim(menu.battle.TARGET.ENEMY, 1)
+			if ROUTE == "paladin" then
+				if game.enemy.get_stat(1, "hp") < game.enemy.get_stat(2, "hp") then
+					_command_aim(menu.battle.TARGET.ENEMY, 1)
+				else
+					_command_aim(menu.battle.TARGET.ENEMY, 2)
+				end
 			else
-				_command_aim(menu.battle.TARGET.ENEMY, 2)
+				_command_parry()
+				_state.rosa_parry = true
 			end
 		elseif character == game.CHARACTER.EDWARD or character == game.CHARACTER.RYDIA then
 			local target = 4
@@ -1895,6 +1937,11 @@ local function _battle_mombomb(character, turn, strat)
 				_state.dagger_wait = true
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, target, true, 120)
 			else
+				if character == game.CHARACTER.EDWARD and _state.rosa_parry then
+					_command_run_buffer()
+					_state.rosa_parry = nil
+				end
+
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, target)
 			end
 		else
@@ -2136,7 +2183,7 @@ local function _battle_valvalis(character, turn, strat)
 		elseif cecil_hp < 400 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 		elseif character == game.CHARACTER.CECIL then
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+			_command_fight()
 		elseif character == game.CHARACTER.ROSA then
 			_command_parry()
 		elseif character == game.CHARACTER.KAIN then
@@ -2164,7 +2211,7 @@ local function _battle_valvalis(character, turn, strat)
 				_command_wait_actor(game.CHARACTER.KAIN, 300)
 			end
 
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
+			_command_fight()
 		end
 	elseif character == game.CHARACTER.YANG then
 		if turn == 1 then

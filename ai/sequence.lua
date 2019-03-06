@@ -466,7 +466,7 @@ local function _post_grind_menu()
 				table.insert(stack, {menu.field.item.select, {game.ITEM.SORT}})
 				table.insert(stack, {menu.field.item.select, {game.ITEM.SORT}})
 			else
-				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.HELM.GAEA}})
 				table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
 				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.HEAL}})
 				table.insert(stack, {menu.field.item.select, {game.ITEM.TRASHCAN}})
@@ -2524,6 +2524,7 @@ local function _sequence_kainazzo()
 
 	if weapon ~= game.ITEM.WEAPON.LEGEND then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.SHIELD.PALADIN}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.LEGEND}})
 		table.insert(_q, {menu.field.equip.close, {}})
 	end
@@ -3089,6 +3090,9 @@ local function _sequence_valvalis()
 
 	-- Complete the pre-Valvalis menu.
 	table.insert(_q, {menu.field.open, {}})
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
+	table.insert(_q, {menu.field.equip.close, {}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.ROSA}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
