@@ -1049,11 +1049,23 @@ local function _battle_golbez(character, turn, strat)
 			_command_jump()
 			_state.full_inventory = true
 		elseif game.enemy.get_stat(0, "hp") < 20500 then
+			if ROUTE == "nocw" then
+				_manage_reserved_inventory(true)
+			end
+
 			_command_fight()
 		else
+			if ROUTE == "nocw" then
+				_manage_reserved_inventory(true)
+			end
+
 			_command_jump()
 		end
 	elseif character == game.CHARACTER.RYDIA then
+		if ROUTE == "nocw" then
+			_manage_reserved_inventory(true)
+		end
+
 		_command_black(game.MAGIC.BLACK.FIRE2)
 	else
 		_command_fight()
