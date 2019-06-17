@@ -52,6 +52,7 @@ def is_scripted(formation):
     else:
         return False
 
+
 def describe_formation(formation):
     formations = {
         42: 'Gargoyle x1, Cocktric x2',
@@ -77,7 +78,7 @@ def describe_formation(formation):
         237: 'Officer x1, Soldier x3',
         239: 'WaterHag',
         240: 'Imp Cap. x3',
-		242: 'Karate',
+        242: 'Karate',
         243: 'Golbez (Tellah)',
         245: 'Raven (intro)',
         246: 'D.Knight',
@@ -227,8 +228,8 @@ class Log(object):
         self._rng_seed = None
         self._step_seed = None
         self._reset_for_time = False
-		self._reset_for_chocobo = False
-		self._reset_for_fireclaw = False
+        self._reset_for_chocobo = False
+        self._reset_for_fireclaw = False
         self._version = None
 
         self._parse_file(filename)
@@ -378,8 +379,8 @@ class Log(object):
             'route': 'Route: (?P<route>.*)',
             'rng_seed': 'RNG Seed: (?P<seed>.*)',
             'reset_for_time': 'Resetting for time...',
-			'reset_for_chocobo': 'Resetting due to bad yellow chocobo...',
-			'reset_for_fireclaw': 'Resetting due to failed FireClaw dupe...',
+            'reset_for_chocobo': 'Resetting due to bad yellow chocobo...',
+            'reset_for_fireclaw': 'Resetting due to failed FireClaw dupe...',
             'step_seed': 'Encounter Seed: (?P<seed>.*)',
             'sequence': 'Sequence: (?P<sequence>.*)',
             'split': 'Split: (?P<split>.*)',
