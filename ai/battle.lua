@@ -976,7 +976,7 @@ local function _battle_general(character, turn, strat)
 				_command_fight()
 			end
 		elseif character == game.CHARACTER.YANG then
-			local slot = _M.character.get_slot(character)
+			local slot = game.character.get_slot(character)
 
 			if ROUTE == "nocw" and current_map == 73 and memory.read_stat(slot, "r_hand", true) == game.ITEM.CLAW.FIRECLAW then
 				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
