@@ -301,9 +301,9 @@ class Log(object):
         elif self._reset_for_time:
             return 'Ragequit because of bad time after {} ({})'.format(sorted(self._splits.items(), key=lambda x: x[1]['total'])[-1][0], format_time(self.last_frame))
         elif self._reset_for_chocobo:
-            return 'Ragequit because of bad yellow chocobo after {} ({})'.format(sorted(self._splits.items(), key=lambda x: x[1]['total'])[-1][0], format_time(self.last_frame))
+            return 'Ragequit because of bad yellow chocobo ({})'.format(format_time(self.last_frame))
         elif self._reset_for_fireclaw:
-            return 'Ragequit because of failed FireClaw dupe after {} ({})'.format(sorted(self._splits.items(), key=lambda x: x[1]['total'])[-1][0], format_time(self.last_frame))
+            return 'Ragequit because of failed FireClaw dupe ({})'.format(format_time(self.last_frame))
         elif len(self._battles) > 0 and self._battles[-1]['result'].startswith('Perished'):
             return 'Died to {} ({})'.format(describe_formation(self._battles[-1]['formation']), format_time(self.last_frame))
         else:
