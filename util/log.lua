@@ -28,13 +28,14 @@ local _M = {}
 
 local _file = nil
 local _base_frame = nil
+local _final_frame = nil
 
 --------------------------------------------------------------------------------
 -- Private Functions
 --------------------------------------------------------------------------------
 
 local function _log(message)
-	message = string.format("%s :: %6s :: %s :: %s", os.date("!%Y-%m-%d %X+0000"), emu.framecount(), _M.get_time(), message)
+	message = string.format("%s :: %6s :: %s :: %s", os.date("!%Y-%m-%d %X+0000"), emu.framecount(), _M.get_time(true), message)
 	console.log(message)
 
 	if _file then
@@ -50,14 +51,24 @@ end
 -- Public Functions
 --------------------------------------------------------------------------------
 
-function _M.get_time()
+function _M.get_time(actual)
+	local end_frame = _final_frame
+
+	if not end_frame or actual then
+		end_frame = emu.framecount()
+	end
+
 	if _base_frame then
-		local time = (emu.framecount() - _base_frame) / 60.0988
+		local time = (end_frame - _base_frame) / 60.0988
 
 		return string.format("%02d:%02d:%05.2f", time / 3600, (time / 60) % 60, time % 60)
 	else
 		return string.format("%11s", "-")
 	end
+end
+
+function _M.freeze()
+	_final_frame = emu.framecount()
 end
 
 function _M.error(message)
@@ -85,6 +96,7 @@ function _M.reset()
 	end
 
 	_base_frame = nil
+	_final_frame = nil
 
 	if FULL_RUN then
 		_file, err = io.open(string.format("logs/edge-%s-%03d-%010d-%s.log", ROUTE, ENCOUNTER_SEED, SEED, os.date("!%Y%m%d-%H%M%S")), "w")

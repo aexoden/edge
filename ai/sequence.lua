@@ -6116,6 +6116,7 @@ function _M.split(split)
 
 	if result and ROUTE == "paladin" and split == "Paladin" then
 		if CONFIG.EXTENDED_ENDING then
+			log.freeze()
 			_M.end_run(600)
 		else
 			_M.end_run()

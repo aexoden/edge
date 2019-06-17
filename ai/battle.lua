@@ -2816,23 +2816,25 @@ function _M.cycle()
 			end
 		end
 
-		if _state.zeromus_split_counter then
-			if _state.zeromus_split_counter == 0 then
-				sequence.split("Zeromus Death")
+		local zeromus_death = false
 
-				if CONFIG.EXTENDED_ENDING then
-					sequence.end_run(20 * 60 * 60)
-				else
-					sequence.end_run(65 * 60)
-				end
+		if _state.zeromus_split_counter and not _state.final_split then
+			if _state.zeromus_split_counter == 0 then
+				zeromus_death = true
 			else
 				_state.zeromus_split_counter = _state.zeromus_split_counter - 1
 			end
 		elseif ROUTE == "nocw" and index == game.battle.FORMATION.ZEROMUS and memory.read("battle", "monster_cursor") == 0xFF then
 			_state.zeromus_split_counter = 4
-		elseif index == game.battle.FORMATION.ZEROMUS and memory.read("battle", "flash") == 3 and not _state.flash_split then
-			_state.flash_split = true
+		elseif index == game.battle.FORMATION.ZEROMUS and memory.read("battle", "flash") == 3 and not _state.final_split then
+			zeromus_death = true
+		end
+
+		if zeromus_death then
+			_state.final_split = true
+
 			sequence.split("Zeromus Death")
+			log.freeze()
 
 			if CONFIG.EXTENDED_ENDING then
 				sequence.end_run(20 * 60 * 60)
