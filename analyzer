@@ -341,6 +341,10 @@ class Log(object):
                     self._version = fields['version']
                 elif line_type == 'reset_for_time':
                     self._reset_for_time = True
+                elif line_type == 'reset_for_chocobo':
+                    self._reset_for_chocobo = True
+                elif line_type == 'reset_for_fireclaw':
+                    self._reset_for_fireclaw = True
                 elif line_type == 'battle_start':
                     if current_battle:
                         print('WARNING: A new battle has started without finishing the previous one while parsing {}'.format(filename))

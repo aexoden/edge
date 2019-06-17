@@ -44,7 +44,7 @@ INITIALIZED = false
 --------------------------------------------------------------------------------
 
 local function _get_version()
-	return "v0.0.8-147"
+	return "v0.0.8-148"
 end
 
 local function _set_route()
