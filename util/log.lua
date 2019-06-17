@@ -35,7 +35,7 @@ local _final_frame = nil
 --------------------------------------------------------------------------------
 
 local function _log(message)
-	message = string.format("%s :: %6s :: %s :: %s", os.date("!%Y-%m-%d %X+0000"), emu.framecount(), _M.get_time(true), message)
+	message = string.format("%s :: %6s :: %s :: %s :: %s", os.date("!%Y-%m-%d %H:%M:%S+0000"), emu.framecount(), _M.get_time(true), _M.game_time(), message)
 	console.log(message)
 
 	if _file then
@@ -51,6 +51,17 @@ end
 -- Public Functions
 --------------------------------------------------------------------------------
 
+function _M.game_time()
+	local time = mainmemory.read_u24_le(0x0016A4)
+	local frames = mainmemory.read_u8(0x0016A3)
+
+	if time > 36000 then
+		return string.format("%11s", "-")
+	else
+		return string.format("%02d:%02d:%02d.%02d", time / 3600, (time / 60) % 60, time % 60, frames)
+	end
+end
+
 function _M.get_time(actual)
 	local end_frame = _final_frame
 
@@ -59,7 +70,7 @@ function _M.get_time(actual)
 	end
 
 	if _base_frame then
-		local time = (end_frame - _base_frame) / 60.0988
+		local time = (end_frame - _base_frame) * 655171.0 / 39375000
 
 		return string.format("%02d:%02d:%05.2f", time / 3600, (time / 60) % 60, time % 60)
 	else

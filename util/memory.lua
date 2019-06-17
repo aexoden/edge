@@ -178,6 +178,7 @@ local _addresses = {
 	},
 	game = {
 		counter             = {f = mainmemory.read_u8,     address = 0x000FFF, record_size = {0x01, 0x01}},
+		frames              = {f = mainmemory.read_u8,     address = 0x0016A3, record_size = {0x01, 0x01}},
 		timer               = {f = mainmemory.read_u24_le, address = 0x0016A4, record_size = {0x01, 0x01}},
 	},
 	menu = {

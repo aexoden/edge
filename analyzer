@@ -371,7 +371,7 @@ class Log(object):
                     current_battle = None
 
     def _parse_line(self, line):
-        base_regex = '(?P<timestamp>.*) :: (?P<frame>.*) :: (?P<time>.*) :: '
+        base_regex = '(?P<timestamp>.*) :: (?P<frame>.*) :: (?P<time>.*) :: (?P<game_time>.*) :: '
 
         regexes = {
             'battle_start': 'Battle Start: (?P<description>.*) \((?P<formation>.*)/(?P<type>.*)/(?P<party_level>.*)/(?P<enemy_level>.*)\)',

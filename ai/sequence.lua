@@ -146,6 +146,15 @@ local function _glitch_walk(target_map_id, target_x, target_y)
 			walk.walk(current_map_id, -1, current_y, false, false)
 		end
 	elseif current_floor == -45 or current_floor == -46 or current_floor == -47 then
+		if not _state.logged_floor then
+			_state.logged_floor = {}
+		end
+
+		if not _state.logged_floor[current_floor] then
+			_state.logged_floor[current_floor] = true
+			log.log(string.format("Current Glitch Floor: %d, Map ID: %d, Coordinates: %d, %d", current_floor, current_map_id, current_x, current_y))
+		end
+
 		if current_floor ~= _state.floor then
 			_state.floor = nil
 			_state.attempt = nil
@@ -706,6 +715,8 @@ local function _validate_chocobo()
 	elseif chocobo_x == 240 and chocobo_y % 64 <= 31 then
 		chocobo_good = false
 	end
+
+	log.log(string.format("Yellow Chocobo Coordinates: %d, %d", chocobo_x, chocobo_y))
 
 	if not chocobo_good then
 		log.log("Resetting due to bad yellow chocobo...")
