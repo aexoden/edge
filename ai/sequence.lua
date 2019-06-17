@@ -134,6 +134,17 @@ local function _glitch_walk(target_map_id, target_x, target_y)
 	local current_x = memory.read("walk", "x")
 	local current_y = memory.read("walk", "y")
 
+	if current_floor >= -47 and current_floor <= -43 then
+		if not _state.logged_floor then
+			_state.logged_floor = {}
+		end
+
+		if not _state.logged_floor[current_floor] then
+			_state.logged_floor[current_floor] = true
+			log.log(string.format("Current Glitch Floor: %d, Map ID: %d, Coordinates: %d, %d", current_floor, current_map_id, current_x, current_y))
+		end
+	end
+
 	if current_map_id == target_map_id then
 		return walk.walk(target_map_id, target_x, target_y, false, false)
 	elseif current_floor == -10 or current_floor == -11 or current_floor == -13 then
@@ -146,15 +157,6 @@ local function _glitch_walk(target_map_id, target_x, target_y)
 			walk.walk(current_map_id, -1, current_y, false, false)
 		end
 	elseif current_floor == -45 or current_floor == -46 or current_floor == -47 then
-		if not _state.logged_floor then
-			_state.logged_floor = {}
-		end
-
-		if not _state.logged_floor[current_floor] then
-			_state.logged_floor[current_floor] = true
-			log.log(string.format("Current Glitch Floor: %d, Map ID: %d, Coordinates: %d, %d", current_floor, current_map_id, current_x, current_y))
-		end
-
 		if current_floor ~= _state.floor then
 			_state.floor = nil
 			_state.attempt = nil
