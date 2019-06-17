@@ -8,10 +8,6 @@ provide a good list of improvements that can be made.
 * Upgrade step routes to the new format, and set up the nocw routes to not just
   be a copy of the no64-excalbur routes.
 
-* For the nocw route, either detect and fix or ragequit a bad yellow chocobo.
-
-* Update the nocw split times to reflect an actual run.
-
 ## Major Features
 
 * Find a way to keep track of battle goals and properly queueing characters to
@@ -106,6 +102,9 @@ provide a good list of improvements that can be made.
 
 * Ensure that Yang always equips his IceClaw from the stack of 58 in the nocw
   route.
+
+* Improve the yellow chocobo handling on the nocw route to fix the bad yellow
+  chocobo. Not really useful for PB attempts, but for potential marathon runs.
 
 ## Battle-Specific Issues
 

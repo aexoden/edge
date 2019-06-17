@@ -695,6 +695,24 @@ local function _set_encounter_seed(seed, base, start)
 	return false
 end
 
+local function _validate_chocobo()
+	local chocobo_x = memory.read("walk", "chocobo_x")
+	local chocobo_y = memory.read("walk", "chocobo_y")
+
+	local chocobo_good = true
+
+	if chocobo_x == 0 and chocobo_y % 64 >= 1 and chocobo_y % 64 <= 11 then
+		chocobo_good = false
+	elseif chocobo_x == 240 and chocobo_y % 64 <= 31 then
+		chocobo_good = false
+	end
+
+	if not chocobo_good then
+		log.log("Resetting due to bad yellow chocobo...")
+		_M.end_run()
+	end
+end
+
 --------------------------------------------------------------------------------
 -- Healing Strategies
 --------------------------------------------------------------------------------
@@ -2377,6 +2395,10 @@ local function _sequence_karate()
 		table.insert(_q, {walk.walk, {nil, 156, 199}})
 		table.insert(_q, {walk.interact, {}})
 		table.insert(_q, {walk.walk, {nil, 155, 199}})
+
+		if ROUTE == "nocw" then
+			table.insert(_q, {_validate_chocobo, {}})
+		end
 
 		-- Walk to the Elder.
 		table.insert(_q, {walk.walk, {3, 16, 10}})
