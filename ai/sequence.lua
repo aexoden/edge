@@ -713,6 +713,16 @@ local function _validate_chocobo()
 	end
 end
 
+local function _validate_fireclaw()
+	local slot = game.character.get_slot(game.CHARACTER.YANG)
+	local count = memory.read_stat(slot, "r_hand_count")
+
+	if count ~= 255 then
+		log.log("Resetting due to failed FireClaw dupe...")
+		_M.end_run()
+	end
+end
+
 --------------------------------------------------------------------------------
 -- Healing Strategies
 --------------------------------------------------------------------------------
@@ -1882,6 +1892,11 @@ end
 local function _sequence_twins()
 	-- Head to the Fabul Inn.
 	table.insert(_q, {walk.walk, {74, 11, 15}})
+
+	if ROUTE == "nocw" then
+		table.insert(_q, {_validate_fireclaw, {}})
+	end
+
 	table.insert(_q, {walk.walk, {74, 11, 26}})
 	table.insert(_q, {walk.walk, {73, 4, 7}})
 

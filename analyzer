@@ -227,6 +227,8 @@ class Log(object):
         self._rng_seed = None
         self._step_seed = None
         self._reset_for_time = False
+		self._reset_for_chocobo = False
+		self._reset_for_fireclaw = False
         self._version = None
 
         self._parse_file(filename)
@@ -296,7 +298,11 @@ class Log(object):
         if self.success:
             return format_time(self.frames)
         elif self._reset_for_time:
-            return 'Ragequit after {} ({})'.format(sorted(self._splits.items(), key=lambda x: x[1]['total'])[-1][0], format_time(self.last_frame))
+            return 'Ragequit because of bad time after {} ({})'.format(sorted(self._splits.items(), key=lambda x: x[1]['total'])[-1][0], format_time(self.last_frame))
+        elif self._reset_for_chocobo:
+            return 'Ragequit because of bad yellow chocobo after {} ({})'.format(sorted(self._splits.items(), key=lambda x: x[1]['total'])[-1][0], format_time(self.last_frame))
+        elif self._reset_for_fireclaw:
+            return 'Ragequit because of failed FireClaw dupe after {} ({})'.format(sorted(self._splits.items(), key=lambda x: x[1]['total'])[-1][0], format_time(self.last_frame))
         elif len(self._battles) > 0 and self._battles[-1]['result'].startswith('Perished'):
             return 'Died to {} ({})'.format(describe_formation(self._battles[-1]['formation']), format_time(self.last_frame))
         else:
@@ -372,6 +378,8 @@ class Log(object):
             'route': 'Route: (?P<route>.*)',
             'rng_seed': 'RNG Seed: (?P<seed>.*)',
             'reset_for_time': 'Resetting for time...',
+			'reset_for_chocobo': 'Resetting due to bad yellow chocobo...',
+			'reset_for_fireclaw': 'Resetting due to failed FireClaw dupe...',
             'step_seed': 'Encounter Seed: (?P<seed>.*)',
             'sequence': 'Sequence: (?P<sequence>.*)',
             'split': 'Split: (?P<split>.*)',

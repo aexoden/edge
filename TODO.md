@@ -81,7 +81,7 @@ provide a good list of improvements that can be made.
   least mitigate the need for the wait at the end.
 
 * If the FireClaw dupe fails for whatever reason during the Gargoyle fight, set
-  up a backup at some point.
+  up a backup later in the run (requires an extra shop visit).
 
 * The NoCW route glitch navigation should probably be rewritten to use a
   function whose job is to advance to the next floor, which allows for easier

@@ -961,6 +961,8 @@ end
 local function _battle_general(character, turn, strat)
 	_state.full_inventory = true
 
+	local current_map = memory.read("walk", "map_id")
+
 	if game.enemy.get_weakest(game.ENEMY.FIGHTER) then
 		if character == game.CHARACTER.CECIL then
 			_command_fight()
@@ -974,6 +976,19 @@ local function _battle_general(character, turn, strat)
 				_command_fight()
 			end
 		elseif character == game.CHARACTER.YANG then
+			local slot = _M.character.get_slot(character)
+
+			if ROUTE == "nocw" and current_map == 73 and memory.read_stat(slot, "r_hand", true) == game.ITEM.CLAW.FIRECLAW then
+				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE, 1}})
+				table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND}})
+				table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND}})
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE, 0}})
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.CLAW.FIRECLAW}})
+				table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.L_HAND}})
+				table.insert(_state.q, {menu.battle.item.close, {}})
+			end
+
 			_command_fight()
 		end
 	end
