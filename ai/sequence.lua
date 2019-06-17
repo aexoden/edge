@@ -711,6 +711,8 @@ local function _validate_chocobo()
 		log.log("Resetting due to bad yellow chocobo...")
 		_M.end_run()
 	end
+
+	return true
 end
 
 local function _validate_fireclaw()
@@ -721,6 +723,8 @@ local function _validate_fireclaw()
 		log.log("Resetting due to failed FireClaw dupe...")
 		_M.end_run()
 	end
+
+	return true
 end
 
 --------------------------------------------------------------------------------
