@@ -99,7 +99,7 @@ local function _log_seed()
 end
 
 local function _hummingway_start()
-	_state.target_index = (memory.read("walk", "index") + 16 + route.get_value("Hummingway Cave")) % 256
+	_state.target_index = (memory.read("walk", "index") + 16 + route.get_value("E316500")) % 256
 
 	return true
 end
@@ -1319,16 +1319,10 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {112, 2, 19}})
 	table.insert(_q, {walk.walk, {112, 2, 17}})
 	table.insert(_q, {walk.walk, {84, 4, 10}})
-
-	-- Step Route: Watery Pass-South Save Room
-	if route.get_value("Watery Pass-South Save Room") % 2 == 1 then
-		table.insert(_q, {walk.walk, {84, 4, 6}})
-		table.insert(_q, {walk.walk, {84, 4, 7}})
-	end
-
 	table.insert(_q, {walk.walk, {84, 4, 4}})
 
-	for i = 1, route.get_value("Watery Pass-South Save Room") / 2 do
+	-- Step Route: Watery Pass-South B2F Save Room
+	for i = 1, route.get_value("E305400") / 2 do
 		table.insert(_q, {walk.walk, {84, 5, 4}})
 		table.insert(_q, {walk.walk, {84, 4, 4}})
 	end
@@ -1339,7 +1333,7 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {112, 10, 8}})
 
 	-- Step Route: Watery Pass-South B2F
-	for i = 1, route.get_value("Watery Pass-South B2F") / 2 do
+	for i = 1, route.get_value("E307000") / 2 do
 		table.insert(_q, {walk.walk, {112, 10, 7}})
 		table.insert(_q, {walk.walk, {112, 10, 8}})
 	end
@@ -1362,7 +1356,7 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {113, 6, 17}})
 
 	-- Step Route: Watery Pass-South B3F
-	for i = 1, route.get_value("Watery Pass-South B3F") / 2 do
+	for i = 1, route.get_value("E307100") / 2 do
 		table.insert(_q, {walk.walk, {113, 5, 17}})
 		table.insert(_q, {walk.walk, {113, 6, 17}})
 	end
@@ -1374,7 +1368,7 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {114, 7, 14}})
 
 	-- Step Route: Watery Pass-North B2F
-	for i = 1, route.get_value("Watery Pass-North B2F") / 2 do
+	for i = 1, route.get_value("E307200") / 2 do
 		table.insert(_q, {walk.walk, {114, 6, 14}})
 		table.insert(_q, {walk.walk, {114, 7, 14}})
 	end
@@ -1400,12 +1394,12 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {115, 24, 11}})
 
 	-- Step Route: Watery Pass-North B1F
-	if route.get_value("Watery Pass-North B1F") % 2 == 1 then
+	if route.get_value("E307300") % 2 == 1 then
 		table.insert(_q, {walk.walk, {115, 24, 10}})
 		table.insert(_q, {walk.walk, {115, 24, 11}})
 	end
 
-	for i = 1, route.get_value("Watery Pass-North B1F") / 2 do
+	for i = 1, route.get_value("E307300") / 2 do
 		table.insert(_q, {walk.walk, {115, 23, 11}})
 		table.insert(_q, {walk.walk, {115, 24, 11}})
 	end
@@ -1414,8 +1408,8 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {nil, 135, 78}})
 	table.insert(_q, {walk.walk, {nil, 135, 73}})
 
-	-- Step Route: Overworld (Kaipo) [Pre-Octomamm]
-	for i = 1, route.get_value("Overworld (Kaipo) [Pre-Octomamm]") / 2 do
+	-- Step Route: Overworld (Kaipo) [before Octomamm]
+	for i = 1, route.get_value("E000200") / 2 do
 		table.insert(_q, {walk.walk, {nil, 135, 74}})
 		table.insert(_q, {walk.walk, {nil, 135, 73}})
 	end
@@ -1424,7 +1418,7 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {nil, 134, 72}})
 
 	-- Step Route: Waterfalls B1F
-	for i = 1, route.get_value("Waterfalls B1F") / 2 do
+	for i = 1, route.get_value("E307400") / 2 do
 		table.insert(_q, {walk.walk, {116, 17, 9}})
 		table.insert(_q, {walk.walk, {116, 16, 9}})
 	end
@@ -1446,7 +1440,7 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {117, 22, 8}})
 
 	-- Step Route: Waterfalls B2F
-	for i = 1, route.get_value("Waterfalls B2F") / 2 do
+	for i = 1, route.get_value("E307500") / 2 do
 		table.insert(_q, {walk.walk, {117, 21, 8}})
 		table.insert(_q, {walk.walk, {117, 22, 8}})
 	end
@@ -1461,8 +1455,8 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {118, 13, 23}})
 	table.insert(_q, {walk.walk, {118, 13, 22}})
 
-	-- Step Route: Waterfalls Lake [Pre-Octomamm]
-	for i = 1, route.get_value("Waterfalls Lake [Pre-Octomamm]") / 2 do
+	-- Step Route: Waterfalls Lake [before Octomamm]
+	for i = 1, route.get_value("E307600") / 2 do
 		table.insert(_q, {walk.walk, {118, 13, 23}})
 		table.insert(_q, {walk.walk, {118, 13, 22}})
 	end
@@ -1474,8 +1468,8 @@ local function _sequence_octomamm()
 	table.insert(_q, {walk.walk, {118, 16, 20}})
 	table.insert(_q, {walk.walk, {118, 16, 12}})
 
-	-- Step Route: Waterfalls Lake [Post-Octomamm]
-	for i = 1, route.get_value("Waterfalls Lake [Post-Octomamm]") do
+	-- Step Route: Waterfalls Lake [after Octomamm]
+	for i = 1, route.get_value("E307601") do
 		table.insert(_q, {walk.walk, {118, 16, 11}})
 		table.insert(_q, {walk.walk, {118, 16, 12}})
 	end
@@ -1505,8 +1499,8 @@ local function _sequence_edward()
 	table.insert(_q, {walk.walk, {nil, 123, 67}})
 	table.insert(_q, {walk.walk, {nil, 123, 68}})
 
-	-- Step Route: Overworld (Kaipo) [Post-Octomamm]
-	for i = 1, route.get_value("Overworld (Kaipo) [Post-Octomamm]") / 2 do
+	-- Step Route: Overworld (Kaipo) [after Octomamm]
+	for i = 1, route.get_value("E000201") / 2 do
 		table.insert(_q, {walk.walk, {nil, 123, 67}})
 		table.insert(_q, {walk.walk, {nil, 123, 68}})
 	end
@@ -1516,8 +1510,8 @@ local function _sequence_edward()
 	table.insert(_q, {walk.walk, {nil, 119, 64}})
 	table.insert(_q, {walk.walk, {nil, 119, 59}})
 
-	-- Step Route: Overworld (Damcyan)
-	for i = 1, route.get_value("Overworld (Damcyan)") / 2 do
+	-- Step Route: Overworld (Damcyan) [before Damcyan]
+	for i = 1, route.get_value("E000300") / 2 do
 		table.insert(_q, {walk.walk, {nil, 119, 60}})
 		table.insert(_q, {walk.walk, {nil, 119, 59}})
 	end
@@ -1527,7 +1521,7 @@ local function _sequence_edward()
 	table.insert(_q, {walk.walk, {63, 8, 13}})
 
 	-- Step Route: Damcyan
-	for i = 1, route.get_value("Damcyan") / 2 do
+	for i = 1, route.get_value("E302500") / 2 do
 		table.insert(_q, {walk.walk, {63, 9, 13}})
 		table.insert(_q, {walk.walk, {63, 8, 13}})
 	end
@@ -1535,7 +1529,7 @@ local function _sequence_edward()
 	table.insert(_q, {walk.walk, {63, 8, 7}})
 	table.insert(_q, {walk.walk, {64, 8, 10}})
 
-	if route.get_value("Damcyan") % 2 == 1 then
+	if route.get_value("E302500") % 2 == 1 then
 		table.insert(_q, {walk.walk, {64, 9, 10}})
 		table.insert(_q, {walk.walk, {64, 9, 13}})
 	else
@@ -1560,14 +1554,21 @@ local function _sequence_antlion()
 	table.insert(_q, {walk.walk, {nil, 132, 57}})
 	table.insert(_q, {walk.walk, {nil, 136, 57}})
 	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
+
+	-- Step Route: Overworld (Damcyan) [before Antlion]
+	for i = 1, route.get_value("E000301") / 2 do
+		table.insert(_q, {walk.walk, {nil, 137, 57}})
+		table.insert(_q, {walk.walk, {nil, 136, 57}})
+	end
+
 	table.insert(_q, {walk.walk, {nil, 136, 56}})
 
 	-- Walk to the Life chest.
 	table.insert(_q, {walk.walk, {119, 15, 8}})
 	table.insert(_q, {walk.walk, {119, 14, 8}})
 
-	-- Step Route: Antlion B1F Inward
-	for i = 1, route.get_value("Antlion B1F Inward") / 2 do
+	-- Step Route: Antlion B1F [before Antlion]
+	for i = 1, route.get_value("E307700") / 2 do
 		table.insert(_q, {walk.walk, {119, 15, 8}})
 		table.insert(_q, {walk.walk, {119, 14, 8}})
 	end
@@ -1596,31 +1597,40 @@ local function _sequence_antlion()
 	table.insert(_q, {walk.walk, {120, 29, 26}})
 	table.insert(_q, {walk.walk, {120, 25, 26}})
 
-	-- Step Route: Antlion B2F Inward
-	for i = 1, route.get_value("Antlion B2F Inward") / 2 do
-		table.insert(_q, {walk.walk, {120, 26, 26}})
-		table.insert(_q, {walk.walk, {120, 25, 26}})
-	end
+	-- Step Route: Antlion B2F [before Antlion] Choice
+	if route.get_value("C307800") == 1 then
+		-- Step Route: Antlion B2F [before Antlion] [before Treasure Room]
+		for i = 1, route.get_value("E307800") / 2 do
+			table.insert(_q, {walk.walk, {120, 26, 26}})
+			table.insert(_q, {walk.walk, {120, 25, 26}})
+		end
 
-	if route.get_value("Antlion B2F Inward Choice") == 1 then
 		table.insert(_q, {walk.walk, {120, 25, 23}})
 
-		for i = 1, route.get_value("Antlion B2F Charm Room Inward") / 2 do
+		-- Step Route: Antlion B2F Treasure Room [before Antlion]
+		for i = 1, route.get_value("E307B00") / 2 do
 			table.insert(_q, {walk.walk, {123, 4, 11}})
 			table.insert(_q, {walk.walk, {123, 4, 12}})
 		end
 
 		table.insert(_q, {walk.walk, {123, 4, 13}})
 		table.insert(_q, {walk.walk, {120, 25, 26}})
-
-		for i = 1, route.get_value("Antlion B2F Inward [Post-Charm Room]") / 2 do
-			table.insert(_q, {walk.walk, {120, 26, 26}})
-			table.insert(_q, {walk.walk, {120, 25, 26}})
-		end
 	end
 
 	table.insert(_q, {walk.walk, {120, 25, 28}})
 	table.insert(_q, {walk.walk, {120, 22, 28}})
+
+	-- Step Route: Antlion B2F [before Antlion]
+	if route.get_value("E307801") % 2 == 1 then
+		table.insert(_q, {walk.walk, {120, 22, 29}})
+		table.insert(_q, {walk.walk, {120, 22, 28}})
+	end
+
+	for i = 1, route.get_value("E307801") / 2 do
+		table.insert(_q, {walk.walk, {120, 23, 28}})
+		table.insert(_q, {walk.walk, {120, 22, 28}})
+	end
+
 	table.insert(_q, {walk.walk, {120, 22, 31}})
 	table.insert(_q, {walk.walk, {120, 3, 31}})
 	table.insert(_q, {walk.walk, {120, 3, 23}})
@@ -1628,8 +1638,8 @@ local function _sequence_antlion()
 	table.insert(_q, {walk.walk, {120, 14, 29}})
 	table.insert(_q, {walk.walk, {121, 14, 18}})
 
-	-- Step Route: Antlion's Nest [Pre-Antlion]
-	for i = 1, route.get_value("Antlion's Nest [Pre-Antlion]") / 2 do
+	-- Step Route: Antlion's Nest [before Antlion]
+	for i = 1, route.get_value("E307900") / 2 do
 		table.insert(_q, {walk.walk, {121, 14, 17}})
 		table.insert(_q, {walk.walk, {121, 14, 18}})
 	end
@@ -1641,13 +1651,13 @@ local function _sequence_waterhag()
 	-- Leave the Antlion cave.
 	table.insert(_q, {walk.walk, {121, 14, 18}})
 
-	-- Step Route: Antlion's Nest [Post-Antlion]
-	if route.get_value("Antlion's Nest [Post-Antlion]") % 2 == 1 then
+	-- Step Route: Antlion's Nest [after Antlion]
+	if route.get_value("E307901") % 2 == 1 then
 		table.insert(_q, {walk.walk, {121, 14, 19}})
 		table.insert(_q, {walk.walk, {121, 14, 18}})
 	end
 
-	for i = 1, route.get_value("Antlion's Nest [Post-Antlion]") / 2 do
+	for i = 1, route.get_value("E307901") / 2 do
 		table.insert(_q, {walk.walk, {121, 14, 17}})
 		table.insert(_q, {walk.walk, {121, 14, 18}})
 	end
@@ -1658,29 +1668,38 @@ local function _sequence_waterhag()
 	table.insert(_q, {walk.walk, {120, 3, 31}})
 	table.insert(_q, {walk.walk, {120, 22, 31}})
 	table.insert(_q, {walk.walk, {120, 22, 28}})
+
+	-- Step Route: Antlion B2F [after Antlion]
+	if route.get_value("E307802") % 2 == 1 then
+		table.insert(_q, {walk.walk, {120, 22, 29}})
+		table.insert(_q, {walk.walk, {120, 22, 28}})
+	end
+
+	for i = 1, route.get_value("E307802") / 2 do
+		table.insert(_q, {walk.walk, {120, 23, 28}})
+		table.insert(_q, {walk.walk, {120, 22, 28}})
+	end
+
 	table.insert(_q, {walk.walk, {120, 25, 28}})
 	table.insert(_q, {walk.walk, {120, 25, 26}})
 
-	-- Step Route: Antlion B2F Outward
-	if route.get_value("Antlion B2F Outward Choice") == 1 then
-		for i = 1, route.get_value("Antlion B2F Outward [Pre-Charm Room]") / 2 do
-			table.insert(_q, {walk.walk, {120, 25, 25}})
-			table.insert(_q, {walk.walk, {120, 25, 26}})
-		end
+	-- Step Route: Antlion B2F [after Antlion] Choice
+	if route.get_value("C307801") == 1 then
 		table.insert(_q, {walk.walk, {120, 25, 23}})
 
-		for i = 1, route.get_value("Antlion B2F Charm Room Outward") / 2 do
+		for i = 1, route.get_value("E307B01") / 2 do
 			table.insert(_q, {walk.walk, {123, 4, 11}})
 			table.insert(_q, {walk.walk, {123, 4, 12}})
 		end
 
 		table.insert(_q, {walk.walk, {123, 4, 13}})
 		table.insert(_q, {walk.walk, {120, 25, 26}})
-	end
 
-	for i = 1, route.get_value("Antlion B2F Outward") / 2 do
-		table.insert(_q, {walk.walk, {120, 25, 25}})
-		table.insert(_q, {walk.walk, {120, 25, 26}})
+		-- Step Route: Antlion B2F [after Antlion] [after Treasure Room]
+		for i = 1, route.get_value("E307803") / 2 do
+			table.insert(_q, {walk.walk, {120, 25, 25}})
+			table.insert(_q, {walk.walk, {120, 25, 26}})
+		end
 	end
 
 	table.insert(_q, {walk.walk, {120, 29, 26}})
@@ -1702,8 +1721,8 @@ local function _sequence_waterhag()
 	table.insert(_q, {walk.walk, {119, 17, 10}})
 	table.insert(_q, {walk.walk, {119, 14, 10}})
 
-	-- Step Route: Antlion B1F Outward
-	for i = 1, route.get_value("Antlion B1F Outward") / 2 do
+	-- Step Route: Antlion B1F [after Antlion]
+	for i = 1, route.get_value("E307701") / 2 do
 		table.insert(_q, {walk.walk, {119, 15, 10}})
 		table.insert(_q, {walk.walk, {119, 14, 10}})
 	end
@@ -1711,6 +1730,12 @@ local function _sequence_waterhag()
 	table.insert(_q, {walk.walk, {119, 14, 5}})
 	table.insert(_q, {walk.walk, {119, 15, 5}})
 	table.insert(_q, {walk.walk, {119, 15, 3}})
+
+	-- Step Route: Overworld (Damcyan) [after Antlion]
+	for i = 1, route.get_value("E000302") / 2 do
+		table.insert(_q, {walk.walk, {nil, 137, 57}})
+		table.insert(_q, {walk.walk, {nil, 136, 57}})
+	end
 
 	-- Board the hovercraft and travel to Kaipo.
 	table.insert(_q, {walk.board, {}})
@@ -1734,6 +1759,13 @@ local function _sequence_waterhag()
 	table.insert(_q, {walk.walk, {nil, 118, 104}})
 	table.insert(_q, {walk.walk, {nil, 124, 104}})
 	table.insert(_q, {walk.interact, {}})
+
+	-- Step Route: Overworld (Kaipo) [before WaterHag]
+	for i = 1, route.get_value("E000202") / 2 do
+		table.insert(_q, {walk.walk, {nil, 124, 105}})
+		table.insert(_q, {walk.walk, {nil, 124, 104}})
+	end
+
 	table.insert(_q, {walk.walk, {nil, 125, 104}})
 
 	-- Walk to Rosa and use the SandRuby.
@@ -1761,6 +1793,12 @@ local function _sequence_mombomb()
 	table.insert(_q, {walk.walk, {2, 14, 30}})
 	table.insert(_q, {walk.walk, {2, 14, 31}})
 
+	-- Step Route: Overworld (Kaipo) [before WaterHag]
+	for i = 1, route.get_value("E000203") / 2 do
+		table.insert(_q, {walk.walk, {nil, 124, 105}})
+		table.insert(_q, {walk.walk, {nil, 124, 104}})
+	end
+
 	-- Head to Mt.Hobs.
 	table.insert(_q, {walk.board, {}})
 	table.insert(_q, {walk.walk, {nil, 107, 104}})
@@ -1786,6 +1824,13 @@ local function _sequence_mombomb()
 	table.insert(_q, {walk.walk, {nil, 150, 49}})
 	table.insert(_q, {walk.walk, {nil, 151, 49}})
 	table.insert(_q, {walk.interact, {}})
+
+	-- Step Route: Overworld (Damcyan) [before MomBomb]
+	for i = 1, route.get_value("E000304") / 2 do
+		table.insert(_q, {walk.walk, {nil, 151, 50}})
+		table.insert(_q, {walk.walk, {nil, 151, 49}})
+	end
+
 	table.insert(_q, {walk.walk, {nil, 152, 49}})
 
 	-- Head up the mountain to MomBomb.
@@ -1793,12 +1838,12 @@ local function _sequence_mombomb()
 	table.insert(_q, {walk.walk, {126, 15, 25}})
 
 	-- Step Route: Mt.Hobs-West
-	if route.get_value("Mt.Hobs-West") % 2 == 1 then
+	if route.get_value("E307E00") % 2 == 1 then
 		table.insert(_q, {walk.walk, {126, 15, 26}})
 		table.insert(_q, {walk.walk, {126, 15, 25}})
 	end
 
-	for i = 1, route.get_value("Mt.Hobs-West") / 2 do
+	for i = 1, route.get_value("E307E00") / 2 do
 		table.insert(_q, {walk.walk, {126, 15, 25}})
 		table.insert(_q, {walk.walk, {126, 16, 25}})
 	end
@@ -1810,8 +1855,8 @@ local function _sequence_mombomb()
 	table.insert(_q, {walk.walk, {126, 22, 7}})
 	table.insert(_q, {walk.walk, {127, 8, 23}})
 
-	-- Step Route: Mt.Hobs Summit [Pre-MomBomb]
-	for i = 1, route.get_value("Mt.Hobs Summit [Pre-MomBomb]") / 2 do
+	-- Step Route: Mt.Hobs Summit [before MomBomb]
+	for i = 1, route.get_value("E307F00") / 2 do
 		table.insert(_q, {walk.walk, {127, 9, 23}})
 		table.insert(_q, {walk.walk, {127, 8, 23}})
 	end
@@ -1825,8 +1870,8 @@ local function _sequence_dragoon()
 	-- Leave Mt.Hobs.
 	table.insert(_q, {walk.walk, {127, 19, 14}})
 
-	-- Step Route: Mt.Hobs Summit [Post-MomBomb]
-	for i = 1, route.get_value("Mt.Hobs Summit [Post-MomBomb]") / 2 do
+	-- Step Route: Mt.Hobs Summit [after MomBomb]
+	for i = 1, route.get_value("E307F01") / 2 do
 		table.insert(_q, {walk.walk, {127, 19, 13}})
 		table.insert(_q, {walk.walk, {127, 19, 14}})
 	end
@@ -1834,14 +1879,14 @@ local function _sequence_dragoon()
 	table.insert(_q, {walk.walk, {127, 19, 9}})
 
 	-- Step Route: Mt.Hobs-East
-	for i = 1, route.get_value("Mt.Hobs-East") / 2 do
+	for i = 1, route.get_value("E308000") / 2 do
 		table.insert(_q, {walk.walk, {128, 7, 11}})
 		table.insert(_q, {walk.walk, {128, 7, 10}})
 	end
 
 	table.insert(_q, {walk.walk, {128, 11, 10}})
 
-	if route.get_value("Mt.Hobs-East") % 2 == 1 then
+	if route.get_value("E308000") % 2 == 1 then
 		table.insert(_q, {walk.walk, {128, 10, 10}})
 		table.insert(_q, {walk.walk, {128, 11, 10}})
 	end
@@ -1871,15 +1916,15 @@ local function _sequence_dragoon()
 	table.insert(_q, {walk.walk, {nil, 207, 48}})
 	table.insert(_q, {walk.walk, {nil, 207, 58}})
 
-	-- Step Route: Overworld (Fabul) [Pre-Fabul]
-	for i = 1, route.get_value("Overworld (Fabul) [Pre-Fabul]") / 2 do
+	-- Step Route: Overworld (Fabul) [before Fabul]
+	for i = 1, route.get_value("E000400") / 2 do
 		table.insert(_q, {walk.walk, {nil, 208, 58}})
 		table.insert(_q, {walk.walk, {nil, 207, 58}})
 	end
 
 	table.insert(_q, {walk.walk, {nil, 212, 58}})
 
-	if route.get_value("Overworld (Fabul) [Pre-Fabul]") % 2 == 1 then
+	if route.get_value("E000400") % 2 == 1 then
 		table.insert(_q, {walk.walk, {nil, 213, 58}})
 		table.insert(_q, {walk.walk, {nil, 212, 58}})
 	end
@@ -1905,7 +1950,7 @@ local function _sequence_twins()
 	table.insert(_q, {walk.walk, {73, 4, 7}})
 
 	-- Step Route: Fabul
-	local steps = route.get_value("Fabul")
+	local steps = route.get_value("E302600")
 
 	if steps >= 6 then
 		table.insert(_q, {walk.walk, {73, 4, 11}})
@@ -2023,15 +2068,15 @@ local function _sequence_twins()
 	table.insert(_q, {walk.walk, {nil, 216, 59}})
 	table.insert(_q, {walk.walk, {nil, 216, 58}})
 
-	-- Step Route: Overworld (Fabul) [Post-Fabul]
-	if route.get_value("Overworld (Fabul) [Post-Fabul]") % 2 == 1 then
+	-- Step Route: Overworld (Fabul) [after Fabul]
+	if route.get_value("E000401") % 2 == 1 then
 		table.insert(_q, {walk.walk, {nil, 217, 58}})
 		table.insert(_q, {walk.walk, {nil, 216, 58}})
 	end
 
 	table.insert(_q, {walk.walk, {nil, 220, 58}})
 
-	for i = 1, route.get_value("Overworld (Fabul) [Post-Fabul]") / 2 do
+	for i = 1, route.get_value("E000401") / 2 do
 		table.insert(_q, {walk.walk, {nil, 220, 57}})
 		table.insert(_q, {walk.walk, {nil, 220, 58}})
 	end
@@ -2042,8 +2087,8 @@ local function _sequence_twins()
 	-- Go to the Mysidian armor shop.
 	table.insert(_q, {walk.walk, {nil, 145, 199}})
 
-	-- Step Route: Overworld (Mysidia) [Pre-Mysidia]
-	for i = 1, route.get_value("Overworld (Mysidia) [Pre-Mysidia]") / 2 do
+	-- Step Route: Overworld (Mysidia) [before Mysidia]
+	for i = 1, route.get_value("E000500") / 2 do
 		table.insert(_q, {walk.walk, {nil, 146, 199}})
 		table.insert(_q, {walk.walk, {nil, 145, 199}})
 	end
@@ -2122,8 +2167,8 @@ local function _sequence_milon()
 	table.insert(_q, {walk.walk, {nil, 157, 200}})
 	table.insert(_q, {walk.walk, {nil, 157, 205}})
 
-	-- Step Route: Overworld (Mysidia) [Post-Mysidia]
-	for i = 1, route.get_value("Overworld (Mysidia) [Post-Mysidia]") / 2 do
+	-- Step Route: Overworld (Mysidia) [after Mysidia]
+	for i = 1, route.get_value("E000501") / 2 do
 		table.insert(_q, {walk.walk, {nil, 157, 204}})
 		table.insert(_q, {walk.walk, {nil, 157, 205}})
 	end
@@ -2136,8 +2181,8 @@ local function _sequence_milon()
 	table.insert(_q, {walk.walk, {nil, 211, 201}})
 	table.insert(_q, {walk.walk, {nil, 218, 201}})
 
-	-- Step Route: Overworld (Mt.Ordeals) [Pre-Mt.Ordeals]
-	for i = 1, route.get_value("Overworld (Mt.Ordeals) [Pre-Mt.Ordeals]") / 2 do
+	-- Step Route: Overworld (Mt.Ordeals) [before Mt.Ordeals]
+	for i = 1, route.get_value("E000600") / 2 do
 		table.insert(_q, {walk.walk, {nil, 218, 200}})
 		table.insert(_q, {walk.walk, {nil, 218, 201}})
 	end
@@ -2147,8 +2192,8 @@ local function _sequence_milon()
 	-- Walk up the mountain.
 	table.insert(_q, {walk.walk, {132, 20, 29}})
 
-	-- Step Route: Mt.Ordeals Inward
-	for i = 1, route.get_value("Mt.Ordeals Inward") / 2 do
+	-- Step Route: Mt.Ordeals [before Paladin]
+	for i = 1, route.get_value("E308400") / 2 do
 		table.insert(_q, {walk.walk, {132, 19, 29}})
 		table.insert(_q, {walk.walk, {132, 20, 29}})
 	end
@@ -2168,8 +2213,8 @@ local function _sequence_milon()
 	table.insert(_q, {walk.walk, {133, 8, 24}})
 	table.insert(_q, {walk.walk, {133, 8, 17}})
 
-	-- Step Route: Mt.Ordeals-3rd station Inward [Pre-Tellah]
-	for i = 1, route.get_value("Mt.Ordeals-3rd station Inward [Pre-Tellah]") / 2 do
+	-- Step Route: Mt.Ordeals-3rd station [before Tellah]
+	for i = 1, route.get_value("E308500") / 2 do
 		table.insert(_q, {walk.walk, {133, 9, 17}})
 		table.insert(_q, {walk.walk, {133, 8, 17}})
 	end
@@ -2177,8 +2222,8 @@ local function _sequence_milon()
 	table.insert(_q, {walk.walk, {133, 18, 17}})
 	table.insert(_q, {walk.walk, {133, 18, 8}})
 
-	-- Step Route: Mt.Ordeals-3rd station Inward [Post-Tellah]
-	for i = 1, route.get_value("Mt.Ordeals-3rd station Inward [Post-Tellah]") / 2 do
+	-- Step Route: Mt.Ordeals-3rd station [after Tellah]
+	for i = 1, route.get_value("E308501") / 2 do
 		table.insert(_q, {walk.walk, {133, 19, 8}})
 		table.insert(_q, {walk.walk, {133, 18, 8}})
 	end
@@ -2195,13 +2240,13 @@ local function _sequence_milon()
 	table.insert(_q, {walk.walk, {134, 24, 8}})
 	table.insert(_q, {walk.walk, {134, 19, 8}})
 
-	-- Step Route: Mt.Ordeals-7th station Inward
-	if route.get_value("Mt.Ordeals-7th station Inward") % 2 == 1 then
+	-- Step Route: Mt.Ordeals-7th station [before Paladin]
+	if route.get_value("E308600") % 2 == 1 then
 		table.insert(_q, {walk.walk, {134, 18, 8}})
 		table.insert(_q, {walk.walk, {134, 19, 8}})
 	end
 
-	for i = 1, route.get_value("Mt.Ordeals-7th station Inward") / 2 do
+	for i = 1, route.get_value("E308600") / 2 do
 		table.insert(_q, {walk.walk, {134, 20, 8}})
 		table.insert(_q, {walk.walk, {134, 19, 8}})
 	end
@@ -2213,8 +2258,8 @@ local function _sequence_milon()
 	table.insert(_q, {walk.walk, {135, 18, 16}})
 	table.insert(_q, {walk.walk, {135, 17, 16}})
 
-	-- Step Route: Mt.Ordeals Summit Inward [Pre-Milon]
-	if route.get_value("Mt.Ordeals Summit Inward [Pre-Milon]") % 2 == 1 then
+	-- Step Route: Mt.Ordeals Summit [before Milon]
+	if route.get_value("E308700") % 2 == 1 then
 		table.insert(_q, {walk.walk, {135, 17, 15}})
 	else
 		table.insert(_q, {walk.walk, {135, 16, 16}})
@@ -2222,7 +2267,7 @@ local function _sequence_milon()
 
 	table.insert(_q, {walk.walk, {135, 16, 15}})
 
-	for i = 1, route.get_value("Mt.Ordeals Summit Inward [Pre-Milon]") / 2 do
+	for i = 1, route.get_value("E308700") / 2 do
 		table.insert(_q, {walk.walk, {135, 16, 14}})
 		table.insert(_q, {walk.walk, {135, 16, 15}})
 	end
@@ -2280,13 +2325,13 @@ local function _sequence_paladin()
 	-- Walk to the Paladin scene.
 	table.insert(_q, {walk.walk, {135, 9, 11}})
 
-	-- Step Route: Mt.Ordeals Summit Inward [Post-Milon]
-	if route.get_value("Mt.Ordeals Summit Inward [Post-Milon]") % 2 == 1 then
+	-- Step Route: Mt.Ordeals Summit [after Milon]
+	if route.get_value("E308701") % 2 == 1 then
 		table.insert(_q, {walk.walk, {135, 9, 10}})
 		table.insert(_q, {walk.walk, {135, 9, 11}})
 	end
 
-	for i = 1, route.get_value("Mt.Ordeals Summit Inward [Post-Milon]") / 2 do
+	for i = 1, route.get_value("E308701") / 2 do
 		table.insert(_q, {walk.walk, {135, 8, 11}})
 		table.insert(_q, {walk.walk, {135, 9, 11}})
 	end
@@ -2305,8 +2350,8 @@ local function _sequence_karate()
 		table.insert(_q, {walk.walk, {135, 16, 10}})
 		table.insert(_q, {walk.walk, {135, 16, 15}})
 
-		-- Step Route: Mt.Ordeals Summit Outward
-		if route.get_value("Mt.Ordeals Summit Outward") % 2 == 1 then
+		-- Step Route: Mt.Ordeals Summit [after Paladin]
+		if route.get_value("E308702") % 2 == 1 then
 			table.insert(_q, {walk.walk, {135, 17, 15}})
 		else
 			table.insert(_q, {walk.walk, {135, 16, 16}})
@@ -2314,7 +2359,7 @@ local function _sequence_karate()
 
 		table.insert(_q, {walk.walk, {135, 17, 16}})
 
-		for i = 1, route.get_value("Mt.Ordeals Summit Outward") / 2 do
+		for i = 1, route.get_value("E308702") / 2 do
 			table.insert(_q, {walk.walk, {135, 18, 16}})
 			table.insert(_q, {walk.walk, {135, 17, 16}})
 		end
@@ -2325,13 +2370,13 @@ local function _sequence_karate()
 		table.insert(_q, {walk.walk, {135, 15, 21}})
 		table.insert(_q, {walk.walk, {134, 17, 8}})
 
-		-- Step Route: Mt.Ordeals-7th station Outward
-		if route.get_value("Mt.Ordeals-7th station Outward") % 2 == 1 then
+		-- Step Route: Mt.Ordeals-7th station [after Paladin]
+		if route.get_value("E308601") % 2 == 1 then
 			table.insert(_q, {walk.walk, {134, 18, 8}})
 			table.insert(_q, {walk.walk, {134, 17, 8}})
 		end
 
-		for i = 1, route.get_value("Mt.Ordeals-7th station Outward") / 2 do
+		for i = 1, route.get_value("E308601") / 2 do
 			table.insert(_q, {walk.walk, {134, 16, 8}})
 			table.insert(_q, {walk.walk, {134, 17, 8}})
 		end
@@ -2347,13 +2392,13 @@ local function _sequence_karate()
 		table.insert(_q, {walk.walk, {133, 18, 8}})
 		table.insert(_q, {walk.walk, {133, 18, 11}})
 
-		-- Step Route: Mt.Ordeals-3rd station Outward
-		if route.get_value("Mt.Ordeals-3rd station Outward") % 2 == 1 then
+		-- Step Route: Mt.Ordeals-3rd station [after Paladin]
+		if route.get_value("E308502") % 2 == 1 then
 			table.insert(_q, {walk.walk, {133, 18, 12}})
 			table.insert(_q, {walk.walk, {133, 18, 11}})
 		end
 
-		for i = 1, route.get_value("Mt.Ordeals-3rd station Outward") / 2 do
+		for i = 1, route.get_value("E308502") / 2 do
 			table.insert(_q, {walk.walk, {133, 18, 10}})
 			table.insert(_q, {walk.walk, {133, 18, 11}})
 		end
@@ -2373,13 +2418,13 @@ local function _sequence_karate()
 		table.insert(_q, {walk.walk, {132, 10, 24}})
 		table.insert(_q, {walk.walk, {132, 10, 28}})
 
-		-- Step Route: Mt.Ordeals Outward
-		for i = 1, route.get_value("Mt.Ordeals Outward") / 2 do
+		-- Step Route: Mt.Ordeals [after Paladin]
+		for i = 1, route.get_value("E308401") / 2 do
 			table.insert(_q, {walk.walk, {132, 9, 28}})
 			table.insert(_q, {walk.walk, {132, 10, 28}})
 		end
 
-		if route.get_value("Mt.Ordeals Outward") % 2 == 1 then
+		if route.get_value("E308401") % 2 == 1 then
 			table.insert(_q, {walk.walk, {132, 11, 28}})
 			table.insert(_q, {walk.walk, {132, 10, 28}})
 		end
@@ -2392,8 +2437,8 @@ local function _sequence_karate()
 		-- Walk to the Chocobo forest and get a chocobo.
 		table.insert(_q, {walk.walk, {nil, 218, 209}})
 
-		-- Step Route: Overworld (Mt.Ordeals) [Post-Mt.Ordeals]
-		for i = 1, route.get_value("Overworld (Mt.Ordeals) [Post-Mt.Ordeals]") / 2 do
+		-- Step Route: Overworld (Mt.Ordeals) [after Mt.Ordeals]
+		for i = 1, route.get_value("E000601") / 2 do
 			table.insert(_q, {walk.walk, {nil, 217, 209}})
 			table.insert(_q, {walk.walk, {nil, 218, 209}})
 		end
@@ -2413,6 +2458,13 @@ local function _sequence_karate()
 		table.insert(_q, {walk.walk, {nil, 157, 199}})
 		table.insert(_q, {walk.walk, {nil, 156, 199}})
 		table.insert(_q, {walk.interact, {}})
+
+		-- Step Route: Overworld (Mysidia) [after Mt.Ordeals]
+		for i = 1, route.get_value("E000502") / 2 do
+			table.insert(_q, {walk.walk, {nil, 157, 199}})
+			table.insert(_q, {walk.walk, {nil, 156, 199}})
+		end
+
 		table.insert(_q, {walk.walk, {nil, 155, 199}})
 
 		if ROUTE == "nocw" then
@@ -2436,13 +2488,13 @@ local function _sequence_karate()
 		-- Walk to Yang.
 		table.insert(_q, {walk.walk, {151, 5, 10}})
 
-		-- Step Route: Serpent Road
-		for i = 1, route.get_value("Serpent Road") / 2 do
+		-- Step Route: Town of Baron Serpent Road
+		for i = 1, route.get_value("E309700") / 2 do
 			table.insert(_q, {walk.walk, {151, 6, 10}})
 			table.insert(_q, {walk.walk, {151, 5, 10}})
 		end
 
-		if route.get_value("Serpent Road") % 2 == 1 then
+		if route.get_value("E309700") % 2 == 1 then
 			table.insert(_q, {walk.walk, {151, 5, 9}})
 			table.insert(_q, {walk.walk, {151, 5, 10}})
 		end
@@ -2528,7 +2580,7 @@ local function _sequence_baigan()
 	table.insert(_q, {walk.walk, {58, 7, 15}})
 
 	-- Step Route: Old Water-way
-	for i = 1, route.get_value("Old Water-way") / 2 do
+	for i = 1, route.get_value("E303A00") / 2 do
 		table.insert(_q, {walk.walk, {58, 7, 16}})
 		table.insert(_q, {walk.walk, {58, 7, 15}})
 	end
@@ -2554,7 +2606,7 @@ local function _sequence_baigan()
 	table.insert(_q, {walk.walk, {59, 16, 6}})
 
 	-- Step Route: Castle Baron B3F
-	for i = 1, route.get_value("Castle Baron B3F") / 2 do
+	for i = 1, route.get_value("E303B00") / 2 do
 		table.insert(_q, {walk.walk, {59, 16, 7}})
 		table.insert(_q, {walk.walk, {59, 16, 6}})
 	end
@@ -2569,7 +2621,7 @@ local function _sequence_baigan()
 	table.insert(_q, {walk.walk, {62, 2, 23}})
 
 	-- Step Route: Castle Baron B2F
-	for i = 1, route.get_value("Castle Baron B2F") / 2 do
+	for i = 1, route.get_value("E303E00") / 2 do
 		table.insert(_q, {walk.walk, {62, 3, 23}})
 		table.insert(_q, {walk.walk, {62, 2, 23}})
 	end
@@ -2579,18 +2631,19 @@ local function _sequence_baigan()
 	table.insert(_q, {walk.walk, {60, 6, 12}})
 
 	-- Step Route: Castle Baron B1F
-	if route.get_value("Castle Baron B1F Choice") == 1 then
+	for i = 1, route.get_value("E303C00") / 2 do
 		table.insert(_q, {walk.walk, {60, 6, 11}})
+		table.insert(_q, {walk.walk, {60, 6, 12}})
+	end
 
-		for i = 1, route.get_value("Castle Baron B1F [Pre-Save Room]") / 2 do
-			table.insert(_q, {walk.walk, {60, 5, 11}})
-			table.insert(_q, {walk.walk, {60, 6, 11}})
-		end
-
+	-- Step Route: Castle Baron B1F Choice
+	if route.get_value("C303C00") == 1 then
+		table.insert(_q, {walk.walk, {60, 6, 11}})
 		table.insert(_q, {walk.walk, {60, 2, 11}})
 		table.insert(_q, {walk.walk, {60, 2, 9}})
 
-		for i = 1, route.get_value("Castle Baron B1F Save Room") / 2 do
+		-- Step Route: Castle Baron B1F Save Room
+		for i = 1, route.get_value("E303D00") / 2 do
 			table.insert(_q, {walk.walk, {61, 4, 10}})
 			table.insert(_q, {walk.walk, {61, 4, 11}})
 		end
@@ -2598,18 +2651,18 @@ local function _sequence_baigan()
 		table.insert(_q, {walk.walk, {61, 4, 12}})
 		table.insert(_q, {walk.walk, {60, 2, 11}})
 		table.insert(_q, {walk.walk, {60, 6, 11}})
+
+		-- Step Route: Castle Baron B1F [after Save Room]
+		for i = 1, route.get_value("E303C01") / 2 do
+			table.insert(_q, {walk.walk, {60, 5, 11}})
+			table.insert(_q, {walk.walk, {60, 6, 11}})
+		end
+
 		table.insert(_q, {walk.walk, {60, 6, 12}})
 	end
 
 	table.insert(_q, {walk.walk, {60, 12, 12}})
 	table.insert(_q, {walk.walk, {60, 12, 10}})
-
-	-- Step Route: Castle Baron B1F
-	for i = 1, route.get_value("Castle Baron B1F") / 2 do
-		table.insert(_q, {walk.walk, {60, 13, 10}})
-		table.insert(_q, {walk.walk, {60, 12, 10}})
-	end
-
 	table.insert(_q, {walk.walk, {60, 14, 10}})
 	table.insert(_q, {walk.walk, {60, 14, 2}})
 	table.insert(_q, {walk.walk, {36, 10, 2}})
@@ -2693,15 +2746,15 @@ local function _sequence_kainazzo()
 
 	table.insert(_q, {menu.field.close, {}})
 
-	-- Step Route: Castle Baron [Pre-Kainazzo]
-	for i = 1, route.get_value("Castle Baron [Pre-Kainazzo]") / 2 do
+	-- Step Route: Castle Baron [before Kainazzo]
+	for i = 1, route.get_value("E302400") / 2 do
 		table.insert(_q, {walk.walk, {42, 9, 4}})
 		table.insert(_q, {walk.walk, {42, 8, 4}})
 	end
 
 	table.insert(_q, {walk.walk, {42, 8, 3}})
 
-	if route.get_value("Castle Baron [Pre-Kainazzo]") % 2 == 1 then
+	if route.get_value("E302400") % 2 == 1 then
 		table.insert(_q, {walk.walk, {42, 9, 3}})
 		table.insert(_q, {walk.walk, {42, 8, 3}})
 	end
@@ -2721,8 +2774,8 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {nil, 36, 82}})
 
-	-- Step Route: Overworld (Toroia) [Pre-Toroia]
-	for i = 1, route.get_value("Overworld (Toroia) [Pre-Toroia]") / 2 do
+	-- Step Route: Overworld (Toroia) [before Toroia]
+	for i = 1, route.get_value("E000700") / 2 do
 		table.insert(_q, {walk.walk, {nil, 37, 82}})
 		table.insert(_q, {walk.walk, {nil, 36, 82}})
 	end
@@ -2731,8 +2784,8 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {39, 16, 10}})
 	table.insert(_q, {walk.walk, {85, 9, 10}})
 
-	-- Step Route: Toroian Castle 1F [First Visit]
-	local steps = route.get_value("Toroian Castle 1F [First Visit]")
+	-- Step Route: Toroian Castle 1F [before Cave Magnes]
+	local steps = route.get_value("E302700")
 
 	if steps >= 3 and steps % 2 == 1 then
 		table.insert(_q, {walk.walk, {85, 7, 10}})
@@ -2780,8 +2833,8 @@ local function _sequence_dark_elf()
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.close, {}})
 
-	-- Step Route: Overworld (Toroia) [Post-Toroia]
-	if route.get_value("Overworld (Toroia) [Post-Toroia]") % 2 == 1 then
+	-- Step Route: Overworld (Toroia) [after Toroia]
+	if route.get_value("E000701") % 2 == 1 then
 		table.insert(_q, {walk.walk, {nil, 36, 82}})
 	else
 		table.insert(_q, {walk.walk, {nil, 35, 70}})
@@ -2789,7 +2842,7 @@ local function _sequence_dark_elf()
 
 	table.insert(_q, {walk.walk, {nil, 36, 70}})
 
-	for i = 1, route.get_value("Overworld (Toroia) [Post-Toroia]") / 2 do
+	for i = 1, route.get_value("E000701") / 2 do
 		table.insert(_q, {walk.walk, {nil, 37, 70}})
 		table.insert(_q, {walk.walk, {nil, 36, 70}})
 	end
@@ -2811,12 +2864,6 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {nil, 74, 56}})
 	table.insert(_q, {walk.walk, {nil, 74, 55}})
 	table.insert(_q, {walk.interact, {}})
-
-	for i = 1, route.get_value("Overworld (Toroia) [Pre-Cave Magnes]") / 2 do
-		table.insert(_q, {walk.walk, {nil, 74, 54}})
-		table.insert(_q, {walk.walk, {nil, 74, 55}})
-	end
-
 	table.insert(_q, {walk.walk, {nil, 74, 53}})
 
 	-- Walk to the crystal room.
@@ -2829,12 +2876,12 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {140, 24, 24}})
 
 	-- Step Route: Cave Magnes B1F
-	if route.get_value("Cave Magnes B1F") % 2 == 1 then
+	if route.get_value("E308C00") % 2 == 1 then
 		table.insert(_q, {walk.walk, {140, 24, 23}})
 		table.insert(_q, {walk.walk, {140, 24, 24}})
 	end
 
-	for i = 1, route.get_value("Cave Magnes B1F") / 2 do
+	for i = 1, route.get_value("E308C00") / 2 do
 		table.insert(_q, {walk.walk, {140, 24, 25}})
 		table.insert(_q, {walk.walk, {140, 24, 24}})
 	end
@@ -2847,12 +2894,12 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {141, 27, 27}})
 
 	-- Step Route: Cave Magnes B2F
-	if route.get_value("Cave Magnes B2F") % 2 == 1 then
+	if route.get_value("E308D00") % 2 == 1 then
 		table.insert(_q, {walk.walk, {141, 27, 26}})
 		table.insert(_q, {walk.walk, {141, 27, 27}})
 	end
 
-	for i = 1, route.get_value("Cave Magnes B2F") / 2 do
+	for i = 1, route.get_value("E308D00") / 2 do
 		table.insert(_q, {walk.walk, {141, 27, 28}})
 		table.insert(_q, {walk.walk, {141, 27, 27}})
 	end
@@ -2865,27 +2912,26 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {141, 5, 10}})
 	table.insert(_q, {walk.walk, {143, 27, 7}})
 
-	-- Step Route: Cave Magnes B3F [Pre-Save Room]
-	if route.get_value("Cave Magnes B3F Choice") == 1 then
-		if route.get_value("Cave Magnes B3F [Pre-Save Room]") % 2 == 1 then
-			table.insert(_q, {walk.walk, {143, 27, 6}})
-			table.insert(_q, {walk.walk, {143, 27, 7}})
-		end
+	-- Step Route: Cave Magnes B3F [before Save Room]
+	if route.get_value("E308F00") % 2 == 1 then
+		table.insert(_q, {walk.walk, {143, 27, 6}})
+		table.insert(_q, {walk.walk, {143, 27, 7}})
+	end
 
-		for i = 1, route.get_value("Cave Magnes B3F [Pre-Save Room]") / 2 do
-			table.insert(_q, {walk.walk, {143, 27, 8}})
-			table.insert(_q, {walk.walk, {143, 27, 7}})
-		end
+	for i = 1, route.get_value("E308F00") / 2 do
+		table.insert(_q, {walk.walk, {143, 27, 8}})
+		table.insert(_q, {walk.walk, {143, 27, 7}})
 	end
 
 	table.insert(_q, {walk.walk, {143, 27, 9}})
 	table.insert(_q, {walk.walk, {143, 22, 9}})
 
-	-- Step Route: Cave Magnes B3F
-	if route.get_value("Cave Magnes B3F Choice") == 1 then
+	-- Step Route: Cave Magnes B3F Choice
+	if route.get_value("C308F00") == 1 then
 		table.insert(_q, {walk.walk, {143, 21, 9}})
 
-		for i = 1, route.get_value("Cave Magnes B3F Save Room") / 2 do
+		-- Step Route: Cave Magnes B3F Save Room
+		for i = 1, route.get_value("E309200") / 2 do
 			table.insert(_q, {walk.walk, {146, 6, 11}})
 			table.insert(_q, {walk.walk, {146, 6, 12}})
 		end
@@ -2899,13 +2945,13 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {143, 29, 20}})
 	table.insert(_q, {walk.walk, {143, 28, 20}})
 
-	-- Step Route: Cave Magnes B3F
-	if route.get_value("Cave Magnes B3F") % 2 == 1 then
+	-- Step Route: Cave Magnes B3F [after Save Room]
+	if route.get_value("E308F01") % 2 == 1 then
 		table.insert(_q, {walk.walk, {143, 29, 20}})
 		table.insert(_q, {walk.walk, {143, 28, 20}})
 	end
 
-	for i = 1, route.get_value("Cave Magnes B3F") / 2 do
+	for i = 1, route.get_value("E308F01") / 2 do
 		table.insert(_q, {walk.walk, {143, 27, 20}})
 		table.insert(_q, {walk.walk, {143, 28, 20}})
 	end
@@ -2918,7 +2964,7 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {145, 5, 12}})
 
 	-- Step Route: Cave Magnes B3F Passage
-	for i = 1, route.get_value("Cave Magnes B3F Passage") / 2 do
+	for i = 1, route.get_value("E309100") / 2 do
 		table.insert(_q, {walk.walk, {145, 5, 13}})
 		table.insert(_q, {walk.walk, {145, 5, 12}})
 	end
@@ -2926,22 +2972,15 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {145, 5, 14}})
 	table.insert(_q, {walk.walk, {147, 22, 28}})
 
-	-- Step Route: Cave Magnes B4F [Pre-Save Room]
-	if route.get_value("Cave Magnes B4F Choice") == 1 then
-		if route.get_value("Cave Magnes B4F [Pre-Save Room]") % 2 == 1 then
-			table.insert(_q, {walk.walk, {147, 22, 27}})
-			table.insert(_q, {walk.walk, {147, 22, 28}})
-		end
+	-- Step Route: Cave Magnes B4F [before Save Room]
+	if route.get_value("E309300") % 2 == 1 then
+		table.insert(_q, {walk.walk, {147, 22, 27}})
+		table.insert(_q, {walk.walk, {147, 22, 28}})
+	end
 
-		for i = 1, route.get_value("Cave Magnes B4F [Pre-Save Room]") / 2 do
-			table.insert(_q, {walk.walk, {147, 22, 29}})
-			table.insert(_q, {walk.walk, {147, 22, 28}})
-		end
-	else
-		if route.get_value("Cave Magnes B4F") % 2 == 1 then
-			table.insert(_q, {walk.walk, {147, 22, 27}})
-			table.insert(_q, {walk.walk, {147, 22, 28}})
-		end
+	for i = 1, route.get_value("E309300") / 2 do
+		table.insert(_q, {walk.walk, {147, 22, 29}})
+		table.insert(_q, {walk.walk, {147, 22, 28}})
 	end
 
 	table.insert(_q, {walk.walk, {147, 20, 28}})
@@ -2951,14 +2990,15 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {147, 13, 25}})
 	table.insert(_q, {walk.walk, {147, 13, 15}})
 
-	-- Step Route: Cave Magnes B4F
-	if route.get_value("Cave Magnes B4F Choice") == 1 then
+	-- Step Route: Cave Magnes B4F Choice
+	if route.get_value("C309300") == 1 then
 		table.insert(_q, {walk.walk, {147, 24, 15}})
 		table.insert(_q, {walk.walk, {147, 24, 16}})
 		table.insert(_q, {walk.walk, {147, 27, 16}})
 		table.insert(_q, {walk.walk, {147, 27, 15}})
 
-		for i = 1, route.get_value("Cave Magnes B4F Save Room") / 2 do
+		-- Step Route: Cave Magnes B4F Save Room
+		for i = 1, route.get_value("E30A100") / 2 do
 			table.insert(_q, {walk.walk, {161, 6, 11}})
 			table.insert(_q, {walk.walk, {161, 6, 12}})
 		end
@@ -2970,7 +3010,8 @@ local function _sequence_dark_elf()
 		table.insert(_q, {walk.walk, {147, 13, 15}})
 	end
 
-	for i = 1, route.get_value("Cave Magnes B4F") / 2 do
+	-- Step Route: Cave Magnes B4F [after Save Room]
+	for i = 1, route.get_value("E309301") / 2 do
 		table.insert(_q, {walk.walk, {147, 12, 15}})
 		table.insert(_q, {walk.walk, {147, 13, 15}})
 	end
@@ -3010,8 +3051,8 @@ local function _sequence_flamedog()
 	table.insert(_q, {menu.field.close, {}})
 	table.insert(_q, {walk.walk, {nil, 74, 55}})
 
-	-- Step Route: Overworld (Toroia) [Post-Cave Magnes]
-	for i = 1, route.get_value("Overworld (Toroia) [Post-Cave Magnes]") / 2 do
+	-- Step Route: Overworld (Toroia) [after Cave Magnes]
+	for i = 1, route.get_value("E000702") / 2 do
 		table.insert(_q, {walk.walk, {nil, 74, 54}})
 		table.insert(_q, {walk.walk, {nil, 74, 55}})
 	end
@@ -3042,9 +3083,9 @@ local function _sequence_flamedog()
 	table.insert(_q, {walk.walk, {39, 16, 10}})
 	table.insert(_q, {walk.walk, {85, 9, 10}})
 
-	-- Step Route: Toroian Castle 1F [Second Visit]
-	if route.get_value("Toroian Castle 1F Choice") == 1 then
-		local steps = route.get_value("Toroian Castle 1F [Second Visit]")
+	-- Step Route: Toroian Castle 1F Choice
+	if route.get_value("C305500") == 1 then
+		local steps = route.get_value("E305500")
 
 		if steps >= 3 and steps % 2 == 1 then
 			table.insert(_q, {walk.walk, {85, 7, 10}})
@@ -3082,8 +3123,8 @@ local function _sequence_flamedog()
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.close, {}})
 
-	-- Step Route: World Map (Toroia)
-	local steps = route.get_value("Overworld (Toroia) [Pre-Tower of Zot]")
+	-- Step Route: Overworld (Toroia) [before Tower of Zot]
+	local steps = route.get_value("E000703")
 
 	if steps >= 2 and steps % 2 == 0 then
 		table.insert(_q, {walk.walk, {nil, 36, 81}})
@@ -3111,7 +3152,7 @@ local function _sequence_flamedog()
 	table.insert(_q, {walk.walk, {152, 28, 5}})
 
 	-- Step Route: Tower of Zot 1F
-	for i = 1, route.get_value("Tower of Zot 1F") / 2 do
+	for i = 1, route.get_value("E309800") / 2 do
 		table.insert(_q, {walk.walk, {152, 27, 5}})
 		table.insert(_q, {walk.walk, {152, 28, 5}})
 	end
@@ -3122,8 +3163,8 @@ local function _sequence_flamedog()
 	table.insert(_q, {walk.walk, {153, 19, 14}})
 	table.insert(_q, {walk.walk, {153, 19, 21}})
 
-	-- Step Route: Tower of Zot 2F
-	for i = 1, route.get_value("Tower of Zot 2F") / 2 do
+	-- Step Route: Tower of Zot 2F [before FlameDog]
+	for i = 1, route.get_value("E309900") / 2 do
 		table.insert(_q, {walk.walk, {153, 18, 21}})
 		table.insert(_q, {walk.walk, {153, 19, 21}})
 	end
@@ -3143,11 +3184,18 @@ local function _sequence_magus_sisters()
 	-- Walk to the top floor of the tower.
 	table.insert(_q, {walk.walk, {153, 8, 20}})
 	table.insert(_q, {walk.walk, {153, 2, 20}})
+
+	-- Step Route: Tower of Zot 2F [after FlameDog]
+	for i = 1, route.get_value("E309901") / 2 do
+		table.insert(_q, {walk.walk, {153, 3, 20}})
+		table.insert(_q, {walk.walk, {153, 2, 20}})
+	end
+
 	table.insert(_q, {walk.walk, {153, 2, 13}})
 	table.insert(_q, {walk.walk, {154, 1, 14}})
 
 	-- Step Route: Tower of Zot 3F
-	for i = 1, route.get_value("Tower of Zot 3F") / 2 do
+	for i = 1, route.get_value("E309A00") / 2 do
 		table.insert(_q, {walk.walk, {154, 1, 15}})
 		table.insert(_q, {walk.walk, {154, 1, 14}})
 	end
@@ -3185,7 +3233,7 @@ local function _sequence_magus_sisters()
 	table.insert(_q, {walk.walk, {156, 3, 23}})
 
 	-- Step Route: Tower of Zot 4F
-	for i = 1, route.get_value("Tower of Zot 4F") / 2 do
+	for i = 1, route.get_value("E309C00") / 2 do
 		table.insert(_q, {walk.walk, {156, 4, 23}})
 		table.insert(_q, {walk.walk, {156, 3, 23}})
 	end
@@ -3204,8 +3252,8 @@ local function _sequence_magus_sisters()
 	table.insert(_q, {walk.walk, {157, 25, 22}})
 	table.insert(_q, {walk.walk, {157, 19, 22}})
 
-	-- Step Route: Tower of Zot 5F [Pre-Magus Sisters]
-	for i = 1, route.get_value("Tower of Zot 5F [Pre-Magus Sisters]") / 2 do
+	-- Step Route: Tower of Zot 5F [before Magus Sisters]
+	for i = 1, route.get_value("E309D00") / 2 do
 		table.insert(_q, {walk.walk, {157, 19, 21}})
 		table.insert(_q, {walk.walk, {157, 19, 22}})
 	end
@@ -3231,13 +3279,13 @@ local function _sequence_valvalis()
 	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {walk.walk, {157, 15, 16}})
 
-	-- Step Route: Tower of Zot 5F [Post-Magus Sisters]
-	if route.get_value("Tower of Zot 5F [Post-Magus Sisters]") % 2 == 1 then
+	-- Step Route: Tower of Zot 5F [after Magus Sisters]
+	if route.get_value("E309D01") % 2 == 1 then
 		table.insert(_q, {walk.walk, {157, 15, 17}})
 		table.insert(_q, {walk.walk, {157, 15, 16}})
 	end
 
-	for i = 1, route.get_value("Tower of Zot 5F [Post-Magus Sisters]") / 2 do
+	for i = 1, route.get_value("E309D01") / 2 do
 		table.insert(_q, {walk.walk, {157, 16, 16}})
 		table.insert(_q, {walk.walk, {157, 15, 16}})
 	end
@@ -3246,7 +3294,7 @@ local function _sequence_valvalis()
 	table.insert(_q, {walk.walk, {158, 10, 16}})
 
 	-- Step Route: Tower of Zot 6F
-	for i = 1, route.get_value("Tower of Zot 6F") / 2 do
+	for i = 1, route.get_value("E309E00") / 2 do
 		table.insert(_q, {walk.walk, {158, 10, 15}})
 		table.insert(_q, {walk.walk, {158, 10, 16}})
 	end
@@ -3288,8 +3336,8 @@ local function _sequence_calbrena()
 	-- Leave the castle and board the airship.
 	table.insert(_q, {_set_healing, {_healing_calbrena}})
 
-	-- Step Route: Castle Baron [Post-Valvalis]
-	local steps = route.get_value("Castle Baron [Post-Valvalis]")
+	-- Step Route: Castle Baron [after Valvalis]
+	local steps = route.get_value("E302401")
 
 	while steps > 0 do
 		if steps == 3 then
@@ -3327,8 +3375,8 @@ local function _sequence_calbrena()
 	table.insert(_q, {walk.walk, {nil, 105, 215}})
 	table.insert(_q, {walk.interact, {}})
 
-	-- Step Route: Overworld (Agart)
-	for i = 1, route.get_value("Overworld (Agart)") / 2 do
+	-- Step Route: Overworld (Eblan) [after Valvalis]
+	for i = 1, route.get_value("E000A00") / 2 do
 		table.insert(_q, {walk.walk, {nil, 106, 215}})
 		table.insert(_q, {walk.walk, {nil, 105, 215}})
 	end
@@ -3349,8 +3397,8 @@ local function _sequence_calbrena()
 	table.insert(_q, {walk.walk, {nil, 105, 212}})
 	table.insert(_q, {walk.interact, {}})
 
-	-- Step Route: Underworld (Castle of Dwarves) [Pre-Castle of Dwarves]
-	for i = 1, route.get_value("Underworld (Castle of Dwarves) [Pre-Castle of Dwarves]") / 2 do
+	-- Step Route: Underworld (Castle of Dwarves) [before Castle of Dwarves]
+	for i = 1, route.get_value("E100000") / 2 do
 		table.insert(_q, {walk.walk, {nil, 101, 82}})
 		table.insert(_q, {walk.walk, {nil, 102, 82}})
 	end
@@ -3397,9 +3445,9 @@ local function _sequence_dr_lugae()
 		table.insert(_q, {walk.walk, {269, 9, 20}})
 	else
 		-- Walk to the right tower and collect the Strength ring.
-		local steps = route.get_value("Castle of Dwarves")
+		local steps = route.get_value("E310700")
 
-		if route.get_value("Castle of Dwarves Choice") == 1 then
+		if route.get_value("C310700") == 1 then
 			table.insert(_q, {menu.field.open, {}})
 			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
@@ -3665,8 +3713,8 @@ local function _sequence_dr_lugae()
 		table.insert(_q, {walk.walk, {nil, 91, 85}})
 		table.insert(_q, {walk.walk, {nil, 82, 85}})
 
-		-- Step Route: Underworld (Castle of Dwarves) [Post-Castle of Dwarves]
-		for i = 1, route.get_value("Underworld (Castle of Dwarves) [Post-Castle of Dwarves]") / 2 do
+		-- Step Route: Underworld (Castle of Dwarves) [after Castle of Dwarves]
+		for i = 1, route.get_value("E100001") / 2 do
 			table.insert(_q, {walk.walk, {nil, 82, 84}})
 			table.insert(_q, {walk.walk, {nil, 82, 85}})
 		end
@@ -3694,13 +3742,13 @@ local function _sequence_dr_lugae()
 		-- Walk to the CatClaw.
 		table.insert(_q, {walk.walk, {289, 15, 20}})
 
-		-- Step Route: Tower of Bab-il 1F Inward
-		if route.get_value("Tower of Bab-il 1F Inward") % 2 == 1 then
+		-- Step Route: Tower of Bab-il 1F [before Lugae]
+		if route.get_value("E312100") % 2 == 1 then
 			table.insert(_q, {walk.walk, {289, 15, 21}})
 			table.insert(_q, {walk.walk, {289, 15, 20}})
 		end
 
-		for i = 1, route.get_value("Tower of Bab-il 1F Inward") / 2 do
+		for i = 1, route.get_value("E312100") / 2 do
 			table.insert(_q, {walk.walk, {289, 15, 19}})
 			table.insert(_q, {walk.walk, {289, 15, 20}})
 		end
@@ -3709,8 +3757,8 @@ local function _sequence_dr_lugae()
 		table.insert(_q, {walk.walk, {290, 15, 6}})
 		table.insert(_q, {walk.walk, {290, 12, 6}})
 
-		-- Step Route: Tower of Bab-il 2F Inward
-		for i = 1, route.get_value("Tower of Bab-il 2F Inward") / 2 do
+		-- Step Route: Tower of Bab-il 2F [before Lugae]
+		for i = 1, route.get_value("E312200") / 2 do
 			table.insert(_q, {walk.walk, {290, 12, 7}})
 			table.insert(_q, {walk.walk, {290, 12, 6}})
 		end
@@ -3726,8 +3774,8 @@ local function _sequence_dr_lugae()
 		table.insert(_q, {walk.walk, {291, 21, 6}})
 		table.insert(_q, {walk.walk, {291, 19, 6}})
 
-		-- Step Route: Tower of Bab-il 3F Inward
-		for i = 1, route.get_value("Tower of Bab-il 3F Inward") / 2 do
+		-- Step Route: Tower of Bab-il 3F [before Lugae]
+		for i = 1, route.get_value("E312300") / 2 do
 			table.insert(_q, {walk.walk, {291, 19, 5}})
 			table.insert(_q, {walk.walk, {291, 19, 6}})
 		end
@@ -3753,8 +3801,8 @@ local function _sequence_dr_lugae()
 		table.insert(_q, {walk.walk, {292, 8, 10}})
 		table.insert(_q, {walk.walk, {292, 24, 10}})
 
-		-- Step Route: Tower of Bab-il 4F Inward
-		for i = 1, route.get_value("Tower of Bab-il 4F Inward") / 2 do
+		-- Step Route: Tower of Bab-il 4F [before Lugae]
+		for i = 1, route.get_value("E312400") / 2 do
 			table.insert(_q, {walk.walk, {292, 24, 9}})
 			table.insert(_q, {walk.walk, {292, 24, 10}})
 		end
@@ -3775,8 +3823,8 @@ local function _sequence_dr_lugae()
 		table.insert(_q, {walk.walk, {293, 23, 24}})
 		table.insert(_q, {walk.walk, {293, 23, 19}})
 
-		-- Step Route: Tower of Bab-il 5F Inward
-		for i = 1, route.get_value("Tower of Bab-il 5F Inward") / 2 do
+		-- Step Route: Tower of Bab-il 5F [before Lugae]
+		for i = 1, route.get_value("E312500") / 2 do
 			table.insert(_q, {walk.walk, {293, 24, 19}})
 			table.insert(_q, {walk.walk, {293, 23, 19}})
 		end
@@ -3785,8 +3833,8 @@ local function _sequence_dr_lugae()
 		table.insert(_q, {walk.walk, {293, 25, 5}})
 		table.insert(_q, {walk.walk, {294, 14, 6}})
 
-		-- Step Route: Tower of Bab-il 6F Inward
-		for i = 1, route.get_value("Tower of Bab-il 6F Inward") / 2 do
+		-- Step Route: Tower of Bab-il 6F [before Lugae]
+		for i = 1, route.get_value("E312600") / 2 do
 			table.insert(_q, {walk.walk, {294, 14, 5}})
 			table.insert(_q, {walk.walk, {294, 14, 6}})
 		end
@@ -3800,8 +3848,8 @@ local function _sequence_dr_lugae()
 		table.insert(_q, {walk.walk, {295, 27, 18}})
 		table.insert(_q, {walk.walk, {295, 29, 18}})
 
-		-- Step Route: Tower of Bab-il 7F Inward
-		for i = 1, route.get_value("Tower of Bab-il 7F Inward") / 2 do
+		-- Step Route: Tower of Bab-il 7F [before Lugae]
+		for i = 1, route.get_value("E312700") / 2 do
 			table.insert(_q, {walk.walk, {295, 29, 17}})
 			table.insert(_q, {walk.walk, {295, 29, 18}})
 		end
@@ -3810,8 +3858,8 @@ local function _sequence_dr_lugae()
 		table.insert(_q, {walk.walk, {296, 25, 17}})
 		table.insert(_q, {walk.walk, {296, 25, 25}})
 
-		-- Step Route: Tower of Bab-il 8F Inward
-		for i = 1, route.get_value("Tower of Bab-il 8F Inward") / 2 do
+		-- Step Route: Tower of Bab-il 8F [before Lugae]
+		for i = 1, route.get_value("E312800") / 2 do
 			table.insert(_q, {walk.walk, {296, 24, 25}})
 			table.insert(_q, {walk.walk, {296, 25, 25}})
 		end
@@ -3844,13 +3892,13 @@ local function _sequence_dark_imps()
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.ROSA, game.CHARACTER.CECIL}})
 	table.insert(_q, {menu.field.close, {}})
 
-	-- Step Route: Tower of Bab-il 8F Outward
-	if route.get_value("Tower of Bab-il 8F Outward") % 2 == 1 then
+	-- Step Route: Tower of Bab-il 8F [after Lugae]
+	if route.get_value("E312801") % 2 == 1 then
 		table.insert(_q, {walk.walk, {296, 16, 20}})
 		table.insert(_q, {walk.walk, {296, 16, 19}})
 	end
 
-	for i = 1, route.get_value("Tower of Bab-il 8F Outward") / 2 do
+	for i = 1, route.get_value("E312801") / 2 do
 		table.insert(_q, {walk.walk, {296, 17, 19}})
 		table.insert(_q, {walk.walk, {296, 16, 19}})
 	end
@@ -3864,8 +3912,8 @@ local function _sequence_dark_imps()
 	table.insert(_q, {walk.walk, {295, 29, 19}})
 	table.insert(_q, {walk.walk, {295, 26, 19}})
 
-	-- Step Route: Tower of Bab-il 7F Outward
-	for i = 1, route.get_value("Tower of Bab-il 7F Outward") / 2 do
+	-- Step Route: Tower of Bab-il 7F [after Lugae]
+	for i = 1, route.get_value("E312701") / 2 do
 		table.insert(_q, {walk.walk, {295, 26, 20}})
 		table.insert(_q, {walk.walk, {295, 26, 19}})
 	end
@@ -3880,7 +3928,7 @@ local function _sequence_dark_imps()
 	table.insert(_q, {walk.walk, {294, 14, 6}})
 
 	-- Step Route: Tower of Bab-il 6F Outward
-	for i = 1, route.get_value("Tower of Bab-il 6F Outward") / 2 do
+	for i = 1, route.get_value("E312601") / 2 do
 		table.insert(_q, {walk.walk, {294, 15, 6}})
 		table.insert(_q, {walk.walk, {294, 14, 6}})
 	end
@@ -3889,8 +3937,8 @@ local function _sequence_dark_imps()
 	table.insert(_q, {walk.walk, {294, 25, 5}})
 	table.insert(_q, {walk.walk, {293, 25, 22}})
 
-	-- Step Route: Tower of Bab-il 5F Outward [Pre-Dark Imps]
-	for i = 1, route.get_value("Tower of Bab-il 5F Outward [Pre-Dark Imps]") / 2 do
+	-- Step Route: Tower of Bab-il 5F [before Dark Imps]
+	for i = 1, route.get_value("E312501") / 2 do
 		table.insert(_q, {walk.walk, {293, 24, 22}})
 		table.insert(_q, {walk.walk, {293, 25, 22}})
 	end
@@ -3918,8 +3966,8 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {293, 16, 24}})
 	table.insert(_q, {walk.walk, {293, 7, 24}})
 
-	-- Step Route: Tower of Bab-il 5F Outward [Post-Dark Imps]
-	for i = 1, route.get_value("Tower of Bab-il 5F Outward [Post-Dark Imps]") / 2 do
+	-- Step Route: Tower of Bab-il 5F [after Dark Imps]
+	for i = 1, route.get_value("E312502") / 2 do
 		table.insert(_q, {walk.walk, {293, 7, 23}})
 		table.insert(_q, {walk.walk, {293, 7, 24}})
 	end
@@ -3933,8 +3981,8 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {292, 6, 7}})
 	table.insert(_q, {walk.walk, {292, 10, 7}})
 
-	-- Step Route: Tower of Bab-il 4F Outward
-	for i = 1, route.get_value("Tower of Bab-il 4F Outward") / 2 do
+	-- Step Route: Tower of Bab-il 4F [after Dark Imps]
+	for i = 1, route.get_value("E312401") / 2 do
 		table.insert(_q, {walk.walk, {292, 10, 6}})
 		table.insert(_q, {walk.walk, {292, 10, 7}})
 	end
@@ -3954,8 +4002,8 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {291, 6, 10}})
 	table.insert(_q, {walk.walk, {291, 8, 10}})
 
-	-- Step Route: Tower of Bab-il 3F Outward
-	for i = 1, route.get_value("Tower of Bab-il 3F Outward") / 2 do
+	-- Step Route: Tower of Bab-il 3F [after Dark Imps]
+	for i = 1, route.get_value("E312301") / 2 do
 		table.insert(_q, {walk.walk, {291, 8, 9}})
 		table.insert(_q, {walk.walk, {291, 8, 10}})
 	end
@@ -3977,8 +4025,8 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {290, 18, 23}})
 	table.insert(_q, {walk.walk, {290, 12, 23}})
 
-	-- Step Route: Tower of Bab-il 2F Outward
-	for i = 1, route.get_value("Tower of Bab-il 2F Outward") / 2 do
+	-- Step Route: Tower of Bab-il 2F [after Dark Imps]
+	for i = 1, route.get_value("E312201") / 2 do
 		table.insert(_q, {walk.walk, {290, 12, 22}})
 		table.insert(_q, {walk.walk, {290, 12, 23}})
 	end
@@ -3988,8 +4036,8 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {290, 15, 4}})
 	table.insert(_q, {walk.walk, {289, 15, 15}})
 
-	-- Step Route: Tower of Bab-il 1F Outward
-	for i = 1, route.get_value("Tower of Bab-il 1F Outward") / 2 do
+	-- Step Route: Tower of Bab-il 1F [after Dark Imps]
+	for i = 1, route.get_value("E312101") / 2 do
 		table.insert(_q, {walk.walk, {289, 15, 16}})
 		table.insert(_q, {walk.walk, {289, 15, 15}})
 	end
@@ -4001,6 +4049,13 @@ local function _sequence_edge()
 	table.insert(_q, {walk.interact, {}})
 	-- TODO: See if there's a better way to do this.
 	table.insert(_q, {menu.wait, {240}})
+
+	-- Step Route: Overworld (Baron) [after Tower of Bab-il]
+	for i = 1, route.get_value("E000000") / 2 do
+		table.insert(_q, {walk.walk, {289, 15, 16}})
+		table.insert(_q, {walk.walk, {289, 15, 15}})
+	end
+
 	table.insert(_q, {walk.walk, {nil, 102, 157}})
 	table.insert(_q, {walk.walk, {36, 16, 29}})
 	table.insert(_q, {walk.walk, {36, 14, 29}})
@@ -4014,13 +4069,13 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {36, 15, 18}})
 	table.insert(_q, {walk.walk, {36, 15, 15}})
 
-	-- Step Route: Castle of Baron [Post-Tower of Bab-il]
-	for i = 1, route.get_value("Castle Baron [Post-Tower of Bab-il]") / 2 do
+	-- Step Route: Castle of Baron [after Tower of Bab-il]
+	for i = 1, route.get_value("E302402") / 2 do
 		table.insert(_q, {walk.walk, {42, 9, 12}})
 		table.insert(_q, {walk.walk, {42, 8, 12}})
 	end
 
-	if route.get_value("Castle Baron [Post-Tower of Bab-il]") % 2 == 1 then
+	if route.get_value("E302402") % 2 == 1 then
 		table.insert(_q, {walk.walk, {42, 8, 13}})
 	end
 
@@ -4041,8 +4096,8 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {nil, 35, 237}})
 	table.insert(_q, {walk.interact, {}})
 
-	-- Step Route: Overworld (Eblan) [Post-Tower of Bab-il]
-	for i = 1, route.get_value("Overworld (Eblan) [Post-Tower of Bab-il]") / 2 do
+	-- Step Route: Overworld (Eblan) [after Tower of Bab-il]
+	for i = 1, route.get_value("E000A01") / 2 do
 		table.insert(_q, {walk.walk, {nil, 34, 237}})
 		table.insert(_q, {walk.walk, {nil, 35, 237}})
 	end
@@ -4066,7 +4121,7 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {199, 10, 23}})
 
 	-- Step Route: Cave Eblana B1F
-	for i = 1, route.get_value("Cave Eblana B1F") / 2 do
+	for i = 1, route.get_value("E30C700") / 2 do
 		table.insert(_q, {walk.walk, {199, 10, 24}})
 		table.insert(_q, {walk.walk, {199, 10, 23}})
 	end
@@ -4098,7 +4153,7 @@ local function _sequence_edge()
 	table.insert(_q, {menu.shop.close, {}})
 
 	-- Step Route: Cave Eblana B2F
-	local steps = route.get_value("Cave Eblana B2F")
+	local steps = route.get_value("E30C800")
 
 	if steps % 2 == 1 then
 		table.insert(_q, {walk.walk, {204, 8, 5}})
@@ -4129,7 +4184,7 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {201, 4, 28}})
 
 	-- Step Route: Pass to Bab-il (south) [A]
-	for i = 1, route.get_value("Pass to Bab-il (south) [A]") / 2 do
+	for i = 1, route.get_value("E30C900") / 2 do
 		table.insert(_q, {walk.walk, {201, 4, 27}})
 		table.insert(_q, {walk.walk, {201, 4, 28}})
 	end
@@ -4149,7 +4204,7 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {202, 6, 20}})
 
 	-- Step Route: Pass to Bab-il (north) [A]
-	for i = 1, route.get_value("Pass to Bab-il (north) [A]") / 2 do
+	for i = 1, route.get_value("E30CA00") / 2 do
 		table.insert(_q, {walk.walk, {202, 6, 19}})
 		table.insert(_q, {walk.walk, {202, 6, 20}})
 	end
@@ -4166,7 +4221,7 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {201, 22, 28}})
 
 	-- Step Route: Pass to Bab-il (south) [B]
-	for i = 1, route.get_value("Pass to Bab-il (south) [B]") / 2 do
+	for i = 1, route.get_value("E30C901") / 2 do
 		table.insert(_q, {walk.walk, {201, 23, 28}})
 		table.insert(_q, {walk.walk, {201, 22, 28}})
 	end
@@ -4186,18 +4241,20 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {202, 26, 24}})
 
 	-- Step Route: Pass to Bab-il (north) [B]
-	for i = 1, route.get_value("Pass to Bab-il (north) [B]") / 2 do
+	for i = 1, route.get_value("E30CA01") / 2 do
 		table.insert(_q, {walk.walk, {202, 27, 24}})
 		table.insert(_q, {walk.walk, {202, 26, 24}})
 	end
 
 	table.insert(_q, {walk.walk, {202, 27, 24}})
 
-	if route.get_value("Pass to Bab-il (north) [B] Choice") == 1 then
+	-- Step Route: Pass to Bab-il (north) Choice
+	if route.get_value("C30CA00") == 1 then
 		table.insert(_q, {walk.walk, {202, 29, 24}})
 		table.insert(_q, {walk.walk, {202, 29, 23}})
 
-		for i = 1, route.get_value("Pass to Bab-il (north) Save Room") / 2 do
+		-- Step Route: Pass to Bab-il (north) Save Room
+		for i = 1, route.get_value("E30CD00") / 2 do
 			table.insert(_q, {walk.walk, {205, 4, 10}})
 			table.insert(_q, {walk.walk, {205, 4, 11}})
 		end
@@ -4205,7 +4262,8 @@ local function _sequence_edge()
 		table.insert(_q, {walk.walk, {205, 4, 12}})
 		table.insert(_q, {walk.walk, {202, 29, 24}})
 
-		for i = 1, route.get_value("Pass to Bab-il (north) [Post-Save Room]") / 2 do
+		-- Step Route: Pass to Bab-il (north) [after Save Room]
+		for i = 1, route.get_value("E30CA02") / 2 do
 			table.insert(_q, {walk.walk, {202, 28, 24}})
 			table.insert(_q, {walk.walk, {202, 29, 24}})
 		end
@@ -4246,7 +4304,7 @@ local function _sequence_rubicant()
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.CLAW.CATCLAW}})
 	table.insert(_q, {menu.field.equip.close, {}})
 
-	if route.get_value("Pass to Bab-il (north) Dwarf Axe Choice") == 0 then
+	if route.get_value("C30CA01") == 0 then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.ICEBRAND}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.SHIELD.ICE}})
@@ -4255,8 +4313,8 @@ local function _sequence_rubicant()
 
 	table.insert(_q, {menu.field.close, {}})
 
-	-- Step Route: Pass to Bab-il (north) [Post-Edge]
-	for i = 1, route.get_value("Pass to Bab-il (north) [Post-Edge]") / 2 do
+	-- Step Route: Pass to Bab-il (north) [after Edge]
+	for i = 1, route.get_value("E30CA03") / 2 do
 		table.insert(_q, {walk.walk, {202, 22, 5}})
 		table.insert(_q, {walk.walk, {202, 22, 6}})
 	end
@@ -4270,8 +4328,8 @@ local function _sequence_rubicant()
 	table.insert(_q, {walk.walk, {167, 14, 6}})
 	table.insert(_q, {walk.walk, {167, 12, 6}})
 
-	-- Step Route: Tower of Bab-il 1F [Post-Edge]
-	for i = 1, route.get_value("Tower of Bab-il 1F [Post-Edge]") / 2 do
+	-- Step Route: Tower of Bab-il 1F [after Edge]
+	for i = 1, route.get_value("E30A700") / 2 do
 		table.insert(_q, {walk.walk, {167, 12, 5}})
 		table.insert(_q, {walk.walk, {167, 12, 6}})
 	end
@@ -4297,7 +4355,7 @@ local function _sequence_rubicant()
 	table.insert(_q, {walk.walk, {168, 25, 6}})
 
 	-- Step Route: Tower of Bab-il B2F
-	for i = 1, route.get_value("Tower of Bab-il B2F") / 2 do
+	for i = 1, route.get_value("E30A800") / 2 do
 		table.insert(_q, {walk.walk, {168, 24, 6}})
 		table.insert(_q, {walk.walk, {168, 25, 6}})
 	end
@@ -4323,7 +4381,7 @@ local function _sequence_rubicant()
 	table.insert(_q, {walk.walk, {169, 6, 26}})
 
 	-- Step Route: Tower of Bab-il B3F [A]
-	for i = 1, route.get_value("Tower of Bab-il B3F [A]") / 2 do
+	for i = 1, route.get_value("E30A900") / 2 do
 		table.insert(_q, {walk.walk, {169, 7, 26}})
 		table.insert(_q, {walk.walk, {169, 6, 26}})
 	end
@@ -4335,7 +4393,7 @@ local function _sequence_rubicant()
 	table.insert(_q, {walk.walk, {170, 23, 24}})
 
 	-- Step Route: Tower of Bab-il B4F [A]
-	for i = 1, route.get_value("Tower of Bab-il B4F [A]") / 2 do
+	for i = 1, route.get_value("E30AA00") / 2 do
 		table.insert(_q, {walk.walk, {170, 23, 23}})
 		table.insert(_q, {walk.walk, {170, 23, 24}})
 	end
@@ -4353,7 +4411,7 @@ local function _sequence_rubicant()
 	table.insert(_q, {walk.walk, {169, 5, 4}})
 
 	-- Step Route: Tower of Bab-il B3F [B]
-	for i = 1, route.get_value("Tower of Bab-il B3F [B]") / 2 do
+	for i = 1, route.get_value("E30A901") / 2 do
 		table.insert(_q, {walk.walk, {169, 6, 4}})
 		table.insert(_q, {walk.walk, {169, 5, 4}})
 	end
@@ -4368,7 +4426,7 @@ local function _sequence_rubicant()
 	table.insert(_q, {walk.walk, {169, 24, 7}})
 
 	-- Step Route: Tower of Bab-il B4F [B]
-	for i = 1, route.get_value("Tower of Bab-il B4F [B]") / 2 do
+	for i = 1, route.get_value("E30AA01") / 2 do
 		table.insert(_q, {walk.walk, {170, 22, 8}})
 		table.insert(_q, {walk.walk, {170, 23, 8}})
 	end
@@ -4379,8 +4437,8 @@ local function _sequence_rubicant()
 	table.insert(_q, {walk.walk, {172, 21, 24}})
 	table.insert(_q, {walk.walk, {172, 14, 24}})
 
-	-- Step Route: Tower of Bab-il B5F [Pre-Rubicant]
-	for i = 1, route.get_value("Tower of Bab-il B5F [Pre-Rubicant]") / 2 do
+	-- Step Route: Tower of Bab-il B5F [before Rubicant]
+	for i = 1, route.get_value("E30AC00") / 2 do
 		table.insert(_q, {walk.walk, {172, 14, 23}})
 		table.insert(_q, {walk.walk, {172, 14, 24}})
 	end
@@ -4388,7 +4446,7 @@ local function _sequence_rubicant()
 	table.insert(_q, {walk.walk, {172, 14, 21}})
 
 	-- Remove the Dwarf axe (if necessary).
-	if route.get_value("Pass to Bab-il (north) Dwarf Axe Choice") == 1 then
+	if route.get_value("C30CA01") == 1 then
 		table.insert(_q, {menu.field.open, {}})
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.ICEBRAND}})
@@ -4406,7 +4464,7 @@ end
 
 local function _sequence_falcon_upgrade()
 	-- Equip the Dwarf axe again (if necessary).
-	if ROUTE == "no64-excalbur" and route.get_value("Tower of Bab-il B5F Dwarf Axe Choice") == 1 then
+	if route.get_value("C30AC00") == 1 then
 		table.insert(_q, {menu.field.open, {}})
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DWARF}})
@@ -4414,8 +4472,8 @@ local function _sequence_falcon_upgrade()
 		table.insert(_q, {menu.field.close, {}})
 	end
 
-	-- Step Route: Tower of Bab-il B5F [Post-Rubicant]
-	for i = 1, route.get_value("Tower of Bab-il B5F [Post-Rubicant]") / 2 do
+	-- Step Route: Tower of Bab-il B5F [after Rubicant]
+	for i = 1, route.get_value("E30AC01") / 2 do
 		table.insert(_q, {walk.walk, {172, 14, 16}})
 		table.insert(_q, {walk.walk, {172, 14, 17}})
 	end
@@ -4426,8 +4484,8 @@ local function _sequence_falcon_upgrade()
 	table.insert(_q, {walk.walk, {285, 6, 21}})
 	table.insert(_q, {walk.walk, {285, 2, 21}})
 
-	-- Step Route: Tower of Bab-il 8F [Revisit]
-	for i = 1, route.get_value("Tower of Bab-il 8F [Revisit]") / 2 do
+	-- Step Route: Tower of Bab-il 8F (revisit)
+	for i = 1, route.get_value("E311D00") / 2 do
 		table.insert(_q, {walk.walk, {285, 3, 21}})
 		table.insert(_q, {walk.walk, {285, 2, 21}})
 	end
@@ -4435,8 +4493,8 @@ local function _sequence_falcon_upgrade()
 	table.insert(_q, {walk.walk, {285, 2, 20}})
 	table.insert(_q, {walk.walk, {286, 7, 21}})
 
-	-- Step Route: Tower of Bab-il 7F [Revisit]
-	for i = 1, route.get_value("Tower of Bab-il 7F [Revisit]") / 2 do
+	-- Step Route: Tower of Bab-il 7F (revisit)
+	for i = 1, route.get_value("E311E00") / 2 do
 		table.insert(_q, {walk.walk, {286, 7, 20}})
 		table.insert(_q, {walk.walk, {286, 7, 21}})
 	end
@@ -4449,8 +4507,8 @@ local function _sequence_falcon_upgrade()
 	table.insert(_q, {walk.walk, {287, 12, 11}})
 	table.insert(_q, {walk.walk, {287, 16, 11}})
 
-	-- Step Route: Tower of Bab-il 6F [Revisit]
-	for i = 1, route.get_value("Tower of Bab-il 6F [Revisit]") / 2 do
+	-- Step Route: Tower of Bab-il 6F (revisit)
+	for i = 1, route.get_value("E311F00") / 2 do
 		table.insert(_q, {walk.walk, {287, 16, 12}})
 		table.insert(_q, {walk.walk, {287, 16, 11}})
 	end
@@ -4469,11 +4527,18 @@ local function _sequence_falcon_upgrade()
 	table.insert(_q, {walk.walk, {nil, 86, 82}})
 	table.insert(_q, {walk.walk, {nil, 98, 82}})
 	table.insert(_q, {walk.interact, {}})
+
+	-- Step Route: Underworld (Castle of Dwarves) [after Rubicant]
+	for i = 1, route.get_value("E100002") / 2 do
+		table.insert(_q, {walk.walk, {287, 16, 12}})
+		table.insert(_q, {walk.walk, {287, 16, 11}})
+	end
+
 	table.insert(_q, {walk.walk, {nil, 99, 82}})
 	table.insert(_q, {walk.walk, {263, 15, 19}})
 
-	-- Step Route: Castle of Dwarves [Post-Tower of Bab-il]
-	local steps = route.get_value("Castle of Dwarves [Post-Tower of Bab-il]")
+	-- Step Route: Castle of Dwarves [after Tower of Bab-il]
+	local steps = route.get_value("E310701")
 
 	if steps >= 4 and steps % 2 == 0 then
 		table.insert(_q, {walk.walk, {264, 6, 11}})
@@ -4519,7 +4584,7 @@ local function _sequence_falcon_upgrade()
 	table.insert(_q, {menu.field.equip.close, {}})
 
 	-- Equip the Dwarf axe again (if necessary).
-	if ROUTE == "no64-excalbur" and route.get_value("Tower of Bab-il B5F Dwarf Axe Choice") == 0 then
+	if route.get_value("C30AC00") == 0 then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DWARF}})
 		table.insert(_q, {menu.field.equip.close, {}})
@@ -4533,8 +4598,8 @@ local function _sequence_falcon_upgrade()
 	-- Board the airship and fly to just outside the Land of Monsters.
 	table.insert(_q, {walk.walk, {nil, 98, 82}})
 
-	-- Step Route: Underworld (Castle of Dwarves) [Post-Tower of Bab-il]
-	for i = 1, route.get_value("Underworld (Castle of Dwarves) [Post-Tower of Bab-il]") / 2 do
+	-- Step Route: Underworld (Castle of Dwarves) [after Falcon Upgrade]
+	for i = 1, route.get_value("E100003") / 2 do
 		table.insert(_q, {walk.walk, {nil, 98, 81}})
 		table.insert(_q, {walk.walk, {nil, 98, 82}})
 	end
@@ -4557,12 +4622,12 @@ local function _sequence_sealed_cave()
 	table.insert(_q, {walk.walk, {310, 17, 11}})
 
 	-- Step Route: Land of Monsters B1F
-	if route.get_value("Land of Monsters B1F") % 2 == 1 then
+	if route.get_value("E313600") % 2 == 1 then
 		table.insert(_q, {walk.walk, {310, 17, 12}})
 		table.insert(_q, {walk.walk, {310, 17, 11}})
 	end
 
-	for i = 1, route.get_value("Land of Monsters B1F") / 2 do
+	for i = 1, route.get_value("E313600") / 2 do
 		table.insert(_q, {walk.walk, {310, 17, 10}})
 		table.insert(_q, {walk.walk, {310, 17, 11}})
 	end
@@ -4578,7 +4643,7 @@ local function _sequence_sealed_cave()
 	table.insert(_q, {walk.walk, {311, 4, 23}})
 
 	-- Step Route: Land of Monsters B2F
-	for i = 1, route.get_value("Land of Monsters B2F") / 2 do
+	for i = 1, route.get_value("E313700") / 2 do
 		table.insert(_q, {walk.walk, {311, 5, 23}})
 		table.insert(_q, {walk.walk, {311, 4, 23}})
 	end
@@ -4602,7 +4667,7 @@ local function _sequence_sealed_cave()
 	table.insert(_q, {walk.walk, {312, 11, 6}})
 
 	-- Step Route: Land of Monsters B3F
-	for i = 1, route.get_value("Land of Monsters B3F") / 2 do
+	for i = 1, route.get_value("E313800") / 2 do
 		table.insert(_q, {walk.walk, {312, 12, 6}})
 		table.insert(_q, {walk.walk, {312, 11, 6}})
 	end
@@ -4610,12 +4675,12 @@ local function _sequence_sealed_cave()
 	table.insert(_q, {walk.walk, {312, 4, 6}})
 	table.insert(_q, {walk.walk, {312, 4, 14}})
 
-	local route_choice = route.get_value("Land of Monsters B3F Choice")
+	local route_choice = route.get_value("C313800")
 
 	if route_choice == 2 or route_choice == 1 then
 		table.insert(_q, {walk.walk, {312, 1, 14}})
 
-		if route.get_value("Land of Monsters B3F") % 2 == 1 then
+		if route.get_value("E313800") % 2 == 1 then
 			table.insert(_q, {walk.walk, {312, 2, 14}})
 			table.insert(_q, {walk.walk, {312, 1, 14}})
 		end
@@ -4661,22 +4726,22 @@ local function _sequence_sealed_cave()
 	table.insert(_q, {menu.field.close, {}})
 	table.insert(_q, {walk.walk, {nil, 27, 87}})
 
-	-- Step Route: Underworld (Land of Monsters)
-	for i = 1, route.get_value("Underworld (Land of Monsters)") / 2 do
-		table.insert(_q, {walk.walk, {nil, 28, 87}})
-		table.insert(_q, {walk.walk, {nil, 27, 87}})
-	end
-
 	table.insert(_q, {walk.board, {}})
 	table.insert(_q, {walk.walk, {nil, 46, 110}})
 	table.insert(_q, {walk.interact, {}})
 end
 
 local function _sequence_dark_crystal()
+	-- Step Route: Underworld (Tomra) [before Sealed Cave]
+	for i = 1, route.get_value("E100100") / 2 do
+		table.insert(_q, {walk.walk, {nil, 47, 110}})
+		table.insert(_q, {walk.walk, {nil, 46, 110}})
+	end
+
 	table.insert(_q, {walk.walk, {nil, 46, 109}})
 
 	-- Step Route: Sealed Cave
-	for i = 1, route.get_value("Sealed Cave") / 2 do
+	for i = 1, route.get_value("E314400") / 2 do
 		table.insert(_q, {walk.walk, {324, 4, 9}})
 		table.insert(_q, {walk.walk, {324, 4, 10}})
 	end
@@ -4689,8 +4754,8 @@ local function _sequence_big_whale()
 	table.insert(_q, {walk.walk, {324, 4, 11}})
 	table.insert(_q, {walk.walk, {nil, 46, 110}})
 
-	-- Step Route: Underworld (Sealed Cave)
-	for i = 1, route.get_value("Underworld (Sealed Cave)") / 2 do
+	-- Step Route: Underworld (Sealed Cave) [after Sealed Cave]
+	for i = 1, route.get_value("E100101") / 2 do
 		table.insert(_q, {walk.walk, {nil, 47, 110}})
 		table.insert(_q, {walk.walk, {nil, 46, 110}})
 	end
@@ -4704,13 +4769,13 @@ local function _sequence_big_whale()
 	table.insert(_q, {walk.walk, {264, 11, 8}})
 	table.insert(_q, {walk.walk, {264, 11, 1, true}})
 
-	-- Step Route: Castle of Dwarves [Post-Sealed Cave]
-	for i = 1, route.get_value("Castle of Dwarves [Post-Sealed Cave]") / 2 do
+	-- Step Route: Castle of Dwarves [after Sealed Cave]
+	for i = 1, route.get_value("E310702") / 2 do
 		table.insert(_q, {walk.walk, {265, 10, 12}})
 		table.insert(_q, {walk.walk, {265, 10, 13}})
 	end
 
-	if route.get_value("Castle of Dwarves [Post-Sealed Cave]") % 2 == 1 then
+	if route.get_value("E310702") % 2 == 1 then
 		table.insert(_q, {walk.walk, {265, 10, 14}})
 	end
 
@@ -4724,8 +4789,8 @@ local function _sequence_big_whale()
 	table.insert(_q, {menu.field.close, {}})
 	table.insert(_q, {walk.walk, {nil, 100, 83}})
 
-	-- Step Route: Underworld (Castle of Dwarves) [Post-Sealed Cave]
-	for i = 1, route.get_value("Underworld (Castle of Dwarves) [Post-Sealed Cave]") / 2 do
+	-- Step Route: Underworld (Castle of Dwarves) [after Sealed Cave]
+	for i = 1, route.get_value("E100004") / 2 do
 		table.insert(_q, {walk.walk, {nil, 101, 83}})
 		table.insert(_q, {walk.walk, {nil, 100, 83}})
 	end
@@ -4739,8 +4804,8 @@ local function _sequence_big_whale()
 		table.insert(_q, {walk.interact, {}})
 		table.insert(_q, {walk.walk, {nil, 35, 237}})
 
-		-- Step Route: Overworld (Eblan) [Post-Sealed Cave]
-		for i = 1, route.get_value("Overworld (Eblan) [Post-Sealed Cave]") / 2 do
+		-- Step Route: Overworld (Eblan) [after Sealed Cave]
+		for i = 1, route.get_value("E000A02") / 2 do
 			table.insert(_q, {walk.walk, {nil, 35, 236}})
 			table.insert(_q, {walk.walk, {nil, 35, 237}})
 		end
@@ -4754,8 +4819,8 @@ local function _sequence_big_whale()
 		table.insert(_q, {walk.interact, {}})
 		table.insert(_q, {walk.walk, {nil, 211, 132}})
 
-		-- Step Route: Overworld (Silvera) [Pre-Grotto Adamant]
-		for i = 1, route.get_value("Overworld (Silvera) [Pre-Grotto Adamant]") / 2 do
+		-- Step Route: Overworld (Toroia) [before Grotto Adamant]
+		for i = 1, route.get_value("E000704") / 2 do
 			table.insert(_q, {walk.walk, {nil, 210, 132}})
 			table.insert(_q, {walk.walk, {nil, 211, 132}})
 		end
@@ -4771,7 +4836,7 @@ local function _sequence_big_whale()
 		-- Step Route: Grotto Adamant
 		table.insert(_q, {walk.walk, {160, 7, 19}})
 
-		for i = 1, route.get_value("Grotto Adamant") / 2 do
+		for i = 1, route.get_value("E30A000") / 2 do
 			table.insert(_q, {walk.walk, {160, 8, 19}})
 			table.insert(_q, {walk.walk, {160, 7, 19}})
 		end
@@ -4790,8 +4855,8 @@ local function _sequence_big_whale()
 		table.insert(_q, {walk.interact, {}})
 		table.insert(_q, {walk.walk, {nil, 210, 132}})
 
-		-- Step Route: Overworld (Silvera) [Post-Grotto Adamant]
-		for i = 1, route.get_value("Overworld (Silvera) [Post-Grotto Adamant]") / 2 do
+		-- Step Route: Overworld (Toroia) [after Grotto Adamant]
+		for i = 1, route.get_value("E000705") / 2 do
 			table.insert(_q, {walk.walk, {nil, 211, 132}})
 			table.insert(_q, {walk.walk, {nil, 210, 132}})
 		end
@@ -4828,8 +4893,8 @@ local function _sequence_fusoya_hummingway()
 	table.insert(_q, {walk.walk, {357, 10, 17}})
 	table.insert(_q, {walk.walk, {nil, 33, 40}})
 
-	-- Step Route: Lunar Overworld [Post-Hummingway Cave]
-	for i = 1, route.get_value("Lunar Overworld [Post-Hummingway Cave]") / 2 do
+	-- Step Route: Lunar Overworld [after Hummingway Cave]
+	for i = 1, route.get_value("E200000") / 2 do
 		table.insert(_q, {walk.walk, {nil, 33, 41}})
 		table.insert(_q, {walk.walk, {nil, 33, 40}})
 	end
@@ -4847,8 +4912,8 @@ local function _sequence_fusoya_fusoya()
 	-- Walk to the Crystal Palace.
 	table.insert(_q, {walk.walk, {nil, 21, 21}})
 
-	-- Step Route: Lunar Overworld [Pre-FuSoYa A]
-	for i = 1, route.get_value("Lunar Overworld [Pre-FuSoYa A]") / 2 do
+	-- Step Route: Lunar Overworld [before FuSoYa A]
+	for i = 1, route.get_value("E200001") / 2 do
 		table.insert(_q, {walk.walk, {nil, 20, 21}})
 		table.insert(_q, {walk.walk, {nil, 21, 21}})
 	end
@@ -4858,8 +4923,8 @@ local function _sequence_fusoya_fusoya()
 	table.insert(_q, {walk.walk, {355, 12, 29}})
 	table.insert(_q, {walk.walk, {355, 14, 29}})
 
-	-- Step Route: Lunar Path (west) [Pre-FuSoYa]
-	for i = 1, route.get_value("Lunar Path (west) [Pre-FuSoYa]") / 2 do
+	-- Step Route: Lunar Path (west) [before FuSoYa]
+	for i = 1, route.get_value("E316300") / 2 do
 		table.insert(_q, {walk.walk, {355, 14, 28}})
 		table.insert(_q, {walk.walk, {355, 14, 29}})
 	end
@@ -4874,8 +4939,8 @@ local function _sequence_fusoya_fusoya()
 	table.insert(_q, {walk.walk, {nil, 23, 15}})
 	table.insert(_q, {walk.walk, {nil, 23, 14}})
 
-	-- Step Route: Lunar Overworld [Pre-FuSoYa B]
-	for i = 1, route.get_value("Lunar Overworld [Pre-FuSoYa B]") / 2 do
+	-- Step Route: Lunar Overworld [before FuSoYa B]
+	for i = 1, route.get_value("E200002") / 2 do
 		table.insert(_q, {walk.walk, {nil, 24, 14}})
 		table.insert(_q, {walk.walk, {nil, 23, 14}})
 	end
@@ -4889,8 +4954,8 @@ local function _sequence_fusoya_fusoya()
 	table.insert(_q, {walk.walk, {356, 14, 6}})
 	table.insert(_q, {walk.walk, {356, 14, 19}})
 
-	-- Step Route: Lunar Path (east) [Pre-FuSoYa]
-	for i = 1, route.get_value("Lunar Path (east) [Pre-FuSoYa]") / 2 do
+	-- Step Route: Lunar Path (east) [before FuSoYa]
+	for i = 1, route.get_value("E316400") / 2 do
 		table.insert(_q, {walk.walk, {356, 13, 19}})
 		table.insert(_q, {walk.walk, {356, 14, 19}})
 	end
@@ -4901,8 +4966,8 @@ local function _sequence_fusoya_fusoya()
 	table.insert(_q, {walk.walk, {nil, 37, 30}})
 	table.insert(_q, {walk.walk, {nil, 33, 30}})
 
-	-- Step Route: Lunar Overworld [Pre-FuSoYa C]
-	for i = 1, route.get_value("Lunar Overworld [Pre-FuSoYa C]") / 2 do
+	-- Step Route: Lunar Overworld [before FuSoYa C]
+	for i = 1, route.get_value("E200003") / 2 do
 		table.insert(_q, {walk.walk, {nil, 33, 29}})
 		table.insert(_q, {walk.walk, {nil, 33, 30}})
 	end
@@ -4919,8 +4984,8 @@ local function _sequence_fusoya_fusoya()
 	table.insert(_q, {walk.walk, {nil, 34, 29}})
 	table.insert(_q, {walk.walk, {nil, 34, 30}})
 
-	-- Step Route: Lunar Overworld [Post-FuSoYa C]
-	for i = 1, route.get_value("Lunar Overworld [Post-FuSoYa C]") / 2 do
+	-- Step Route: Lunar Overworld [after FuSoYa C]
+	for i = 1, route.get_value("E200004") / 2 do
 		table.insert(_q, {walk.walk, {nil, 35, 30}})
 		table.insert(_q, {walk.walk, {nil, 34, 30}})
 	end
@@ -4933,8 +4998,8 @@ local function _sequence_fusoya_fusoya()
 	table.insert(_q, {walk.walk, {356, 14, 18}})
 	table.insert(_q, {walk.walk, {356, 14, 6}})
 
-	-- Step Route: Lunar Path (east) [Post-FuSoYa]
-	for i = 1, route.get_value("Lunar Path (east) [Post-FuSoYa]") / 2 do
+	-- Step Route: Lunar Path (east) [after FuSoYa]
+	for i = 1, route.get_value("E316401") / 2 do
 		table.insert(_q, {walk.walk, {356, 15, 6}})
 		table.insert(_q, {walk.walk, {356, 14, 6}})
 	end
@@ -4947,8 +5012,8 @@ local function _sequence_fusoya_fusoya()
 	table.insert(_q, {walk.walk, {nil, 33, 14}})
 	table.insert(_q, {walk.walk, {nil, 22, 14}})
 
-	-- Step Route: Lunar Overworld [Post-FuSoYa B]
-	for i = 1, route.get_value("Lunar Overworld [Post-FuSoYa B]") / 2 do
+	-- Step Route: Lunar Overworld [after FuSoYa B]
+	for i = 1, route.get_value("E200005") / 2 do
 		table.insert(_q, {walk.walk, {nil, 22, 15}})
 		table.insert(_q, {walk.walk, {nil, 22, 14}})
 	end
@@ -4961,8 +5026,8 @@ local function _sequence_fusoya_fusoya()
 	table.insert(_q, {walk.walk, {355, 12, 15}})
 	table.insert(_q, {walk.walk, {355, 11, 15}})
 
-	-- Step Route: Lunar Path (west) [Post-FuSoYa]
-	for i = 1, route.get_value("Lunar Path (west) [Post-FuSoYa]") / 2 do
+	-- Step Route: Lunar Path (west) [after FuSoYa]
+	for i = 1, route.get_value("E316301") / 2 do
 		table.insert(_q, {walk.walk, {355, 11, 16}})
 		table.insert(_q, {walk.walk, {355, 11, 15}})
 	end
@@ -4975,8 +5040,8 @@ local function _sequence_fusoya_fusoya()
 	table.insert(_q, {walk.walk, {nil, 21, 21}})
 	table.insert(_q, {walk.walk, {nil, 21, 19}})
 
-	-- Step Route: Lunar Overworld [Post-FuSoYa A]
-	for i = 1, route.get_value("Lunar Overworld [Post-FuSoYa A]") / 2 do
+	-- Step Route: Lunar Overworld [after FuSoYa A]
+	for i = 1, route.get_value("E200006") / 2 do
 		table.insert(_q, {walk.walk, {nil, 21, 20}})
 		table.insert(_q, {walk.walk, {nil, 21, 19}})
 	end
@@ -4996,8 +5061,8 @@ local function _sequence_fusoya()
 		table.insert(_q, {walk.walk, {nil, 104, 122}})
 		table.insert(_q, {walk.interact, {}})
 
-		-- Step Route: Underworld (Kokkol)
-		for i = 1, route.get_value("Underworld (Kokkol)") / 2 do
+		-- Step Route: Underworld (Tomra) [after Grotto Adamant]
+		for i = 1, route.get_value("E100102") / 2 do
 			table.insert(_q, {walk.walk, {nil, 105, 122}})
 			table.insert(_q, {walk.walk, {nil, 104, 122}})
 		end
@@ -5037,8 +5102,8 @@ local function _sequence_fusoya()
 
 	table.insert(_q, {walk.walk, {nil, 150, 199}})
 
-	-- Step Route: Overworld (Mysidia) [Post-Big Whale]
-	for i = 1, route.get_value("Overworld (Mysidia) [Post-Big Whale]") / 2 do
+	-- Step Route: Overworld (Mysidia) [after Big Whale]
+	for i = 1, route.get_value("E000503") / 2 do
 		table.insert(_q, {walk.walk, {nil, 151, 199}})
 		table.insert(_q, {walk.walk, {nil, 150, 199}})
 	end
@@ -5054,7 +5119,7 @@ local function _sequence_fusoya()
 	if ROUTE == "no64-rosa" then
 		_sequence_fusoya_fusoya()
 	else
-		local choice = route.get_value("Lunar Overworld Choice")
+		local choice = route.get_value("C200000")
 
 		if choice == 0 then
 			_sequence_fusoya_hummingway()
@@ -5089,7 +5154,7 @@ local function _sequence_grind_start()
 	table.insert(_q, {walk.walk, {181, 9, 16}})
 
 	-- Step Route: Giant of Bab-il Mouth
-	if route.get_value("Giant of Bab-il Mouth") % 2 == 1 then
+	if route.get_value("E30B500") % 2 == 1 then
 		table.insert(_q, {walk.walk, {181, 10, 16}})
 	else
 		table.insert(_q, {walk.walk, {181, 9, 15}})
@@ -5097,7 +5162,7 @@ local function _sequence_grind_start()
 
 	table.insert(_q, {walk.walk, {181, 10, 15}})
 
-	for i = 1, route.get_value("Giant of Bab-il Mouth") / 2 do
+	for i = 1, route.get_value("E30B500") / 2 do
 		table.insert(_q, {walk.walk, {181, 10, 14}})
 		table.insert(_q, {walk.walk, {181, 10, 15}})
 	end
@@ -5114,7 +5179,7 @@ local function _sequence_grind_start()
 	table.insert(_q, {walk.walk, {182, 7, 6}})
 
 	-- Step Route: Giant of Bab-il Neck
-	for i = 1, route.get_value("Giant of Bab-il Neck") / 2 do
+	for i = 1, route.get_value("E30B600") / 2 do
 		table.insert(_q, {walk.walk, {182, 7, 5}})
 		table.insert(_q, {walk.walk, {182, 7, 6}})
 	end
@@ -5123,12 +5188,12 @@ local function _sequence_grind_start()
 	table.insert(_q, {walk.walk, {183, 14, 9}})
 
 	-- Step Route: Giant of Bab-il Chest
-	if route.get_value("Giant of Bab-il Chest") % 2 == 1 then
+	if route.get_value("E30B700") % 2 == 1 then
 		table.insert(_q, {walk.walk, {183, 14, 8}})
 		table.insert(_q, {walk.walk, {183, 14, 9}})
 	end
 
-	for i = 1, route.get_value("Giant of Bab-il Chest") / 2 do
+	for i = 1, route.get_value("E30B700") / 2 do
 		table.insert(_q, {walk.walk, {183, 13, 9}})
 		table.insert(_q, {walk.walk, {183, 14, 9}})
 	end
@@ -5166,12 +5231,12 @@ local function _sequence_grind_start()
 	table.insert(_q, {walk.walk, {185, 23, 14}})
 
 	-- Step Route: Giant of Bab-il Stomach
-	if route.get_value("Giant of Bab-il Stomach") % 2 == 1 then
+	if route.get_value("E30B900") % 2 == 1 then
 		table.insert(_q, {walk.walk, {185, 23, 13}})
 		table.insert(_q, {walk.walk, {185, 23, 14}})
 	end
 
-	for i = 1, route.get_value("Giant of Bab-il Stomach") / 2 do
+	for i = 1, route.get_value("E30B900") / 2 do
 		table.insert(_q, {walk.walk, {185, 23, 15}})
 		table.insert(_q, {walk.walk, {185, 23, 14}})
 	end
@@ -5227,12 +5292,12 @@ local function _sequence_grind_start()
 	table.insert(_q, {walk.walk, {186, 3, 6}})
 
 	-- Step Route: Giant of Bab-il Passage
-	for i = 1, route.get_value("Giant of Bab-il Passage") / 2 do
+	for i = 1, route.get_value("E30BA00") / 2 do
 		table.insert(_q, {walk.walk, {186, 4, 6}})
 		table.insert(_q, {walk.walk, {186, 3, 6}})
 	end
 
-	if route.get_value("Giant of Bab-il Passage") % 2 == 1 then
+	if route.get_value("E30BA00") % 2 == 1 then
 		table.insert(_q, {walk.walk, {186, 3, 7}})
 		table.insert(_q, {walk.walk, {186, 3, 6}})
 	end
@@ -5254,8 +5319,8 @@ local function _sequence_grind_start()
 	table.insert(_q, {walk.walk, {186, 21, 4}})
 	table.insert(_q, {walk.walk, {188, 15, 23}})
 
-	-- Step Route: Giant of Bab-il Lung [Pre-Elements]
-	for i = 1, route.get_value("Giant of Bab-il Lung [Pre-Elements]") / 2 do
+	-- Step Route: Giant of Bab-il Lung [before Elements]
+	for i = 1, route.get_value("E30BC00") / 2 do
 		table.insert(_q, {walk.walk, {188, 15, 22}})
 		table.insert(_q, {walk.walk, {188, 15, 23}})
 	end
@@ -5329,13 +5394,13 @@ local function _sequence_cpu()
 
 	table.insert(_q, {menu.field.close, {}})
 
-	-- Step Route: Giant of Bab-il Lung [Post-Elements]
-	if route.get_value("Giant of Bab-il Lung [Post-Elements]") % 2 == 1 then
+	-- Step Route: Giant of Bab-il Lung [after Elements]
+	if route.get_value("E30BC01") % 2 == 1 then
 		table.insert(_q, {walk.walk, {188, 15, 15}})
 		table.insert(_q, {walk.walk, {188, 15, 14}})
 	end
 
-	for i = 1, route.get_value("Giant of Bab-il Lung [Post-Elements]") / 2 do
+	for i = 1, route.get_value("E30BC01") / 2 do
 		table.insert(_q, {walk.walk, {188, 15, 13}})
 		table.insert(_q, {walk.walk, {188, 15, 14}})
 	end
@@ -5346,12 +5411,12 @@ local function _sequence_cpu()
 	table.insert(_q, {walk.walk, {189, 9, 17}})
 
 	-- Step Route: Giant of Bab-il CPU
-	for i = 1, route.get_value("Giant of Bab-il CPU") / 2 do
+	for i = 1, route.get_value("E30BD00") / 2 do
 		table.insert(_q, {walk.walk, {189, 10, 17}})
 		table.insert(_q, {walk.walk, {189, 9, 17}})
 	end
 
-	if route.get_value("Giant of Bab-il CPU") % 2 == 1 then
+	if route.get_value("E30BD00") % 2 == 1 then
 		table.insert(_q, {walk.walk, {189, 9, 16}})
 		table.insert(_q, {walk.walk, {189, 9, 17}})
 	end
@@ -5373,7 +5438,7 @@ local function _sequence_subterrane()
 	table.insert(_q, {walk.walk, {303, 5, 7}})
 	table.insert(_q, {walk.walk, {303, 5, 13}})
 
-	if ROUTE == "no64-excalbur" and route.get_value("Lunar Overworld Dwarf Axe Choice") == 1 then
+	if route.get_value("C200001") == 1 then
 		table.insert(_q, {menu.field.open, {}})
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DWARF}})
@@ -5386,8 +5451,8 @@ local function _sequence_subterrane()
 	-- Walk to the Crystal Palace.
 	table.insert(_q, {walk.walk, {nil, 21, 21}})
 
-	-- Step Route: Lunar Overworld [Post-CPU A]
-	for i = 1, route.get_value("Lunar Overworld [Post-CPU A]") / 2 do
+	-- Step Route: Lunar Overworld [after CPU A]
+	for i = 1, route.get_value("E200007") / 2 do
 		table.insert(_q, {walk.walk, {nil, 20, 21}})
 		table.insert(_q, {walk.walk, {nil, 21, 21}})
 	end
@@ -5399,8 +5464,8 @@ local function _sequence_subterrane()
 	table.insert(_q, {walk.walk, {355, 14, 23}})
 	table.insert(_q, {walk.walk, {355, 11, 23}})
 
-	-- Step Route: Lunar Path (west) [Post-CPU]
-	for i = 1, route.get_value("Lunar Path (west) [Post-CPU]") / 2 do
+	-- Step Route: Lunar Path (west) [after CPU]
+	for i = 1, route.get_value("E316302") / 2 do
 		table.insert(_q, {walk.walk, {355, 11, 22}})
 		table.insert(_q, {walk.walk, {355, 11, 23}})
 	end
@@ -5413,8 +5478,8 @@ local function _sequence_subterrane()
 	table.insert(_q, {walk.walk, {nil, 23, 15}})
 	table.insert(_q, {walk.walk, {nil, 23, 14}})
 
-	-- Step Route: Lunar Overworld [Post-CPU B]
-	for i = 1, route.get_value("Lunar Overworld [Post-CPU B]") / 2 do
+	-- Step Route: Lunar Overworld [after CPU B]
+	for i = 1, route.get_value("E200008") / 2 do
 		table.insert(_q, {walk.walk, {nil, 24, 14}})
 		table.insert(_q, {walk.walk, {nil, 23, 14}})
 	end
@@ -5428,8 +5493,8 @@ local function _sequence_subterrane()
 	table.insert(_q, {walk.walk, {356, 14, 6}})
 	table.insert(_q, {walk.walk, {356, 14, 19}})
 
-	-- Step Route: Lunar Path (east) [Post-CPU]
-	for i = 1, route.get_value("Lunar Path (east) [Post-CPU]") / 2 do
+	-- Step Route: Lunar Path (east) [after CPU]
+	for i = 1, route.get_value("E316402") / 2 do
 		table.insert(_q, {walk.walk, {356, 13, 19}})
 		table.insert(_q, {walk.walk, {356, 14, 19}})
 	end
@@ -5441,8 +5506,8 @@ local function _sequence_subterrane()
 	table.insert(_q, {walk.walk, {nil, 33, 30}})
 	table.insert(_q, {walk.walk, {nil, 33, 28}})
 
-	-- Step Route: Lunar Overworld [Post-CPU C]
-	for i = 1, route.get_value("Lunar Overworld [Post-CPU C]") / 2 do
+	-- Step Route: Lunar Overworld [after CPU C]
+	for i = 1, route.get_value("E200009") / 2 do
 		table.insert(_q, {walk.walk, {nil, 32, 28}})
 		table.insert(_q, {walk.walk, {nil, 33, 28}})
 	end
@@ -5474,7 +5539,7 @@ local function _excalbur_zeromus_menu()
 	table.insert(_q, {menu.field.equip.close, {}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
 
-	if route.get_value("Lunar Overworld Dwarf Axe Choice") == 1 then
+	if route.get_value("C200001") == 1 then
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.EXCALBUR}})
 	end
 
@@ -5503,7 +5568,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {359, 17, 8}})
 
 	-- Step Route: Lunar Subterrane B1
-	for i = 1, route.get_value("Lunar Subterrane B1") / 2 do
+	for i = 1, route.get_value("E316700") / 2 do
 		table.insert(_q, {walk.walk, {359, 17, 9}})
 		table.insert(_q, {walk.walk, {359, 17, 8}})
 	end
@@ -5517,12 +5582,12 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {360, 30, 30}})
 
 	-- Step Route: Lunar Subterrane B2
-	for i = 1, route.get_value("Lunar Subterrane B2") / 2 do
+	for i = 1, route.get_value("E316800") / 2 do
 		table.insert(_q, {walk.walk, {360, 29, 30}})
 		table.insert(_q, {walk.walk, {360, 30, 30}})
 	end
 
-	if route.get_value("Lunar Subterrane B2") % 2 == 1 then
+	if route.get_value("E316800") % 2 == 1 then
 		table.insert(_q, {walk.walk, {360, 31, 30}})
 		table.insert(_q, {walk.walk, {360, 30, 30}})
 	end
@@ -5537,7 +5602,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {361, 14, 16}})
 
 	-- Step Route: Lunar Subterrane B3
-	for i = 1, route.get_value("Lunar Subterrane B3") / 2 do
+	for i = 1, route.get_value("E316900") / 2 do
 		table.insert(_q, {walk.walk, {361, 15, 16}})
 		table.insert(_q, {walk.walk, {361, 14, 16}})
 	end
@@ -5556,8 +5621,8 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {362, 28, 26}})
 	table.insert(_q, {walk.walk, {362, 25, 26}})
 
-	-- Step Route: Lunar Subterrane B4
-	for i = 1, route.get_value("Lunar Subterrane B4 (upper)") / 2 do
+	-- Step Route: Lunar Subterrane B4 (upper)
+	for i = 1, route.get_value("E316A00") / 2 do
 		table.insert(_q, {walk.walk, {362, 24, 26}})
 		table.insert(_q, {walk.walk, {362, 25, 26}})
 	end
@@ -5569,7 +5634,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {372, 12, 12}})
 
 	-- Step Route: Lunar Subterrane B4 Passage
-	for i = 1, route.get_value("Lunar Subterrane B4 Passage") / 2 do
+	for i = 1, route.get_value("E317400") / 2 do
 		table.insert(_q, {walk.walk, {372, 12, 13}})
 		table.insert(_q, {walk.walk, {372, 12, 12}})
 	end
@@ -5582,7 +5647,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {362, 10, 27}})
 
 	-- Step Route: Lunar Subterrane B4 (lower)
-	for i = 1, route.get_value("Lunar Subterrane B4 (lower)") / 2 do
+	for i = 1, route.get_value("E316A01") / 2 do
 		table.insert(_q, {walk.walk, {362, 11, 27}})
 		table.insert(_q, {walk.walk, {362, 10, 27}})
 	end
@@ -5592,8 +5657,8 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {363, 16, 14}})
 	table.insert(_q, {walk.walk, {363, 11, 14}})
 
-	-- Step Route: Lunar Subterrane B5
-	for i = 1, route.get_value("Lunar Subterrane B5 (upper)") / 2 do
+	-- Step Route: Lunar Subterrane B5 (upper)
+	for i = 1, route.get_value("E316B00") / 2 do
 		table.insert(_q, {walk.walk, {363, 10, 14}})
 		table.insert(_q, {walk.walk, {363, 11, 14}})
 	end
@@ -5601,8 +5666,8 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {363, 11, 13}})
 	table.insert(_q, {walk.walk, {373, 5, 5}})
 
-	-- Step Route: Lunar Subterrane B5 Passage A
-	for i = 1, route.get_value("Lunar Subterrane B5 Passage A") / 2 do
+	-- Step Route: Lunar Subterrane B5 Passage A [before Protect Ring]
+	for i = 1, route.get_value("E317500") / 2 do
 		table.insert(_q, {walk.walk, {373, 6, 5}})
 		table.insert(_q, {walk.walk, {373, 5, 5}})
 	end
@@ -5615,29 +5680,22 @@ local function _sequence_core()
 	end
 
 	-- Complete the Excalbur pre-Zeromus menu.
-	if ROUTE == "no64-excalbur" and route.get_value("Lunar Subterrane B5 Passage A Choice") == 0 then
+	if ROUTE == "no64-excalbur" and route.get_value("C317500") == 0 then
 		_excalbur_zeromus_menu()
 	end
 
 	-- Walk to the Lunar Core.
 	table.insert(_q, {walk.walk, {373, 16, 5}})
 
-	if ROUTE == "no64-rosa" and route.get_value("Lunar Subterrane B5 Passage A") % 2 == 1 then
+	-- Step Route: Lunar Subterrane B5 Passage A [after Protect Ring]
+	if route.get_value("E317501") % 2 == 1 then
 		table.insert(_q, {walk.walk, {373, 17, 5}})
 		table.insert(_q, {walk.walk, {373, 16, 5}})
 	end
 
-	-- Step Route: Lunar Subterrane B5 Passage A [Post-Protect Ring]
-	if ROUTE == "no64-excalbur" then
-		if route.get_value("Lunar Subterrane B5 Passage A [Post-Protect Ring]") % 2 == 1 then
-			table.insert(_q, {walk.walk, {373, 17, 5}})
-			table.insert(_q, {walk.walk, {373, 16, 5}})
-		end
-
-		for i = 1, route.get_value("Lunar Subterrane B5 Passage A [Post-Protect Ring]") / 2 do
-			table.insert(_q, {walk.walk, {373, 15, 5}})
-			table.insert(_q, {walk.walk, {373, 16, 5}})
-		end
+	for i = 1, route.get_value("E317501") / 2 do
+		table.insert(_q, {walk.walk, {373, 15, 5}})
+		table.insert(_q, {walk.walk, {373, 16, 5}})
 	end
 
 	table.insert(_q, {walk.walk, {373, 17, 5}})
@@ -5651,7 +5709,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {363, 14, 21}})
 
 	-- Step Route: Lunar Subterrane B5 (after room)
-	for i = 1, route.get_value("Lunar Subterrane B5 (middle)") / 2 do
+	for i = 1, route.get_value("E316B01") / 2 do
 		table.insert(_q, {walk.walk, {363, 13, 21}})
 		table.insert(_q, {walk.walk, {363, 14, 21}})
 	end
@@ -5660,7 +5718,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {374, 9, 7}})
 
 	-- Step Route: Lunar Subterrane B5 Passage B
-	for i = 1, route.get_value("Lunar Subterrane B5 Passage B") / 2 do
+	for i = 1, route.get_value("E317600") / 2 do
 		table.insert(_q, {walk.walk, {374, 8, 7}})
 		table.insert(_q, {walk.walk, {374, 9, 7}})
 	end
@@ -5682,18 +5740,19 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {363, 20, 26}})
 
 	-- Step Route: Lunar Subterrane B5 (lower)
-	for i = 1, route.get_value("Lunar Subterrane B5 (lower)") / 2 do
+	for i = 1, route.get_value("E316B02") / 2 do
 		table.insert(_q, {walk.walk, {363, 20, 27}})
 		table.insert(_q, {walk.walk, {363, 20, 26}})
 	end
 
 	table.insert(_q, {walk.walk, {363, 20, 28}})
 
-	if route.get_value("Lunar Subterrane B5 (lower) Choice") == 1 then
+	-- Step Route: Lunar Subterrane B5 (lower) Choice
+	if route.get_value("C316B00") == 1 then
 		table.insert(_q, {walk.walk, {363, 23, 28}})
 		table.insert(_q, {walk.walk, {363, 23, 27}})
 
-		for i = 1, route.get_value("Lunar Subterrane B5 Pink Puff Room") / 2 do
+		for i = 1, route.get_value("E317700") / 2 do
 			table.insert(_q, {walk.walk, {375, 3, 9}})
 			table.insert(_q, {walk.walk, {375, 2, 9}})
 		end
@@ -5701,7 +5760,7 @@ local function _sequence_core()
 		table.insert(_q, {walk.walk, {375, 2, 10}})
 		table.insert(_q, {walk.walk, {363, 23, 28}})
 
-		for i = 1, route.get_value("Lunar Subterrane B5 (lower) [Post-Pink Puff Room]") / 2 do
+		for i = 1, route.get_value("E316B03") / 2 do
 			table.insert(_q, {walk.walk, {363, 22, 28}})
 			table.insert(_q, {walk.walk, {363, 23, 28}})
 		end
@@ -5724,7 +5783,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {364, 22, 22}})
 
 	-- Step Route: Lunar Subterrane B6
-	for i = 1, route.get_value("Lunar Subterrane B6") / 2 do
+	for i = 1, route.get_value("E316C00") / 2 do
 		table.insert(_q, {walk.walk, {364, 21, 22}})
 		table.insert(_q, {walk.walk, {364, 22, 22}})
 	end
@@ -5734,7 +5793,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {377, 10, 11}})
 
 	-- Step ROute: Lunar Subterrane B6 Passage
-	for i = 1, route.get_value("Lunar Subterrane B6 Passage") / 2 do
+	for i = 1, route.get_value("E317900") / 2 do
 		table.insert(_q, {walk.walk, {377, 10, 10}})
 		table.insert(_q, {walk.walk, {377, 10, 11}})
 	end
@@ -5745,16 +5804,17 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {365, 8, 21}})
 	table.insert(_q, {walk.walk, {365, 13, 21}})
 
-	-- Step Route: Lunar Subterrane B7 Save Room
-	if route.get_value("Lunar Subterrane B7 Choice") == 1 then
-		for i = 1, route.get_value("Lunar Subterrane B7 [Pre-Save Room]") / 2 do
-			table.insert(_q, {walk.walk, {365, 12, 21}})
-			table.insert(_q, {walk.walk, {365, 13, 21}})
-		end
+	-- Step Route: Lunar Subterrane B7
+	for i = 1, route.get_value("E316D00") / 2 do
+		table.insert(_q, {walk.walk, {365, 12, 21}})
+		table.insert(_q, {walk.walk, {365, 13, 21}})
+	end
 
+	-- Step Route: Lunar Subterrane B7 Choice
+	if route.get_value("C316D00") == 1 then
 		table.insert(_q, {walk.walk, {365, 13, 20}})
 
-		for i = 1, route.get_value("Lunar Subterrane B7 Save Room") / 2 do
+		for i = 1, route.get_value("E317B00") / 2 do
 			table.insert(_q, {walk.walk, {379, 4, 14}})
 			table.insert(_q, {walk.walk, {379, 3, 14}})
 		end
@@ -5763,7 +5823,8 @@ local function _sequence_core()
 		table.insert(_q, {walk.walk, {365, 13, 21}})
 	end
 
-	for i = 1, route.get_value("Lunar Subterrane B7") / 2 do
+	-- Step Route: Lunar Subterrane B7 [after Save Room]
+	for i = 1, route.get_value("E316D01") / 2 do
 		table.insert(_q, {walk.walk, {365, 13, 22}})
 		table.insert(_q, {walk.walk, {365, 13, 21}})
 	end
@@ -5787,7 +5848,7 @@ local function _sequence_zemus()
 	table.insert(_q, {walk.walk, {366, 24, 16}})
 
 	-- Step Route: Lunar Core B1
-	for i = 1, route.get_value("Lunar Core B1") / 2 do
+	for i = 1, route.get_value("E316E00") / 2 do
 		table.insert(_q, {walk.walk, {366, 24, 15}})
 		table.insert(_q, {walk.walk, {366, 24, 16}})
 	end
@@ -5817,7 +5878,7 @@ local function _sequence_zemus()
 	table.insert(_q, {walk.walk, {367, 17, 11}})
 
 	-- Step Route: Lunar Core B2
-	for i = 1, route.get_value("Lunar Core B2") / 2 do
+	for i = 1, route.get_value("E316F00") / 2 do
 		table.insert(_q, {walk.walk, {367, 17, 12}})
 		table.insert(_q, {walk.walk, {367, 17, 11}})
 	end
@@ -5838,7 +5899,7 @@ local function _sequence_zemus()
 	table.insert(_q, {walk.walk, {368, 14, 12}})
 
 	-- Step Route: Lunar Core B3
-	for i = 1, route.get_value("Lunar Core B3") / 2 do
+	for i = 1, route.get_value("E317000") / 2 do
 		table.insert(_q, {walk.walk, {368, 15, 12}})
 		table.insert(_q, {walk.walk, {368, 14, 12}})
 	end
@@ -5875,7 +5936,7 @@ local function _sequence_zemus()
 	table.insert(_q, {walk.walk, {369, 7, 20}})
 	table.insert(_q, {walk.walk, {369, 6, 20}})
 
-	if ROUTE == "no64-excalbur" and route.get_value("Lunar Subterrane B5 Passage A Choice") == 1 then
+	if ROUTE == "no64-excalbur" and route.get_value("C317500") == 1 then
 		_excalbur_zeromus_menu()
 	elseif ROUTE == "no64-rosa" then
 		table.insert(_q, {menu.field.open, {}})
