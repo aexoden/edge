@@ -5,12 +5,14 @@ provide a good list of improvements that can be made.
 
 ## Critical Issues
 
-*There are currently no known critical issues.*
+* Upgrade step routes to the new format, and set up the nocw routes to not just
+  be a copy of the no64-excalbur routes.
+
+* For the nocw route, either detect and fix or ragequit a bad yellow chocobo.
+
+* Update the nocw split times to reflect an actual run.
 
 ## Major Features
-
-* Implement additional routes. Currently, no64-excalbur, no64-rosa and paladin
-  are supported, but support for yes64 and no64-drain is highly desirable.
 
 * Find a way to keep track of battle goals and properly queueing characters to
   take care of them. The major motivation is to be able to specify that an
@@ -79,6 +81,18 @@ provide a good list of improvements that can be made.
   This makes changes easier if two routes have different formations, for
   example, but need to come together again.
 
+* For nocw, figure out a system for pausing during battle to eliminate or at
+  least mitigate the need for the wait at the end.
+
+* If the FireClaw dupe fails for whatever reason during the Gargoyle fight, set
+  up a backup at some point.
+
+* The NoCW route glitch navigation should probably be rewritten to use a
+  function whose job is to advance to the next floor, which allows for easier
+  cleanup of state. Eventually the program could be programmed to know exactly
+  what to do on each floor, though that doesn't really match how a human would
+  approach it.
+
 ## Minor Issues
 
 * Check healing strategy upon immediately entering Zot. Death was observed with
@@ -86,6 +100,12 @@ provide a good list of improvements that can be made.
 
 * Move the IceClaw dupe away from the Magus Sisters battle to avoid needing to
   revive Yang unconditionally.
+
+* On the off chance the GP is wrong on the nocw route, implement a system to
+  fix it.
+
+* Ensure that Yang always equips his IceClaw from the stack of 58 in the nocw
+  route.
 
 ## Battle-Specific Issues
 
@@ -98,6 +118,8 @@ provide a good list of improvements that can be made.
 * Don't double use Cure2 when healing the twins.
 
 * Restore the Twins' MP if they don't have enough to Twin.
+
+* Rewrite the carrot strategy to use modern strategies and backups.
 
 ### Milon Z
 

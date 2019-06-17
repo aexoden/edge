@@ -564,15 +564,20 @@ function _M.field.magic.close()
 	return _M.field.close_submenu(_M.field.magic.is_not_closed())
 end
 
-function _M.field.magic.select(spell, extra_button)
-	local list, index = _get_field_magic_index(spell)
+function _M.field.magic.select(spell, list, index, extra_button)
+	if spell then
+		list, index = _get_field_magic_index(spell)
+	end
 
 	if not list then
 		return true
 	elseif memory.read("menu_magic", "selecting") > 0 then
+		local list_cursor = memory.read("menu_magic", "cursor")
 		local cursor = memory.read("menu_magic", "subcursor")
 
-		if cursor == index then
+		if list_cursor ~= list then
+			input.press({"P1 B"}, input.DELAY.NORMAL)
+		elseif cursor == index then
 			_state.frame = nil
 			return input.press({"P1 A", extra_button}, input.DELAY.NORMAL)
 		else
@@ -738,6 +743,18 @@ function _M.shop.close()
 	return false
 end
 
+function _M.shop.increase_quantity(quantity)
+	local current_quantity = memory.read("menu_shop", "quantity")
+
+	if current_quantity ~= quantity then
+		input.press({"P1 X"}, input.DELAY.NORMAL)
+
+		return false
+	end
+
+	return true
+end
+
 function _M.shop.switch_quantity()
 	local cursor = memory.read("menu_shop", "subcursor")
 
@@ -816,11 +833,11 @@ function _M.shop.sell.close()
 	return false
 end
 
-function _M.shop.sell.sell(item)
+function _M.shop.sell.sell(item, target)
 	local cursor = (memory.read("menu_shop", "sell_y") + memory.read("menu_shop", "sell_scroll")) * 2 + memory.read("menu_shop", "sell_x")
 	local index = game.item.get_index(item, 0)
 
-	if not index then
+	if not index or (target and memory.read("menu_item", "item_count", index) == target) then
 		return true
 	elseif _is_cursor3_visible() then
 		input.press({"P1 A"}, input.DELAY.NORMAL)

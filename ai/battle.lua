@@ -191,6 +191,51 @@ local function _reset_state()
 	}
 end
 
+local function _manage_reserved_inventory(finalize)
+	local reserved = route.get_reserved_inventory()
+
+	local opened = false
+
+	for i = 47, 0, -1 do
+		local item = memory.read("battle_menu", "item_id", i)
+		local count = memory.read("battle_menu", "item_count", i)
+
+		if reserved[i] ~= nil then
+			if item ~= reserved[i][1] or count ~= reserved[i][2] then
+				for j = 0, 47 do
+					local other_item = memory.read("battle_menu", "item_id", j)
+					local other_count = memory.read("battle_menu", "item_count", j)
+
+					if other_item == reserved[i][1] and other_count == reserved[i][2] then
+						log.log(string.format("Inventory: Swapping slots %d and %d", j, i))
+
+						if not opened then
+							table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+							opened = true
+						end
+
+						table.insert(_state.q, {menu.battle.item.select, {nil, j}})
+						table.insert(_state.q, {menu.battle.item.select, {nil, i}})
+
+						if not finalize then
+							table.insert(_state.q, {menu.battle.item.close, {}})
+							return true
+						end
+
+						break
+					end
+				end
+			end
+		end
+	end
+
+	if opened then
+		table.insert(_state.q, {menu.battle.item.close, {}})
+	end
+
+	return true
+end
+
 --------------------------------------------------------------------------------
 -- Command Helpers
 --------------------------------------------------------------------------------
@@ -643,11 +688,18 @@ end
 
 local function _battle_d_mist(character, turn, strat)
 	if character == game.CHARACTER.KAIN then
+		if turn == 5 and ROUTE ~= "no64-excalbur" then
+			table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+			table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND}})
+			table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE, 0}})
+			table.insert(_state.q, {menu.battle.item.close, {}})
+		end
+
 		if turn == 2 or game.enemy.get_stat(0, "hp") < 48 then
 			_command_fight()
 		else
 			if turn == 4 then
-				_command_wait_frames(360)
+				_command_wait_frames(390)
 			end
 
 			_command_jump()
@@ -658,7 +710,12 @@ local function _battle_d_mist(character, turn, strat)
 		else
 			if turn == 6 then
 				_command_wait_text("No")
-				_command_duplicate(game.EQUIP.L_HAND)
+
+				if ROUTE ~= "no64-excalbur" then
+					_command_duplicate(game.EQUIP.L_HAND, true)
+				else
+					_command_duplicate(game.EQUIP.L_HAND)
+				end
 			end
 
 			_command_fight()
@@ -705,7 +762,11 @@ local function _battle_dark_elf(character, turn, strat)
 			_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.CID)
 		elseif turn == 2 then
 			_command_wait_text("Da", 300)
-			_command_equip(character, game.ITEM.WEAPON.THUNDER)
+
+			if ROUTE ~= "nocw" then
+				_command_equip(character, game.ITEM.WEAPON.THUNDER)
+			end
+
 			_command_black(game.MAGIC.BLACK.WEAK)
 		else
 			if game.character.get_stat(game.CHARACTER.TELLAH, "mp", true) >= 25 then
@@ -866,7 +927,9 @@ local function _battle_flamedog(character, turn, strat)
 end
 
 local function _battle_gargoyle(character, turn, strat)
-	_state.full_inventory = true
+	if ROUTE ~= "nocw" then
+		_state.full_inventory = true
+	end
 
 	if character == game.CHARACTER.CECIL then
 		_command_fight()
@@ -880,6 +943,17 @@ local function _battle_gargoyle(character, turn, strat)
 			_command_fight()
 		end
 	elseif character == game.CHARACTER.YANG then
+		if turn == 1 and ROUTE == "nocw" then
+			table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+			table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE, 1}})
+			table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND}})
+			table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND}})
+			table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE, 0}})
+			table.insert(_state.q, {menu.battle.item.select, {game.ITEM.CLAW.FIRECLAW}})
+			table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.L_HAND}})
+			table.insert(_state.q, {menu.battle.item.close, {}})
+		end
+
 		_command_fight()
 	end
 end
@@ -913,8 +987,41 @@ local function _battle_girl(character, turn, strat)
 end
 
 local function _battle_golbez(character, turn, strat)
+	if not _state.stage then
+		_state.stage = 0
+	end
+
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
+			_state.full_inventory = true
+
+			if ROUTE == "nocw" then
+				if _state.stage == 0 then
+					_command_wait_text("Golbez:HA", 600)
+					_manage_reserved_inventory()
+					_state.stage = 1
+					return true
+				elseif _state.stage == 1 then
+					_command_wait_text(" Is t", 600)
+					_manage_reserved_inventory()
+					_state.stage = 2
+					return true
+				elseif _state.stage == 2 then
+					_command_wait_text(" Now", 600)
+					_manage_reserved_inventory()
+					_state.stage = 3
+					return true
+				elseif _state.stage == 3 then
+					_command_wait_text(" Wait", 600)
+					_manage_reserved_inventory()
+					_state.stage = 4
+					return true
+				else
+					_command_wait_text(" Meal", 600)
+					_manage_reserved_inventory(true)
+				end
+			end
+
 			_command_wait_text("Golbez:An")
 		end
 
@@ -1953,6 +2060,10 @@ end
 local function _battle_octomamm(character, turn, strat)
 	local change = false
 
+	if strat == nil then
+		strat = "change-tellah-3"
+	end
+
 	if string.sub(strat, 1, 6) == 'change' then
 		change = true
 	end
@@ -2408,11 +2519,21 @@ local function _battle_zeromus_rosa(character, turn, strat)
 	end
 end
 
+local function _battle_zeromus_nocw(character, turn, strat)
+	if character == game.CHARACTER.FUSOYA then
+		_command_white(game.MAGIC.WHITE.UPTCO)
+	else
+		_command_parry()
+	end
+end
+
 local function _battle_zeromus(character, turn, strat)
 	if ROUTE == "no64-excalbur" then
 		return _battle_zeromus_excalbur(character, turn, strat)
 	elseif ROUTE == "no64-rosa" then
 		return _battle_zeromus_rosa(character, turn, strat)
+	elseif ROUTE == "nocw" then
+		return _battle_zeromus_nocw(character, turn, strat)
 	end
 end
 
@@ -2462,7 +2583,7 @@ local _formations = {
 -- Inventory Management
 --------------------------------------------------------------------------------
 
-function _manage_inventory(full_inventory, items)
+local function _manage_inventory(full_inventory, items, reserved)
 	if menu.battle.command.has_command(menu.battle.COMMAND.SHOW) then
 		return false
 	end
@@ -2480,6 +2601,7 @@ function _manage_inventory(full_inventory, items)
 
 		for i = 0, 47 do
 			local item = memory.read("battle_menu", "item_id", i)
+			local count = memory.read("battle_menu", "item_count", i)
 			local priority
 
 			if item ~= game.ITEM.NONE then
@@ -2496,9 +2618,12 @@ function _manage_inventory(full_inventory, items)
 					}
 				end
 
-				item_priority[i] = priority
-				table.insert(priority_map[priority].slots, i)
-				priority_map[priority].count = priority_map[priority].count + 1
+				if reserved[i] == nil or item ~= reserved[i][1] or count ~= reserved[i][2] then
+					item_priority[i] = priority
+					table.insert(priority_map[priority].slots, i)
+					priority_map[priority].count = priority_map[priority].count + 1
+				end
+
 				empty_count = empty_count - 1
 			else
 				table.insert(empty_slots, i)
@@ -2518,29 +2643,64 @@ function _manage_inventory(full_inventory, items)
 
 		for i = 47, 0, -1 do
 			local item = memory.read("battle_menu", "item_id", i)
+			local count = memory.read("battle_menu", "item_count", i)
+			local done = false
 
-			if item_priority[i] == priority or ((priority == 1 or priority == 3 or priority == 7) and item == game.ITEM.NONE) then
-				priority_count = priority_count + 1
+			if reserved[i] ~= nil then
+				if item ~= reserved[i][1] or count ~= reserved[i][2] then
+					local source = nil
 
-				if priority_count == priority_map[priority].count then
-					repeat
-						priority = priority + 1
-					until (priority_map[priority] and priority_map[priority].count > 0) or priority == 64
+					for j = 0, 47 do
+						local other_item = memory.read("battle_menu", "item_id", j)
+						local other_count = memory.read("battle_menu", "item_count", j)
 
-					priority_count = 0
+						if other_item == reserved[i][1] and other_count == reserved[i][2] then
+							source = j
+							break
+						end
+					end
+
+					if source ~= nil then
+						log.log(string.format("Inventory: Swapping slots %d and %d", source, i))
+
+						table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+						table.insert(_state.q, {menu.battle.item.select, {nil, source}})
+						table.insert(_state.q, {menu.battle.item.select, {nil, i}})
+						table.insert(_state.q, {menu.battle.item.close, {}})
+
+						return true
+					end
+				else
+					done = true
 				end
-			else
-				table.sort(priority_map[priority].slots)
-				local source = priority_map[priority].slots[1]
+			end
 
-				log.log(string.format("Inventory: Swapping slots %d and %d", source, i))
+			if not done then
+				if item_priority[i] == priority or ((priority == 1 or priority == 3 or priority == 7) and item == game.ITEM.NONE) then
+					priority_count = priority_count + 1
 
-				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
-				table.insert(_state.q, {menu.battle.item.select, {nil, source}})
-				table.insert(_state.q, {menu.battle.item.select, {nil, i}})
-				table.insert(_state.q, {menu.battle.item.close, {}})
+					if priority_count == priority_map[priority].count then
+						repeat
+							priority = priority + 1
+						until (priority_map[priority] and priority_map[priority].count > 0) or priority == 64
 
-				return true
+						priority_count = 0
+					end
+				else
+					table.sort(priority_map[priority].slots)
+					local source = priority_map[priority].slots[1]
+
+					if source < i then
+						log.log(string.format("Inventory: Swapping slots %d and %d", source, i))
+
+						table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+						table.insert(_state.q, {menu.battle.item.select, {nil, source}})
+						table.insert(_state.q, {menu.battle.item.select, {nil, i}})
+						table.insert(_state.q, {menu.battle.item.close, {}})
+
+						return true
+					end
+				end
 			end
 		end
 
@@ -2656,7 +2816,21 @@ function _M.cycle()
 			end
 		end
 
-		if index == game.battle.FORMATION.ZEROMUS and memory.read("battle", "flash") == 3 and not _state.flash_split then
+		if _state.zeromus_split_counter then
+			if _state.zeromus_split_counter == 0 then
+				sequence.split("Zeromus Death")
+
+				if CONFIG.EXTENDED_ENDING then
+					sequence.end_run(20 * 60 * 60)
+				else
+					sequence.end_run(65 * 60)
+				end
+			else
+				_state.zeromus_split_counter = _state.zeromus_split_counter - 1
+			end
+		elseif ROUTE == "nocw" and index == game.battle.FORMATION.ZEROMUS and memory.read("battle", "monster_cursor") == 0xFF then
+			_state.zeromus_split_counter = 4
+		elseif index == game.battle.FORMATION.ZEROMUS and memory.read("battle", "flash") == 3 and not _state.flash_split then
 			_state.flash_split = true
 			sequence.split("Zeromus Death")
 
@@ -2726,7 +2900,7 @@ function _M.cycle()
 				input.press({"P1 L", "P1 R"}, input.DELAY.NONE)
 			elseif (open and memory.read("battle_menu", "menu") ~= menu.battle.MENU.NONE) or _state.flush_queue then
 			 	if #_state.q == 0 and not _state.queued then
-					if (_state.disable_inventory or not _manage_inventory(formation.full_inventory or _state.full_inventory, route.get_inventory(index))) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1, _state.strat) then
+					if (_state.disable_inventory or not _manage_inventory(formation.full_inventory or _state.full_inventory, route.get_inventory(index), route.get_reserved_inventory())) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1, _state.strat) then
 						_state.turns[slot] = _state.turns[slot] + 1
 						_state.queued = true
 					end

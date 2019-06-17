@@ -126,6 +126,7 @@ local _addresses = {
 		formation           = {f = mainmemory.read_u16_le, address = 0x001800, record_size = {0x01, 0x01}},
 		enemy_target        = {f = mainmemory.read_u8,     address = 0x0000CE, record_size = {0x01, 0x01}},
 		state               = {f = mainmemory.read_u8,     address = 0x000203, record_size = {0x01, 0x01}},
+		monster_cursor      = {f = mainmemory.read_u8,     address = 0x006CE3, record_size = {0x01, 0x01}},
 		party_level         = {f = mainmemory.read_u8,     address = 0x0038D4, record_size = {0x01, 0x01}},
 		enemy_level         = {f = mainmemory.read_u8,     address = 0x0038D5, record_size = {0x01, 0x01}},
 		target_group        = {f = mainmemory.read_u8,     address = 0x0034C4, record_size = {0x01, 0x01}},
@@ -177,6 +178,7 @@ local _addresses = {
 	},
 	game = {
 		counter             = {f = mainmemory.read_u8,     address = 0x000FFF, record_size = {0x01, 0x01}},
+		timer               = {f = mainmemory.read_u24_le, address = 0x0016A4, record_size = {0x01, 0x01}},
 	},
 	menu = {
 		character           = {f = mainmemory.read_u8,     address = 0x0001E7, record_size = {0x01, 0x01}},
@@ -261,6 +263,7 @@ local _addresses = {
 		frames              = {f = mainmemory.read_u8,     address = 0x00067B, record_size = {0x01, 0x01}},
 		index               = {f = mainmemory.read_u8,     address = 0x000686, record_size = {0x01, 0x01}},
 		map_area            = {f = mainmemory.read_u8,     address = 0x001700, record_size = {0x01, 0x01}},
+		map_history_index   = {f = mainmemory.read_s16_le, address = 0x00172C, record_size = {0x01, 0x01}},
 		map_id              = {f = mainmemory.read_u16_be, address = 0x001701, record_size = {0x01, 0x01}},
 		seed                = {f = mainmemory.read_u8,     address = 0x0017EF, record_size = {0x01, 0x01}},
 		state               = {f = mainmemory.read_u8,     address = 0x0006B1, record_size = {0x01, 0x01}},

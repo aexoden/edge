@@ -160,6 +160,7 @@ _M.ITEM = {
 	},
 	CLAW = {
 		CATCLAW  = 0x06,
+		FIRECLAW = 0x01,
 		ICECLAW  = 0x02,
 		THUNDER  = 0x03,
 	},
@@ -199,6 +200,7 @@ _M.ITEM = {
 	},
 	SHIELD = {
 		ICE      = 0x67,
+		IRON     = 0x61,
 		PALADIN  = 0x64,
 		SHADOW   = 0x62,
 	},
@@ -209,6 +211,7 @@ _M.ITEM = {
 		BLACK    = 0x18,
 		BLIZZARD = 0x26,
 		CHANGE   = 0x0B,
+		CURE     = 0x10,
 		DANCING  = 0x3C,
 		DARKNESS = 0x17,
 		DWARF    = 0x39,
@@ -267,6 +270,7 @@ _M.MAGIC = {
 		LIFE2 = 0x14,
 		EXIT  = 0x16,
 		SIGHT = 0x17,
+		UPTCO = 0x82,
 	},
 }
 
