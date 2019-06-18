@@ -389,7 +389,7 @@ class Log(object):
             'sequence': 'Sequence: (?P<sequence>.*)',
             'split': 'Split: (?P<split>.*)',
             'version': 'Version: (?P<version>.*)',
-            '_ignore': '(Edge Final Fantasy IV|--------------------|Beginning Full Run|Setting Initial Seed|Rebooting|Load game screen|New Seed|Setting encounter seed|Detected|Zeromus has|Cecil|Do not have|Action|Party Experience)',
+            '_ignore': '(Edge Final Fantasy IV|--------------------|Beginning Full Run|Setting Initial Seed|Yellow Chocobo Coordinates|Current Glitch Floor|Rebooting|Load game screen|New Seed|Setting encounter seed|Detected|Zeromus has|Cecil|Do not have|Action|Party Experience)',
         }
 
         for line_type, regex in regexes.items():
