@@ -1903,7 +1903,9 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 		if character == game.CHARACTER.CECIL then
 			if turn == 1 then
 				if not _state.cecil_waited then
-					_command_wait_frames(180)
+					_command_wait_frames(30)
+					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+					_command_wait_frames(150)
 					_state.cecil_waited = true
 					return true
 				else
@@ -1911,14 +1913,22 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 						_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 					elseif palom_hp < porom_hp and palom_hp < 75 then
 						_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
+					elseif game.character.is_status(game.CHARACTER.PALOM, game.STATUS.POISON) then
+						_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
 					elseif game.character.is_status(game.CHARACTER.POROM, game.STATUS.POISON) then
 						_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+					elseif game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.POISON) then
+						_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 					else
-						_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
+						_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
 					end
 				end
 			elseif turn >= 2 then
-				if _state.palom_acted then
+				if palom_hp == 0 then
+					_state.alternate = true
+					_state.full_inventory = true
+					return true
+				elseif _state.palom_acted then
 					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
 					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
 					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
@@ -1945,6 +1955,7 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 				_command_black(game.MAGIC.BLACK.ICE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 			else
 				_state.alternate = true
+				_state.full_inventory = true
 				return true
 			end
 		elseif character == game.CHARACTER.TELLAH then
@@ -1953,6 +1964,7 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 				_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 			else
 				_state.alternate = true
+				_state.full_inventory = true
 				return true
 			end
 		elseif character == game.CHARACTER.POROM then
@@ -1962,6 +1974,7 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 				_command_twin()
 			else
 				_state.alternate = true
+				_state.full_inventory = true
 				return true
 			end
 		end
