@@ -4105,8 +4105,8 @@ function _M.get_value(variable)
 		return 0
 	end
 
-	if _M.routes[ROUTE][ENCOUNTER_SEED][index] ~= nil then
-		return _M.routes[ROUTE][ENCOUNTER_SEED][index]
+	if _M.routes[ROUTE][ENCOUNTER_SEED][variable] ~= nil then
+		return _M.routes[ROUTE][ENCOUNTER_SEED][variable]
 	else
 		return 0
 	end
