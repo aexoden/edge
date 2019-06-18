@@ -1710,15 +1710,9 @@ local function _battle_milon_carrot(character, turn, strat)
 			if turn == 1 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 4)
 			elseif turn == 2 then
-				if game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
-					_state.alternate = true
-					_state.full_inventory = true
-					return true
-				end
-
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 2)
 			elseif turn == 3 then
-				_command_wait_text(" Cure2", 60)
+				_command_wait_text("Cure2 ", 60)
 				_command_parry()
 			elseif turn == 4 then
 				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
@@ -1738,6 +1732,8 @@ local function _battle_milon_carrot(character, turn, strat)
 			end
 		elseif character == game.CHARACTER.PALOM then
 			if turn == 1 then
+				_command_wait_text("Cure2 ", 300)
+				_command_wait_frames(180)
 				_command_black(game.MAGIC.BLACK.FIRE1, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 			else
 				_state.alternate = true
@@ -1745,6 +1741,7 @@ local function _battle_milon_carrot(character, turn, strat)
 			end
 		elseif character == game.CHARACTER.POROM then
 			if turn == 1 and palom_hp > 0 then
+				_command_wait_frames(3)
 				_command_run_buffer()
 				_command_twin()
 			elseif turn == 2 then
@@ -1761,6 +1758,7 @@ local function _battle_milon_carrot(character, turn, strat)
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 			elseif turn == 2 then
 				if porom_hp > 0 then
+					_command_wait_frames(15)
 					_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 				else
 					_state.alternate = true
@@ -1849,7 +1847,7 @@ end
 local function _battle_milon(character, turn, strat)
 	if strat == "twin_changeless" or strat == "twin" then
 		return _battle_milon_twin(character, turn, strat)
-	elseif strat == "carrot" then
+	else
 		return _battle_milon_carrot(character, turn, strat)
 	end
 end
@@ -2151,6 +2149,17 @@ local function _battle_officer(character, turn, strat)
 	if turn <= 3 then
 		_command_run_buffer()
 		_command_fight()
+	end
+end
+
+local function _battle_ordeals(character, turn, strat)
+	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
+	local cecil_level = game.character.get_stat(game.CHARACTER.CECIL, "level", true)
+
+	if cecil_level > 1 and porom_hp > 70 then
+		_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+	else
+		return _command_run()
 	end
 end
 
@@ -2578,45 +2587,53 @@ local function _battle_zeromus(character, turn, strat)
 end
 
 local _formations = {
-	[game.battle.FORMATION.ANTLION]  = {title = "Antlion",                f = _battle_antlion,  split = true,  full_inventory = true},
-	[game.battle.FORMATION.BAIGAN]   = {title = "Baigan",                 f = _battle_baigan,   split = true,  full_inventory = true},
-	[game.battle.FORMATION.CALBRENA] = {title = "Calbrena",               f = _battle_calbrena, split = true},
-	[game.battle.FORMATION.CPU]      = {title = "CPU",                    f = _battle_cpu,      split = true},
-	[game.battle.FORMATION.D_KNIGHT] = {title = "D.Knight",               f = _battle_d_knight, split = false},
-	[game.battle.FORMATION.D_MIST]   = {title = "D.Mist",                 f = _battle_d_mist,   split = true},
-	[game.battle.FORMATION.DARK_ELF] = {title = "Dark Elf",               f = _battle_dark_elf, split = true},
-	[game.battle.FORMATION.DARK_IMP] = {title = "Dark Imps",              f = _battle_dark_imp, split = true},
-	[game.battle.FORMATION.DRAGOON]  = {title = "Dragoon",                f = _battle_dragoon,  split = true},
-	[game.battle.FORMATION.EBLAN]    = {title = "K.Eblan/Q.Eblan",        f = _battle_eblan,    split = true,  full_inventory = true},
-	[game.battle.FORMATION.ELEMENTS] = {title = "Elements",               f = _battle_elements, split = true},
-	[game.battle.FORMATION.FLAMEDOG] = {title = "FlameDog",               f = _battle_flamedog, split = true},
-	[game.battle.FORMATION.GARGOYLE] = {title = "Gargoyle",               f = _battle_gargoyle, split = false},
-	[game.battle.FORMATION.GENERAL]  = {title = "General/Fighters",       f = _battle_general,  split = false},
-	[game.battle.FORMATION.GIRL]     = {title = "Girl",                   f = _battle_girl,     split = true,  full_inventory = true},
-	[game.battle.FORMATION.GOLBEZ]   = {title = "Golbez",                 f = _battle_golbez,   split = true},
-	[game.battle.FORMATION.GRIND]    = {title = "Grind Fight",            f = _battle_grind,    split = true, presplit = true},
-	[game.battle.FORMATION.GUARDS]   = {title = "Guards",                 f = _battle_guards,   split = false},
-	[game.battle.FORMATION.KAINAZZO] = {title = "Kainazzo",               f = _battle_kainazzo, split = true},
-	[game.battle.FORMATION.KARATE]   = {title = "Karate",                 f = _battle_karate,   split = true,  full_inventory = true},
-	[game.battle.FORMATION.LUGAE1]   = {title = "Dr.Lugae/Balnab",        f = _battle_lugae1,   split = true},
-	[game.battle.FORMATION.LUGAE2]   = {title = "Dr.Lugae",               f = _battle_lugae2,   split = true},
-	[game.battle.FORMATION.MAGE]     = {title = "Mages",                  f = _battle_mages,    split = false},
-	[game.battle.FORMATION.MILON]    = {title = "Milon",                  f = _battle_milon,    split = true},
-	[game.battle.FORMATION.MILON_Z]  = {title = "Milon Z.",               f = _battle_milon_z,  split = true},
-	[game.battle.FORMATION.MOMBOMB]  = {title = "MomBomb",                f = _battle_mombomb,  split = true,  full_inventory = true},
-	[game.battle.FORMATION.OCTOMAMM] = {title = "Octomamm",               f = _battle_octomamm, split = true,  full_inventory = true},
-	[game.battle.FORMATION.OFFICER]  = {title = "Officer/Soldiers",       f = _battle_officer,  split = true},
-	[game.battle.FORMATION.RED_D_1]  = {title = "Red D. x1",              f = _battle_red_d,    split = false},
-	[game.battle.FORMATION.RED_D_2]  = {title = "Red D. x2",              f = _battle_red_d,    split = false},
-	[game.battle.FORMATION.RED_D_B]  = {title = "Red D. x1, Behemoth x1", f = _battle_red_d,    split = false},
-	[game.battle.FORMATION.RED_D_3]  = {title = "Red D. x3",              f = _battle_red_d,    split = false},
-	[game.battle.FORMATION.RUBICANT] = {title = "Rubicant",               f = _battle_rubicant, split = true},
-	[game.battle.FORMATION.SISTERS]  = {title = "Magus Sisters",          f = _battle_sisters,  split = true},
-	[game.battle.FORMATION.VALVALIS] = {title = "Valvalis",               f = _battle_valvalis, split = true},
-	[game.battle.FORMATION.WATERHAG] = {title = "WaterHag",               f = _battle_waterhag, split = true},
-	[game.battle.FORMATION.WEEPER]   = {title = "Weeper/WaterHag/Imp",    f = _battle_weeper,   split = false},
-	[game.battle.FORMATION.ZEMUS]    = {title = "Zemus",                  f = nil,              split = true},
-	[game.battle.FORMATION.ZEROMUS]  = {title = "Zeromus",                f = _battle_zeromus,  split = false},
+	[game.battle.FORMATION.ANTLION]  = {title = "Antlion",                          f = _battle_antlion,  split = true,  full_inventory = true},
+	[game.battle.FORMATION.BAIGAN]   = {title = "Baigan",                           f = _battle_baigan,   split = true,  full_inventory = true},
+	[game.battle.FORMATION.CALBRENA] = {title = "Calbrena",                         f = _battle_calbrena, split = true},
+	[game.battle.FORMATION.CPU]      = {title = "CPU",                              f = _battle_cpu,      split = true},
+	[game.battle.FORMATION.D_KNIGHT] = {title = "D.Knight",                         f = _battle_d_knight, split = false},
+	[game.battle.FORMATION.D_MIST]   = {title = "D.Mist",                           f = _battle_d_mist,   split = true},
+	[game.battle.FORMATION.DARK_ELF] = {title = "Dark Elf",                         f = _battle_dark_elf, split = true},
+	[game.battle.FORMATION.DARK_IMP] = {title = "Dark Imps",                        f = _battle_dark_imp, split = true},
+	[game.battle.FORMATION.DRAGOON]  = {title = "Dragoon",                          f = _battle_dragoon,  split = true},
+	[game.battle.FORMATION.EBLAN]    = {title = "K.Eblan/Q.Eblan",                  f = _battle_eblan,    split = true,  full_inventory = true},
+	[game.battle.FORMATION.ELEMENTS] = {title = "Elements",                         f = _battle_elements, split = true},
+	[game.battle.FORMATION.FLAMEDOG] = {title = "FlameDog",                         f = _battle_flamedog, split = true},
+	[game.battle.FORMATION.GARGOYLE] = {title = "Gargoyle",                         f = _battle_gargoyle, split = false},
+	[game.battle.FORMATION.GENERAL]  = {title = "General/Fighters",                 f = _battle_general,  split = false},
+	[game.battle.FORMATION.GIRL]     = {title = "Girl",                             f = _battle_girl,     split = true,  full_inventory = true},
+	[game.battle.FORMATION.GOLBEZ]   = {title = "Golbez",                           f = _battle_golbez,   split = true},
+	[game.battle.FORMATION.GRIND]    = {title = "Grind Fight",                      f = _battle_grind,    split = true, presplit = true},
+	[game.battle.FORMATION.GUARDS]   = {title = "Guards",                           f = _battle_guards,   split = false},
+	[game.battle.FORMATION.KAINAZZO] = {title = "Kainazzo",                         f = _battle_kainazzo, split = true},
+	[game.battle.FORMATION.KARATE]   = {title = "Karate",                           f = _battle_karate,   split = true,  full_inventory = true},
+	[game.battle.FORMATION.LUGAE1]   = {title = "Dr.Lugae/Balnab",                  f = _battle_lugae1,   split = true},
+	[game.battle.FORMATION.LUGAE2]   = {title = "Dr.Lugae",                         f = _battle_lugae2,   split = true},
+	[game.battle.FORMATION.MAGE]     = {title = "Mages",                            f = _battle_mages,    split = false},
+	[game.battle.FORMATION.MILON]    = {title = "Milon",                            f = _battle_milon,    split = true},
+	[game.battle.FORMATION.MILON_Z]  = {title = "Milon Z.",                         f = _battle_milon_z,  split = true},
+	[game.battle.FORMATION.MOMBOMB]  = {title = "MomBomb",                          f = _battle_mombomb,  split = true,  full_inventory = true},
+	[game.battle.FORMATION.OCTOMAMM] = {title = "Octomamm",                         f = _battle_octomamm, split = true,  full_inventory = true},
+	[game.battle.FORMATION.OFFICER]  = {title = "Officer/Soldiers",                 f = _battle_officer,  split = true},
+	[game.battle.FORMATION.ORDEALS1] = {title = "Lilith x1, Red Bone x2",           f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.ORDEALS2] = {title = "Ghoul x2, Soul x2",                f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.ORDEALS3] = {title = "Revenant x1, Ghoul x2",            f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.ORDEALS4] = {title = "Zombie x3, Ghoul x2, Revenant x2", f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.ORDEALS5] = {title = "Lilith x1",                        f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.ORDEALS6] = {title = "Soul x2, Ghoul x2, Revenant x2",   f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.ORDEALS7] = {title = "Soul x3, Ghoul x1, Revenant x1",   f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.ORDEALS8] = {title = "Lilith x2",                        f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.RED_D_1]  = {title = "Red D. x1",                        f = _battle_red_d,    split = false},
+	[game.battle.FORMATION.RED_D_2]  = {title = "Red D. x2",                        f = _battle_red_d,    split = false},
+	[game.battle.FORMATION.RED_D_B]  = {title = "Red D. x1, Behemoth x1",           f = _battle_red_d,    split = false},
+	[game.battle.FORMATION.RED_D_3]  = {title = "Red D. x3",                        f = _battle_red_d,    split = false},
+	[game.battle.FORMATION.RUBICANT] = {title = "Rubicant",                         f = _battle_rubicant, split = true},
+	[game.battle.FORMATION.SISTERS]  = {title = "Magus Sisters",                    f = _battle_sisters,  split = true},
+	[game.battle.FORMATION.VALVALIS] = {title = "Valvalis",                         f = _battle_valvalis, split = true},
+	[game.battle.FORMATION.WATERHAG] = {title = "WaterHag",                         f = _battle_waterhag, split = true},
+	[game.battle.FORMATION.WEEPER]   = {title = "Weeper/WaterHag/Imp",              f = _battle_weeper,   split = false},
+	[game.battle.FORMATION.ZEMUS]    = {title = "Zemus",                            f = nil,              split = true},
+	[game.battle.FORMATION.ZEROMUS]  = {title = "Zeromus",                          f = _battle_zeromus,  split = false},
 }
 
 --------------------------------------------------------------------------------
@@ -2686,7 +2703,7 @@ local function _manage_inventory(full_inventory, items, reserved)
 			local count = memory.read("battle_menu", "item_count", i)
 			local done = false
 
-			if reserved[i] ~= nil and item_priority[i] < 2 then
+			if reserved[i] ~= nil and (item_priority[i] == nil or item_priority[i] < 2) then
 				if item ~= reserved[i][1] or count ~= reserved[i][2] then
 					local source = nil
 

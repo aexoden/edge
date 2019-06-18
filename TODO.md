@@ -5,8 +5,7 @@ provide a good list of improvements that can be made.
 
 ## Critical Issues
 
-* Upgrade step routes to the new format, and set up the nocw routes to not just
-  be a copy of the no64-excalbur routes.
+* There are no currently known critical issues.
 
 ## Major Features
 

@@ -49,6 +49,14 @@ _M.battle.ACTION = {
 }
 
 _M.battle.FORMATION = {
+	ORDEALS1 = 63,
+	ORDEALS2 = 67,
+	ORDEALS3 = 68,
+	ORDEALS4 = 69,
+	ORDEALS5 = 70,
+	ORDEALS6 = 71,
+	ORDEALS7 = 72,
+	ORDEALS8 = 73,
 	MAGE     = 96,
 	GRIND    = 200,
 	ELEMENTS = 220,
