@@ -2658,7 +2658,7 @@ local function _manage_inventory(full_inventory, items, reserved)
 					}
 				end
 
-				if reserved[i] == nil or item ~= reserved[i][1] or count ~= reserved[i][2] then
+				if reserved[i] == nil or item ~= reserved[i][1] or count ~= reserved[i][2] or priority >= 2 then
 					item_priority[i] = priority
 					table.insert(priority_map[priority].slots, i)
 					priority_map[priority].count = priority_map[priority].count + 1
@@ -2686,7 +2686,7 @@ local function _manage_inventory(full_inventory, items, reserved)
 			local count = memory.read("battle_menu", "item_count", i)
 			local done = false
 
-			if reserved[i] ~= nil then
+			if reserved[i] ~= nil and item_priority[i] < 2 then
 				if item ~= reserved[i][1] or count ~= reserved[i][2] then
 					local source = nil
 
