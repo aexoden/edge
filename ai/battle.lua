@@ -1950,6 +1950,7 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 			_state.palom_acted = true
 
 			if porom_hp > 0 then
+				_command_wait_frames(15)
 				_command_black(game.MAGIC.BLACK.ICE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 			else
 				_state.alternate = true
@@ -1958,6 +1959,7 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 			end
 		elseif character == game.CHARACTER.TELLAH then
 			if palom_hp > 0 then
+				_command_wait_frames(15)
 				_command_run_buffer()
 				_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 			else
@@ -1967,7 +1969,7 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 			end
 		elseif character == game.CHARACTER.POROM then
 			if palom_hp > 0 then
-				_command_wait_frames(10)
+				_command_wait_frames(15)
 				_command_run_buffer()
 				_command_twin()
 			else

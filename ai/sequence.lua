@@ -3418,7 +3418,7 @@ local function _sequence_calbrena()
 
 	table.insert(_q, {walk.walk, {nil, 100, 82}})
 	table.insert(_q, {walk.walk, {263, 15, 19}})
-	table.insert(_q, {walk.walk, {264, 11, 8}})
+	table.insert(_q, {walk.walk, {264, 11, 10}})
 	table.insert(_q, {walk.walk, {264, 11, 1, true}})
 
 	if ROUTE == "nocw" then
