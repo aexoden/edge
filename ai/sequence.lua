@@ -1135,17 +1135,18 @@ local function _sequence_clip()
 	table.insert(_q, {menu.field.open, {input.DELAY.NONE}})
 
 	-- Remove Kain's Iron arms (and dupe the Iron shield if NoCW).
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
+
 	if ROUTE ~= "paladin" then
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE}})
-
-		if ROUTE ~= "no64-excalbur" then
-			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.SHIELD.IRON}})
-			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.NONE}})
-		end
-
-		table.insert(_q, {menu.field.equip.close, {}})
 	end
+
+	if ROUTE ~= "no64-excalbur" then
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.SHIELD.IRON}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.NONE}})
+	end
+
+	table.insert(_q, {menu.field.equip.close, {}})
 
 	-- Equip and unequip the Shadow shield.
 	if ROUTE == "no64-excalbur" then
