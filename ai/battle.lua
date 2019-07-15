@@ -2855,7 +2855,7 @@ function _M.cycle()
 				if character then
 					party_text = string.format("%s%s%s%s:%d", party_text, delimiter, front, game.character.get_name(character), game.character.get_stat(character, "level"))
 					party_exp_text = string.format("%s%s%s:%d", party_exp_text, delimiter, game.character.get_name(character), game.character.get_stat(character, "exp"))
-					party_agi_text = string.format("%s%s%s:%d", party_agi_text, delimiter, game.character.get_name(Character), game.character.get_stat(character, "agility"))
+					party_agi_text = string.format("%s%s%s:%d", party_agi_text, delimiter, game.character.get_name(character), game.character.get_stat(character, "agility"))
 				else
 					party_text = string.format("%s%s%sempty", party_text, delimiter, front)
 					party_exp_text = string.format("%s%sempty", party_exp_text, delimiter)
