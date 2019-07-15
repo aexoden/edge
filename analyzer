@@ -44,173 +44,173 @@ from matplotlib.font_manager import FontProperties
 #-------------------------------------------------------------------------------
 
 def is_scripted(formation):
-    if formation >= 220 and formation <= 256:
-        return True
-    elif formation >= 420 and formation <= 442:
-        return True
-    else:
-        return False
+	if formation >= 220 and formation <= 256:
+		return True
+	elif formation >= 420 and formation <= 442:
+		return True
+	else:
+		return False
 
 
 def describe_formation(formation):
-    formations = {
-        42: 'Gargoyle x1, Cocktric x2',
-        109: 'Centaur x1, IceBeast x2',
-        111: 'Centaur x3',
-        117: 'Carapace x2, Ice Liz x2',
-        199: 'D.Machin x1',
-        200: 'Grind Fight',
-        220: 'Elements',
-        221: 'CPU',
-        222: 'D.Mist',
-        223: 'Octomamm',
-        224: 'Antlion',
-        225: 'MomBomb',
-        226: 'Milon',
-        227: 'Milon Z',
-        228: 'Baigan',
-        229: 'Kainazzo',
-        231: 'Dark Elf',
-        232: 'Magus Sisters',
-        234: 'Valvalis',
-        235: 'FloatEye (intro)',
-        237: 'Officer x1, Soldier x3',
-        239: 'WaterHag',
-        240: 'Imp Cap. x3',
-        242: 'Karate',
-        243: 'Golbez (Tellah)',
-        245: 'Raven (intro)',
-        246: 'D.Knight',
-        247: 'General x1, Fighter x2',
-        248: 'Weeper x1, WaterHag x1, Imp Cap. x1',
-        249: 'Gargoyle x1',
-        250: 'Guard x2',
-        254: 'Q.Eblan/K.Eblan',
-        255: 'Rubicant',
-        256: 'Dark Imp x3',
-        344: 'Arachne x1',
-        345: 'Arachne x2',
-        409: 'Red D. x1',
-        423: 'Calbrena',
-        425: 'Dr. Lugae/Balnab',
-        435: 'Zemus',
-        437: 'Dr. Lugae',
-        438: 'Golbez',
-        439: 'Zeromus',
-        451: 'FlameDog',
-    }
+	formations = {
+		42: 'Gargoyle x1, Cocktric x2',
+		109: 'Centaur x1, IceBeast x2',
+		111: 'Centaur x3',
+		117: 'Carapace x2, Ice Liz x2',
+		199: 'D.Machin x1',
+		200: 'Grind Fight',
+		220: 'Elements',
+		221: 'CPU',
+		222: 'D.Mist',
+		223: 'Octomamm',
+		224: 'Antlion',
+		225: 'MomBomb',
+		226: 'Milon',
+		227: 'Milon Z',
+		228: 'Baigan',
+		229: 'Kainazzo',
+		231: 'Dark Elf',
+		232: 'Magus Sisters',
+		234: 'Valvalis',
+		235: 'FloatEye (intro)',
+		237: 'Officer x1, Soldier x3',
+		239: 'WaterHag',
+		240: 'Imp Cap. x3',
+		242: 'Karate',
+		243: 'Golbez (Tellah)',
+		245: 'Raven (intro)',
+		246: 'D.Knight',
+		247: 'General x1, Fighter x2',
+		248: 'Weeper x1, WaterHag x1, Imp Cap. x1',
+		249: 'Gargoyle x1',
+		250: 'Guard x2',
+		254: 'Q.Eblan/K.Eblan',
+		255: 'Rubicant',
+		256: 'Dark Imp x3',
+		344: 'Arachne x1',
+		345: 'Arachne x2',
+		409: 'Red D. x1',
+		423: 'Calbrena',
+		425: 'Dr. Lugae/Balnab',
+		435: 'Zemus',
+		437: 'Dr. Lugae',
+		438: 'Golbez',
+		439: 'Zeromus',
+		451: 'FlameDog',
+	}
 
-    return formations[formation] if formation in formations else 'Formation #{}'.format(formation)
+	return formations[formation] if formation in formations else 'Formation #{}'.format(formation)
 
 
 def format_time(frames):
-    seconds = frames / 60.0988
-    return '{:.0f}:{:02.0f}:{:05.2f}'.format(seconds // 3600, (seconds // 60) % 60, seconds % 60)
+	seconds = frames / 60.0988
+	return '{:.0f}:{:02.0f}:{:05.2f}'.format(seconds // 3600, (seconds // 60) % 60, seconds % 60)
 
 
 def get_battle_data(logs, classified=False, strat=True):
-    battles = OrderedDict()
+	battles = OrderedDict()
 
-    for log in logs:
-        for battle in log.battles:
-            if battle['result'].startswith('Victory') or battle['result'].startswith('Perished') or battle['result'].startswith('Stalemate'):
-                key = '{:03}'.format(battle['formation'])
+	for log in logs:
+		for battle in log.battles:
+			if battle['result'].startswith('Victory') or battle['result'].startswith('Perished') or battle['result'].startswith('Stalemate'):
+				key = '{:03}'.format(battle['formation'])
 
-                if strat and battle['strat']:
-                    key = '{}-{}'.format(key, battle['strat'])
+				if strat and battle['strat']:
+					key = '{}-{}'.format(key, battle['strat'])
 
-                if key not in battles:
-                    if classified:
-                        battles[key] = {}
-                    else:
-                        battles[key] = {'formation': battle['formation'], 'strat': battle['strat'] if strat else set([battle['strat']]) if battle['strat'] else set(), 'count': 0, 'data': [] if strat or not battle['strat'] else {}}
+				if key not in battles:
+					if classified:
+						battles[key] = {}
+					else:
+						battles[key] = {'formation': battle['formation'], 'strat': battle['strat'] if strat else set([battle['strat']]) if battle['strat'] else set(), 'count': 0, 'data': [] if strat or not battle['strat'] else {}}
 
-                if classified:
-                    subkey = (battle['type'], ' '.join(map(str, battle['enemy_agility'])), battle['party_formation'])
+				if classified:
+					subkey = (battle['type'], ' '.join(map(str, battle['enemy_agility'])), battle['party_formation'])
 
-                    if subkey not in battles[key]:
-                        battles[key][subkey] = {'formation': battle['formation'], 'strat': battle['strat'] if strat else set([battle['strat']]), 'count': 0, 'data': [] if strat or not battle['strat'] else {}}
+					if subkey not in battles[key]:
+						battles[key][subkey] = {'formation': battle['formation'], 'strat': battle['strat'] if strat else set([battle['strat']]), 'count': 0, 'data': [] if strat or not battle['strat'] else {}}
 
-                    battles[key][subkey]['count'] += 1
+					battles[key][subkey]['count'] += 1
 
-                    if not strat and battle['strat'] and battle['strat'] not in battles[key][subkey]['strat']:
-                        battles[key][subkey]['strat'].add(battle['strat'])
+					if not strat and battle['strat'] and battle['strat'] not in battles[key][subkey]['strat']:
+						battles[key][subkey]['strat'].add(battle['strat'])
 
-                    if not strat and battle['strat'] and battle['strat'] not in battles[key][subkey]['data']:
-                        battles[key][subkey]['data'][battle['strat']] = []
+					if not strat and battle['strat'] and battle['strat'] not in battles[key][subkey]['data']:
+						battles[key][subkey]['data'][battle['strat']] = []
 
-                    if battle['result'].startswith('Victory') or battle['result'].startswith('Stalemate'):
-                        if strat or (not strat and not battle['strat']):
-                            battles[key][subkey]['data'].append(battle['frames'])
-                        else:
-                            battles[key][subkey]['data'][battle['strat']].append(battle['frames'])
-                else:
-                    battles[key]['count'] += 1
+					if battle['result'].startswith('Victory') or battle['result'].startswith('Stalemate'):
+						if strat or (not strat and not battle['strat']):
+							battles[key][subkey]['data'].append(battle['frames'])
+						else:
+							battles[key][subkey]['data'][battle['strat']].append(battle['frames'])
+				else:
+					battles[key]['count'] += 1
 
-                    if not strat and battle['strat'] and battle['strat'] not in battles[key]['strat']:
-                        battles[key]['strat'].add(battle['strat'])
+					if not strat and battle['strat'] and battle['strat'] not in battles[key]['strat']:
+						battles[key]['strat'].add(battle['strat'])
 
-                    if not strat and battle['strat'] and battle['strat'] not in battles[key]['data']:
-                        battles[key]['data'][battle['strat']] = []
+					if not strat and battle['strat'] and battle['strat'] not in battles[key]['data']:
+						battles[key]['data'][battle['strat']] = []
 
-                    if battle['result'].startswith('Victory') or battle['result'].startswith('Stalemate'):
-                        if strat or (not strat and not battle['strat']):
-                            battles[key]['data'].append(battle['frames'])
-                        else:
-                            battles[key]['data'][battle['strat']].append(battle['frames'])
+					if battle['result'].startswith('Victory') or battle['result'].startswith('Stalemate'):
+						if strat or (not strat and not battle['strat']):
+							battles[key]['data'].append(battle['frames'])
+						else:
+							battles[key]['data'][battle['strat']].append(battle['frames'])
 
-    return battles
+	return battles
 
 
 def get_split_data(logs, cumulative=True):
-    splits = {}
+	splits = {}
 
-    for log in logs:
-        for split, data in log.splits.items():
-            if split not in splits:
-                splits[split] = []
+	for log in logs:
+		for split, data in log.splits.items():
+			if split not in splits:
+				splits[split] = []
 
-            if cumulative:
-                splits[split].append(data['total'])
-            else:
-                splits[split].append(data['current'])
+			if cumulative:
+				splits[split].append(data['total'])
+			else:
+				splits[split].append(data['current'])
 
-    return splits
+	return splits
 
 
 def get_seed_data(logs):
-    seeds = {}
+	seeds = {}
 
-    for log in logs:
-        if log.route not in seeds:
-            seeds[log.route] = {}
+	for log in logs:
+		if log.route not in seeds:
+			seeds[log.route] = {}
 
-        if log.step_seed not in seeds[log.route]:
-            seeds[log.route][log.step_seed] = {'data': [], 'best_splits': {}, 'battles': 0, 'back_attack_count': 0}
+		if log.step_seed not in seeds[log.route]:
+			seeds[log.route][log.step_seed] = {'data': [], 'best_splits': {}, 'battles': 0, 'back_attack_count': 0}
 
-        if log.success:
-            seeds[log.route][log.step_seed]['data'].append(log.frames)
-            seeds[log.route][log.step_seed]['battles'] += log.random_battle_count
-            seeds[log.route][log.step_seed]['back_attack_count'] += log.back_attack_count
+		if log.success:
+			seeds[log.route][log.step_seed]['data'].append(log.frames)
+			seeds[log.route][log.step_seed]['battles'] += log.random_battle_count
+			seeds[log.route][log.step_seed]['back_attack_count'] += log.back_attack_count
 
-            for split in log.splits:
-                if split not in seeds[log.route][log.step_seed]['best_splits'] or log.splits[split]['current'] < seeds[log.route][log.step_seed]['best_splits'][split]:
-                    seeds[log.route][log.step_seed]['best_splits'][split] = log.splits[split]['current']
+			for split in log.splits:
+				if split not in seeds[log.route][log.step_seed]['best_splits'] or log.splits[split]['current'] < seeds[log.route][log.step_seed]['best_splits'][split]:
+					seeds[log.route][log.step_seed]['best_splits'][split] = log.splits[split]['current']
 
-    return seeds
+	return seeds
 
 
 def get_sum_of_best(logs):
-    seeds = get_seed_data(logs)
-    splits = {}
+	seeds = get_seed_data(logs)
+	splits = {}
 
-    for route in seeds.values():
-        for data in route.values():
-            for split, value in data['best_splits'].items():
-                if split not in splits or value < splits[split]:
-                    splits[split] = value
+	for route in seeds.values():
+		for data in route.values():
+			for split, value in data['best_splits'].items():
+				if split not in splits or value < splits[split]:
+					splits[split] = value
 
-    return sum(splits.values())
+	return sum(splits.values())
 
 
 #-------------------------------------------------------------------------------
@@ -218,187 +218,187 @@ def get_sum_of_best(logs):
 #-------------------------------------------------------------------------------
 
 class Log(object):
-    def __init__(self, filename):
-        self._battles = []
-        self._splits = {}
-        self._success = False
-        self._frames = None
-        self._route = None
-        self._rng_seed = None
-        self._step_seed = None
-        self._reset_for_time = False
-        self._reset_for_chocobo = False
-        self._reset_for_fireclaw = False
-        self._version = None
+	def __init__(self, filename):
+		self._battles = []
+		self._splits = {}
+		self._success = False
+		self._frames = None
+		self._route = None
+		self._rng_seed = None
+		self._step_seed = None
+		self._reset_for_time = False
+		self._reset_for_chocobo = False
+		self._reset_for_fireclaw = False
+		self._version = None
 
-        self._parse_file(filename)
+		self._parse_file(filename)
 
-        if self._route == 'paladin':
-            final_split = 'Paladin'
-        else:
-            final_split = 'Zeromus Death'
+		if self._route == 'paladin':
+			final_split = 'Paladin'
+		else:
+			final_split = 'Zeromus Death'
 
-        if final_split in self._splits:
-            self._success = True
-            self._frames = self._splits[final_split]['total']
+		if final_split in self._splits:
+			self._success = True
+			self._frames = self._splits[final_split]['total']
 
-    @property
-    def back_attack_count(self):
-        return sum([1 if x['type'] in ['Back Attack', 'Surprised'] and not x['scripted'] else 0 for x in self._battles])
+	@property
+	def back_attack_count(self):
+		return sum([1 if x['type'] in ['Back Attack', 'Surprised'] and not x['scripted'] else 0 for x in self._battles])
 
-    @property
-    def random_battle_count(self):
-        return sum([1 if not x['scripted'] else 0 for x in self._battles])
+	@property
+	def random_battle_count(self):
+		return sum([1 if not x['scripted'] else 0 for x in self._battles])
 
-    @property
-    def battles(self):
-        return self._battles
+	@property
+	def battles(self):
+		return self._battles
 
-    @property
-    def frames(self):
-        return self._frames
+	@property
+	def frames(self):
+		return self._frames
 
-    @property
-    def max_frame(self):
-        return max([x['total'] for x in self._splits.values()]) if len(self._splits) > 0 else 0
+	@property
+	def max_frame(self):
+		return max([x['total'] for x in self._splits.values()]) if len(self._splits) > 0 else 0
 
-    @property
-    def last_frame(self):
-        return self._last_frame
+	@property
+	def last_frame(self):
+		return self._last_frame
 
-    @property
-    def route(self):
-        return self._route
+	@property
+	def route(self):
+		return self._route
 
-    @property
-    def splits(self):
-        return self._splits
+	@property
+	def splits(self):
+		return self._splits
 
-    @property
-    def success(self):
-        return self._success
+	@property
+	def success(self):
+		return self._success
 
-    @property
-    def rng_seed(self):
-        return self._rng_seed
+	@property
+	def rng_seed(self):
+		return self._rng_seed
 
-    @property
-    def step_seed(self):
-        return self._step_seed
+	@property
+	def step_seed(self):
+		return self._step_seed
 
-    @property
-    def non_battle_frames(self):
-        if self.frames:
-            return self.frames - sum([x['frames'] for x in self._battles])
-        else:
-            return None
+	@property
+	def non_battle_frames(self):
+		if self.frames:
+			return self.frames - sum([x['frames'] for x in self._battles])
+		else:
+			return None
 
-    @property
-    def result(self):
-        if self.success:
-            return format_time(self.frames)
-        elif self._reset_for_time:
-            return 'Ragequit because of bad time after {} ({})'.format(sorted(self._splits.items(), key=lambda x: x[1]['total'])[-1][0], format_time(self.last_frame))
-        elif self._reset_for_chocobo:
-            return 'Ragequit because of bad yellow chocobo ({})'.format(format_time(self.last_frame))
-        elif self._reset_for_fireclaw:
-            return 'Ragequit because of failed FireClaw dupe ({})'.format(format_time(self.last_frame))
-        elif len(self._battles) > 0 and self._battles[-1]['result'].startswith('Perished'):
-            return 'Died to {} ({})'.format(describe_formation(self._battles[-1]['formation']), format_time(self.last_frame))
-        else:
-            return 'Unknown Failure ({})'.format(format_time(self.last_frame))
+	@property
+	def result(self):
+		if self.success:
+			return format_time(self.frames)
+		elif self._reset_for_time:
+			return 'Ragequit because of bad time after {} ({})'.format(sorted(self._splits.items(), key=lambda x: x[1]['total'])[-1][0], format_time(self.last_frame))
+		elif self._reset_for_chocobo:
+			return 'Ragequit because of bad yellow chocobo ({})'.format(format_time(self.last_frame))
+		elif self._reset_for_fireclaw:
+			return 'Ragequit because of failed FireClaw dupe ({})'.format(format_time(self.last_frame))
+		elif len(self._battles) > 0 and self._battles[-1]['result'].startswith('Perished'):
+			return 'Died to {} ({})'.format(describe_formation(self._battles[-1]['formation']), format_time(self.last_frame))
+		else:
+			return 'Unknown Failure ({})'.format(format_time(self.last_frame))
 
-    @property
-    def version(self):
-        return self._version
+	@property
+	def version(self):
+		return self._version
 
-    def _parse_file(self, filename):
-        with open(filename) as f:
-            current_battle = None
-            base_frame = None
+	def _parse_file(self, filename):
+		with open(filename) as f:
+			current_battle = None
+			base_frame = None
 
-            for line in f:
-                line_type, fields = self._parse_line(line.strip())
+			for line in f:
+				line_type, fields = self._parse_line(line.strip())
 
-                if base_frame is not None:
-                    self._last_frame = int(fields['frame']) - base_frame
+				if base_frame is not None:
+					self._last_frame = int(fields['frame']) - base_frame
 
-                if line_type == 'split':
-                    if fields['split'] == 'Start':
-                        base_frame = int(fields['frame'])
-                        last_split = base_frame
-                    else:
-                        self._splits[fields['split']] = {'current': int(fields['frame']) - last_split, 'total': int(fields['frame']) - base_frame}
-                        last_split = int(fields['frame'])
-                elif line_type == 'route':
-                    self._route = fields['route']
-                elif line_type == 'rng_seed':
-                    self._rng_seed = int(fields['seed'])
-                elif line_type == 'step_seed':
-                    self._step_seed = int(fields['seed'])
-                elif line_type == 'version':
-                    self._version = fields['version']
-                elif line_type == 'reset_for_time':
-                    self._reset_for_time = True
-                elif line_type == 'reset_for_chocobo':
-                    self._reset_for_chocobo = True
-                elif line_type == 'reset_for_fireclaw':
-                    self._reset_for_fireclaw = True
-                elif line_type == 'battle_start':
-                    if current_battle:
-                        print('WARNING: A new battle has started without finishing the previous one while parsing {}'.format(filename))
+				if line_type == 'split':
+					if fields['split'] == 'Start':
+						base_frame = int(fields['frame'])
+						last_split = base_frame
+					else:
+						self._splits[fields['split']] = {'current': int(fields['frame']) - last_split, 'total': int(fields['frame']) - base_frame}
+						last_split = int(fields['frame'])
+				elif line_type == 'route':
+					self._route = fields['route']
+				elif line_type == 'rng_seed':
+					self._rng_seed = int(fields['seed'])
+				elif line_type == 'step_seed':
+					self._step_seed = int(fields['seed'])
+				elif line_type == 'version':
+					self._version = fields['version']
+				elif line_type == 'reset_for_time':
+					self._reset_for_time = True
+				elif line_type == 'reset_for_chocobo':
+					self._reset_for_chocobo = True
+				elif line_type == 'reset_for_fireclaw':
+					self._reset_for_fireclaw = True
+				elif line_type == 'battle_start':
+					if current_battle:
+						print('WARNING: A new battle has started without finishing the previous one while parsing {}'.format(filename))
 
-                    current_battle = {
-                        'formation': int(fields['formation']),
-                        'type': fields['type'],
-                        'strat': None,
-                        'scripted': is_scripted(int(fields['formation'])),
-                        'party_level': None if fields['party_level'] == '-' else int(fields['party_level']),
-                        'enemy_level': None if fields['enemy_level'] == '-' else int(fields['enemy_level']),
-                    }
-                elif line_type == 'battle_strat':
-                    current_battle['strat'] = fields['strat']
-                elif line_type == 'battle_enemy_agility':
-                    current_battle['enemy_agility'] = list(map(int, fields['agility'].split()))
-                elif line_type == 'battle_party_formation':
-                    current_battle['party_formation'] = fields['formation']
-                elif line_type == 'battle_stop':
-                    current_battle['frames'] = int(fields['frames'])
-                    current_battle['dropped_gp'] = int(fields['dropped_gp'])
-                    current_battle['result'] = fields['result']
-                    self._battles.append(current_battle)
-                    current_battle = None
+					current_battle = {
+						'formation': int(fields['formation']),
+						'type': fields['type'],
+						'strat': None,
+						'scripted': is_scripted(int(fields['formation'])),
+						'party_level': None if fields['party_level'] == '-' else int(fields['party_level']),
+						'enemy_level': None if fields['enemy_level'] == '-' else int(fields['enemy_level']),
+					}
+				elif line_type == 'battle_strat':
+					current_battle['strat'] = fields['strat']
+				elif line_type == 'battle_enemy_agility':
+					current_battle['enemy_agility'] = list(map(int, fields['agility'].split()))
+				elif line_type == 'battle_party_formation':
+					current_battle['party_formation'] = fields['formation']
+				elif line_type == 'battle_stop':
+					current_battle['frames'] = int(fields['frames'])
+					current_battle['dropped_gp'] = int(fields['dropped_gp'])
+					current_battle['result'] = fields['result']
+					self._battles.append(current_battle)
+					current_battle = None
 
-    def _parse_line(self, line):
-        base_regex = '(?P<timestamp>.*) :: (?P<frame>.*) :: (?P<time>.*) :: (?P<game_time>.*) :: '
+	def _parse_line(self, line):
+		base_regex = '(?P<timestamp>.*) :: (?P<frame>.*) :: (?P<time>.*) :: (?P<game_time>.*) :: '
 
-        regexes = {
-            'battle_start': 'Battle Start: (?P<description>.*) \((?P<formation>.*)/(?P<type>.*)/(?P<party_level>.*)/(?P<enemy_level>.*)\)',
-            'battle_strat': 'Battle Strat: (?P<strat>.*)',
-            'battle_enemy_agility': 'Enemy Agility: (?P<agility>.*)',
-            'battle_party_formation': 'Party Formation: (?P<formation>.*)',
-            'battle_stop': 'Battle Complete: (?P<description>.*) \((?P<formation>.*)/(?P<frames>.*) frames/(?P<dropped_gp>.*) GP dropped/(?P<result>.*)\)',
-            'inventory': 'Inventory: .*',
-            'route': 'Route: (?P<route>.*)',
-            'rng_seed': 'RNG Seed: (?P<seed>.*)',
-            'reset_for_time': 'Resetting for time...',
-            'reset_for_chocobo': 'Resetting due to bad yellow chocobo...',
-            'reset_for_fireclaw': 'Resetting due to failed FireClaw dupe...',
-            'step_seed': 'Encounter Seed: (?P<seed>.*)',
-            'sequence': 'Sequence: (?P<sequence>.*)',
-            'split': 'Split: (?P<split>.*)',
-            'version': 'Version: (?P<version>.*)',
-            '_ignore': '(Edge Final Fantasy IV|--------------------|Beginning Full Run|Setting Initial Seed|Yellow Chocobo Coordinates|Current Glitch Floor|Rebooting|Load game screen|New Seed|Setting encounter seed|Detected|Zeromus has|Cecil|Do not have|Action|Party Experience)',
-        }
+		regexes = {
+			'battle_start': 'Battle Start: (?P<description>.*) \((?P<formation>.*)/(?P<type>.*)/(?P<party_level>.*)/(?P<enemy_level>.*)\)',
+			'battle_strat': 'Battle Strat: (?P<strat>.*)',
+			'battle_enemy_agility': 'Enemy Agility: (?P<agility>.*)',
+			'battle_party_formation': 'Party Formation: (?P<formation>.*)',
+			'battle_stop': 'Battle Complete: (?P<description>.*) \((?P<formation>.*)/(?P<frames>.*) frames/(?P<dropped_gp>.*) GP dropped/(?P<result>.*)\)',
+			'inventory': 'Inventory: .*',
+			'route': 'Route: (?P<route>.*)',
+			'rng_seed': 'RNG Seed: (?P<seed>.*)',
+			'reset_for_time': 'Resetting for time...',
+			'reset_for_chocobo': 'Resetting due to bad yellow chocobo...',
+			'reset_for_fireclaw': 'Resetting due to failed FireClaw dupe...',
+			'step_seed': 'Encounter Seed: (?P<seed>.*)',
+			'sequence': 'Sequence: (?P<sequence>.*)',
+			'split': 'Split: (?P<split>.*)',
+			'version': 'Version: (?P<version>.*)',
+			'_ignore': '(Edge Final Fantasy IV|--------------------|Beginning Full Run|Setting Initial Seed|Yellow Chocobo Coordinates|Current Glitch Floor|Rebooting|Load game screen|New Seed|Setting encounter seed|Detected|Zeromus has|Cecil|Do not have|Action|Party Agility|Party Experience)',
+		}
 
-        for line_type, regex in regexes.items():
-            matches = re.match(base_regex + regex, line)
+		for line_type, regex in regexes.items():
+			matches = re.match(base_regex + regex, line)
 
-            if matches:
-                return (line_type, matches.groupdict())
+			if matches:
+				return (line_type, matches.groupdict())
 
-        print('UNRECOGNIZED LINE: {}'.format(line))
-        return (None, None)
+		print('UNRECOGNIZED LINE: {}'.format(line))
+		return (None, None)
 
 
 #-------------------------------------------------------------------------------
@@ -406,461 +406,461 @@ class Log(object):
 #-------------------------------------------------------------------------------
 
 def img_output_battle(f, key, data):
-    colors = ['#ffbfbf', '#ffee00', '#00e2f2', '#3a00d9', '#f20041', '#e56739', '#74d900', '#bff2ff', '#eeb6f2', '#ff8800', '#adcc99', '#00a2f2', '#d900ca', '#ffc480', '#39e695', '#7989f2', '#d96c98']
+	colors = ['#ffbfbf', '#ffee00', '#00e2f2', '#3a00d9', '#f20041', '#e56739', '#74d900', '#bff2ff', '#eeb6f2', '#ff8800', '#adcc99', '#00a2f2', '#d900ca', '#ffc480', '#39e695', '#7989f2', '#d96c98']
 
-    figure = plt.figure()
-    figure.suptitle('{} Battle Time'.format(describe_formation(data['formation'])))
+	figure = plt.figure()
+	figure.suptitle('{} Battle Time'.format(describe_formation(data['formation'])))
 
-    axis_min = None
-    axis_max = None
+	axis_min = None
+	axis_max = None
 
-    if len(data['strat']) > 0:
-        values = {}
+	if len(data['strat']) > 0:
+		values = {}
 
-        for strat, strat_data in data['data'].items():
-            values[strat] = [x / 60.0988 for x in strat_data]
-    else:
-        values = {'Default Strat': [x / 60.0988 for x in data['data']]}
+		for strat, strat_data in data['data'].items():
+			values[strat] = [x / 60.0988 for x in strat_data]
+	else:
+		values = {'Default Strat': [x / 60.0988 for x in data['data']]}
 
-    mintmp = [min(x) for x in values.values() if len(x) > 0]
-    maxtmp = [max(x) for x in values.values() if len(x) > 0]
+	mintmp = [min(x) for x in values.values() if len(x) > 0]
+	maxtmp = [max(x) for x in values.values() if len(x) > 0]
 
-    axis_min = min(mintmp) - 10 if len(mintmp) > 0 else 0
-    axis_max = max(maxtmp) + 10 if len(maxtmp) > 0 else 300
+	axis_min = min(mintmp) - 10 if len(mintmp) > 0 else 0
+	axis_max = max(maxtmp) + 10 if len(maxtmp) > 0 else 300
 
-    subplot = figure.add_subplot(111)
-    axis = numpy.linspace(axis_min, axis_max)
+	subplot = figure.add_subplot(111)
+	axis = numpy.linspace(axis_min, axis_max)
 
-    for i, (strat, strat_data) in enumerate(values.items()):
-        x = numpy.array(strat_data, dtype=numpy.float)
+	for i, (strat, strat_data) in enumerate(values.items()):
+		x = numpy.array(strat_data, dtype=numpy.float)
 
-        try:
-            kde = stats.gaussian_kde(x)
-        except Exception:
-            kde = None
+		try:
+			kde = stats.gaussian_kde(x)
+		except Exception:
+			kde = None
 
-        subplot.plot(x, numpy.zeros(x.shape), 'b+', ms=20, color=colors[i])
+		subplot.plot(x, numpy.zeros(x.shape), 'b+', ms=20, color=colors[i])
 
-        if kde:
-            subplot.plot(axis, kde(axis), 'k-', color=colors[i], label=strat)
+		if kde:
+			subplot.plot(axis, kde(axis), 'k-', color=colors[i], label=strat)
 
-    fontprop = FontProperties()
-    fontprop.set_size('small')
+	fontprop = FontProperties()
+	fontprop.set_size('small')
 
-    if len(data['strat']) > 0:
-        box = subplot.get_position()
-        subplot.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-        plt.legend(loc="center left", bbox_to_anchor=(1, 0.5), prop=fontprop)
+	if len(data['strat']) > 0:
+		box = subplot.get_position()
+		subplot.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+		plt.legend(loc="center left", bbox_to_anchor=(1, 0.5), prop=fontprop)
 
-    plt.xlabel("Battle Time (seconds)")
-    plt.ylabel("Probability")
-    plt.savefig(f)
-    plt.close(figure)
+	plt.xlabel("Battle Time (seconds)")
+	plt.ylabel("Probability")
+	plt.savefig(f)
+	plt.close(figure)
 
 def img_output_runs(f, logs):
-    figure = plt.figure()
-    figure.suptitle('Run Completion Times')
+	figure = plt.figure()
+	figure.suptitle('Run Completion Times')
 
-    axis_min = None
-    axis_max = None
+	axis_min = None
+	axis_max = None
 
-    values = {}
+	values = {}
 
-    for log in logs:
-        if log.success:
-            if log.route not in values:
-                values[log.route] = []
+	for log in logs:
+		if log.success:
+			if log.route not in values:
+				values[log.route] = []
 
-            values[log.route].append(log.frames * 655171 / 39370000)
+			values[log.route].append(log.frames * 655171 / 39370000)
 
-    mintmp = [min(x) for x in values.values() if len(x) > 0]
-    maxtmp = [max(x) for x in values.values() if len(x) > 0]
+	mintmp = [min(x) for x in values.values() if len(x) > 0]
+	maxtmp = [max(x) for x in values.values() if len(x) > 0]
 
-    axis_min = min(mintmp) - 10 if len(mintmp) > 0 else 0
-    axis_max = max(maxtmp) + 10 if len(maxtmp) > 0 else 300
+	axis_min = min(mintmp) - 10 if len(mintmp) > 0 else 0
+	axis_max = max(maxtmp) + 10 if len(maxtmp) > 0 else 300
 
-    subplot = figure.add_subplot(111)
-    axis = numpy.linspace(axis_min, axis_max)
+	subplot = figure.add_subplot(111)
+	axis = numpy.linspace(axis_min, axis_max)
 
-    for i, (category, data) in enumerate(values.items()):
-        x = numpy.array(data, dtype=numpy.float)
+	for i, (category, data) in enumerate(values.items()):
+		x = numpy.array(data, dtype=numpy.float)
 
-        try:
-            kde = stats.gaussian_kde(x)
-        except Exception:
-            kde = None
+		try:
+			kde = stats.gaussian_kde(x)
+		except Exception:
+			kde = None
 
-        subplot.plot(x, numpy.zeros(x.shape), 'b+', ms=20, color='#ffbfbf')
+		subplot.plot(x, numpy.zeros(x.shape), 'b+', ms=20, color='#ffbfbf')
 
-        if kde:
-            subplot.plot(axis, kde(axis), 'k-', color='#ffbfbf', label=category)
+		if kde:
+			subplot.plot(axis, kde(axis), 'k-', color='#ffbfbf', label=category)
 
-    fontprop = FontProperties()
-    fontprop.set_size('small')
+	fontprop = FontProperties()
+	fontprop.set_size('small')
 
-    box = subplot.get_position()
-    subplot.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-    plt.legend(loc="center left", bbox_to_anchor=(1, 0.5), prop=fontprop)
+	box = subplot.get_position()
+	subplot.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+	plt.legend(loc="center left", bbox_to_anchor=(1, 0.5), prop=fontprop)
 
-    plt.xlabel("Run Time (seconds)")
-    plt.ylabel("Probability")
-    plt.savefig(f)
-    plt.close(figure)
+	plt.xlabel("Run Time (seconds)")
+	plt.ylabel("Probability")
+	plt.savefig(f)
+	plt.close(figure)
 
 #-------------------------------------------------------------------------------
 # HTML Functions
 #-------------------------------------------------------------------------------
 
 def html_output_header(f):
-    f.write('<!DOCTYPE html>\n')
-    f.write('<html lang="en">\n')
-    f.write('\t<head>\n')
-    f.write('\t\t<meta charset="utf-8">\n')
-    f.write('\t\t<title>Edge Log Analysis</title>\n')
-    f.write('\t\t<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">\n')
-    f.write('\t\t<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.9/css/theme.bootstrap_3.min.css" integrity="sha256-kHFAS2GpR7DKNTb9SMX1aaoBxjLsZyeAX2Dh7h4UB1g=" crossorigin="anonymous" />\n')
-    f.write('\t\t<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>\n')
-    f.write('\t\t<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.9/js/jquery.tablesorter.min.js" integrity="sha256-kgWKzrQM9EptuijrOz9DZw4YTl/iEtgLzcfCB2WfV2I=" crossorigin="anonymous"></script>\n')
-    f.write('\t\t<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.9/js/jquery.tablesorter.widgets.min.js" integrity="sha256-68t49lPEpa0S/ohrRPVYgcHaMn4HyOKfVomAVMAXNoM=" crossorigin="anonymous"></script>\n')
-    f.write('\t\t<meta name="viewport" content="width=device-width, initial-scale=1">\n')
-    f.write('\t\t<style type="text/css">\n')
-    f.write('\t\t\t.bold { font-weight: bold; }\n')
-    f.write('\t\t</style>\n')
-    f.write('\t</head>\n')
-    f.write('\t<body>\n')
-    f.write('\t\t<div class="container">\n')
-    f.write('\t\t\t<h1>Edge Log Analysis</h1>\n')
-    f.write('\t\t\t<h2>Introduction</h2>\n')
-    f.write('\t\t\t<p>This page is a statistical analysis of the log files generated by Edge, the Final Fantasy IV speed running bot.</p>\n')
+	f.write('<!DOCTYPE html>\n')
+	f.write('<html lang="en">\n')
+	f.write('\t<head>\n')
+	f.write('\t\t<meta charset="utf-8">\n')
+	f.write('\t\t<title>Edge Log Analysis</title>\n')
+	f.write('\t\t<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">\n')
+	f.write('\t\t<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.9/css/theme.bootstrap_3.min.css" integrity="sha256-kHFAS2GpR7DKNTb9SMX1aaoBxjLsZyeAX2Dh7h4UB1g=" crossorigin="anonymous" />\n')
+	f.write('\t\t<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>\n')
+	f.write('\t\t<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.9/js/jquery.tablesorter.min.js" integrity="sha256-kgWKzrQM9EptuijrOz9DZw4YTl/iEtgLzcfCB2WfV2I=" crossorigin="anonymous"></script>\n')
+	f.write('\t\t<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.28.9/js/jquery.tablesorter.widgets.min.js" integrity="sha256-68t49lPEpa0S/ohrRPVYgcHaMn4HyOKfVomAVMAXNoM=" crossorigin="anonymous"></script>\n')
+	f.write('\t\t<meta name="viewport" content="width=device-width, initial-scale=1">\n')
+	f.write('\t\t<style type="text/css">\n')
+	f.write('\t\t\t.bold { font-weight: bold; }\n')
+	f.write('\t\t</style>\n')
+	f.write('\t</head>\n')
+	f.write('\t<body>\n')
+	f.write('\t\t<div class="container">\n')
+	f.write('\t\t\t<h1>Edge Log Analysis</h1>\n')
+	f.write('\t\t\t<h2>Introduction</h2>\n')
+	f.write('\t\t\t<p>This page is a statistical analysis of the log files generated by Edge, the Final Fantasy IV speed running bot.</p>\n')
 
 
 def html_output_footer(f):
-    f.write('\t\t</div>\n')
-    f.write('\t\t<script>\n')
-    f.write('''$.extend($.tablesorter.themes.bootstrap, {table: 'table table-bordered table-striped'});''')
-    f.write('\t\t\t$(document).ready(function()\n')
-    f.write('\t\t\t\t{\n')
-    f.write('''var options = {
-        theme: "bootstrap",
-        headerTemplate: "{content} {icon}",
-        widgets: ["uitheme", "zebra"]
-    };\n''')
-    f.write('\t\t\t\t\t$("#seeds").tablesorter(options);\n')
-    f.write('\t\t\t\t\t$("#runs").tablesorter(options);\n')
-    f.write('\t\t\t\t}\n')
-    f.write('\t\t\t);\n')
-    f.write('\t\t</script>\n')
-    f.write('\t</body>\n')
-    f.write('</html>\n')
+	f.write('\t\t</div>\n')
+	f.write('\t\t<script>\n')
+	f.write('''$.extend($.tablesorter.themes.bootstrap, {table: 'table table-bordered table-striped'});''')
+	f.write('\t\t\t$(document).ready(function()\n')
+	f.write('\t\t\t\t{\n')
+	f.write('''var options = {
+		theme: "bootstrap",
+		headerTemplate: "{content} {icon}",
+		widgets: ["uitheme", "zebra"]
+	};\n''')
+	f.write('\t\t\t\t\t$("#seeds").tablesorter(options);\n')
+	f.write('\t\t\t\t\t$("#runs").tablesorter(options);\n')
+	f.write('\t\t\t\t}\n')
+	f.write('\t\t\t);\n')
+	f.write('\t\t</script>\n')
+	f.write('\t</body>\n')
+	f.write('</html>\n')
 
 
 def html_output_basic_statistics(f, logs):
-    f.write('\t\t\t<h2>Basic Statistics</h2>\n')
-    f.write('\t\t\t<dl class="dl-horizontal">\n')
-    f.write('\t\t\t\t<dt>Number of Logs</dt><dd>{}</dd>\n'.format(len(logs)))
-    if len([x for x in logs if x.success]) > 0:
-        f.write('\t\t\t\t<dt>Best Time</dt><dd>{}</dd>\n'.format(format_time(min([x.frames for x in logs if x.success]))))
-        f.write('\t\t\t\t<dt>Sum of Best</dt><dd>{}</dd>\n'.format(format_time(get_sum_of_best(logs))))
-    f.write('\t\t\t</dl>\n')
+	f.write('\t\t\t<h2>Basic Statistics</h2>\n')
+	f.write('\t\t\t<dl class="dl-horizontal">\n')
+	f.write('\t\t\t\t<dt>Number of Logs</dt><dd>{}</dd>\n'.format(len(logs)))
+	if len([x for x in logs if x.success]) > 0:
+		f.write('\t\t\t\t<dt>Best Time</dt><dd>{}</dd>\n'.format(format_time(min([x.frames for x in logs if x.success]))))
+		f.write('\t\t\t\t<dt>Sum of Best</dt><dd>{}</dd>\n'.format(format_time(get_sum_of_best(logs))))
+	f.write('\t\t\t</dl>\n')
 
 
 def html_output_splits(f, logs):
-    splits = {}
+	splits = {}
 
-    f.write('\t\t\t<h2>Splits</h2>\n')
-    f.write('\t\t\t<table class="table table-striped">\n')
-    f.write('\t\t\t\t<thead>\n')
-    f.write('\t\t\t\t\t<tr>\n')
-    f.write('\t\t\t\t\t\t<th>Split</th>\n')
-    f.write('\t\t\t\t\t\t<th>Count</th>\n')
-    f.write('\t\t\t\t\t\t<th>Minimum</th>\n')
-    f.write('\t\t\t\t\t\t<th>Maximum</th>\n')
-    f.write('\t\t\t\t\t\t<th>Median</th>\n')
-    f.write('\t\t\t\t\t</tr>\n')
-    f.write('\t\t\t\t</thead>\n')
-    f.write('\t\t\t\t<tbody>\n')
+	f.write('\t\t\t<h2>Splits</h2>\n')
+	f.write('\t\t\t<table class="table table-striped">\n')
+	f.write('\t\t\t\t<thead>\n')
+	f.write('\t\t\t\t\t<tr>\n')
+	f.write('\t\t\t\t\t\t<th>Split</th>\n')
+	f.write('\t\t\t\t\t\t<th>Count</th>\n')
+	f.write('\t\t\t\t\t\t<th>Minimum</th>\n')
+	f.write('\t\t\t\t\t\t<th>Maximum</th>\n')
+	f.write('\t\t\t\t\t\t<th>Median</th>\n')
+	f.write('\t\t\t\t\t</tr>\n')
+	f.write('\t\t\t\t</thead>\n')
+	f.write('\t\t\t\t<tbody>\n')
 
-    splits = get_split_data(logs, True)
+	splits = get_split_data(logs, True)
 
-    for split, data in sorted(splits.items(), key=lambda x: min(x[1])):
-        f.write('\t\t\t\t\t<tr>\n')
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(split))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(len(data)))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data))))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data))))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data))))
-        f.write('\t\t\t\t\t</tr>\n')
+	for split, data in sorted(splits.items(), key=lambda x: min(x[1])):
+		f.write('\t\t\t\t\t<tr>\n')
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(split))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(len(data)))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data))))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data))))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data))))
+		f.write('\t\t\t\t\t</tr>\n')
 
-    f.write('\t\t\t\t</tbody>\n')
-    f.write('\t\t\t</table>\n')
+	f.write('\t\t\t\t</tbody>\n')
+	f.write('\t\t\t</table>\n')
 
 
 def html_output_battles(f, logs):
-    f.write('\t\t\t<h2>Battles</h2>\n')
-    f.write('\t\t\t<table class="table table-striped">\n')
-    f.write('\t\t\t\t<thead>\n')
-    f.write('\t\t\t\t\t<tr>\n')
-    f.write('\t\t\t\t\t\t<th>Description</th>\n')
-    f.write('\t\t\t\t\t\t<th>Strat</th>\n')
-    f.write('\t\t\t\t\t\t<th>Count</th>\n')
-    f.write('\t\t\t\t\t\t<th>Success Rate</th>\n')
-    f.write('\t\t\t\t\t\t<th>Minimum</th>\n')
-    f.write('\t\t\t\t\t\t<th>Maximum</th>\n')
-    f.write('\t\t\t\t\t\t<th>Median</th>\n')
-    f.write('\t\t\t\t\t</tr>\n')
-    f.write('\t\t\t\t</thead>\n')
-    f.write('\t\t\t\t<tbody>\n')
+	f.write('\t\t\t<h2>Battles</h2>\n')
+	f.write('\t\t\t<table class="table table-striped">\n')
+	f.write('\t\t\t\t<thead>\n')
+	f.write('\t\t\t\t\t<tr>\n')
+	f.write('\t\t\t\t\t\t<th>Description</th>\n')
+	f.write('\t\t\t\t\t\t<th>Strat</th>\n')
+	f.write('\t\t\t\t\t\t<th>Count</th>\n')
+	f.write('\t\t\t\t\t\t<th>Success Rate</th>\n')
+	f.write('\t\t\t\t\t\t<th>Minimum</th>\n')
+	f.write('\t\t\t\t\t\t<th>Maximum</th>\n')
+	f.write('\t\t\t\t\t\t<th>Median</th>\n')
+	f.write('\t\t\t\t\t</tr>\n')
+	f.write('\t\t\t\t</thead>\n')
+	f.write('\t\t\t\t<tbody>\n')
 
-    battles = OrderedDict()
-    ordering = {}
-    index = 0
+	battles = OrderedDict()
+	ordering = {}
+	index = 0
 
-    for log in logs:
-        for battle in log.battles:
-            if battle['result'].startswith('Victory') or battle['result'].startswith('Perished') or battle['result'].startswith('Stalemate'):
-                if battle['formation'] not in ordering:
-                    ordering[battle['formation']] = index
-                    index += 1
+	for log in logs:
+		for battle in log.battles:
+			if battle['result'].startswith('Victory') or battle['result'].startswith('Perished') or battle['result'].startswith('Stalemate'):
+				if battle['formation'] not in ordering:
+					ordering[battle['formation']] = index
+					index += 1
 
-                key = '{:03}'.format(battle['formation'])
+				key = '{:03}'.format(battle['formation'])
 
-                if battle['strat']:
-                    key = '{}-{}'.format(key, battle['strat'])
+				if battle['strat']:
+					key = '{}-{}'.format(key, battle['strat'])
 
-                if key not in battles:
-                    battles[key] = {'formation': battle['formation'], 'strat': battle['strat'], 'data': [], 'count': 0, 'index': ordering[battle['formation']]}
+				if key not in battles:
+					battles[key] = {'formation': battle['formation'], 'strat': battle['strat'], 'data': [], 'count': 0, 'index': ordering[battle['formation']]}
 
-                if battle['result'].startswith('Victory') or battle['result'].startswith('Stalemate'):
-                    battles[key]['data'].append(battle['frames'])
+				if battle['result'].startswith('Victory') or battle['result'].startswith('Stalemate'):
+					battles[key]['data'].append(battle['frames'])
 
-                battles[key]['count'] += 1
+				battles[key]['count'] += 1
 
-    for key, data in sorted(battles.items(), key=lambda x: (x[1]['index'], x[1]['strat'])):
-        f.write('\t\t\t\t\t<tr>\n')
-        f.write('\t\t\t\t\t\t<td><a href="battles/{}.html">{}</a></td>\n'.format(key, describe_formation(data['formation'])))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['strat'] if data['strat'] else '-'))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['count']))
-        f.write('\t\t\t\t\t\t<td>{:.3f}%</td>\n'.format(len(data['data']) * 100 / data['count']))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data'])) if len(data['data']) > 0 else 'N/A'))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data'])) if len(data['data']) > 0 else 'N/A'))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data'])) if len(data['data']) > 0 else 'N/A'))
-        f.write('\t\t\t\t\t</tr>\n')
+	for key, data in sorted(battles.items(), key=lambda x: (x[1]['index'], x[1]['strat'])):
+		f.write('\t\t\t\t\t<tr>\n')
+		f.write('\t\t\t\t\t\t<td><a href="battles/{}.html">{}</a></td>\n'.format(key, describe_formation(data['formation'])))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['strat'] if data['strat'] else '-'))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['count']))
+		f.write('\t\t\t\t\t\t<td>{:.3f}%</td>\n'.format(len(data['data']) * 100 / data['count']))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data'])) if len(data['data']) > 0 else 'N/A'))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data'])) if len(data['data']) > 0 else 'N/A'))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data'])) if len(data['data']) > 0 else 'N/A'))
+		f.write('\t\t\t\t\t</tr>\n')
 
-    f.write('\t\t\t\t</tbody>\n')
-    f.write('\t\t\t</table>\n')
+	f.write('\t\t\t\t</tbody>\n')
+	f.write('\t\t\t</table>\n')
 
 
 def html_output_battle(f, key, battle_data):
-    first_data = list(battle_data.values())[0]
+	first_data = list(battle_data.values())[0]
 
-    if 'strat' in first_data and first_data['strat']:
-        f.write('\t\t\t<h2>Battle Data for {} using &quot;{}&quot; Strat</h2>\n'.format(describe_formation(first_data['formation']), first_data['strat']))
-    else:
-        f.write('\t\t\t<h2>Battle Data for {}</h2>\n'.format(describe_formation(first_data['formation'])))
+	if 'strat' in first_data and first_data['strat']:
+		f.write('\t\t\t<h2>Battle Data for {} using &quot;{}&quot; Strat</h2>\n'.format(describe_formation(first_data['formation']), first_data['strat']))
+	else:
+		f.write('\t\t\t<h2>Battle Data for {}</h2>\n'.format(describe_formation(first_data['formation'])))
 
-    f.write('\t\t\t<h3>Time Graph</h3>\n')
-    f.write('\t\t\t<p><img src="img/{}.png"></p>'.format(key))
-    f.write('\t\t\t<h3>Data</h3>\n')
-    f.write('\t\t\t<table class="table table-striped">\n')
-    f.write('\t\t\t\t<thead>\n')
-    f.write('\t\t\t\t\t<tr>\n')
-    f.write('\t\t\t\t\t\t<th>Battle Type</th>\n')
-    f.write('\t\t\t\t\t\t<th>Enemy Agility</th>\n')
-    f.write('\t\t\t\t\t\t<th>Party Formation</th>\n')
-    f.write('\t\t\t\t\t\t<th>Battles</th>\n')
-    f.write('\t\t\t\t\t\t<th>Deaths</th>\n')
-    f.write('\t\t\t\t\t\t<th>Best Time</th>\n')
-    f.write('\t\t\t\t\t\t<th>Worst Time</th>\n')
-    f.write('\t\t\t\t\t\t<th>Median Time</th>\n')
-    f.write('\t\t\t\t\t</tr>\n')
-    f.write('\t\t\t\t</thead>\n')
-    f.write('\t\t\t\t<tbody>\n')
+	f.write('\t\t\t<h3>Time Graph</h3>\n')
+	f.write('\t\t\t<p><img src="img/{}.png"></p>'.format(key))
+	f.write('\t\t\t<h3>Data</h3>\n')
+	f.write('\t\t\t<table class="table table-striped">\n')
+	f.write('\t\t\t\t<thead>\n')
+	f.write('\t\t\t\t\t<tr>\n')
+	f.write('\t\t\t\t\t\t<th>Battle Type</th>\n')
+	f.write('\t\t\t\t\t\t<th>Enemy Agility</th>\n')
+	f.write('\t\t\t\t\t\t<th>Party Formation</th>\n')
+	f.write('\t\t\t\t\t\t<th>Battles</th>\n')
+	f.write('\t\t\t\t\t\t<th>Deaths</th>\n')
+	f.write('\t\t\t\t\t\t<th>Best Time</th>\n')
+	f.write('\t\t\t\t\t\t<th>Worst Time</th>\n')
+	f.write('\t\t\t\t\t\t<th>Median Time</th>\n')
+	f.write('\t\t\t\t\t</tr>\n')
+	f.write('\t\t\t\t</thead>\n')
+	f.write('\t\t\t\t<tbody>\n')
 
-    for (battle_type, enemy_agility, party_formation), data in sorted(battle_data.items(), key=lambda x: statistics.median(x[1]['data']) if len(x[1]['data']) > 0 else 1000000):
-        f.write('\t\t\t\t\t<tr>\n')
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(battle_type))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(enemy_agility))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(party_formation))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['count']))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['count'] - len(data['data'])))
+	for (battle_type, enemy_agility, party_formation), data in sorted(battle_data.items(), key=lambda x: statistics.median(x[1]['data']) if len(x[1]['data']) > 0 else 1000000):
+		f.write('\t\t\t\t\t<tr>\n')
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(battle_type))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(enemy_agility))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(party_formation))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['count']))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['count'] - len(data['data'])))
 
-        if len(data['data']) > 0:
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data']))))
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data']))))
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data']))))
-        else:
-            f.write('\t\t\t\t\t\t<td>N/A</td>\n')
-            f.write('\t\t\t\t\t\t<td>N/A</td>\n')
-            f.write('\t\t\t\t\t\t<td>N/A</td>\n')
+		if len(data['data']) > 0:
+			f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data']))))
+			f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data']))))
+			f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data']))))
+		else:
+			f.write('\t\t\t\t\t\t<td>N/A</td>\n')
+			f.write('\t\t\t\t\t\t<td>N/A</td>\n')
+			f.write('\t\t\t\t\t\t<td>N/A</td>\n')
 
-        f.write('\t\t\t\t\t</tr>\n')
+		f.write('\t\t\t\t\t</tr>\n')
 
-    f.write('\t\t\t\t</tbody>\n')
-    f.write('\t\t\t</table>\n')
+	f.write('\t\t\t\t</tbody>\n')
+	f.write('\t\t\t</table>\n')
 
 
 def html_output_seeds(f, logs):
-    f.write('\t\t\t<h2>Step Seeds</h2>\n')
-    f.write('\t\t\t<table class="tablesorter-bootstrap" id="seeds">\n')
-    f.write('\t\t\t\t<thead>\n')
-    f.write('\t\t\t\t\t<tr>\n')
-    f.write('\t\t\t\t\t\t<th>Route</th>\n')
-    f.write('\t\t\t\t\t\t<th>Seed</th>\n')
-    f.write('\t\t\t\t\t\t<th>Count</th>\n')
-    f.write('\t\t\t\t\t\t<th>Back Attacks</th>\n')
-    f.write('\t\t\t\t\t\t<th>Sum of Best</th>\n')
-    f.write('\t\t\t\t\t\t<th>Minimum</th>\n')
-    f.write('\t\t\t\t\t\t<th>Maximum</th>\n')
-    f.write('\t\t\t\t\t\t<th>Median</th>\n')
-    f.write('\t\t\t\t\t</tr>\n')
-    f.write('\t\t\t\t</thead>\n')
-    f.write('\t\t\t\t<tbody>\n')
+	f.write('\t\t\t<h2>Step Seeds</h2>\n')
+	f.write('\t\t\t<table class="tablesorter-bootstrap" id="seeds">\n')
+	f.write('\t\t\t\t<thead>\n')
+	f.write('\t\t\t\t\t<tr>\n')
+	f.write('\t\t\t\t\t\t<th>Route</th>\n')
+	f.write('\t\t\t\t\t\t<th>Seed</th>\n')
+	f.write('\t\t\t\t\t\t<th>Count</th>\n')
+	f.write('\t\t\t\t\t\t<th>Back Attacks</th>\n')
+	f.write('\t\t\t\t\t\t<th>Sum of Best</th>\n')
+	f.write('\t\t\t\t\t\t<th>Minimum</th>\n')
+	f.write('\t\t\t\t\t\t<th>Maximum</th>\n')
+	f.write('\t\t\t\t\t\t<th>Median</th>\n')
+	f.write('\t\t\t\t\t</tr>\n')
+	f.write('\t\t\t\t</thead>\n')
+	f.write('\t\t\t\t<tbody>\n')
 
-    seeds = get_seed_data(logs)
+	seeds = get_seed_data(logs)
 
-    for route in seeds:
-        for seed, data in sorted(seeds[route].items(), key=lambda x: statistics.median(x[1]['data']) if len(x[1]['data']) > 0 else 0):
-            if len(data['data']) > 0:
-                f.write('\t\t\t\t\t<tr>\n')
-                f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(route))
-                f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(seed))
-                f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(len(data['data'])))
-                f.write('\t\t\t\t\t\t<td>{} / {} ({:.3f}%)</td>\n'.format(data['back_attack_count'], data['battles'], data['back_attack_count'] * 100 / data['battles'] if data['battles'] > 0 else 100))
-                f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(sum(data['best_splits'].values()))))
-                f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data']))))
-                f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data']))))
-                f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data']))))
-                f.write('\t\t\t\t\t</tr>\n')
+	for route in seeds:
+		for seed, data in sorted(seeds[route].items(), key=lambda x: statistics.median(x[1]['data']) if len(x[1]['data']) > 0 else 0):
+			if len(data['data']) > 0:
+				f.write('\t\t\t\t\t<tr>\n')
+				f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(route))
+				f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(seed))
+				f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(len(data['data'])))
+				f.write('\t\t\t\t\t\t<td>{} / {} ({:.3f}%)</td>\n'.format(data['back_attack_count'], data['battles'], data['back_attack_count'] * 100 / data['battles'] if data['battles'] > 0 else 100))
+				f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(sum(data['best_splits'].values()))))
+				f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data']))))
+				f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data']))))
+				f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data']))))
+				f.write('\t\t\t\t\t</tr>\n')
 
-    f.write('\t\t\t\t</tbody>\n')
-    f.write('\t\t\t</table>\n')
+	f.write('\t\t\t\t</tbody>\n')
+	f.write('\t\t\t</table>\n')
 
 
 def html_output_run(f, splits, battles, log):
-    f.write('\t\t\t<h2>Summary</h2>\n')
-    f.write('\t\t\t\t<dl class="dl-horizontal">\n')
-    f.write('\t\t\t\t\t<dt>Route</dt><dd>{}</dd>\n'.format(log.route))
-    f.write('\t\t\t\t</dl>\n')
+	f.write('\t\t\t<h2>Summary</h2>\n')
+	f.write('\t\t\t\t<dl class="dl-horizontal">\n')
+	f.write('\t\t\t\t\t<dt>Route</dt><dd>{}</dd>\n'.format(log.route))
+	f.write('\t\t\t\t</dl>\n')
 
-    f.write('\t\t\t<h2>Splits</h2>\n')
-    f.write('\t\t\t<table class="table table-striped">\n')
-    f.write('\t\t\t\t<thead>\n')
-    f.write('\t\t\t\t\t<tr>\n')
-    f.write('\t\t\t\t\t\t<th>Split</th>\n')
-    f.write('\t\t\t\t\t\t<th>Cumulative Time</th>\n')
-    f.write('\t\t\t\t\t\t<th>Segment Time</th>\n')
-    f.write('\t\t\t\t\t\t<th>Best Segment Time</th>\n')
-    f.write('\t\t\t\t\t\t<th>Worst Segment Time</th>\n')
-    f.write('\t\t\t\t\t\t<th>Median Segment Time</th>\n')
-    f.write('\t\t\t\t\t</tr>\n')
-    f.write('\t\t\t\t</thead>\n')
-    f.write('\t\t\t\t<tbody>\n')
+	f.write('\t\t\t<h2>Splits</h2>\n')
+	f.write('\t\t\t<table class="table table-striped">\n')
+	f.write('\t\t\t\t<thead>\n')
+	f.write('\t\t\t\t\t<tr>\n')
+	f.write('\t\t\t\t\t\t<th>Split</th>\n')
+	f.write('\t\t\t\t\t\t<th>Cumulative Time</th>\n')
+	f.write('\t\t\t\t\t\t<th>Segment Time</th>\n')
+	f.write('\t\t\t\t\t\t<th>Best Segment Time</th>\n')
+	f.write('\t\t\t\t\t\t<th>Worst Segment Time</th>\n')
+	f.write('\t\t\t\t\t\t<th>Median Segment Time</th>\n')
+	f.write('\t\t\t\t\t</tr>\n')
+	f.write('\t\t\t\t</thead>\n')
+	f.write('\t\t\t\t<tbody>\n')
 
-    for split, data in sorted(log.splits.items(), key=lambda x: x[1]['total']):
-        if data['current'] < sorted(splits[split])[int(len(splits[split]) * 0.3333)]:
-            result_class = 'text-success'
-        elif data['current'] < sorted(splits[split])[int(len(splits[split]) * 0.6667)]:
-            result_class = 'text-warning'
-        else:
-            result_class = 'text-danger'
+	for split, data in sorted(log.splits.items(), key=lambda x: x[1]['total']):
+		if data['current'] < sorted(splits[split])[int(len(splits[split]) * 0.3333)]:
+			result_class = 'text-success'
+		elif data['current'] < sorted(splits[split])[int(len(splits[split]) * 0.6667)]:
+			result_class = 'text-warning'
+		else:
+			result_class = 'text-danger'
 
-        f.write('\t\t\t\t\t<tr>\n')
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(split))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(data['total'])))
-        f.write('\t\t\t\t\t\t<td class="{}">{}</td>\n'.format(result_class, format_time(data['current'])))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(splits[split]))))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(splits[split]))))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(splits[split]))))
-        f.write('\t\t\t\t\t</tr>\n')
+		f.write('\t\t\t\t\t<tr>\n')
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(split))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(data['total'])))
+		f.write('\t\t\t\t\t\t<td class="{}">{}</td>\n'.format(result_class, format_time(data['current'])))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(splits[split]))))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(splits[split]))))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(splits[split]))))
+		f.write('\t\t\t\t\t</tr>\n')
 
-    f.write('\t\t\t\t</tbody>\n')
-    f.write('\t\t\t</table>\n')
+	f.write('\t\t\t\t</tbody>\n')
+	f.write('\t\t\t</table>\n')
 
-    f.write('\t\t\t<h2>Battles</h2>\n')
-    f.write('\t\t\t<table class="table table-striped">\n')
-    f.write('\t\t\t\t<thead>\n')
-    f.write('\t\t\t\t\t<tr>\n')
-    f.write('\t\t\t\t\t\t<th>Formation</th>\n')
-    f.write('\t\t\t\t\t\t<th>Strat</th>\n')
-    f.write('\t\t\t\t\t\t<th>Time</th>\n')
-    f.write('\t\t\t\t\t\t<th>Best Time</th>\n')
-    f.write('\t\t\t\t\t\t<th>Worst Time</th>\n')
-    f.write('\t\t\t\t\t\t<th>Median Time</th>\n')
-    f.write('\t\t\t\t\t</tr>\n')
-    f.write('\t\t\t\t</thead>\n')
-    f.write('\t\t\t\t<tbody>\n')
+	f.write('\t\t\t<h2>Battles</h2>\n')
+	f.write('\t\t\t<table class="table table-striped">\n')
+	f.write('\t\t\t\t<thead>\n')
+	f.write('\t\t\t\t\t<tr>\n')
+	f.write('\t\t\t\t\t\t<th>Formation</th>\n')
+	f.write('\t\t\t\t\t\t<th>Strat</th>\n')
+	f.write('\t\t\t\t\t\t<th>Time</th>\n')
+	f.write('\t\t\t\t\t\t<th>Best Time</th>\n')
+	f.write('\t\t\t\t\t\t<th>Worst Time</th>\n')
+	f.write('\t\t\t\t\t\t<th>Median Time</th>\n')
+	f.write('\t\t\t\t\t</tr>\n')
+	f.write('\t\t\t\t</thead>\n')
+	f.write('\t\t\t\t<tbody>\n')
 
-    for data in log.battles:
-        key = '{:03}'.format(data['formation'])
+	for data in log.battles:
+		key = '{:03}'.format(data['formation'])
 
-        if data['strat']:
-            key = '{}-{}'.format(key, data['strat'])
+		if data['strat']:
+			key = '{}-{}'.format(key, data['strat'])
 
-        if key in battles and len(battles[key]['data']) > 0:
-            if data['frames'] < sorted(battles[key]['data'])[int(len(battles[key]['data']) * 0.3333)]:
-                result_class = 'text-success'
-            elif data['frames'] < sorted(battles[key]['data'])[int(len(battles[key]['data']) * 0.6667)]:
-                result_class = 'text-warning'
-            else:
-                result_class = 'text-danger'
+		if key in battles and len(battles[key]['data']) > 0:
+			if data['frames'] < sorted(battles[key]['data'])[int(len(battles[key]['data']) * 0.3333)]:
+				result_class = 'text-success'
+			elif data['frames'] < sorted(battles[key]['data'])[int(len(battles[key]['data']) * 0.6667)]:
+				result_class = 'text-warning'
+			else:
+				result_class = 'text-danger'
 
-            f.write('\t\t\t\t\t<tr>\n')
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(describe_formation(data['formation'])))
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['strat'] if data['strat'] else '-'))
-            f.write('\t\t\t\t\t\t<td class="{}">{}</td>\n'.format(result_class, format_time(data['frames'])))
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(battles[key]['data']))))
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(battles[key]['data']))))
-            f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(battles[key]['data']))))
-            f.write('\t\t\t\t\t</tr>\n')
+			f.write('\t\t\t\t\t<tr>\n')
+			f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(describe_formation(data['formation'])))
+			f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['strat'] if data['strat'] else '-'))
+			f.write('\t\t\t\t\t\t<td class="{}">{}</td>\n'.format(result_class, format_time(data['frames'])))
+			f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(battles[key]['data']))))
+			f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(battles[key]['data']))))
+			f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(battles[key]['data']))))
+			f.write('\t\t\t\t\t</tr>\n')
 
-    f.write('\t\t\t\t</tbody>\n')
-    f.write('\t\t\t</table>\n')
+	f.write('\t\t\t\t</tbody>\n')
+	f.write('\t\t\t</table>\n')
 
 
 def html_output_runs(f, logs):
-    f.write('\t\t\t<h2>Runs</h2>\n')
-    f.write('\t\t\t<table class="tablesorter-bootstrap" id="runs">\n')
-    f.write('\t\t\t\t<thead>\n')
-    f.write('\t\t\t\t\t<tr>\n')
-    f.write('\t\t\t\t\t\t<th>Edge Version</th>\n')
-    f.write('\t\t\t\t\t\t<th>Route</th>\n')
-    f.write('\t\t\t\t\t\t<th>Step Seed</th>\n')
-    f.write('\t\t\t\t\t\t<th>RNG Seed</th>\n')
-    f.write('\t\t\t\t\t\t<th>Surprised/Back Attacks</th>\n')
-    f.write('\t\t\t\t\t\t<th>Non-Battle Time</th>\n')
-    f.write('\t\t\t\t\t\t<th>Result</th>\n')
-    f.write('\t\t\t\t\t</tr>\n')
-    f.write('\t\t\t\t</thead>\n')
-    f.write('\t\t\t\t<tbody>\n')
+	f.write('\t\t\t<h2>Runs</h2>\n')
+	f.write('\t\t\t<table class="tablesorter-bootstrap" id="runs">\n')
+	f.write('\t\t\t\t<thead>\n')
+	f.write('\t\t\t\t\t<tr>\n')
+	f.write('\t\t\t\t\t\t<th>Edge Version</th>\n')
+	f.write('\t\t\t\t\t\t<th>Route</th>\n')
+	f.write('\t\t\t\t\t\t<th>Step Seed</th>\n')
+	f.write('\t\t\t\t\t\t<th>RNG Seed</th>\n')
+	f.write('\t\t\t\t\t\t<th>Surprised/Back Attacks</th>\n')
+	f.write('\t\t\t\t\t\t<th>Non-Battle Time</th>\n')
+	f.write('\t\t\t\t\t\t<th>Result</th>\n')
+	f.write('\t\t\t\t\t</tr>\n')
+	f.write('\t\t\t\t</thead>\n')
+	f.write('\t\t\t\t<tbody>\n')
 
-    frames = [log.frames for log in logs if log.success]
+	frames = [log.frames for log in logs if log.success]
 
-    for log in sorted(logs, key=lambda x: x.frames if x.frames else (10 ** 8) - x.last_frame):
-        if log.success:
-            if log.frames < sorted(frames)[int(len(frames) * 0.3333)]:
-                result_class = 'text-success'
-            elif log.frames < sorted(frames)[int(len(frames) * 0.6667)]:
-                result_class = 'text-warning'
-            else:
-                result_class = 'text-danger'
-        else:
-            result_class = 'text-danger bold'
+	for log in sorted(logs, key=lambda x: x.frames if x.frames else (10 ** 8) - x.last_frame):
+		if log.success:
+			if log.frames < sorted(frames)[int(len(frames) * 0.3333)]:
+				result_class = 'text-success'
+			elif log.frames < sorted(frames)[int(len(frames) * 0.6667)]:
+				result_class = 'text-warning'
+			else:
+				result_class = 'text-danger'
+		else:
+			result_class = 'text-danger bold'
 
-        f.write('\t\t\t\t\t<tr>\n')
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.version))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.route))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.step_seed))
-        f.write('\t\t\t\t\t\t<td><a href="runs/{}-{:03}-{:010}.html">{}</a></td>\n'.format(log.route, log.step_seed, log.rng_seed, log.rng_seed))
-        f.write('\t\t\t\t\t\t<td data-text="{}">{} / {} ({:.3f}%)</td>\n'.format(log.back_attack_count / log.random_battle_count if log.random_battle_count > 0 else 100, log.back_attack_count, log.random_battle_count, log.back_attack_count * 100 / log.random_battle_count if log.random_battle_count > 0 else 100))
-        f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(log.non_battle_frames) if log.non_battle_frames else 'N/A'))
-        f.write('\t\t\t\t\t\t<td data-text="{}" class="{}">{}</td>\n'.format(log.frames if log.frames else (10 ** 8) - log.last_frame, result_class, log.result))
-        f.write('\t\t\t\t\t</tr>\n')
+		f.write('\t\t\t\t\t<tr>\n')
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.version))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.route))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(log.step_seed))
+		f.write('\t\t\t\t\t\t<td><a href="runs/{}-{:03}-{:010}.html">{}</a></td>\n'.format(log.route, log.step_seed, log.rng_seed, log.rng_seed))
+		f.write('\t\t\t\t\t\t<td data-text="{}">{} / {} ({:.3f}%)</td>\n'.format(log.back_attack_count / log.random_battle_count if log.random_battle_count > 0 else 100, log.back_attack_count, log.random_battle_count, log.back_attack_count * 100 / log.random_battle_count if log.random_battle_count > 0 else 100))
+		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(log.non_battle_frames) if log.non_battle_frames else 'N/A'))
+		f.write('\t\t\t\t\t\t<td data-text="{}" class="{}">{}</td>\n'.format(log.frames if log.frames else (10 ** 8) - log.last_frame, result_class, log.result))
+		f.write('\t\t\t\t\t</tr>\n')
 
-    f.write('\t\t\t\t</tbody>\n')
-    f.write('\t\t\t</table>\n')
+	f.write('\t\t\t\t</tbody>\n')
+	f.write('\t\t\t</table>\n')
 
-    f.write('\t\t\t<h2>Finished Runs Plot</h2>\n')
-    f.write('\t\t\t<img src="img/runs.png">')
+	f.write('\t\t\t<h2>Finished Runs Plot</h2>\n')
+	f.write('\t\t\t<img src="img/runs.png">')
 
 #-------------------------------------------------------------------------------
 # Main Execution
@@ -869,20 +869,20 @@ def html_output_runs(f, logs):
 logs = []
 
 if not os.path.exists(sys.argv[1]):
-    print('Output directory must exist.')
-    sys.exit(1)
+	print('Output directory must exist.')
+	sys.exit(1)
 
 for filename in sys.argv[2:]:
-    logs.append(Log(filename))
+	logs.append(Log(filename))
 
 with open(os.path.join(sys.argv[1], 'index.html'), 'w') as f:
-    html_output_header(f)
-    html_output_basic_statistics(f, logs)
-    html_output_splits(f, logs)
-    html_output_battles(f, logs)
-    html_output_seeds(f, logs)
-    html_output_runs(f, logs)
-    html_output_footer(f)
+	html_output_header(f)
+	html_output_basic_statistics(f, logs)
+	html_output_splits(f, logs)
+	html_output_battles(f, logs)
+	html_output_seeds(f, logs)
+	html_output_runs(f, logs)
+	html_output_footer(f)
 
 splits = get_split_data(logs, False)
 battles = get_battle_data(logs, False)
@@ -893,28 +893,28 @@ os.mkdir(os.path.join(sys.argv[1], 'runs'))
 img_output_runs(os.path.join(sys.argv[1], 'img', 'runs.png'), logs)
 
 for log in logs:
-    with open(os.path.join(sys.argv[1], 'runs', '{}-{:03}-{:010}.html'.format(log.route, log.step_seed, log.rng_seed)), 'w') as f:
-        html_output_header(f)
-        html_output_run(f, splits, battles, log)
-        html_output_footer(f)
+	with open(os.path.join(sys.argv[1], 'runs', '{}-{:03}-{:010}.html'.format(log.route, log.step_seed, log.rng_seed)), 'w') as f:
+		html_output_header(f)
+		html_output_run(f, splits, battles, log)
+		html_output_footer(f)
 
 battles = get_battle_data(logs, True)
 
 os.mkdir(os.path.join(sys.argv[1], 'battles'))
 
 for key, data in battles.items():
-    with open(os.path.join(sys.argv[1], 'battles', '{}.html'.format(key)), 'w') as f:
-        html_output_header(f)
-        html_output_battle(f, key, data)
-        html_output_footer(f)
+	with open(os.path.join(sys.argv[1], 'battles', '{}.html'.format(key)), 'w') as f:
+		html_output_header(f)
+		html_output_battle(f, key, data)
+		html_output_footer(f)
 
 battles = get_battle_data(logs, False, False)
 
 os.mkdir(os.path.join(sys.argv[1], 'battles', 'img'))
 
 for key, data in battles.items():
-    if len(data['strat']) > 0:
-        for strat in data['strat']:
-            img_output_battle(os.path.join(sys.argv[1], 'battles', 'img', '{}-{}.png'.format(key, strat)), key, data)
-    else:
-        img_output_battle(os.path.join(sys.argv[1], 'battles', 'img', '{}.png'.format(key)), key, data)
+	if len(data['strat']) > 0:
+		for strat in data['strat']:
+			img_output_battle(os.path.join(sys.argv[1], 'battles', 'img', '{}-{}.png'.format(key, strat)), key, data)
+	else:
+		img_output_battle(os.path.join(sys.argv[1], 'battles', 'img', '{}.png'.format(key)), key, data)
