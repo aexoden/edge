@@ -504,6 +504,8 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.CPU] = _M.inventory["no64-ex
 _M.inventory["no64-rosa"][game.battle.FORMATION.CPU] = _M.inventory["no64-rosa"][game.battle.FORMATION.ELEMENTS]
 
 _M.reserved_inventory = {
+	["no64-rosa"] = {},
+	["no64-excalbur"] = {},
 	["nocw"] = {
 		[0] = {game.ITEM.WEAPON.CURE, 13},
 		[1] = {game.ITEM.CLAW.FIRECLAW, 68},
@@ -516,7 +518,8 @@ _M.reserved_inventory = {
 		[45] = {game.ITEM.WEAPON.CURE, 13},
 		[46] = {game.ITEM.CLAW.ICECLAW, 57},
 		[47] = {game.ITEM.WEAPON.STAFF, 1},
-	}
+	},
+	["paladin"] = {}
 }
 
 --------------------------------------------------------------------------------
