@@ -2859,7 +2859,7 @@ function _M.cycle()
 				else
 					party_text = string.format("%s%s%sempty", party_text, delimiter, front)
 					party_exp_text = string.format("%s%sempty", party_exp_text, delimiter)
-					party_agi_text = string.format("%s%sempty", party_exp_text, delimiter)
+					party_agi_text = string.format("%s%sempty", party_agi_text, delimiter)
 				end
 			end
 
