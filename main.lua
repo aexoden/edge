@@ -48,7 +48,7 @@ local function _get_version()
 end
 
 local function _set_route()
-	ROUTES = {"no64-excalbur", "no64-rosa", "paladin"}
+	ROUTES = {"no64-excalbur", "no64-rosa", "nocw", "paladin"}
 	NO64_ROUTES = {"no64-excalbur", "no64-rosa"}
 
 	math.randomseed(os.time())
