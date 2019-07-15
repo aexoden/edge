@@ -452,6 +452,8 @@ end
 
 local function _battle_calbrena(character, turn, strat)
 	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
+	local cecil_hp = game.character.get_stat(game.CHARACTER.ROSA, "hp", true)
+	local cecil_muted = game.character.is_status(game.CHARACTER.CECIL game.STATUS.MUTE)
 
 	if not _state.jumps then
 		_state.jumps = 0
@@ -556,13 +558,20 @@ local function _battle_calbrena(character, turn, strat)
 					_command_fight(menu.battle.TARGET.ENEMY, strongest_brena[1])
 				elseif cals > 1 and (yang_hp == 0 or _state.yang_no_kick) then
 					_command_fight(menu.battle.TARGET.ENEMY, weakest_cal[1])
+				elseif not cecil_muted and rosa_hp == 0 then
+					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 				else
 					_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 				end
 			end
 		elseif character == game.CHARACTER.KAIN then
 			if _state.jumps == 2 and cals > 1 then
-				_command_parry()
+				if not cecil_muted and rosa_hp == 0 then
+					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+				else
+					_command_parry()
+				end
+
 				_state.kain_target = nil
 			elseif cals > 0 then
 				_command_jump(menu.battle.TARGET.ENEMY, strongest_cal[1])
@@ -575,7 +584,7 @@ local function _battle_calbrena(character, turn, strat)
 		elseif character == game.CHARACTER.ROSA then
 			if turn == 1 then
 				_command_white(game.MAGIC.WHITE.SLOW, menu.battle.TARGET.ENEMY_ALL)
-			elseif turn == 2 then
+			elseif turn == 2 or (cecil_hp > 0 and not cecil_muted) then
 				_command_white(game.MAGIC.WHITE.MUTE, menu.battle.TARGET.PARTY_ALL)
 			elseif cecil_hp == 0 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
