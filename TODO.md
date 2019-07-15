@@ -5,7 +5,10 @@ provide a good list of improvements that can be made.
 
 ## Critical Issues
 
-* There are no currently known critical issues.
+* If Cecil isn't properly muted in the Calbrena fight, the Golbez fight can fail
+  to fully set up the nocw inventory in the event that Kain+Rydia is enough to
+  defeat Golbez. Probably no solution other than adding a backup inventory swap
+  after the battle.
 
 ## Major Features
 
