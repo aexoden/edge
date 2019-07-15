@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #-------------------------------------------------------------------------------
-
 import os
 import re
 import statistics
@@ -458,6 +457,55 @@ def img_output_battle(f, key, data):
     plt.savefig(f)
     plt.close(figure)
 
+def img_output_runs(f, logs):
+    figure = plt.figure()
+    figure.suptitle('Run Completion Times')
+
+    axis_min = None
+    axis_max = None
+
+    values = {}
+
+    for log in logs:
+        if log.success:
+            if log.route not in values:
+                values[log.route] = []
+
+            values[log.route].append(log.frames * 655171 / 39370000)
+
+    mintmp = [min(x) for x in values.values() if len(x) > 0]
+    maxtmp = [max(x) for x in values.values() if len(x) > 0]
+
+    axis_min = min(mintmp) - 10 if len(mintmp) > 0 else 0
+    axis_max = max(maxtmp) + 10 if len(maxtmp) > 0 else 300
+
+    subplot = figure.add_subplot(111)
+    axis = numpy.linspace(axis_min, axis_max)
+
+    for i, (category, data) in enumerate(values.items()):
+        x = numpy.array(data, dtype=numpy.float)
+
+        try:
+            kde = stats.gaussian_kde(x)
+        except Exception:
+            kde = None
+
+        subplot.plot(x, numpy.zeros(x.shape), 'b+', ms=20, color='#ffbfbf')
+
+        if kde:
+            subplot.plot(axis, kde(axis), 'k-', color='#ffbfbf', label=category)
+
+    fontprop = FontProperties()
+    fontprop.set_size('small')
+
+    box = subplot.get_position()
+    subplot.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+    plt.legend(loc="center left", bbox_to_anchor=(1, 0.5), prop=fontprop)
+
+    plt.xlabel("Run Time (seconds)")
+    plt.ylabel("Probability")
+    plt.savefig(f)
+    plt.close(figure)
 
 #-------------------------------------------------------------------------------
 # HTML Functions
@@ -811,6 +859,8 @@ def html_output_runs(f, logs):
     f.write('\t\t\t\t</tbody>\n')
     f.write('\t\t\t</table>\n')
 
+    f.write('\t\t\t<h2>Finished Runs Plot</h2>\n')
+    f.write('\t\t\t<img src="img/runs.png">')
 
 #-------------------------------------------------------------------------------
 # Main Execution
@@ -837,7 +887,10 @@ with open(os.path.join(sys.argv[1], 'index.html'), 'w') as f:
 splits = get_split_data(logs, False)
 battles = get_battle_data(logs, False)
 
+os.mkdir(os.path.join(sys.argv[1], 'img'))
 os.mkdir(os.path.join(sys.argv[1], 'runs'))
+
+img_output_runs(os.path.join(sys.argv[1], 'img', 'runs.png'), logs)
 
 for log in logs:
     with open(os.path.join(sys.argv[1], 'runs', '{}-{:03}-{:010}.html'.format(log.route, log.step_seed, log.rng_seed)), 'w') as f:
