@@ -2829,6 +2829,7 @@ function _M.cycle()
 
 			local party_text = ""
 			local party_exp_text = ""
+			local party_agi_text = ""
 
 			for i = 0, 4 do
 				local character = game.character.get_character(game.character.get_slot_from_index(i))
@@ -2854,14 +2855,17 @@ function _M.cycle()
 				if character then
 					party_text = string.format("%s%s%s%s:%d", party_text, delimiter, front, game.character.get_name(character), game.character.get_stat(character, "level"))
 					party_exp_text = string.format("%s%s%s:%d", party_exp_text, delimiter, game.character.get_name(character), game.character.get_stat(character, "exp"))
+					party_agi_text = string.format("%s%s%s:%d", party_agi_text, delimiter, game.character.get_name(Character), game.character.get_stat(character, "agility"))
 				else
 					party_text = string.format("%s%s%sempty", party_text, delimiter, front)
 					party_exp_text = string.format("%s%sempty", party_exp_text, delimiter)
+					party_agi_text = string.format("%s%sempty", party_exp_text, delimiter)
 				end
 			end
 
 			log.log(string.format("Party Formation: %s", party_text))
 			log.log(string.format("Party Experience: %s", party_exp_text))
+			log.log(string.format("Party Agility: %s", party_agi_text))
 
 			local agility_text = string.format("%d", game.enemy.get_stat(0, "agility"))
 
