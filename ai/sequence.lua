@@ -5544,7 +5544,7 @@ local function _sequence_subterrane()
 end
 
 local function _excalbur_zeromus_menu()
-	_M.set_battle_strat(game.battle.FORMATION.ZEROMUS, {"excalbur"})
+	_M.set_battle_strat(game.battle.FORMATION.ZEROMUS, {"no64-excalbur"})
 
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.EDGE}})
@@ -5740,7 +5740,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {374, 6, 7}})
 
 	if ROUTE == "no64-rosa" then
-		_M.set_battle_strat(game.battle.FORMATION.ZEROMUS, {"rosa"})
+		_M.set_battle_strat(game.battle.FORMATION.ZEROMUS, {"no64-rosa"})
 
 		table.insert(_q, {walk.walk, {374, 3, 7}})
 		table.insert(_q, {walk.walk, {374, 3, 13}})
@@ -6006,6 +6006,8 @@ end
 
 local function _sequence_nocw_zemus()
 	-- Walk back through the glitch to get to the upt Co floor.
+	_M.set_battle_strat(game.battle.FORMATION.ZEROMUS, {"nocw"})
+
 	table.insert(_q, {walk.walk, {352, 16, 29}})
 	table.insert(_q, {walk.walk, {313, 13, 0}})
 	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
