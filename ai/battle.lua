@@ -452,7 +452,7 @@ end
 
 local function _battle_calbrena(character, turn, strat)
 	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
-	local cecil_hp = game.character.get_stat(game.CHARACTER.ROSA, "hp", true)
+	local rosa_hp = game.character.get_stat(game.CHARACTER.ROSA, "hp", true)
 	local cecil_muted = game.character.is_status(game.CHARACTER.CECIL, game.STATUS.MUTE)
 
 	if not _state.jumps then
