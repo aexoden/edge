@@ -458,6 +458,8 @@ def img_output_battle(f, key, data):
 	plt.close(figure)
 
 def img_output_runs(f, logs):
+	colors = ['#ffbfbf', '#ffee00', '#00e2f2', '#3a00d9', '#f20041', '#e56739', '#74d900', '#bff2ff', '#eeb6f2', '#ff8800', '#adcc99', '#00a2f2', '#d900ca', '#ffc480', '#39e695', '#7989f2', '#d96c98']
+
 	figure = plt.figure()
 	figure.suptitle('Run Completion Times')
 
@@ -490,10 +492,10 @@ def img_output_runs(f, logs):
 		except Exception:
 			kde = None
 
-		subplot.plot(x, numpy.zeros(x.shape), 'b+', ms=20, color='#ffbfbf')
+		subplot.plot(x, numpy.zeros(x.shape), 'b+', ms=20, color=colors[i])
 
 		if kde:
-			subplot.plot(axis, kde(axis), 'k-', color='#ffbfbf', label=category)
+			subplot.plot(axis, kde(axis), 'k-', color=colors[i], label=category)
 
 	fontprop = FontProperties()
 	fontprop.set_size('small')
