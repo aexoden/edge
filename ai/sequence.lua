@@ -3443,11 +3443,7 @@ local function _sequence_dr_lugae()
 	-- Cast Warp and get the crystal.
 	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {menu.field.open, {}})
-
-	if ROUTE ~= "nocw" then
-		table.insert(_q, {_restore_party, {{[game.CHARACTER.RYDIA] = _RESTORE.LIFE}}})
-	end
-
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.RYDIA] = _RESTORE.LIFE}}})
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
