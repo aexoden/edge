@@ -455,6 +455,8 @@ local function _battle_calbrena(character, turn, strat)
 	local rosa_hp = game.character.get_stat(game.CHARACTER.ROSA, "hp", true)
 	local cecil_muted = game.character.is_status(game.CHARACTER.CECIL, game.STATUS.MUTE)
 
+	local _, cecil_weapon = game.character.get_weapon(game.CHARACTER.CECIL, true)
+
 	if not _state.jumps then
 		_state.jumps = 0
 		_state.daggers = 0
@@ -532,7 +534,12 @@ local function _battle_calbrena(character, turn, strat)
 					end
 				end
 
-				_command_fight(menu.battle.TARGET.ENEMY, strongest_brena[1])
+				if cecil_weapon == game.ITEM.WEAPON.FIRE then
+					_command_fight(menu.battle.TARGET.ENEMY, strongest_brena[1])
+				else
+					_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, strongest_brena[1])
+				end
+
 				_state.daggers = _state.daggers + 1
 			elseif cals == 1 then
 				_command_fight(menu.battle.TARGET.ENEMY, strongest_cal[1])
@@ -553,11 +560,23 @@ local function _battle_calbrena(character, turn, strat)
 				end
 
 				if target[1] then
-					_command_fight(menu.battle.TARGET.ENEMY, target[1])
+					if cecil_weapon == game.ITEM.WEAPON.FIRE then
+						_command_fight(menu.battle.TARGET.ENEMY, target[1])
+					else
+						_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, target[1])
+					end
 				elseif brenas > 1 and (yang_hp == 0 or _state.yang_no_kick) then
-					_command_fight(menu.battle.TARGET.ENEMY, strongest_brena[1])
+					if cecil_weapon == game.ITEM.WEAPON.FIRE then
+						_command_fight(menu.battle.TARGET.ENEMY, strongest_brena[1])
+					else
+						_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, strongest_brena[1])
+					end
 				elseif cals > 1 and (yang_hp == 0 or _state.yang_no_kick) then
-					_command_fight(menu.battle.TARGET.ENEMY, weakest_cal[1])
+					if cecil_weapon == game.ITEM.WEAPON.FIRE then
+						_command_fight(menu.battle.TARGET.ENEMY, weakest_cal[1])
+					else
+						_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, weakest_cal[1])
+					end
 				elseif not cecil_muted and rosa_hp == 0 then
 					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 				else
