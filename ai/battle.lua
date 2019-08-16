@@ -2322,7 +2322,7 @@ local function _battle_sisters(character, turn, strat)
 	local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp", true)
 
 	if character == game.CHARACTER.CECIL then
-		local fire_count = game.item.get_count(game.ITEM.WEAPON.FIRE)
+		local fire_count = game.item.get_count(game.ITEM.WEAPON.FIRE, game.INVENTORY.BATTLE)
 		local hand, current_weapon = game.character.get_weapon(character, true)
 
 		if current_weapon == game.ITEM.WEAPON.FIRE then
@@ -2571,8 +2571,11 @@ local function _battle_zeromus_rosa(character, turn, strat)
 	elseif character == game.CHARACTER.EDGE then
 		if turn == 1 then
 			_command_dart(game.ITEM.STAR.NINJA)
-		elseif turn == 2 then
+		elseif turn == 2 and game.item.get_count(game.ITEM.WEAPON.GUNGNIR, game.INVENTORY.BATTLE) > 0 then
 			_command_dart(game.ITEM.WEAPON.GUNGNIR)
+		else
+			-- Battle is probably shot anyway, but at least this way we prevent softlocks.
+			_command_fight()
 		end
 	elseif character == game.CHARACTER.KAIN then
 		if turn == 1 then
