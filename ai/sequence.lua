@@ -3192,13 +3192,13 @@ local function _sequence_flamedog()
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.ALL, [game.CHARACTER.YANG] = _RESTORE.HP}, nil, true}})
 	table.insert(_q, {walk.step, {walk.DIRECTION.LEFT}})
 	table.insert(_q, {walk.interact, {}})
-end
 
-local function _sequence_magus_sisters()
 	-- Walk to the top floor of the tower.
 	table.insert(_q, {walk.walk, {153, 8, 20}})
 	table.insert(_q, {walk.walk, {153, 2, 20}})
+end
 
+local function _sequence_magus_sisters()
 	-- Step Route: Tower of Zot 2F [after FlameDog]
 	for i = 1, route.get_value("E309901") / 2 do
 		table.insert(_q, {walk.walk, {153, 3, 20}})
@@ -3276,23 +3276,29 @@ local function _sequence_magus_sisters()
 	table.insert(_q, {walk.walk, {157, 15, 19}})
 
 	-- Prepare the party for battle.
-	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH}})
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
-	table.insert(_q, {menu.field.equip.close, {}})
-	table.insert(_q, {menu.field.close, {}})
+	local weapon, quantity = game.character.get_equipment(game.character.get_slot(game.CHARACTER.CECIL), game.EQUIP.R_HAND)
+
+	if quantity == 255 then
+		table.insert(_q, {menu.field.open, {}})
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
+		table.insert(_q, {menu.field.equip.close, {}})
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH}})
+		table.insert(_q, {menu.field.close, {}})
+	else
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH, true}})
+	end
 
 	-- Engage the sisters.
 	table.insert(_q, {walk.walk, {157, 15, 17}})
-end
 
-local function _sequence_valvalis()
 	-- Walk to the Golbez cut scene.
 	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {walk.walk, {157, 15, 16}})
+end
 
+local function _sequence_valvalis()
 	-- Step Route: Tower of Zot 5F [after Magus Sisters]
 	if route.get_value("E309D01") % 2 == 1 then
 		table.insert(_q, {walk.walk, {157, 15, 17}})
@@ -3324,12 +3330,28 @@ local function _sequence_valvalis()
 
 	-- Complete the pre-Valvalis menu.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
-	table.insert(_q, {menu.field.equip.close, {}})
+
+	local weapon, quantity = game.character.get_equipment(game.character.get_slot(game.CHARACTER.CECIL), game.EQUIP.R_HAND)
+
+	if quantity == 255 then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
+		table.insert(_q, {menu.field.equip.close, {}})
+	elseif game.item.get_count(game.ITEM.WEAPON.FIRE) == 2 then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP_R_HAND, game.ITEM.WEAPON.FIRE}})
+		table.insert(_q, {menu.field.equip.close, {}})
+	elseif weapon ~= game.ITEM.WEAPON.FIRE or (weapon == game.ITEM.WEAPON.FIRE and game.item.get_count(game.ITEM.WEAPON.FIRE) == 0) then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
+		table.insert(_q, {menu.field.equip.close, {}})
+	end
+
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.ROSA}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.HEADBAND}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.KARATE}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
 	table.insert(_q, {menu.field.equip.close, {}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
@@ -6045,8 +6067,8 @@ local _sequences = {
 	{title = "Kainazzo",       f = _sequence_kainazzo,       map_area = 3, map_id = 42,  map_x = 8,   map_y = 4},
 	{title = "Dark Elf",       f = _sequence_dark_elf,       map_area = 0, map_id = nil, map_x = 102, map_y = 155},
 	{title = "FlameDog",       f = _sequence_flamedog,       map_area = 3, map_id = 148, map_x = 11,  map_y = 12},
-	{title = "Magus Sisters",  f = _sequence_magus_sisters,  map_area = 3, map_id = 153, map_x = 8,   map_y = 15},
-	{title = "Valvalis",       f = _sequence_valvalis,       map_area = 3, map_id = 157, map_x = 15,  map_y = 17},
+	{title = "Magus Sisters",  f = _sequence_magus_sisters,  map_area = 3, map_id = 153, map_x = 2,   map_y = 20},
+	{title = "Valvalis",       f = _sequence_valvalis,       map_area = 3, map_id = 157, map_x = 15,  map_y = 16},
 	{title = "Calbrena",       f = _sequence_calbrena,       map_area = 3, map_id = 52,  map_x = 6,   map_y = 4},
 	{title = "Dr.Lugae",       f = _sequence_dr_lugae,       map_area = 3, map_id = 265, map_x = 10,  map_y = 8},
 	{title = "Dark Imps",      f = _sequence_dark_imps,      map_area = 3, map_id = 296, map_x = 16,  map_y = 19},

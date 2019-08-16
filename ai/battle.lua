@@ -2303,6 +2303,13 @@ local function _battle_sisters(character, turn, strat)
 	local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp", true)
 
 	if character == game.CHARACTER.CECIL then
+		local fire_count = game.item.get_count(game.ITEM.WEAPON.FIRE)
+		local hand, current_weapon = game.character.get_weapon(character, true)
+
+		if current_weapon == game.ITEM.WEAPON.FIRE then
+			fire_count = fire_count + 1
+		end
+
 		if turn == 1 then
 			_command_run_buffer()
 			_command_cover(game.CHARACTER.TELLAH)
@@ -2316,6 +2323,11 @@ local function _battle_sisters(character, turn, strat)
 			elseif yang_hp > 0 then
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 			else
+				if fire_count == 1 then
+					_command_wait_text(" Meteo")
+					_command_duplicate(game.EQUIP.R_HAND, true)
+				end
+
 				_state.full_inventory = true
 				return true
 			end
