@@ -642,7 +642,6 @@ local function _pre_milon_menu()
 		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.TIARA}})
 
 		if ROUTE ~= "paladin" then
-			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
 			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
 		end
 
@@ -654,7 +653,6 @@ local function _pre_milon_menu()
 		table.insert(stack, {menu.field.equip.open, {game.CHARACTER.PALOM}})
 		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.CHANGE}})
 		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
-		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.GAEA}})
 		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
 		table.insert(stack, {menu.field.equip.close, {}})
 
@@ -2120,7 +2118,6 @@ local function _sequence_twins()
 		-- Buy various needed armor items.
 		table.insert(_q, {menu.shop.buy.open, {10}})
 		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.HELM.GAEA}})
-		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ARMOR.GAEA}})
 		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.RING.SILVER}})
 		table.insert(_q, {menu.shop.switch_quantity, {}})
 		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.SHIELD.PALADIN}})
