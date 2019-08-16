@@ -4084,8 +4084,8 @@ local function _sequence_edge()
 
 	-- Step Route: Overworld (Baron) [after Tower of Bab-il]
 	for i = 1, route.get_value("E000000") / 2 do
-		table.insert(_q, {walk.walk, {289, 15, 16}})
-		table.insert(_q, {walk.walk, {289, 15, 15}})
+		table.insert(_q, {walk.walk, {nil, 102, 159}})
+		table.insert(_q, {walk.walk, {nil, 102, 158}})
 	end
 
 	table.insert(_q, {walk.walk, {nil, 102, 157}})
