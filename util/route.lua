@@ -512,12 +512,12 @@ _M.reserved_inventory = {
 		[2] = {game.ITEM.CLAW.THUNDER, 8},
 		[6] = {game.ITEM.CLAW.ICECLAW, 96},
 		[7] = {game.ITEM.WEAPON.CURE, 20},
-		[40] = {game.ITEM.WEAPON.CURE, 13},
-		[41] = {game.ITEM.CLAW.FIRECLAW, 114},
-		[42] = {game.ITEM.WEAPON.CURE, 13},
-		[45] = {game.ITEM.WEAPON.CURE, 13},
-		[46] = {game.ITEM.CLAW.ICECLAW, 57},
-		[47] = {game.ITEM.WEAPON.STAFF, 1},
+		[10] = {game.ITEM.WEAPON.CURE, 13},
+		[11] = {game.ITEM.CLAW.FIRECLAW, 114},
+		[12] = {game.ITEM.WEAPON.CURE, 13},
+		[15] = {game.ITEM.WEAPON.CURE, 13},
+		[16] = {game.ITEM.CLAW.ICECLAW, 57},
+		[17] = {game.ITEM.WEAPON.STAFF, 1},
 	},
 	["paladin"] = {}
 }

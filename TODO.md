@@ -10,6 +10,14 @@ provide a good list of improvements that can be made.
   defeat Golbez. Probably no solution other than adding a backup inventory swap
   after the battle.
 
+* Find a way to get the git version info into the script.
+
+* Step routes need to be updated to the latest version as they become available.
+
+* Fix the potential for a failed CatClaw duplication.
+
+* The no64-rosa route occasionally runs out of Cure2 options during the final descent.
+
 ## Major Features
 
 * Find a way to keep track of battle goals and properly queueing characters to
