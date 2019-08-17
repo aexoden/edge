@@ -206,8 +206,16 @@ local function _manage_reserved_inventory(finalize)
 					local other_item = memory.read("battle_menu", "item_id", j)
 					local other_count = memory.read("battle_menu", "item_count", j)
 
-					if other_item == reserved[i][1] and other_count == reserved[i][2] then
-						log.log(string.format("Inventory: Swapping slots %d and %d", j, i))
+					local other_free = true
+
+					if reserved[j] ~= nil then
+						if other_item == reserved[j][1] and other_count == reserved[j][2] then
+							other_free = false
+						end
+					end
+
+					if other_item == reserved[i][1] and other_count == reserved[i][2] and other_free then
+						log.log(string.format("Reserved Inventory: Swapping slots %d and %d", j, i))
 
 						if not opened then
 							table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
