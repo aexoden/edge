@@ -5,13 +5,21 @@ currently can run the following routes:
 
 * Any% No64 (Edge+Excalbur)
 * Any% No64 (Rosa) (partial support)
+* Any% NoCW
 * Paladin%
 
 ## Prerequisites
 
-* BizHawk (currently tested with v1.11.8.2)
+* BizHawk (currently tested with v2.3.2)
 * Final Fantasy IV US 1.0 (originally released as Final Fantasy II)
 * luasocket (optional: for LiveSplit integration)
+
+BizHawk must be configured to use LuaInterface:
+
+1. Within BizHawk, go to Config->Customize in the menu.
+2. Click on the Advanced tab.
+3. At the bottom, under Lua Core, choose Lua+LuaInterface.
+4. Restart BizHawk.
 
 ## Configuration
 
@@ -50,9 +58,7 @@ seeds 5, 6, 7, etc.)
 ### LIVESPLIT
 
 Enables or disables LiveSplit integration. By default this is disabled. Enabling
-this requires luasocket and a correctly configured LiveSplit. USE OF THIS
-INTEGRATION IS CURRENTLY UNSUPPORTED. IT MAY OR MAY NOT WORK DEPENDING ON YOUR
-EXACT SETUP.
+this requires luasocket and a correctly configured LiveSplit.
 
 ### SAVESTATE
 
@@ -78,14 +84,11 @@ for the current route by too much. It is disabled by default.
 This option displays an informational overlay to provide some basic information
 about the run. It is disabled by default.
 
-## LiveSplit Integration Requirements (optional and difficult)
+## LiveSplit Integration Requirements (optional)
 
-Integration with LiveSplit requires functional luasocket support. As of BizHawk
-v1.11.8.2, this appears to be an arduous process. Roughly speaking, you need to
-(within the BizHawk source tree) build a version of lua51.dll using the
-"Release-LUAPERKS" target and replace the lua51.dll in the dll directory. You
-must additionally obtain a copy of socket.lua and place this in the root BizHawk
-directory. (Other directories may also work.)
+In order to use LiveSplit integration, you must be using a recent version of
+BizHawk (tested with v2.3.2+). You must also download luasocket and copy the
+socket.lua file to your root BizHawk directory.
 
 On the LiveSplit end, you must add the LiveSplit server to your layout.
 
