@@ -2563,7 +2563,7 @@ local function _battle_zeromus_excalbur(character, turn, strat)
 				end
 			elseif turn == 7 or turn == 11 then
 				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
-				table.insert(_state.q, {menu.battle.target, {target_type, target, nil, nil, input.DELAY.NONE}})
+				table.insert(_state.q, {menu.battle.target, {nil, nil, nil, nil, input.DELAY.NONE}})
 			end
 		end
 	end

@@ -531,7 +531,7 @@ end
 
 function _M.field.item.select_character(character)
 	if memory.read("menu_item", "selected") == 0 then
-		result = input.press({"P1 A"}, input.DELAY.NORMAL)
+		local result = input.press({"P1 A"}, input.DELAY.NORMAL)
 
 		if result then
 			_state.frame = nil
@@ -1055,7 +1055,7 @@ function _M.battle.target(target, index, wait, limit, delay)
 	elseif _state.pressed then
 		_state.pressed = nil
 		_state.max_frame = nil
-		_wait_frame = nil
+		_state.wait_frame = nil
 		return true
 	end
 
@@ -1272,7 +1272,7 @@ function _M.battle.dialog.wait(text, limit)
 		end
 
 		if result then
-			_wait_frame = nil
+			_state.wait_frame = nil
 			return result
 		end
 	end
@@ -1359,13 +1359,13 @@ end
 
 function _M.wait(frames)
 	if input.is_clear() then
-		if _wait_frame then
-			if emu.framecount() >= _wait_frame then
-				_wait_frame = nil
+		if _state.wait_frame then
+			if emu.framecount() >= _state.wait_frame then
+				_state.wait_frame = nil
 				return true
 			end
 		else
-			_wait_frame = emu.framecount() + frames
+			_state.wait_frame = emu.framecount() + frames
 		end
 	end
 
@@ -1373,7 +1373,7 @@ function _M.wait(frames)
 end
 
 function _M.wait_clear()
-	_wait_frame = nil
+	_state.wait_frame = nil
 end
 
 --------------------------------------------------------------------------------
@@ -1383,6 +1383,7 @@ end
 function _M.reset()
 	_state = {
 		flag = nil,
+		max_frame = nil,
 		wait_frame = nil,
 	}
 end

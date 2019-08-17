@@ -66,7 +66,7 @@ function _M.press(buttons, delay_type)
 		delay_type = _M.DELAY.NORMAL
 	end
 
-	delay = 0
+	local delay = 0
 
 	if delay_type == _M.DELAY.MASH then
 		delay = math.random(1, 3)
@@ -74,7 +74,7 @@ function _M.press(buttons, delay_type)
 		delay = math.random(6, 10)
 	end
 
-	send_buttons = {}
+	local send_buttons = {}
 
 	for k, v in pairs(buttons) do
 		send_buttons[v] = true

@@ -118,11 +118,7 @@ local function _hummingway_finish()
 
 	-- Add the queued commands to the primary command queue.
 	while #stack > 0 do
-		if immediate then
-			table.insert(_q, 1, table.remove(stack))
-		else
-			table.insert(_q, 2, table.remove(stack))
-		end
+		table.insert(_q, 2, table.remove(stack))
 	end
 
 	return true
@@ -480,6 +476,7 @@ local function _post_grind_menu()
 	local heal = false
 	local duplicate = false
 	local rosa_menu = false
+	local equip = false
 	local grind_character = game.CHARACTER.EDGE
 
 	if ROUTE == "no64-rosa" then
@@ -6291,7 +6288,7 @@ function _M.reset()
 	}
 
 	if FULL_RUN then
-		_sequence_new_game(seed)
+		_sequence_new_game()
 	end
 end
 
