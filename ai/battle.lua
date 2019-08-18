@@ -2345,7 +2345,11 @@ local function _battle_ordeals(character, turn, strat)
 	local cecil_level = game.character.get_stat(game.CHARACTER.CECIL, "level", true)
 
 	if cecil_level > 1 and porom_hp > 70 then
-		_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+		if character == game.CHARACTER.PALOM then
+			_command_black(game.MAGIC.BLACK.FIRE1, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+		else
+			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+		end
 	else
 		return _command_run()
 	end
