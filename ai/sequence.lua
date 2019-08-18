@@ -704,14 +704,23 @@ end
 local function _validate_chocobo()
 	local chocobo_x = memory.read("walk", "chocobo_x")
 	local chocobo_y = memory.read("walk", "chocobo_y")
+	local chocobo_good = true
 
 	if chocobo_x == 0 and chocobo_y % 64 >= 1 and chocobo_y % 64 <= 11 then
-		return true
+		chocobo_good = false
 	elseif chocobo_x == 240 and chocobo_y % 64 <= 31 then
-		return true
+		chocobo_good = false
 	end
 
-	return false
+	local chocobo_status = "Good"
+
+	if not chocobo_good then
+		chocobo_status = "Bad"
+	end
+
+	log.log(string.format("Yellow Chocobo Coordinates: %d, %d (%s)", chocobo_x, chocobo_y, chocobo_status))
+
+	return chocobo_good
 end
 
 local function _fix_chocobo()
