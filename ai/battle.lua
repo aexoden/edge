@@ -1677,7 +1677,7 @@ local function _battle_guards(character, turn, strat)
 		end
 
 		if game.character.get_stat(game.CHARACTER.PALOM, "hp", true) == 0 and (game.enemy.get_stat(0, "hp") > 0 or game.enemy.get_stat(1, "hp") > 0) then
-			_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.ENEMY_ALL)
+			_command_black(game.MAGIC.BLACK.VIRUS)
 		end
 	else
 		_command_parry()
