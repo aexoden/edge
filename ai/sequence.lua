@@ -732,7 +732,7 @@ local function _fix_chocobo()
 
 	table.insert(stack, {walk.walk, {nil, 89, 163}})
 	table.insert(stack, {walk.chase, {210, {6, 7, 8}}})
-	table.insert(stack, {walk.walk, {nil, 91, 163}})
+	table.insert(stack, {walk.walk, {nil, 90, 163}})
 	table.insert(stack, {walk.interact, {}})
 
 	while #stack > 0 do
@@ -3423,7 +3423,9 @@ local function _sequence_calbrena()
 	if ROUTE == "nocw" and not _validate_chocobo() then
 		table.insert(_q, {walk.walk, {nil, 91, 163}})
 		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {walk.walk, {nil, 90, 163}})
 		table.insert(_q, {_fix_chocobo, {}})
+		table.insert(_q, {walk.walk, {nil, 91, 163}})
 		table.insert(_q, {walk.board, {}})
 	end
 
