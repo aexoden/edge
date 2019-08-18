@@ -1103,6 +1103,9 @@ local function _sequence_d_mist()
 	table.insert(_q, {input.press, {{"P1 A"}, input.DELAY.MASH}})
 	table.insert(_q, {walk.walk, {nil, 76, 132}})
 
+	-- Set the D.Mist battle strat.
+	_M.set_battle_strat(game.battle.FORMATION.D_MIST, {"six-initial", "seven-initial"})
+
 	-- Walk through the Misty Cave
 	table.insert(_q, {walk.walk, {108, 2, 27}})
 	table.insert(_q, {walk.walk, {108, 11, 27}})

@@ -127,6 +127,7 @@ local _addresses = {
 		enemy_target        = {f = mainmemory.read_u8,     address = 0x0000CE, record_size = {0x01, 0x01}},
 		state               = {f = mainmemory.read_u8,     address = 0x000203, record_size = {0x01, 0x01}},
 		monster_cursor      = {f = mainmemory.read_u8,     address = 0x006CE3, record_size = {0x01, 0x01}},
+		monster_state       = {f = mainmemory.read_u8,     address = 0x003624, record_size = {0x01, 0x01}},
 		party_level         = {f = mainmemory.read_u8,     address = 0x0038D4, record_size = {0x01, 0x01}},
 		enemy_level         = {f = mainmemory.read_u8,     address = 0x0038D5, record_size = {0x01, 0x01}},
 		target_group        = {f = mainmemory.read_u8,     address = 0x0034C4, record_size = {0x01, 0x01}},

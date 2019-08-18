@@ -875,8 +875,14 @@ local function _battle_d_knight(character, turn, strat)
 end
 
 local function _battle_d_mist(character, turn, strat)
+	local mist_form = memory.read("battle", "monster_state") == 169
+
+	if turn >= 7 and mist_form then
+		_command_wait_text("No")
+	end
+
 	if character == game.CHARACTER.KAIN then
-		if turn == 5 and ROUTE ~= "no64-excalbur" then
+		if ROUTE ~= "no64-excalbur" and ((strat == "six-initial" and turn == 4) or (strat == "seven-initial" and turn == 5)) then
 			table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
 			table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND}})
 			table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE, 0}})
@@ -884,18 +890,28 @@ local function _battle_d_mist(character, turn, strat)
 		end
 
 		if turn == 2 or game.enemy.get_stat(0, "hp") < 48 then
-			_command_fight()
+			if strat == "six-initial" and turn == 2 then
+				_command_jump()
+			else
+				_command_fight()
+			end
 		else
-			if turn == 4 then
+			if strat == "seven-initial" and turn == 4 then
 				_command_wait_frames(390)
+			elseif strat == "six-initial" and turn == 3 then
+				_command_wait_frames(980)
 			end
 
 			_command_jump()
 		end
 	elseif character == game.CHARACTER.CECIL then
-		if turn == 5 then
+		if strat == "seven-initial" and turn == 5 then
 			_command_parry()
 		else
+			if strat == "six-initial" then
+				turn = turn + 1
+			end
+
 			if turn == 6 then
 				_command_wait_text("No")
 				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
