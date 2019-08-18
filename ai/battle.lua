@@ -929,7 +929,11 @@ local function _battle_dark_elf(character, turn, strat)
 		if turn == 1 or turn >= 3 then
 			if not _state.yang_waited and turn == 3 then
 				_command_wait_text(" Weak ", 300)
-				_command_duplicate(game.EQUIP.L_HAND)
+
+				if ROUTE ~= "nocw" then
+					_command_duplicate(game.EQUIP.L_HAND)
+				end
+
 				_state.yang_waited = true
 				return true
 			end
