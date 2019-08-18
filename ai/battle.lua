@@ -714,7 +714,7 @@ local function _battle_calbrena(character, turn, strat)
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, strongest_brena[1])
 				_state.daggers = _state.daggers + 1
 			elseif cals == 1 then
-				_command_fight(menu.battle.TARGET.ENEMY, strongest_cal[1])
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, strongest_cal[1])
 			else
 				local target = {nil, 1000}
 
