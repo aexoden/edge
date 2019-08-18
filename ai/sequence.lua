@@ -645,8 +645,8 @@ local function _pre_milon_menu()
 		table.insert(stack, {menu.field.equip.close, {}})
 	end
 
-	-- Equip Palom and Tellah (for non-paladin routes).
-	if ROUTE ~= "paladin" then
+	-- Equip Palom and Tellah for Twin strats.
+	if strat == "twin" then
 		table.insert(stack, {menu.field.equip.open, {game.CHARACTER.PALOM}})
 		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.CHANGE}})
 		table.insert(stack, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
@@ -1132,13 +1132,13 @@ local function _sequence_clip()
 	-- Remove Kain's Iron arms (and dupe the Iron shield if NoCW).
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
 
-	if ROUTE ~= "paladin" then
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE}})
-	end
-
 	if ROUTE ~= "no64-excalbur" then
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.SHIELD.IRON}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.NONE}})
+	end
+
+	if ROUTE ~= "paladin" then
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE, 3}})
 	end
 
 	table.insert(_q, {menu.field.equip.close, {}})
@@ -1181,12 +1181,12 @@ local function _sequence_girl()
 
 	-- Sell the Shadow shield.
 	table.insert(_q, {menu.shop.sell.open, {1}})
-	table.insert(_q, {menu.shop.sell.sell, {game.ITEM.SHIELD.SHADOW}})
 
 	if ROUTE ~= "no64-excalbur" then
 		table.insert(_q, {menu.shop.sell.sell, {game.ITEM.SHIELD.IRON}})
 	end
 
+	table.insert(_q, {menu.shop.sell.sell, {game.ITEM.SHIELD.SHADOW}})
 	table.insert(_q, {menu.shop.sell.close, {}})
 
 	-- Buy 10 Dancing daggers.
@@ -2103,9 +2103,52 @@ local function _sequence_twins()
 	end
 
 	table.insert(_q, {walk.walk, {nil, 154, 199}})
+	table.insert(_q, {walk.walk, {3, 16, 27}})
+	table.insert(_q, {walk.walk, {3, 27, 26, true}})
+	table.insert(_q, {walk.walk, {231, 5, 5}})
+	table.insert(_q, {walk.interact, {}})
+
+	local quantity = 90
+
+	-- Purchase items from the shop.
+	if ROUTE == "paladin" then
+		quantity = 50
+	elseif ROUTE == "nocw" then
+		quantity = 70
+	end
+
+	table.insert(_q, {menu.shop.sell.open, {quantity}})
+
+	if ROUTE == "nocw" then
+		table.insert(_q, {menu.shop.sell.sell, {game.ITEM.CLAW.FIRECLAW, 114}})
+	end
+
+	table.insert(_q, {menu.shop.sell.sell, {game.ITEM.WEAPON.DARKNESS}})
+	table.insert(_q, {menu.shop.sell.close, {}})
+	table.insert(_q, {menu.shop.buy.open, {quantity}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.CURE2}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.LIFE}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.ETHER1}})
+	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.HEAL}})
+	table.insert(_q, {menu.shop.buy.close, {}})
+	table.insert(_q, {menu.shop.close, {}})
+
+	-- Leave the item shop.
+	table.insert(_q, {walk.walk, {231, 5, 10}})
+	table.insert(_q, {walk.walk, {3, 27, 27}})
+	table.insert(_q, {walk.walk, {3, 16, 10}})
+	table.insert(_q, {walk.walk, {3, 16, 8, true}})
+	table.insert(_q, {walk.walk, {22, 14, 6}})
+	table.insert(_q, {walk.interact, {}})
+end
+
+local function _sequence_milon()
+	-- Walk to Mt.Ordeals.
+	table.insert(_q, {_set_healing, {_healing_milon_1}})
+	table.insert(_q, {walk.walk, {22, 14, 12, true}})
+	table.insert(_q, {walk.walk, {3, 16, 26}})
 
 	if ROUTE ~= "paladin" then
-		table.insert(_q, {walk.walk, {3, 16, 26}})
 		table.insert(_q, {walk.walk, {3, 9, 26}})
 		table.insert(_q, {walk.walk, {3, 8, 24, true}})
 		table.insert(_q, {walk.walk, {3, 9, 23, true}})
@@ -2122,55 +2165,13 @@ local function _sequence_twins()
 		table.insert(_q, {menu.shop.buy.close, {}})
 		table.insert(_q, {menu.shop.close, {}})
 
-		-- Head to the Elder.
+		-- Leave Mysidia.
 		table.insert(_q, {walk.walk, {230, 4, 10, true}})
 		table.insert(_q, {walk.walk, {3, 9, 24}})
 		table.insert(_q, {walk.walk, {3, 8, 26}})
 		table.insert(_q, {walk.walk, {3, 16, 26}})
 	end
 
-	table.insert(_q, {walk.walk, {3, 16, 10}})
-	table.insert(_q, {walk.walk, {3, 16, 8, true}})
-	table.insert(_q, {walk.walk, {22, 14, 6}})
-	table.insert(_q, {walk.interact, {}})
-end
-
-local function _sequence_milon()
-	-- Walk to Mt.Ordeals.
-	table.insert(_q, {_set_healing, {_healing_milon_1}})
-	table.insert(_q, {walk.walk, {22, 14, 12, true}})
-	table.insert(_q, {walk.walk, {3, 16, 27}})
-	table.insert(_q, {walk.walk, {3, 23, 27}})
-	table.insert(_q, {walk.walk, {3, 27, 26, true}})
-	table.insert(_q, {walk.walk, {231, 5, 5}})
-	table.insert(_q, {walk.interact, {}})
-
-	-- Purchase items from the shop.
-	if ROUTE == "paladin" then
-		table.insert(_q, {menu.shop.buy.open, {50}})
-	elseif ROUTE == "nocw" then
-		table.insert(_q, {menu.shop.buy.open, {70}})
-	else
-		table.insert(_q, {menu.shop.buy.open, {90}})
-	end
-
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.CURE2}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.LIFE}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.ETHER1}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.HEAL}})
-	table.insert(_q, {menu.shop.buy.close, {}})
-
-	if ROUTE == "nocw" then
-		table.insert(_q, {menu.shop.sell.open, {70}})
-		table.insert(_q, {menu.shop.sell.sell, {game.ITEM.CLAW.FIRECLAW, 114}})
-	end
-
-	table.insert(_q, {menu.shop.close, {}})
-
-	-- Leave the item shop.
-	table.insert(_q, {walk.walk, {231, 5, 10}})
-	table.insert(_q, {walk.walk, {3, 27, 27}})
-	table.insert(_q, {walk.walk, {3, 17, 27}})
 	table.insert(_q, {walk.walk, {3, 16, 31, true}})
 	table.insert(_q, {walk.walk, {nil, 157, 200}})
 	table.insert(_q, {walk.walk, {nil, 157, 205}})
@@ -2720,9 +2721,19 @@ local function _sequence_baigan()
 		table.insert(_q, {menu.field.equip.close, {}})
 	end
 
-	if tellah_weapon ~= game.ITEM.WEAPON.CHANGE then
+	local tellah_head = game.character.get_equipment(game.character.get_slot(game.CHARACTER.TELLAH), game.EQUIP.HEAD)
+
+	if tellah_weapon ~= game.ITEM.WEAPON.CHANGE or tellah_head ~= game.ITEM.HELM.GAEA then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
+
+		if tellah_weapon ~= game.ITEM.WEAPON.CHANGE then
+			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
+		end
+
+		if tellah_head ~= game.ITEM.HELM.GAEA then
+			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+		end
+
 		table.insert(_q, {menu.field.equip.close, {}})
 	end
 
@@ -3330,15 +3341,6 @@ local function _sequence_valvalis()
 	if quantity == 255 then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
-		table.insert(_q, {menu.field.equip.close, {}})
-	elseif game.item.get_count(game.ITEM.WEAPON.FIRE) == 2 then
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP_R_HAND, game.ITEM.WEAPON.FIRE}})
-		table.insert(_q, {menu.field.equip.close, {}})
-	elseif weapon ~= game.ITEM.WEAPON.FIRE or (weapon == game.ITEM.WEAPON.FIRE and game.item.get_count(game.ITEM.WEAPON.FIRE) == 0) then
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
 		table.insert(_q, {menu.field.equip.close, {}})
 	end

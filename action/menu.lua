@@ -438,14 +438,14 @@ function _M.field.equip.close()
 	return _M.field.close_submenu(_M.field.equip.is_open())
 end
 
-function _M.field.equip.equip(location, item)
+function _M.field.equip.equip(location, item, item_index)
 	if _is_cursor_visible() and game.character.get_equipment(memory.read("menu_equip", "slot"), location) == item then
 		_state.frame = nil
 		return true
 	elseif _state.frame and _is_subcursor_visible() then
 		local cursor = memory.read("menu_equip", "cursor")
 		local subcursor = (memory.read("menu_equip", "subcursor_y", cursor) + memory.read("menu_equip", "scroll", cursor)) * 2 + memory.read("menu_equip", "subcursor_x", cursor)
-		local index = game.item.get_index(item, nil)
+		local index = game.item.get_index(item, item_index)
 
 		if subcursor == index then
 			input.press({"P1 A"}, input.DELAY.NORMAL)

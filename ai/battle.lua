@@ -191,57 +191,225 @@ local function _reset_state()
 	}
 end
 
-local function _manage_reserved_inventory(finalize)
-	local reserved = route.get_reserved_inventory()
+--------------------------------------------------------------------------------
+-- Inventory Management
+--------------------------------------------------------------------------------
 
-	local opened = false
+local function _sort_priority(a, b)
+	return a[1] > b[1]
+end
 
-	for i = 47, 0, -1 do
+local function _get_current_inventory()
+	local inventory = {}
+
+	for i = 0, 47 do
 		local item = memory.read("battle_menu", "item_id", i)
 		local count = memory.read("battle_menu", "item_count", i)
 
-		if reserved[i] ~= nil then
-			if item ~= reserved[i][1] or count ~= reserved[i][2] then
-				for j = 0, 47 do
-					local other_item = memory.read("battle_menu", "item_id", j)
-					local other_count = memory.read("battle_menu", "item_count", j)
+		if item ~= game.ITEM.NONE then
+			inventory[i] = {item, count}
+		end
+	end
 
-					local other_free = true
+	return inventory
+end
 
-					if reserved[j] ~= nil then
-						if other_item == reserved[j][1] and other_count == reserved[j][2] then
-							other_free = false
-						end
-					end
+local function _get_goal_inventory(inventory_data, fixed_only)
+	local current_inventory = _get_current_inventory()
 
-					if other_item == reserved[i][1] and other_count == reserved[i][2] and other_free then
-						log.log(string.format("Reserved Inventory: Swapping slots %d and %d", j, i))
+	local fixed_map = {}
+	local priority_map = {}
 
-						if not opened then
-							table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
-							opened = true
-						end
+	for i, entry in ipairs(inventory_data) do
+		local item, count, fixed, priorities = unpack(entry)
 
-						table.insert(_state.q, {menu.battle.item.select, {nil, j}})
-						table.insert(_state.q, {menu.battle.item.select, {nil, i}})
+		if not count then
+			count = "any"
+		end
 
-						if not finalize then
-							table.insert(_state.q, {menu.battle.item.close, {}})
-							return true
-						end
+		for index in pairs(fixed) do
+			if not fixed_map[item] then
+				fixed_map[item] = {}
+			end
 
-						break
-					end
-				end
+			if fixed_map[item][count] then
+				table.insert(fixed_map[item][count], fixed[index])
+			else
+				fixed_map[item][count] = {fixed[index]}
+			end
+		end
+
+		for index in pairs(priorities) do
+			if not priority_map[item] then
+				priority_map[item] = {}
+			end
+
+			if priority_map[item][count] then
+				table.insert(priority_map[item][count], priorities[index])
+			else
+				priority_map[item][count] = {priorities[index]}
 			end
 		end
 	end
 
-	if opened then
+	local goal_inventory = {}
+	local priority_list = {}
+
+	for i = 0, 47 do
+		if current_inventory[i] then
+			local item, count = unpack(current_inventory[i])
+			local map_count = count
+
+			if fixed_map[item] and (fixed_map[item][map_count] or fixed_map[item]["any"]) then
+				if not fixed_map[item][map_count] then
+					map_count = "any"
+				end
+
+				goal_inventory[fixed_map[item][map_count][1]] = {item, count}
+				current_inventory[i] = nil
+
+				table.remove(fixed_map[item][map_count], 1)
+
+				if #fixed_map[item][map_count] == 0 then
+					fixed_map[item][map_count] = nil
+				end
+			elseif priority_map[item] and (priority_map[item][map_count] or priority_map[item]["any"]) then
+				if not priority_map[item][map_count] then
+					map_count = "any"
+				end
+
+				table.insert(priority_list, {priority_map[item][map_count][1], item, count})
+				current_inventory[i] = nil
+
+				table.remove(priority_map[item][map_count], 1)
+
+				if #priority_map[item][map_count] == 0 then
+					priority_map[item][map_count] = nil
+				end
+			elseif i >= 32 then
+				goal_inventory[i] = current_inventory[i]
+				current_inventory[i] = nil
+			end
+		end
+	end
+
+	table.sort(priority_list, _sort_priority)
+
+	local priority_index = 1
+
+	for i = 0, 47 do
+		if priority_index > #priority_list then
+			break
+		end
+
+		if not goal_inventory[i] then
+			goal_inventory[i] = {priority_list[i][2], priority_list[i][3]}
+		end
+	end
+
+	local end_index = 47
+
+	for i = 47, 0, -1 do
+		if current_inventory[i] then
+			while goal_inventory[end_index] do
+				end_index = end_index - 1
+			end
+
+			goal_inventory[end_index] = current_inventory[i]
+		end
+	end
+
+	return goal_inventory
+end
+
+local function _compare_inventory_entry(entry1, entry2)
+	if entry1 == entry2 then
+		return true
+	elseif entry1 and not entry2 then
+		return entry1[1] == game.ITEM.NONE
+	elseif entry2 and not entry1 then
+		return entry2[1] == game.ITEM.NONE
+	else
+		return entry1[1] == entry2[1] and entry1[2] == entry2[2]
+	end
+end
+
+local function _manage_inventory(limit)
+	-- Edward cannot manage the inventory if he is currently hidden.
+	if menu.battle.command.has_command(menu.battle.COMMAND.SHOW) then
+		return false
+	end
+
+	local inventory_data = route.get_inventory(_state.index)
+
+	if memory.read("battle", "enemies") == 0 then
+		limit = nil
+	end
+
+	local menu_open = false
+	local current_inventory = _get_current_inventory()
+	local goal_inventory = _get_goal_inventory(inventory_data, false)
+	local current_position = 0
+
+	while not limit or limit > 0 do
+		local best = {nil, nil, nil}
+
+		for i = 0, 47 do
+			if not _compare_inventory_entry(current_inventory[i], goal_inventory[i]) then
+				for j = 0, 47 do
+					if i ~= j and current_inventory[i] ~= nil and not _compare_inventory_entry(current_inventory[j], goal_inventory[j]) and _compare_inventory_entry(current_inventory[i], goal_inventory[j]) then
+						local distance = math.abs(i - current_position) + math.abs(j - i)
+
+						if not best[1] or distance < best[1] then
+							best = {distance, i, j}
+						end
+
+						distance = math.abs(j - current_position) + math.abs(i - j)
+
+						if not best[1] or distance < best[1] then
+							best = {distance, j, i}
+						end
+					end
+				end
+			end
+		end
+
+		if limit then
+			limit = limit - 1
+		end
+
+		if best[1] then
+			log.log(string.format("Inventory: Swapping slots %d and %d", best[2], best[3]))
+
+			if not menu_open then
+				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+				menu_open = true
+			end
+
+			table.insert(_state.q, {menu.battle.item.select, {nil, best[2]}})
+			table.insert(_state.q, {menu.battle.item.select, {nil, best[3]}})
+
+			local tmp = current_inventory[best[2]]
+			current_inventory[best[2]] = current_inventory[best[3]]
+			current_inventory[best[3]] = tmp
+
+			current_position = best[3]
+
+			if limit and limit == 0 then
+				break
+			end
+		else
+			log.log("Inventory: Couldn't find anything to move")
+			_state.disable_inventory = true
+			break
+		end
+	end
+
+	if menu_open then
 		table.insert(_state.q, {menu.battle.item.close, {}})
 	end
 
-	return true
+	return menu_open
 end
 
 --------------------------------------------------------------------------------
@@ -290,19 +458,22 @@ local function _command_dart(item, target_type, target, wait, limit)
 	table.insert(_state.q, {menu.battle.target, {target_type, target, wait, limit}})
 end
 
-local function _command_duplicate(hand, single)
-	table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+local function _command_duplicate(hand, single, menu_open)
+	if not menu_open then
+		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+	end
+
 	table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE, 1}})
 	table.insert(_state.q, {menu.battle.equip.select, {hand}})
-	--table.insert(_state.q, {menu.wait, {10}})
 
 	if not single then
 		table.insert(_state.q, {menu.battle.equip.select, {hand}})
 		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE, 0}})
-		--table.insert(_state.q, {menu.wait, {10}})
 	end
 
-	table.insert(_state.q, {menu.battle.item.close, {}})
+	if not menu_open then
+		table.insert(_state.q, {menu.battle.item.close, {}})
+	end
 end
 
 local function _command_equip(character, target_weapon)
@@ -746,12 +917,19 @@ local function _battle_d_mist(character, turn, strat)
 		else
 			if turn == 6 then
 				_command_wait_text("No")
+				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CARROT}})
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE, 1}})
 
 				if ROUTE ~= "no64-excalbur" then
-					_command_duplicate(game.EQUIP.L_HAND, true)
+					_command_duplicate(game.EQUIP.L_HAND, true, true)
 				else
-					_command_duplicate(game.EQUIP.L_HAND)
+					_command_duplicate(game.EQUIP.L_HAND, false, true)
 				end
+
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE, 0}})
+				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.SHIELD.SHADOW}})
+				table.insert(_state.q, {menu.battle.item.close, {}})
 			end
 
 			_command_fight()
@@ -1032,7 +1210,8 @@ end
 
 local function _battle_girl(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
-		_command_wait_frames(300)
+		_command_wait_text("Quake ")
+		_manage_inventory(nil)
 		_command_change()
 	end
 end
@@ -1049,27 +1228,27 @@ local function _battle_golbez(character, turn, strat)
 			if ROUTE == "nocw" then
 				if _state.stage == 0 then
 					_command_wait_text("Golbez:HA", 600)
-					_manage_reserved_inventory()
+					_manage_inventory(1)
 					_state.stage = 1
 					return true
 				elseif _state.stage == 1 then
 					_command_wait_text(" Is t", 600)
-					_manage_reserved_inventory()
+					_manage_inventory(1)
 					_state.stage = 2
 					return true
 				elseif _state.stage == 2 then
 					_command_wait_text(" Now", 600)
-					_manage_reserved_inventory()
+					_manage_inventory(1)
 					_state.stage = 3
 					return true
 				elseif _state.stage == 3 then
 					_command_wait_text(" Wait", 600)
-					_manage_reserved_inventory()
+					_manage_inventory(1)
 					_state.stage = 4
 					return true
 				else
 					_command_wait_text(" Meal", 600)
-					_manage_reserved_inventory(true)
+					_manage_inventory(nil)
 				end
 			end
 
@@ -1086,20 +1265,20 @@ local function _battle_golbez(character, turn, strat)
 			_state.full_inventory = true
 		elseif game.enemy.get_stat(0, "hp") < 20500 then
 			if ROUTE == "nocw" then
-				_manage_reserved_inventory(true)
+				_manage_inventory(nil)
 			end
 
 			_command_fight()
 		else
 			if ROUTE == "nocw" then
-				_manage_reserved_inventory(true)
+				_manage_inventory(nil)
 			end
 
 			_command_jump()
 		end
 	elseif character == game.CHARACTER.RYDIA then
 		if ROUTE == "nocw" then
-			_manage_reserved_inventory(true)
+			_manage_inventory(nil)
 		end
 
 		_command_black(game.MAGIC.BLACK.FIRE2)
@@ -1546,18 +1725,7 @@ end
 
 local function _battle_karate(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
-		_command_wait_text("Yang:S")
-		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
-		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.NONE}})
-		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.L_HAND}})
-		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.WEAPON.IRON}})
-		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.R_HAND}})
-		table.insert(_state.q, {menu.battle.item.close, {}})
 		_command_wait_text("Yang:A")
-		table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
-		table.insert(_state.q, {menu.battle.item.select, {game.ITEM.WEAPON.SHORTBOW}})
-		table.insert(_state.q, {menu.battle.equip.select, {game.EQUIP.L_HAND}})
-		table.insert(_state.q, {menu.battle.item.close, {}})
 		_command_fight()
 	else
 		_command_parry()
@@ -2041,14 +2209,6 @@ local function _battle_mombomb(character, turn, strat)
 		end
 	end
 
-	if ROUTE ~= "paladin" and character == game.CHARACTER.ROSA then
-		if turn == 1 then
-			_command_dequip(game.EQUIP.R_HAND)
-		elseif turn == 2 then
-			_command_dequip(game.EQUIP.L_HAND)
-		end
-	end
-
 	if game.enemy.get_stat(0, "hp") > 10000 then
 		if character == game.CHARACTER.CECIL or character == game.CHARACTER.YANG then
 			_command_fight()
@@ -2095,15 +2255,10 @@ local function _battle_mombomb(character, turn, strat)
 		return true
 	else
 		if character == game.CHARACTER.ROSA then
-			if ROUTE == "paladin" then
-				if game.enemy.get_stat(1, "hp") < game.enemy.get_stat(2, "hp") then
-					_command_aim(menu.battle.TARGET.ENEMY, 1)
-				else
-					_command_aim(menu.battle.TARGET.ENEMY, 2)
-				end
+			if game.enemy.get_stat(1, "hp") < game.enemy.get_stat(2, "hp") then
+				_command_aim(menu.battle.TARGET.ENEMY, 1)
 			else
-				_command_parry()
-				_state.rosa_parry = true
+				_command_aim(menu.battle.TARGET.ENEMY, 2)
 			end
 		elseif character == game.CHARACTER.EDWARD or character == game.CHARACTER.RYDIA then
 			local target = 4
@@ -2120,11 +2275,6 @@ local function _battle_mombomb(character, turn, strat)
 				_state.dagger_wait = true
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, target, true, 120)
 			else
-				if character == game.CHARACTER.EDWARD and _state.rosa_parry then
-					_command_run_buffer()
-					_state.rosa_parry = nil
-				end
-
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, target)
 			end
 		else
@@ -2421,7 +2571,7 @@ local function _battle_valvalis(character, turn, strat)
 				_command_wait_actor(game.CHARACTER.KAIN, 300)
 			end
 
-			_command_fight()
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 		end
 	elseif character == game.CHARACTER.YANG then
 		if turn == 1 then
@@ -2654,7 +2804,7 @@ local _formations = {
 	[game.battle.FORMATION.FLAMEDOG] = {title = "FlameDog",                         f = _battle_flamedog, split = true},
 	[game.battle.FORMATION.GARGOYLE] = {title = "Gargoyle",                         f = _battle_gargoyle, split = false},
 	[game.battle.FORMATION.GENERAL]  = {title = "General/Fighters",                 f = _battle_general,  split = false},
-	[game.battle.FORMATION.GIRL]     = {title = "Girl",                             f = _battle_girl,     split = true,  full_inventory = true},
+	[game.battle.FORMATION.GIRL]     = {title = "Girl",                             f = _battle_girl,     split = true},
 	[game.battle.FORMATION.GOLBEZ]   = {title = "Golbez",                           f = _battle_golbez,   split = true},
 	[game.battle.FORMATION.GRIND]    = {title = "Grind Fight",                      f = _battle_grind,    split = true, presplit = true},
 	[game.battle.FORMATION.GUARDS]   = {title = "Guards",                           f = _battle_guards,   split = false},
@@ -2688,138 +2838,6 @@ local _formations = {
 	[game.battle.FORMATION.ZEMUS]    = {title = "Zemus",                            f = nil,              split = true},
 	[game.battle.FORMATION.ZEROMUS]  = {title = "Zeromus",                          f = _battle_zeromus,  split = false},
 }
-
---------------------------------------------------------------------------------
--- Inventory Management
---------------------------------------------------------------------------------
-
-local function _manage_inventory(full_inventory, items, reserved)
-	if menu.battle.command.has_command(menu.battle.COMMAND.SHOW) then
-		return false
-	end
-
-	if not items then
-		items = {}
-	end
-
-	if (full_inventory and memory.read("battle", "active") == 0) or memory.read("battle", "enemies") == 0 then
-		local priority_map = {}
-
-		local item_priority = {}
-		local empty_count = 48
-		local empty_slots = {}
-
-		for i = 0, 47 do
-			local item = memory.read("battle_menu", "item_id", i)
-			local count = memory.read("battle_menu", "item_count", i)
-			local priority
-
-			if item ~= game.ITEM.NONE then
-				local priority = 0
-
-				if items[item] then
-					priority = items[item]
-				end
-
-				if not priority_map[priority] then
-					priority_map[priority] = {
-						slots = {},
-						count = 0
-					}
-				end
-
-				if reserved[i] == nil or item ~= reserved[i][1] or count ~= reserved[i][2] or priority >= 2 then
-					item_priority[i] = priority
-					table.insert(priority_map[priority].slots, i)
-					priority_map[priority].count = priority_map[priority].count + 1
-				end
-
-				empty_count = empty_count - 1
-			else
-				table.insert(empty_slots, i)
-			end
-		end
-
-		priority_map[7] = { slots = empty_slots, count = math.min(4, empty_count) }
-		empty_count = empty_count - priority_map[7].count
-
-		priority_map[3] = { slots = empty_slots, count = math.min(4, empty_count) }
-		empty_count = empty_count - priority_map[3].count
-
-		priority_map[1] = { slots = empty_slots, count = empty_count }
-
-		local priority = 0
-		local priority_count = 0
-
-		for i = 47, 0, -1 do
-			local item = memory.read("battle_menu", "item_id", i)
-			local count = memory.read("battle_menu", "item_count", i)
-			local done = false
-
-			if reserved[i] ~= nil and (item_priority[i] == nil or item_priority[i] < 2) then
-				if item ~= reserved[i][1] or count ~= reserved[i][2] then
-					local source = nil
-
-					for j = 0, 47 do
-						local other_item = memory.read("battle_menu", "item_id", j)
-						local other_count = memory.read("battle_menu", "item_count", j)
-
-						if other_item == reserved[i][1] and other_count == reserved[i][2] then
-							source = j
-							break
-						end
-					end
-
-					if source ~= nil then
-						log.log(string.format("Inventory: Swapping slots %d and %d", source, i))
-
-						table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
-						table.insert(_state.q, {menu.battle.item.select, {nil, source}})
-						table.insert(_state.q, {menu.battle.item.select, {nil, i}})
-						table.insert(_state.q, {menu.battle.item.close, {}})
-
-						return true
-					end
-				else
-					done = true
-				end
-			end
-
-			if not done then
-				if item_priority[i] == priority or ((priority == 1 or priority == 3 or priority == 7) and item == game.ITEM.NONE) then
-					priority_count = priority_count + 1
-
-					if priority_count == priority_map[priority].count then
-						repeat
-							priority = priority + 1
-						until (priority_map[priority] and priority_map[priority].count > 0) or priority == 64
-
-						priority_count = 0
-					end
-				else
-					table.sort(priority_map[priority].slots)
-					local source = priority_map[priority].slots[1]
-
-					if source < i then
-						log.log(string.format("Inventory: Swapping slots %d and %d", source, i))
-
-						table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
-						table.insert(_state.q, {menu.battle.item.select, {nil, source}})
-						table.insert(_state.q, {menu.battle.item.select, {nil, i}})
-						table.insert(_state.q, {menu.battle.item.close, {}})
-
-						return true
-					end
-				end
-			end
-		end
-
-		log.log("Inventory: Couldn't find anything to move")
-		_state.disable_inventory = true
-	end
-
-	return false
-end
 
 --------------------------------------------------------------------------------
 -- Public Functions
@@ -3015,8 +3033,14 @@ function _M.cycle()
 			if run then
 				input.press({"P1 L", "P1 R"}, input.DELAY.NONE)
 			elseif (open and memory.read("battle_menu", "menu") ~= menu.battle.MENU.NONE) or _state.flush_queue then
-			 	if #_state.q == 0 and not _state.queued then
-					if (_state.disable_inventory or not _manage_inventory(formation.full_inventory or _state.full_inventory, route.get_inventory(index), route.get_reserved_inventory())) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1, _state.strat) then
+				 if #_state.q == 0 and not _state.queued then
+					local inventory_limit = 0
+
+					if (formation.full_inventory or _state.full_inventory) and memory.read("battle", "active") == 0 then
+						inventory_limit = 1
+					end
+
+					if (_state.disable_inventory or not _manage_inventory(inventory_limit)) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1, _state.strat) then
 						_state.turns[slot] = _state.turns[slot] + 1
 						_state.queued = true
 					end
