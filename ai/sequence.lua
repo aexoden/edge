@@ -705,22 +705,30 @@ local function _validate_chocobo()
 	local chocobo_x = memory.read("walk", "chocobo_x")
 	local chocobo_y = memory.read("walk", "chocobo_y")
 
-	local chocobo_good = true
-
 	if chocobo_x == 0 and chocobo_y % 64 >= 1 and chocobo_y % 64 <= 11 then
-		chocobo_good = false
+		return true
 	elseif chocobo_x == 240 and chocobo_y % 64 <= 31 then
-		chocobo_good = false
+		return true
 	end
 
-	log.log(string.format("Yellow Chocobo Coordinates: %d, %d", chocobo_x, chocobo_y))
+	return false
+end
 
-	if not chocobo_good then
-		log.log("Resetting due to bad yellow chocobo...")
-		_M.end_run()
+local function _fix_chocobo()
+	if _validate_chocobo() then
+		return true
 	end
 
-	return true
+	local stack = {}
+
+	table.insert(stack, {walk.walk, {nil, 89, 163}})
+	table.insert(stack, {walk.chase, {210, {6, 7, 8}}})
+	table.insert(stack, {walk.walk, {nil, 91, 163}})
+	table.insert(stack, {walk.interact, {}})
+
+	while #stack > 0 do
+		table.insert(_q, 1, table.remove(stack))
+	end
 end
 
 local function _validate_fireclaw()
@@ -2476,10 +2484,6 @@ local function _sequence_karate()
 
 		table.insert(_q, {walk.walk, {nil, 155, 199}})
 
-		if ROUTE == "nocw" then
-			table.insert(_q, {_validate_chocobo, {}})
-		end
-
 		-- Walk to the Elder.
 		table.insert(_q, {walk.walk, {3, 16, 10}})
 		table.insert(_q, {walk.walk, {3, 16, 8, true}})
@@ -3402,6 +3406,14 @@ local function _sequence_calbrena()
 	table.insert(_q, {walk.walk, {42, 8, 15}})
 	table.insert(_q, {walk.walk, {36, 15, 31}})
 	table.insert(_q, {walk.board, {}})
+
+	-- Fix the yellow chocobo if necessary.
+	if ROUTE == "nocw" and not _validate_chocobo() then
+		table.insert(_q, {walk.walk, {nil, 91, 163}})
+		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {_fix_chocobo, {}})
+		table.insert(_q, {walk.board, {}})
+	end
 
 	-- Fly to Agart and use the Magma stone.
 	table.insert(_q, {walk.walk, {nil, 105, 215}})
