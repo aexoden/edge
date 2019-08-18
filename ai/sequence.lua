@@ -1134,11 +1134,11 @@ local function _sequence_clip()
 
 	if ROUTE ~= "no64-excalbur" then
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.SHIELD.IRON}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.NONE}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.NONE, 1}})
 	end
 
 	if ROUTE ~= "paladin" then
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE, 3}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE, 2}})
 	end
 
 	table.insert(_q, {menu.field.equip.close, {}})
