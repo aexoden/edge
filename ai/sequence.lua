@@ -143,7 +143,7 @@ local function _glitch_walk(target_map_id, target_x, target_y)
 
 	if current_map_id == target_map_id then
 		return walk.walk(target_map_id, target_x, target_y, false, false)
-	elseif current_floor == -10 or current_floor == -11 or current_floor == -13 then
+	elseif current_floor == -9 or current_floor == -10 or current_floor == -11 or current_floor == -13 then
 		walk.walk(current_map_id, current_x, -1, false, false)
 	elseif current_floor == -43 then
 		local igt = memory.read("game", "timer")
@@ -6049,11 +6049,9 @@ local function _sequence_nocw_zemus()
 	_M.set_battle_strat(game.battle.FORMATION.ZEROMUS, {"nocw"})
 
 	table.insert(_q, {walk.walk, {352, 16, 29}})
-	table.insert(_q, {walk.walk, {313, 13, 0}})
-	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+	table.insert(_q, {walk.leave_map, {walk.DIRECTION.UP, 313}})
 	table.insert(_q, {_glitch_walk, {313, 13, 2}})
-	table.insert(_q, {walk.walk, {313, 13, 0}})
-	table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+	table.insert(_q, {walk.leave_map, {walk.DIRECTION.UP, 313}})
 	table.insert(_q, {_glitch_walk, {275, 2, 9}})
 	table.insert(_q, {walk.walk, {275, 2, 10}})
 	table.insert(_q, {menu.field.open, {}})

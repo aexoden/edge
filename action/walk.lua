@@ -81,6 +81,26 @@ function _M.is_transition()
 	return transition ~= 0 and transition ~= 128 and transition ~= 255 and transition ~= 120 and transition ~= 16 and transition ~= 152 and transition ~= 168 and transition ~= 21
 end
 
+function _M.leave_map(direction, map_id)
+	local current_map_id = memory.read("walk", "map_id")
+	local current_x = memory.read("walk", "x")
+	local current_y = memory.read("walk", "y")
+
+	if current_map_id ~= map_id then
+		return true
+	end
+
+	if direction == _M.DIRECTION.UP then
+		return _M.walk(current_map_id, current_x, -1)
+	elseif direction == _M.DIRECTION.DOWN then
+		return _M.walk(current_map_id, current_x, 32)
+	elseif direction == _M.DIRECTION.LEFT then
+		return _M.walk(current_map_id, -1, current_y)
+	else
+		return _M.walk(current_map_id, 32, current_y)
+	end
+end
+
 function _M.step(direction)
 	if _state.stepped and memory.read("walk", "direction") == direction then
 		_state.stepped = nil
