@@ -1,3 +1,4 @@
 /config.lua
 logs/*.log
 states/*.state
+/output
