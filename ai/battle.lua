@@ -214,7 +214,7 @@ local function _get_current_inventory()
 	return inventory
 end
 
-local function _get_goal_inventory(inventory_data, fixed_only)
+local function _get_goal_inventory(inventory_data)
 	local current_inventory = _get_current_inventory()
 
 	local fixed_map = {}
@@ -334,7 +334,7 @@ local function _compare_inventory_entry(entry1, entry2)
 	end
 end
 
-local function _manage_inventory(limit)
+local function _manage_inventory(limit, fixed_only)
 	-- Edward cannot manage the inventory if he is currently hidden.
 	if menu.battle.command.has_command(menu.battle.COMMAND.SHOW) then
 		return false
@@ -351,6 +351,18 @@ local function _manage_inventory(limit)
 	local goal_inventory = _get_goal_inventory(inventory_data, false)
 	local current_position = 0
 
+	local fixed_map = {}
+
+	if fixed_only then
+		for i, entry in ipairs(inventory_data) do
+			local item, count, fixed, priorities = unpack(entry)
+
+			if #fixed > 0 then
+				fixed_map[item] = true
+			end
+		end
+	end
+
 	while not limit or limit > 0 do
 		local best = {nil, nil, nil}
 
@@ -358,16 +370,18 @@ local function _manage_inventory(limit)
 			if not _compare_inventory_entry(current_inventory[i], goal_inventory[i]) then
 				for j = 0, 47 do
 					if i ~= j and current_inventory[i] ~= nil and not _compare_inventory_entry(current_inventory[j], goal_inventory[j]) and _compare_inventory_entry(current_inventory[i], goal_inventory[j]) then
-						local distance = math.abs(i - current_position) + math.abs(j - i)
+						if not fixed_only or fixed_map[i] or fixed_map[j] then
+							local distance = math.abs(i - current_position) + math.abs(j - i)
 
-						if not best[1] or distance < best[1] then
-							best = {distance, i, j}
-						end
+							if not best[1] or distance < best[1] then
+								best = {distance, i, j}
+							end
 
-						distance = math.abs(j - current_position) + math.abs(i - j)
+							distance = math.abs(j - current_position) + math.abs(i - j)
 
-						if not best[1] or distance < best[1] then
-							best = {distance, j, i}
+							if not best[1] or distance < best[1] then
+								best = {distance, j, i}
+							end
 						end
 					end
 				end
@@ -1249,7 +1263,7 @@ local function _battle_golbez(character, turn, strat)
 					return true
 				else
 					_command_wait_text(" Meal", 600)
-					_manage_inventory(nil)
+					_manage_inventory(nil, true)
 				end
 			end
 
