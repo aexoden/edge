@@ -370,14 +370,31 @@ local function _manage_inventory(limit, fixed_only)
 			if not _compare_inventory_entry(current_inventory[i], goal_inventory[i]) then
 				for j = 0, 47 do
 					if i ~= j and current_inventory[i] ~= nil and not _compare_inventory_entry(current_inventory[j], goal_inventory[j]) and _compare_inventory_entry(current_inventory[i], goal_inventory[j]) then
-						if not fixed_only or fixed_map[i] or fixed_map[j] then
-							local distance = math.abs(i - current_position) + math.abs(j - i)
+						local item_i = 0
+						local item_j = 0
+
+						if current_inventory[i] then
+							item_i = current_inventory[i][1]
+						end
+
+						if current_inventory[j] then
+							item_j = current_inventory[j][1]
+						end
+
+						local factor = 1
+
+						if current_inventory[j] == goal_inventory[i] and current_inventory[i] == goal_inventory[j] then
+							factor = 2
+						end
+
+						if not fixed_only or fixed_map[item_i] or fixed_map[item_j] then
+							local distance = (math.abs(i - current_position) + math.abs(j - i)) / factor
 
 							if not best[1] or distance < best[1] then
 								best = {distance, i, j}
 							end
 
-							distance = math.abs(j - current_position) + math.abs(i - j)
+							distance = (math.abs(j - current_position) + math.abs(i - j)) / factor
 
 							if not best[1] or distance < best[1] then
 								best = {distance, j, i}
@@ -1243,22 +1260,22 @@ local function _battle_golbez(character, turn, strat)
 			if ROUTE == "nocw" then
 				if _state.stage == 0 then
 					_command_wait_text("Golbez:HA", 600)
-					_manage_inventory(1)
+					_manage_inventory(1, true)
 					_state.stage = 1
 					return true
 				elseif _state.stage == 1 then
 					_command_wait_text(" Is t", 600)
-					_manage_inventory(1)
+					_manage_inventory(1, true)
 					_state.stage = 2
 					return true
 				elseif _state.stage == 2 then
 					_command_wait_text(" Now", 600)
-					_manage_inventory(1)
+					_manage_inventory(1, true)
 					_state.stage = 3
 					return true
 				elseif _state.stage == 3 then
 					_command_wait_text(" Wait", 600)
-					_manage_inventory(1)
+					_manage_inventory(1, true)
 					_state.stage = 4
 					return true
 				else
@@ -1280,20 +1297,20 @@ local function _battle_golbez(character, turn, strat)
 			_state.full_inventory = true
 		elseif game.enemy.get_stat(0, "hp") < 20500 then
 			if ROUTE == "nocw" then
-				_manage_inventory(nil)
+				_manage_inventory(nil, true)
 			end
 
 			_command_fight()
 		else
 			if ROUTE == "nocw" then
-				_manage_inventory(nil)
+				_manage_inventory(nil, true)
 			end
 
 			_command_jump()
 		end
 	elseif character == game.CHARACTER.RYDIA then
 		if ROUTE == "nocw" then
-			_manage_inventory(nil)
+			_manage_inventory(nil, true)
 		end
 
 		_command_black(game.MAGIC.BLACK.FIRE2)
