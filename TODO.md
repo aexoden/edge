@@ -18,6 +18,8 @@ provide a good list of improvements that can be made.
 
 * The no64-rosa route occasionally runs out of Cure2 options during the final descent.
 
+* Find a way to reliably detect NoCW bacon.
+
 ## Major Features
 
 * Find a way to keep track of battle goals and properly queueing characters to

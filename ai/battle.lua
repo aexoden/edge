@@ -1948,9 +1948,17 @@ local function _battle_milon_carrot(character, turn, strat)
 			elseif turn == 2 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY, 2)
 			elseif turn == 3 then
-				_command_wait_text("Cure2 ", 60)
+				if game.enemy.get_stat(3, "hp") == 0 then
+					_command_run_buffer()
+				else
+					_command_wait_text("Cure2 ", 60)
+				end
+
 				_command_parry()
 			elseif turn == 4 then
+				_command_wait_text("Cure2 ", 120)
+				_manage_inventory(3)
+				_command_wait_text(" Stop ")
 				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
 				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
 				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
@@ -1969,7 +1977,9 @@ local function _battle_milon_carrot(character, turn, strat)
 		elseif character == game.CHARACTER.PALOM then
 			if turn == 1 then
 				_command_wait_text("Cure2 ", 300)
-				_command_wait_frames(180)
+				_manage_inventory(2)
+				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.BLACK}})
+				_command_wait_frames(200)
 				_command_black(game.MAGIC.BLACK.FIRE1, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 			else
 				_state.alternate = true
