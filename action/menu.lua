@@ -515,7 +515,7 @@ function _M.field.item.select(item, index, closest)
 	end
 
 	if item then
-		index = game.item.get_index(item, index, closest)
+		index = game.item.get_index(item, index, nil, closest)
 	end
 
 	if cursor then
@@ -1185,14 +1185,18 @@ function _M.battle.item.close()
 	end
 end
 
-function _M.battle.item.select(item, index)
+function _M.battle.item.select(item, index, closest)
 	local menu = memory.read("battle_menu", "menu")
 	local cursor = memory.read("battle_menu", "subcursor")
 
 	local index = index
 
+	if closest then
+		index = cursor
+	end
+
 	if item then
-		index = game.item.get_index(item, index, game.INVENTORY.BATTLE)
+		index = game.item.get_index(item, index, game.INVENTORY.BATTLE, closest)
 	end
 
 	if _M.battle.is_open() then
@@ -1228,7 +1232,7 @@ function _M.battle.item.use(item, index, target_type, target, wait, limit)
 			_state.target_attempted = true
 			return _M.battle.target(target_type, target, wait, limit)
 		elseif _state.select_count == 1 or not _state.select_frame or emu.framecount() - _state.select_frame > 15 then
-			if _M.battle.item.select(item, index) then
+			if _M.battle.item.select(item, index, true) then
 				_state.select_count = _state.select_count + 1
 				_state.select_frame = emu.framecount()
 			end

@@ -246,18 +246,19 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.DRAGOON] = _M.inventory["no6
 _M.inventory["no64-excalbur"][game.battle.FORMATION.MILON] = {
 	{game.ITEM.ITEM.CURE2,      nil, {0}, {}},
 	{game.ITEM.WEAPON.DANCING,  nil, {1}, {}},
-	{game.ITEM.ITEM.CARROT,     nil, {2}, {}},
-	{game.ITEM.ITEM.LIFE,       nil, {4}, {}},
-	{game.ITEM.ITEM.ETHER1,     nil, {5}, {}},
+	{game.ITEM.SHIELD.PALADIN,  nil, {2}, {}},
+	{game.ITEM.ITEM.CARROT,     nil, {4}, {}},
+	{game.ITEM.ITEM.LIFE,       nil, {5}, {}},
 	{game.ITEM.ITEM.TRASHCAN,   nil, {6}, {}},
-	{game.ITEM.HELM.GAEA,       nil, {7}, {}},
-	{game.ITEM.ARMS.IRON,       nil, {8}, {}},
-	{game.ITEM.RING.SILVER,     nil, {9}, {}},
-	{game.ITEM.CLAW.FIRECLAW,   114, {11}, {}},
-	{game.ITEM.SHIELD.PALADIN,  nil, {12}, {}},
+	{game.ITEM.ITEM.ETHER1,     nil, {7}, {}},
+	{game.ITEM.HELM.GAEA,       nil, {8}, {}},
+	{game.ITEM.ARMS.PALADIN,    nil, {9}, {}},
+	{game.ITEM.RING.SILVER,     nil, {10}, {}},
+	{game.ITEM.WEAPON.CHANGE,   nil, {11}, {}},
+	{game.ITEM.ARMS.IRON,       nil, {12}, {}},
 	{game.ITEM.HELM.TIARA,      nil, {13}, {}},
-	{game.ITEM.ARMS.PALADIN,    nil, {14}, {}},
-	{game.ITEM.ITEM.LIFE,         1, {15}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {15}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
 }
 
 _M.inventory["nocw"][game.battle.FORMATION.MILON] = {
@@ -277,20 +278,20 @@ _M.inventory["nocw"][game.battle.FORMATION.MILON] = {
 }
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.MILON_Z] = {
-	{game.ITEM.WEAPON.DANCING,  nil, {0}, {}},
-	{game.ITEM.ITEM.CURE2,      nil, {1}, {}},
-	{game.ITEM.ITEM.LIFE,       nil, {3}, {}},
-	{game.ITEM.ITEM.TRASHCAN,   nil, {4}, {}},
-	{game.ITEM.RING.SILVER,     nil, {6}, {}},
-	{game.ITEM.SHIELD.PALADIN,  nil, {7}, {}},
+	{game.ITEM.WEAPON.DANCING,  nil, {1}, {}},
+	{game.ITEM.SHIELD.PALADIN,  nil, {2}, {}},
+	{game.ITEM.ITEM.CURE2,      nil, {3}, {}},
+	{game.ITEM.ITEM.LIFE,       nil, {5}, {}},
+	{game.ITEM.ITEM.TRASHCAN,   nil, {6}, {}},
+	{game.ITEM.ITEM.ETHER1,     nil, {7}, {}},
 	{game.ITEM.HELM.GAEA,       nil, {8}, {}},
 	{game.ITEM.ARMS.PALADIN,    nil, {9}, {}},
-	{game.ITEM.CLAW.FIRECLAW,   114, {11}, {}},
+	{game.ITEM.RING.SILVER,     nil, {10}, {}},
+	{game.ITEM.WEAPON.CHANGE,   nil, {11}, {}},
+	{game.ITEM.ARMS.IRON,       nil, {12}, {}},
 	{game.ITEM.HELM.TIARA,      nil, {13}, {}},
-	{game.ITEM.ITEM.ETHER1,     nil, {14}, {}},
-	{game.ITEM.ARMS.IRON,       nil, {16}, {}},
-	{game.ITEM.WEAPON.CHANGE,   nil, {17}, {}},
-	{game.ITEM.ITEM.LIFE,         1, {19}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {15}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
 }
 
 _M.inventory["nocw"][game.battle.FORMATION.MILON_Z] = {

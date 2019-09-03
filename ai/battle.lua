@@ -2010,7 +2010,7 @@ local function _battle_milon_carrot(character, turn, strat)
 				_command_parry()
 			elseif turn == 4 then
 				_command_wait_text("Cure2 ", 120)
-				_manage_inventory(3)
+				_manage_inventory(5)
 				_command_wait_text(" Stop ")
 				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
 				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
@@ -2030,9 +2030,9 @@ local function _battle_milon_carrot(character, turn, strat)
 		elseif character == game.CHARACTER.PALOM then
 			if turn == 1 then
 				_command_wait_text("Cure2 ", 300)
-				_manage_inventory(2)
+				_manage_inventory(4)
 				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.BLACK}})
-				_command_wait_frames(200)
+				_command_wait_frames(100)
 				_command_black(game.MAGIC.BLACK.FIRE1, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 			else
 				_state.alternate = true

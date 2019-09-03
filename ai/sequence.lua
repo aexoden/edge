@@ -621,17 +621,18 @@ local function _pre_milon_menu()
 	-- Open the menu and restore the party.
 	local restore_data = {
 		[game.CHARACTER.CECIL] = _RESTORE.HP,
-		[game.CHARACTER.PALOM] = _RESTORE.ALL,
-		[game.CHARACTER.POROM] = _RESTORE.ALL,
-		[game.CHARACTER.TELLAH] = _RESTORE.ALL,
+		[game.CHARACTER.PALOM] = _RESTORE.HP,
+		[game.CHARACTER.POROM] = _RESTORE.HP,
+		[game.CHARACTER.TELLAH] = _RESTORE.HP,
 	}
 
 	if strat == "carrot" then
 		restore_data[game.CHARACTER.POROM] = _RESTORE.LIFE
+		table.insert(stack, {_restore_party, {restore_data, nil, true}})
+	else
+		table.insert(stack, {menu.field.open, {}})
+		table.insert(stack, {_restore_party, {restore_data}})
 	end
-
-	table.insert(stack, {menu.field.open, {}})
-	table.insert(stack, {_restore_party, {restore_data}})
 
 	-- Equip Porom (unless we're doing the carrot strat).
 	if strat ~= "carrot" then
@@ -664,7 +665,9 @@ local function _pre_milon_menu()
 		table.insert(stack, {menu.field.form.swap, {game.CHARACTER.POROM, game.CHARACTER.PALOM}})
 	end
 
-	table.insert(stack, {menu.field.close, {}})
+	if strat ~= "carrot" then
+		table.insert(stack, {menu.field.close, {}})
+	end
 
 	-- Add the queued commands to the primary command queue.
 	while #stack > 0 do
