@@ -109,11 +109,15 @@ function _M.cycle()
 	return false
 end
 
-function _M.get_battle_spell()
+function _M.get_battle_spell(length)
+	if not length then
+		length = 6
+	end
+
 	if game.battle.get_type() == game.battle.TYPE.BACK_ATTACK then
-		return _get_text("battle_dialog", "text", 0, 6)
+		return _get_text("battle_dialog", "text", 0, length)
 	else
-		return _get_text("battle_dialog", "text", 18, 6)
+		return _get_text("battle_dialog", "text", 18, length)
 	end
 end
 

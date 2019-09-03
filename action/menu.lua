@@ -1274,7 +1274,7 @@ function _M.battle.dialog.wait(text, limit)
 		local result
 
 		if text then
-			result = dialog.get_battle_text(#text) == text or dialog.get_battle_spell() == text
+			result = dialog.get_battle_text(#text) == text or dialog.get_battle_spell(#text) == text
 		else
 			result = dialog.get_battle_text(0) == "" and dialog.get_battle_spell() == ""
 		end

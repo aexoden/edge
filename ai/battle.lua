@@ -2170,7 +2170,23 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 		worst_twin = {twin = game.CHARACTER.POROM, mp = porom_mp}
 	end
 
-	if _state.alternate or character == game.CHARACTER.CECIL and turn > 3 or character ~= game.CHARACTER.CECIL and turn >= 2 then
+	local alternate = false
+
+	if palom_hp == 0 then
+		alternate = true
+	elseif character == game.CHARACTER.CECIL then
+		if turn >= 4 then
+			alternate = true
+		end
+	elseif character == game.CHARACTER.TELLAH then
+		if turn >= 3 then
+			alternate = true
+		end
+	elseif turn >= 2 then
+		alternate = true
+	end
+
+	if _state.alternate or alternate then
 		local count = 0
 		local best = nil
 
@@ -2206,7 +2222,11 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 					_state.cecil_waited = true
 					return true
 				else
-					if porom_hp < palom_hp and porom_hp < 75 then
+					if porom_hp == 0 then
+						_state.alternate = true
+						_state.full_inventory = true
+						return true
+					elseif porom_hp < palom_hp and porom_hp < 75 then
 						_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 					elseif palom_hp < porom_hp and palom_hp < 75 then
 						_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
@@ -2226,6 +2246,12 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 					_state.full_inventory = true
 					return true
 				elseif _state.palom_acted then
+					if _state.switched then
+						_state.alternate = true
+						_state.full_inventory = true
+						return true
+					end
+
 					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
 					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
 					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
@@ -2236,8 +2262,7 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 					table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.TRASHCAN}})
 					table.insert(_state.q, {menu.battle.item.close, {}})
 
-					_state.alternate = true
-					_state.full_inventory = true
+					_state.switched = true
 
 					_command_wait_frames(480)
 					return true
@@ -2258,9 +2283,19 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 			end
 		elseif character == game.CHARACTER.TELLAH then
 			if palom_hp > 0 then
-				_command_wait_frames(15)
-				_command_run_buffer()
-				_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+				if turn == 1 then
+					_command_wait_frames(15)
+					_command_run_buffer()
+					_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+				else
+					_command_wait_text("TrashCan", 180)
+					_command_equip(character, game.ITEM.WEAPON.CHANGE)
+					_manage_inventory(nil)
+
+					_state.alternate = true
+					_state.full_inventory = true
+					return true
+				end
 			else
 				_state.alternate = true
 				_state.full_inventory = true
@@ -2470,8 +2505,10 @@ local function _battle_ordeals(character, turn, strat)
 	if cecil_level > 1 and porom_hp > 70 then
 		if character == game.CHARACTER.PALOM then
 			_command_black(game.MAGIC.BLACK.FIRE1, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
-		else
+		elseif character == game.CHARACTER.CECIL then
 			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+		else
+			_command_parry()
 		end
 	else
 		return _command_run()

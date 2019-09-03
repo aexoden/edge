@@ -2319,10 +2319,15 @@ end
 local function _sequence_milon_z()
 	-- Heal and prepare the party.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.ALL, [game.CHARACTER.TELLAH] = _RESTORE.ALL}}})
 
 	local milon_strat = _M.get_battle_strat(game.battle.FORMATION.MILON)
 	local milon_z_strat = _M.set_battle_strat(game.battle.FORMATION.MILON_Z, {"trashcan"})
+
+	if milon_z_strat == "trashcan" and game.character.get_stat(game.CHARACTER.PALOM, "mp") < 15 then
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.ALL, [game.CHARACTER.POROM] = _RESTORE.ALL, [game.CHARACTER.TELLAH] = _RESTORE.ALL}}})
+	else
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.PALOM] = _RESTORE.HP, [game.CHARACTER.POROM] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}}})
+	end
 
 	if milon_z_strat == "cure2" then
 		if game.character.get_stat(game.CHARACTER.PALOM, "level") >= 11 then
