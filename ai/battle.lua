@@ -2807,6 +2807,7 @@ local function _battle_zeromus_rosa(character, turn, strat)
 			_command_dart(game.ITEM.WEAPON.GUNGNIR)
 		else
 			-- Battle is probably shot anyway, but at least this way we prevent softlocks.
+			log.log("WARNING: Rosa Zeromus fight is missing Gungnir.")
 			_command_fight()
 		end
 	elseif character == game.CHARACTER.KAIN then
@@ -2817,11 +2818,14 @@ local function _battle_zeromus_rosa(character, turn, strat)
 			_command_run_buffer()
 			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 3 then
-			if game.enemy.get_stat(1, "hp") > 18000 then
+			if game.enemy.get_stat(1, "hp") > 18700 then
 				_command_fight()
 			else
 				_command_parry()
 			end
+		elseif turn == 4 then
+			_command_run_buffer()
+			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
 		end
 	elseif character == game.CHARACTER.ROSA then
 		if turn == 1 then
@@ -2829,19 +2833,23 @@ local function _battle_zeromus_rosa(character, turn, strat)
 		elseif turn == 2 then
 			_command_parry()
 		elseif turn == 3 then
-			_command_run_buffer()
 			_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.PARTY_ALL)
 		elseif turn == 4 or turn == 6 then
-			-- need to wait for Kain's attack... ha ha.
+			-- TODO: Wait for Kain's attack explicitly if necessary. Probably can wait until the current actor is Kain.
 			_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 5 or turn == 7 then
-			-- only need to wait for kain on turn 5
+			-- TODO: Again, wait for Kain on turn 5.
 			_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 8 then
 			_command_white(game.MAGIC.WHITE.WHITE)
 		end
 	elseif character == game.CHARACTER.RYDIA then
-		_command_parry()
+		if turn == 1 then
+			_command_parry()
+		else
+			table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
+			table.insert(_state.q, {menu.battle.target, {nil, nil, nil, nil, input.DELAY.NONE}})
+		end
 	end
 end
 
