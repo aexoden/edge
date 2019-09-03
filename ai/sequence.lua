@@ -2590,8 +2590,8 @@ local function _sequence_baigan()
 	else
 		table.insert(_q, {menu.shop.buy.open, {1}})
 		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.WEAPON.THUNDER}})
-		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.CLAW.ICECLAW}})
 		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.CLAW.THUNDER}})
+		table.insert(_q, {menu.shop.buy.buy, {game.ITEM.CLAW.ICECLAW}})
 		table.insert(_q, {menu.shop.buy.close, {}})
 	end
 

@@ -668,11 +668,6 @@ local function _battle_baigan(character, turn, strat)
 			_command_run_buffer()
 			_command_cover(game.CHARACTER.TELLAH)
 		elseif turn == 2 or turn == 3 then
-			if not _state.cecil_dequiped then
-				_command_dequip(game.EQUIP.L_HAND)
-				_state.cecil_dequiped = true
-			end
-
 			if game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 then
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 			elseif game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
@@ -682,10 +677,12 @@ local function _battle_baigan(character, turn, strat)
 			else
 				_command_wait_text(" Meteo")
 				_command_equip(character, game.ITEM.WEAPON.LEGEND)
+				_manage_inventory(nil)
 			end
 		else
 			_command_wait_text(" Meteo")
 			_command_equip(character, game.ITEM.WEAPON.LEGEND)
+			_manage_inventory(nil)
 		end
 	elseif character == game.CHARACTER.PALOM then
 		if game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 then
@@ -2967,7 +2964,7 @@ end
 
 local _formations = {
 	[game.battle.FORMATION.ANTLION]  = {title = "Antlion",                          f = _battle_antlion,  split = true},
-	[game.battle.FORMATION.BAIGAN]   = {title = "Baigan",                           f = _battle_baigan,   split = true,  full_inventory = true},
+	[game.battle.FORMATION.BAIGAN]   = {title = "Baigan",                           f = _battle_baigan,   split = true},
 	[game.battle.FORMATION.CALBRENA] = {title = "Calbrena",                         f = _battle_calbrena, split = true},
 	[game.battle.FORMATION.CPU]      = {title = "CPU",                              f = _battle_cpu,      split = true},
 	[game.battle.FORMATION.D_KNIGHT] = {title = "D.Knight",                         f = _battle_d_knight, split = false},
