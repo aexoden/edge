@@ -461,14 +461,14 @@ _M.inventory["nocw"][game.battle.FORMATION.DARK_ELF] = {
 }
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.FLAMEDOG] = {
+	{game.ITEM.WEAPON.DANCING,    1, {0}, {}},
 	{game.ITEM.WEAPON.DANCING,  nil, {1}, {}},
 	{game.ITEM.ITEM.CURE2,      nil, {3}, {}},
 	{game.ITEM.HELM.HEADBAND,   nil, {4}, {}},
 	{game.ITEM.ITEM.LIFE,       nil, {5}, {}},
 	{game.ITEM.ARMOR.KARATE,    nil, {6}, {}},
-	{game.ITEM.ITEM.EARTH,      nil, {7}, {}},
 	{game.ITEM.HELM.GAEA,       nil, {8}, {}},
-	{game.ITEM.WEAPON.DANCING,    1, {9}, {}},
+	{game.ITEM.ITEM.EARTH,      nil, {9}, {}},
 	{game.ITEM.RING.SILVER,     nil, {10}, {}},
 	{game.ITEM.WEAPON.CHANGE,   nil, {11}, {}},
 	{game.ITEM.ITEM.ETHER1,     nil, {13}, {}},
@@ -499,20 +499,21 @@ _M.inventory["nocw"][game.battle.FORMATION.FLAMEDOG] = {
 }
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.SISTERS] = {
-	{game.ITEM.ITEM.EARTH,      nil, {0}, {}},
+	{game.ITEM.WEAPON.FIRE,     nil, {0}, {}},
 	{game.ITEM.WEAPON.DANCING,  nil, {1}, {}},
-	{game.ITEM.HELM.HEADBAND,   nil, {2}, {}},
+	{game.ITEM.WEAPON.LEGEND,   nil, {2}, {}},
 	{game.ITEM.ITEM.CURE2,      nil, {3}, {}},
-	{game.ITEM.ARMOR.KARATE,    nil, {4}, {}},
+	{game.ITEM.HELM.HEADBAND,   nil, {4}, {}},
 	{game.ITEM.ITEM.LIFE,       nil, {5}, {}},
-	{game.ITEM.RING.SILVER,     nil, {6}, {}},
-	{game.ITEM.HELM.GAEA,       nil, {11}, {}},
-	{game.ITEM.ITEM.ETHER1,     nil, {12}, {}},
-	{game.ITEM.ARMOR.PRISONER,  nil, {13}, {}},
-	{game.ITEM.HELM.TIARA,      nil, {14}, {}},
-	{game.ITEM.WEAPON.CHANGE,   nil, {15}, {}},
-	{game.ITEM.ITEM.HEAL,       nil, {16}, {}},
-	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
+	{game.ITEM.ARMOR.KARATE,    nil, {6}, {}},
+	{game.ITEM.HELM.GAEA,       nil, {8}, {}},
+	{game.ITEM.ITEM.EARTH,      nil, {9}, {}},
+	{game.ITEM.RING.SILVER,     nil, {10}, {}},
+	{game.ITEM.WEAPON.CHANGE,   nil, {11}, {}},
+	{game.ITEM.ITEM.ETHER1,     nil, {13}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {15}, {}},
+	{game.ITEM.HELM.TIARA,      nil, {16}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
 }
 
 _M.inventory["nocw"][game.battle.FORMATION.SISTERS] = {

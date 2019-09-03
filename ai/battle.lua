@@ -1204,7 +1204,7 @@ local function _battle_elements(character, turn, strat)
 	end
 end
 
-local function _battle_flamedogbattle_flamedog(character, turn, strat)
+local function _battle_flamedog(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
 			_command_run_buffer()
