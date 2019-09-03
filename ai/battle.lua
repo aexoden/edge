@@ -3110,8 +3110,8 @@ function _M.cycle()
 				 if #_state.q == 0 and not _state.queued then
 					local inventory_limit = 0
 
-					if (formation.full_inventory or _state.full_inventory) and memory.read("battle", "active") == 0 then
-						inventory_limit = 1
+					if (formation.full_inventory or _state.full_inventory) and memory.read("battle", "active") ~= 0xFF then
+						inventory_limit = 2
 					end
 
 					if (_state.disable_inventory or not _manage_inventory(inventory_limit)) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1, _state.strat) then

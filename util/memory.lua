@@ -114,7 +114,7 @@ local _addresses = {
 		action_index        = {f = mainmemory.read_u8,     address = 0x0034C8, record_size = {0x01, 0x01}},
 		actor_group         = {f = mainmemory.read_u8,     address = 0x0034C2, record_size = {0x01, 0x01}},
 		actor_slot          = {f = mainmemory.read_u8,     address = 0x0034C3, record_size = {0x01, 0x01}},
-		active              = {f = mainmemory.read_u8,     address = 0x007508, record_size = {0x01, 0x01}},
+		active              = {f = mainmemory.read_u8,     address = 0x0033C2, record_size = {0x01, 0x01}},
 		back                = {f = mainmemory.read_u8,     address = 0x003581, record_size = {0x01, 0x01}},
 		back2               = {f = mainmemory.read_u8,     address = 0x00030B, record_size = {0x01, 0x01}},
 		calculations_left   = {f = mainmemory.read_u8,     address = 0x00354D, record_size = {0x01, 0x01}},
