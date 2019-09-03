@@ -492,8 +492,7 @@ end
 
 local function _command_magic(type, spell, target_type, target, wait, limit)
 	table.insert(_state.q, {menu.battle.command.select, {type}})
-	table.insert(_state.q, {menu.battle.magic.select, {spell}})
-	table.insert(_state.q, {menu.battle.target, {target_type, target, wait, limit}})
+	table.insert(_state.q, {menu.battle.magic.cast, {spell, target_type, target, wait, limit}})
 end
 
 local function _command_black(spell, target_type, target, wait, limit)

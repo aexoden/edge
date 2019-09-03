@@ -1060,6 +1060,8 @@ function _M.battle.target(target, index, wait, limit, delay)
 				end
 			end
 		end
+	elseif _M.battle.is_open() and not _M.battle.is_target() and not _state.pressed then
+
 	elseif _state.pressed then
 		_state.pressed = nil
 		_state.max_frame = nil
@@ -1248,6 +1250,21 @@ function _M.battle.item.use(item, index, target_type, target, wait, limit)
 	elseif _state.target_attempted then
 		_state.target_attempted = nil
 		return true
+	end
+
+	return false
+end
+
+function _M.battle.magic.cast(spell, target_type, target, wait, limit, delay)
+	if _M.battle.is_open() then
+		if _M.battle.is_target() then
+			_state.select_count = nil
+			return _M.battle.target(target_type, target, wait, limit, delay)
+		elseif not _state.select_frame or emu.framecount() - _state.select_frame > 15 then
+			if _M.battle.magic.select(spell) then
+				_state.select_frame = emu.framecount()
+			end
+		end
 	end
 
 	return false
