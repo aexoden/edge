@@ -1778,6 +1778,8 @@ local function _battle_guards(character, turn, strat)
 
 		if game.character.get_stat(game.CHARACTER.PALOM, "hp", true) == 0 and (game.enemy.get_stat(0, "hp") > 0 or game.enemy.get_stat(1, "hp") > 0) then
 			_command_black(game.MAGIC.BLACK.VIRUS)
+		else
+			_manage_inventory(2)
 		end
 	else
 		_command_parry()
@@ -1810,6 +1812,8 @@ end
 
 local function _battle_karate(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
+		_command_wait_text("Yang:S")
+		_manage_inventory(2)
 		_command_wait_text("Yang:A")
 		_command_fight()
 	else
@@ -2981,7 +2985,7 @@ local _formations = {
 	[game.battle.FORMATION.GRIND]    = {title = "Grind Fight",                      f = _battle_grind,    split = true, presplit = true},
 	[game.battle.FORMATION.GUARDS]   = {title = "Guards",                           f = _battle_guards,   split = false},
 	[game.battle.FORMATION.KAINAZZO] = {title = "Kainazzo",                         f = _battle_kainazzo, split = true},
-	[game.battle.FORMATION.KARATE]   = {title = "Karate",                           f = _battle_karate,   split = true,  full_inventory = true},
+	[game.battle.FORMATION.KARATE]   = {title = "Karate",                           f = _battle_karate,   split = true},
 	[game.battle.FORMATION.LUGAE1]   = {title = "Dr.Lugae/Balnab",                  f = _battle_lugae1,   split = true},
 	[game.battle.FORMATION.LUGAE2]   = {title = "Dr.Lugae",                         f = _battle_lugae2,   split = true},
 	[game.battle.FORMATION.MAGE]     = {title = "Mages",                            f = _battle_mages,    split = false},
