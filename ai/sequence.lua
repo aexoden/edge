@@ -3078,14 +3078,16 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {148, 11, 13}})
 	table.insert(_q, {walk.walk, {148, 11, 12}})
 	table.insert(_q, {walk.interact, {}})
-end
 
-local function _sequence_flamedog()
 	-- Collect the crystal and return to the Clerics.
 	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {walk.walk, {148, 11, 9}})
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {148, 11, 26}})
+end
+
+local function _sequence_flamedog()
+	-- Leave the Dark Elf Cave.
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.TELLAH] = _RESTORE.LIFE}}})
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.TELLAH}})
@@ -3162,7 +3164,7 @@ local function _sequence_flamedog()
 	-- Leave the castle and walk to the Fire sword chest.
 	table.insert(_q, {menu.field.open, {}})
 
-	if game.character.get_stat(game.CHARACTER.TELLAH, "mp") < 25 then
+	if game.character.get_stat(game.CHARACTER.TELLAH, "mp") < 15 then
 		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.ALL, [game.CHARACTER.YANG] = _RESTORE.HP}}})
 	else
 		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.HP}}})
@@ -6107,7 +6109,7 @@ local _sequences = {
 	{title = "Baigan",         f = _sequence_baigan,         map_area = 3, map_id = 11,  map_x = 14,  map_y = 15},
 	{title = "Kainazzo",       f = _sequence_kainazzo,       map_area = 3, map_id = 42,  map_x = 8,   map_y = 4},
 	{title = "Dark Elf",       f = _sequence_dark_elf,       map_area = 0, map_id = nil, map_x = 102, map_y = 155},
-	{title = "FlameDog",       f = _sequence_flamedog,       map_area = 3, map_id = 148, map_x = 11,  map_y = 12},
+	{title = "FlameDog",       f = _sequence_flamedog,       map_area = 3, map_id = 147, map_x = 13,  map_y = 7},
 	{title = "Magus Sisters",  f = _sequence_magus_sisters,  map_area = 3, map_id = 153, map_x = 2,   map_y = 20},
 	{title = "Valvalis",       f = _sequence_valvalis,       map_area = 3, map_id = 157, map_x = 15,  map_y = 16},
 	{title = "Calbrena",       f = _sequence_calbrena,       map_area = 3, map_id = 52,  map_x = 6,   map_y = 4},
