@@ -2670,28 +2670,48 @@ local function _battle_sisters(character, turn, strat)
 		if turn == 1 then
 			_command_run_buffer()
 			_command_cover(game.CHARACTER.TELLAH)
-		else
+		elseif turn == 2 then
+			if not _state.waited then
+				_command_wait_text("Magus 3:DE")
+				_state.waited = true
+				return true
+			end
+
 			if tellah_hp == 0 then
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 			elseif tellah_hp < 310 then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+			elseif yang_hp > 0 then
+				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 			elseif cecil_hp < 300 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			else
+				_command_parry()
+			end
+		elseif turn >= 3 then
+			if tellah_hp == 0 then
+				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+				_state.tellah_revived = true
+			elseif tellah_hp < 310 and _state.tellah_revived then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+			elseif cecil_hp < 300 and _state.tellah_revived then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 			elseif yang_hp > 0 then
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 			else
+				_command_wait_text(" Meteo")
+
 				if fire_count == 1 then
-					_command_wait_text(" Meteo")
 					_command_duplicate(game.EQUIP.R_HAND, true)
 				end
 
-				_state.full_inventory = true
-				return true
+				_manage_inventory(nil)
 			end
 		end
 	elseif character == game.CHARACTER.YANG then
 		if tellah_hp == 0 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+			_state.tellah_revived = true
 		elseif tellah_hp < 310 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 		else
