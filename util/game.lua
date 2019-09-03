@@ -230,6 +230,7 @@ _M.ITEM = {
 		IRON     = 0x54,
 		LEGEND   = 0x19,
 		LUNAR    = 0x13,
+		SHADOW   = 0x16,
 		SHORTBOW = 0x4D,
 		STAFF    = 0x0F,
 		THUNDER  = 0x0A,

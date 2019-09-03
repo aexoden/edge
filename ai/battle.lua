@@ -354,7 +354,7 @@ local function _manage_inventory(limit, fixed_only, reset)
 		limit = nil
 	end
 
-	if limit == 0 and #_state.inventory > 0 then
+	if limit == 0 then
 		return false
 	end
 
@@ -2357,7 +2357,7 @@ local function _battle_octomamm(character, turn, strat)
 	local change = false
 
 	if strat == nil then
-		strat = "change-tellah-3"
+		strat = "staff-tellah-3"
 	end
 
 	if string.sub(strat, 1, 6) == 'change' then
@@ -2369,6 +2369,15 @@ local function _battle_octomamm(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
 			_command_equip(character, game.ITEM.WEAPON.DARKNESS)
+		elseif turn == 2 then
+			table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+			table.insert(_state.q, {menu.battle.item.select, {game.ITEM.WEAPON.SHADOW}})
+			table.insert(_state.q, {menu.battle.item.select, {nil, 6}})
+			table.insert(_state.q, {menu.battle.item.select, {nil, 6}})
+			table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.TRASHCAN}})
+			table.insert(_state.q, {menu.battle.item.close, {}})
+		elseif turn == 3 then
+			_manage_inventory(2)
 		end
 
 		_command_fight()
@@ -2382,9 +2391,15 @@ local function _battle_octomamm(character, turn, strat)
 		local rydia_hp = game.character.get_stat(game.CHARACTER.RYDIA, "hp", true)
 		local tellah_mp = game.character.get_stat(game.CHARACTER.TELLAH, "mp", true)
 
-		if rydia_hp == 0 and tellah_mp >= 8 then
+		local cure_turn = 3
+
+		if max_tellah_turn < 3 then
+			cure_turn = max_tellah_turn
+		end
+
+		if rydia_hp == 0 and tellah_mp >= 8 and turn >= cure_turn then
 			_command_white(game.MAGIC.WHITE.LIFE1, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
-		elseif tellah_mp >= 9 and ((rydia_hp > 0 and rydia_hp < 15) or game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 80) then
+		elseif tellah_mp >= 9 and ((rydia_hp > 0 and rydia_hp < 15) or game.character.get_stat(game.CHARACTER.CECIL, "hp", true) < 80) and turn >= cure_turn then
 			_command_white(game.MAGIC.WHITE.CURE2, menu.battle.TARGET.PARTY_ALL)
 		elseif turn >= max_tellah_turn then
 			if change then
@@ -2898,7 +2913,7 @@ local _formations = {
 	[game.battle.FORMATION.MILON]    = {title = "Milon",                            f = _battle_milon,    split = true},
 	[game.battle.FORMATION.MILON_Z]  = {title = "Milon Z.",                         f = _battle_milon_z,  split = true},
 	[game.battle.FORMATION.MOMBOMB]  = {title = "MomBomb",                          f = _battle_mombomb,  split = true,  full_inventory = true},
-	[game.battle.FORMATION.OCTOMAMM] = {title = "Octomamm",                         f = _battle_octomamm, split = true,  full_inventory = true},
+	[game.battle.FORMATION.OCTOMAMM] = {title = "Octomamm",                         f = _battle_octomamm, split = true},
 	[game.battle.FORMATION.OFFICER]  = {title = "Officer/Soldiers",                 f = _battle_officer,  split = true},
 	[game.battle.FORMATION.ORDEALS1] = {title = "Lilith x1, Red Bone x2",           f = _battle_ordeals,  split = false},
 	[game.battle.FORMATION.ORDEALS2] = {title = "Ghoul x2, Soul x2",                f = _battle_ordeals,  split = false},
