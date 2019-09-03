@@ -1789,7 +1789,15 @@ local function _battle_kainazzo(character, turn, strat)
 			_command_run_buffer()
 		end
 
-		if turn == 1 or game.enemy.get_stat(0, "hp") < 150 then
+		if turn == 2 and not _state.waited then
+			_command_wait_text(" Lit-3", 600)
+			_state.waited = true
+			return true
+		end
+
+		if game.enemy.get_stat(0, "hp") == 0 then
+			_manage_inventory(nil)
+		elseif turn == 1 or game.enemy.get_stat(0, "hp") < 150 then
 			_command_fight()
 		elseif game.character.get_stat(game.CHARACTER.TELLAH, "hp", true) < 200 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
