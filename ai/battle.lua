@@ -624,18 +624,30 @@ local function _battle_antlion(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 and game.character.get_stat(game.CHARACTER.RYDIA, "hp", true) == 0 and game.item.get_index(game.ITEM.ITEM.LIFE, 0, game.INVENTORY.BATTLE) then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+		elseif turn == 1 and game.character.get_stat(game.CHARACTER.EDWARD, "hp", true) == 0 and game.item.get_index(game.ITEM.ITEM.LIFE, 0, game.INVENTORY.BATTLE) then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDWARD)
 		elseif game.enemy.get_stat(0, "hp") < 40 then
 			_command_fight()
 		else
+			if game.enemy.get_stat(0, "hp") < 320 then
+				_manage_inventory(1)
+			end
+
 			_command_parry()
 		end
 	elseif character == game.CHARACTER.EDWARD then
-		if turn == 2 then
+		if turn == 1 then
+			_command_wait_frames(45)
+		elseif turn == 2 then
 			_command_run_buffer()
 		end
 
 		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 	elseif character == game.CHARACTER.RYDIA then
+		if turn == 1 then
+			_manage_inventory(1)
+		end
+
 		_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 	end
 end
@@ -2887,7 +2899,7 @@ local function _battle_zeromus(character, turn, strat)
 end
 
 local _formations = {
-	[game.battle.FORMATION.ANTLION]  = {title = "Antlion",                          f = _battle_antlion,  split = true,  full_inventory = true},
+	[game.battle.FORMATION.ANTLION]  = {title = "Antlion",                          f = _battle_antlion,  split = true},
 	[game.battle.FORMATION.BAIGAN]   = {title = "Baigan",                           f = _battle_baigan,   split = true,  full_inventory = true},
 	[game.battle.FORMATION.CALBRENA] = {title = "Calbrena",                         f = _battle_calbrena, split = true},
 	[game.battle.FORMATION.CPU]      = {title = "CPU",                              f = _battle_cpu,      split = true},
