@@ -423,20 +423,20 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.KAINAZZO] = _M.inventory["no
 _M.inventory["nocw"][game.battle.FORMATION.KAINAZZO] = _M.inventory["nocw"][game.battle.FORMATION.BAIGAN]
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.DARK_ELF] = {
-	{game.ITEM.WEAPON.THUNDER,  nil, {0}, {}},
 	{game.ITEM.WEAPON.DANCING,  nil, {1}, {}},
-	{game.ITEM.HELM.HEADBAND,   nil, {2}, {}},
 	{game.ITEM.ITEM.CURE2,      nil, {3}, {}},
-	{game.ITEM.ARMOR.KARATE,    nil, {4}, {}},
+	{game.ITEM.HELM.HEADBAND,   nil, {4}, {}},
 	{game.ITEM.ITEM.LIFE,       nil, {5}, {}},
-	{game.ITEM.RING.SILVER,     nil, {6}, {}},
-	{game.ITEM.HELM.GAEA,       nil, {11}, {}},
-	{game.ITEM.ITEM.ETHER1,     nil, {12}, {}},
-	{game.ITEM.ARMOR.PRISONER,  nil, {13}, {}},
-	{game.ITEM.HELM.TIARA,      nil, {14}, {}},
-	{game.ITEM.WEAPON.CHANGE,   nil, {15}, {}},
-	{game.ITEM.ITEM.HEAL,       nil, {16}, {}},
-	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
+	{game.ITEM.ARMOR.KARATE,    nil, {6}, {}},
+	{game.ITEM.ITEM.ETHER1,     nil, {7}, {}},
+	{game.ITEM.HELM.GAEA,       nil, {8}, {}},
+	{game.ITEM.WEAPON.DANCING,    1, {9}, {}},
+	{game.ITEM.RING.SILVER,     nil, {10}, {}},
+	{game.ITEM.WEAPON.THUNDER,  nil, {11}, {}},
+	{game.ITEM.WEAPON.CHANGE,   nil, {11}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {15}, {}},
+	{game.ITEM.HELM.TIARA,      nil, {16}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
 }
 
 _M.inventory["nocw"][game.battle.FORMATION.DARK_ELF] = {

@@ -1033,6 +1033,8 @@ local function _battle_dark_elf(character, turn, strat)
 			end
 
 			if _state.yang_waited then
+				_manage_inventory(1)
+
 				if game.enemy.get_stat(1, "hp") < 50 then
 					if game.character.get_stat(game.CHARACTER.TELLAH, "hp", true) < 50 then
 						_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
@@ -1060,6 +1062,7 @@ local function _battle_dark_elf(character, turn, strat)
 				_command_equip(character, game.ITEM.WEAPON.THUNDER)
 			end
 
+			_manage_inventory(1)
 			_command_black(game.MAGIC.BLACK.WEAK)
 		else
 			if game.character.get_stat(game.CHARACTER.TELLAH, "mp", true) >= 25 then
