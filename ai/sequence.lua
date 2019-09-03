@@ -3237,6 +3237,11 @@ local function _sequence_flamedog()
 	table.insert(_q, {walk.step, {walk.DIRECTION.LEFT}})
 	table.insert(_q, {walk.interact, {}})
 
+	-- TODO: Walk a tile first, otherwise, the bot gets confused.
+	table.insert(_q, {walk.walk, {153, 8, 16}})
+end
+
+local function _sequence_magus_sisters()
 	-- Prepare the party for the Magus Sisters battle.
 	local weapon, quantity = game.character.get_equipment(game.character.get_slot(game.CHARACTER.CECIL), game.EQUIP.R_HAND)
 
@@ -3255,9 +3260,7 @@ local function _sequence_flamedog()
 	-- Walk to the top floor of the tower.
 	table.insert(_q, {walk.walk, {153, 8, 20}})
 	table.insert(_q, {walk.walk, {153, 2, 20}})
-end
 
-local function _sequence_magus_sisters()
 	-- Step Route: Tower of Zot 2F [after FlameDog]
 	for i = 1, route.get_value("E309901") / 2 do
 		table.insert(_q, {walk.walk, {153, 3, 20}})
@@ -6113,7 +6116,7 @@ local _sequences = {
 	{title = "Kainazzo",       f = _sequence_kainazzo,       map_area = 3, map_id = 42,  map_x = 8,   map_y = 4},
 	{title = "Dark Elf",       f = _sequence_dark_elf,       map_area = 0, map_id = nil, map_x = 102, map_y = 155},
 	{title = "FlameDog",       f = _sequence_flamedog,       map_area = 3, map_id = 147, map_x = 13,  map_y = 7},
-	{title = "Magus Sisters",  f = _sequence_magus_sisters,  map_area = 3, map_id = 153, map_x = 2,   map_y = 20},
+	{title = "Magus Sisters",  f = _sequence_magus_sisters,  map_area = 3, map_id = 153, map_x = 8,   map_y = 16},
 	{title = "Valvalis",       f = _sequence_valvalis,       map_area = 3, map_id = 157, map_x = 15,  map_y = 16},
 	{title = "Calbrena",       f = _sequence_calbrena,       map_area = 3, map_id = 52,  map_x = 6,   map_y = 4},
 	{title = "Dr.Lugae",       f = _sequence_dr_lugae,       map_area = 3, map_id = 265, map_x = 10,  map_y = 8},
