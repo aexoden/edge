@@ -363,6 +363,7 @@ local function _manage_inventory(limit, fixed_only, reset)
 	local goal_inventory = _get_goal_inventory(inventory_data, false)
 	local current_position = 0
 	local search = true
+	local flip = false
 
 	if #_state.inventory > 0 then
 		search = false
@@ -439,10 +440,19 @@ local function _manage_inventory(limit, fixed_only, reset)
 				if not menu_open then
 					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
 					menu_open = true
+
+					if best[3] < best [2] then
+						flip = true
+					end
 				end
 
-				table.insert(_state.q, {menu.battle.item.select, {nil, best[2]}})
-				table.insert(_state.q, {menu.battle.item.select, {nil, best[3]}})
+				if flip then
+					table.insert(_state.q, {menu.battle.item.select, {nil, best[3]}})
+					table.insert(_state.q, {menu.battle.item.select, {nil, best[2]}})
+				else
+					table.insert(_state.q, {menu.battle.item.select, {nil, best[2]}})
+					table.insert(_state.q, {menu.battle.item.select, {nil, best[3]}})
+				end
 			end
 
 			local tmp = current_inventory[best[2]]
@@ -1277,6 +1287,9 @@ local function _battle_general(character, turn, strat)
 
 			_command_fight()
 		end
+	else
+		_command_wait_text("Retreat ")
+		_manage_inventory(nil)
 	end
 end
 
