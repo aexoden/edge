@@ -3155,12 +3155,20 @@ local function _sequence_flamedog()
 		table.insert(_q, {walk.walk, {85, 9, 7}})
 	end
 
-	table.insert(_q, {walk.walk, {85, 9, 4}})
+	table.insert(_q, {walk.walk, {85, 9, 6}})
 	table.insert(_q, {walk.walk, {85, 9, 0, true}})
 	table.insert(_q, {walk.walk, {86, 5, 15}})
 
 	-- Leave the castle and walk to the Fire sword chest.
 	table.insert(_q, {menu.field.open, {}})
+
+	if game.character.get_stat(game.CHARACTER.TELLAH, "mp") < 25 then
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.ALL, [game.CHARACTER.YANG] = _RESTORE.HP}}})
+	else
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.HP}}})
+	end
+
+	table.insert(_q, {menu.field.form.move, {game.CHARACTER.CECIL, 3}})
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.TELLAH}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
@@ -3218,7 +3226,12 @@ local function _sequence_flamedog()
 	table.insert(_q, {walk.walk, {153, 8, 15}})
 
 	-- Heal, turn to the chest, and engage FlameDog.
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.ALL, [game.CHARACTER.YANG] = _RESTORE.HP}, nil, true}})
+	if game.character.get_stat(game.CHARACTER.TELLAH, "mp") < 25 then
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.ALL, [game.CHARACTER.YANG] = _RESTORE.HP}, nil, true}})
+	else
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.HP}, nil, true}})
+	end
+
 	table.insert(_q, {walk.step, {walk.DIRECTION.LEFT}})
 	table.insert(_q, {walk.interact, {}})
 

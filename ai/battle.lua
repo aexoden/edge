@@ -1210,13 +1210,14 @@ local function _battle_flamedog(character, turn, strat)
 		if turn == 1 then
 			_command_run_buffer()
 			_command_cover(game.CHARACTER.TELLAH)
+			_command_run_buffer()
 		else
 			_command_wait_text(" Ice-2")
 			_command_duplicate(game.EQUIP.R_HAND, true)
-			_state.full_inventory = true
+			_manage_inventory(nil)
 		end
 	elseif character == game.CHARACTER.YANG then
-		_command_parry()
+		_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 	elseif character == game.CHARACTER.TELLAH then
 		_command_black(game.MAGIC.BLACK.ICE2)
 	end
