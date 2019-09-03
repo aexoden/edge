@@ -641,13 +641,13 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.EBLAN] = {
 	{game.ITEM.ITEM.LIFE,       nil, {9}, {}},
 	{game.ITEM.ITEM.ETHER1,     nil, {10}, {}},
 	{game.ITEM.RING.RUNE,       nil, {11}, {}},
-	{game.ITEM.WEAPON.CHANGE,   nil, {12}, {}},
 	{game.ITEM.ITEM.HEAL,       nil, {13}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
 }
 
 _M.inventory["no64-rosa"][game.battle.FORMATION.EBLAN] = {
 	{game.ITEM.ITEM.DARKNESS,   nil, {0}, {}},
+	{game.ITEM.ITEM.ELIXIR,     nil, {1}, {}},
 	{game.ITEM.SHIELD.ICE,      nil, {2}, {}},
 	{game.ITEM.WEAPON.BLIZZARD, nil, {3}, {}},
 	{game.ITEM.WEAPON.ICEBRAND, nil, {4}, {}},
@@ -658,7 +658,6 @@ _M.inventory["no64-rosa"][game.battle.FORMATION.EBLAN] = {
 	{game.ITEM.ITEM.LIFE,       nil, {9}, {}},
 	{game.ITEM.ITEM.ETHER1,     nil, {10}, {}},
 	{game.ITEM.RING.RUNE,       nil, {11}, {}},
-	{game.ITEM.WEAPON.CHANGE,   nil, {12}, {}},
 	{game.ITEM.ITEM.HEAL,       nil, {13}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
 }
@@ -674,12 +673,13 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.RUBICANT] = {
 	{game.ITEM.ITEM.ETHER1,     nil, {9}, {}},
 	{game.ITEM.ITEM.HEAL,       nil, {10}, {}},
 	{game.ITEM.RING.RUNE,       nil, {11}, {}},
-	{game.ITEM.WEAPON.CHANGE,   nil, {12}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
 }
 
 _M.inventory["no64-rosa"][game.battle.FORMATION.RUBICANT] = {
 	{game.ITEM.ITEM.DARKNESS,   nil, {0}, {}},
+	{game.ITEM.ITEM.ELIXIR,     nil, {1}, {}},
+	{game.ITEM.WEAPON.ICEBRAND, nil, {3}, {}},
 	{game.ITEM.ARMOR.WIZARD,    nil, {4}, {}},
 	{game.ITEM.HELM.GAEA,       nil, {5}, {}},
 	{game.ITEM.ITEM.CURE2,      nil, {6}, {}},
@@ -688,7 +688,6 @@ _M.inventory["no64-rosa"][game.battle.FORMATION.RUBICANT] = {
 	{game.ITEM.ITEM.ETHER1,     nil, {9}, {}},
 	{game.ITEM.ITEM.HEAL,       nil, {10}, {}},
 	{game.ITEM.RING.RUNE,       nil, {11}, {}},
-	{game.ITEM.WEAPON.CHANGE,   nil, {12}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
 }
 
@@ -706,6 +705,7 @@ _M.inventory["no64-rosa"][game.battle.FORMATION.ELEMENTS] = {
 	{game.ITEM.RING.STRENGTH,   nil, {1}, {}},
 	{game.ITEM.ITEM.LIFE,       nil, {2}, {}},
 	{game.ITEM.ITEM.HEAL,       nil, {3}, {}},
+	{game.ITEM.WEAPON.ICEBRAND, nil, {4}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
 }
 

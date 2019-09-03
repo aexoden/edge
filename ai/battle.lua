@@ -181,6 +181,7 @@ local function _reset_state()
 		slot = nil,
 		last_action = nil,
 		queued = false,
+		inventory = {},
 		turns = {
 			[0] = 0,
 			[1] = 0,
@@ -303,8 +304,10 @@ local function _get_goal_inventory(inventory_data)
 		end
 
 		if not goal_inventory[i] then
-			goal_inventory[i] = {priority_list[i][2], priority_list[i][3]}
+			goal_inventory[i] = {priority_list[priority_index][2], priority_list[priority_index][3]}
 		end
+
+		priority_index = priority_index + 1
 	end
 
 	local end_index = 47
@@ -334,22 +337,36 @@ local function _compare_inventory_entry(entry1, entry2)
 	end
 end
 
-local function _manage_inventory(limit, fixed_only)
+local function _manage_inventory(limit, fixed_only, reset)
 	-- Edward cannot manage the inventory if he is currently hidden.
 	if menu.battle.command.has_command(menu.battle.COMMAND.SHOW) then
 		return false
 	end
 
+	if reset then
+		_state.inventory = {}
+	end
+
 	local inventory_data = route.get_inventory(_state.index)
 
 	if memory.read("battle", "enemies") == 0 then
+		log.log("Inventory: No enemies detected. Activating unlimited inventory management.")
 		limit = nil
+	end
+
+	if limit == 0 and #_state.inventory > 0 then
+		return false
 	end
 
 	local menu_open = false
 	local current_inventory = _get_current_inventory()
 	local goal_inventory = _get_goal_inventory(inventory_data, false)
 	local current_position = 0
+	local search = true
+
+	if #_state.inventory > 0 then
+		search = false
+	end
 
 	local fixed_map = {}
 
@@ -363,41 +380,48 @@ local function _manage_inventory(limit, fixed_only)
 		end
 	end
 
-	while not limit or limit > 0 do
+	while true do
 		local best = {nil, nil, nil}
 
-		for i = 0, 47 do
-			if not _compare_inventory_entry(current_inventory[i], goal_inventory[i]) then
-				for j = 0, 47 do
-					if i ~= j and current_inventory[i] ~= nil and not _compare_inventory_entry(current_inventory[j], goal_inventory[j]) and _compare_inventory_entry(current_inventory[i], goal_inventory[j]) then
-						local item_i = 0
-						local item_j = 0
+		if limit and limit > 0 and #_state.inventory > 0 then
+			best = {-1, _state.inventory[1][1], _state.inventory[1][2]}
+			table.remove(_state.inventory, 1)
+		end
 
-						if current_inventory[i] then
-							item_i = current_inventory[i][1]
-						end
+		if search then
+			for i = 0, 47 do
+				if not _compare_inventory_entry(current_inventory[i], goal_inventory[i]) then
+					for j = 0, 47 do
+						if i ~= j and current_inventory[i] ~= nil and not _compare_inventory_entry(current_inventory[j], goal_inventory[j]) and _compare_inventory_entry(current_inventory[i], goal_inventory[j]) then
+							local item_i = 0
+							local item_j = 0
 
-						if current_inventory[j] then
-							item_j = current_inventory[j][1]
-						end
-
-						local factor = 1
-
-						if current_inventory[j] == goal_inventory[i] and current_inventory[i] == goal_inventory[j] then
-							factor = 2
-						end
-
-						if not fixed_only or fixed_map[item_i] or fixed_map[item_j] then
-							local distance = (math.abs(i - current_position) + math.abs(j - i)) / factor
-
-							if not best[1] or distance < best[1] then
-								best = {distance, i, j}
+							if current_inventory[i] then
+								item_i = current_inventory[i][1]
 							end
 
-							distance = (math.abs(j - current_position) + math.abs(i - j)) / factor
+							if current_inventory[j] then
+								item_j = current_inventory[j][1]
+							end
 
-							if not best[1] or distance < best[1] then
-								best = {distance, j, i}
+							local factor = 1
+
+							if current_inventory[j] == goal_inventory[i] and current_inventory[i] == goal_inventory[j] then
+								factor = 2
+							end
+
+							if not fixed_only or fixed_map[item_i] or fixed_map[item_j] then
+								local distance = (math.abs(i - current_position) + math.abs(j - i)) / factor
+
+								if not best[1] or distance < best[1] then
+									best = {distance, i, j}
+								end
+
+								distance = (math.abs(j - current_position) + math.abs(i - j)) / factor
+
+								if not best[1] or distance < best[1] then
+									best = {distance, j, i}
+								end
 							end
 						end
 					end
@@ -405,34 +429,38 @@ local function _manage_inventory(limit, fixed_only)
 			end
 		end
 
-		if limit then
-			limit = limit - 1
-		end
-
 		if best[1] then
-			log.log(string.format("Inventory: Swapping slots %d and %d", best[2], best[3]))
+			if limit and limit == 0 then
+				log.log(string.format("Inventory: Queueing slots %d and %d", best[2], best[3]))
+				table.insert(_state.inventory, {best[2], best[3]})
+			else
+				log.log(string.format("Inventory: Swapping slots %d and %d", best[2], best[3]))
 
-			if not menu_open then
-				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
-				menu_open = true
+				if not menu_open then
+					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+					menu_open = true
+				end
+
+				table.insert(_state.q, {menu.battle.item.select, {nil, best[2]}})
+				table.insert(_state.q, {menu.battle.item.select, {nil, best[3]}})
 			end
-
-			table.insert(_state.q, {menu.battle.item.select, {nil, best[2]}})
-			table.insert(_state.q, {menu.battle.item.select, {nil, best[3]}})
 
 			local tmp = current_inventory[best[2]]
 			current_inventory[best[2]] = current_inventory[best[3]]
 			current_inventory[best[3]] = tmp
 
 			current_position = best[3]
-
-			if limit and limit == 0 then
-				break
-			end
 		else
-			log.log("Inventory: Couldn't find anything to move")
-			_state.disable_inventory = true
+			if #_state.inventory == 0 then
+				log.log("Inventory: Couldn't find anything to move")
+				_state.disable_inventory = true
+			end
+
 			break
+		end
+
+		if limit and limit > 0 then
+			limit = limit - 1
 		end
 	end
 
