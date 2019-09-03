@@ -2298,7 +2298,11 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 					_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 				else
 					_command_wait_text("TrashCan", 180)
-					_command_equip(character, game.ITEM.WEAPON.CHANGE)
+
+					if game.item.get_count(game.ITEM.WEAPON.CHANGE, game.INVENTORY.BATTLE) > 0 then
+						_command_equip(character, game.ITEM.WEAPON.CHANGE)
+					end
+
 					_manage_inventory(nil)
 
 					_state.alternate = true
