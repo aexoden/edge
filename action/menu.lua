@@ -507,11 +507,15 @@ function _M.field.item.close()
 	return _M.field.close_submenu(_M.field.item.is_open())
 end
 
-function _M.field.item.select(item, index)
+function _M.field.item.select(item, index, closest)
 	local cursor = _M.field.item.get_cursor()
 
+	if closest then
+		index = cursor
+	end
+
 	if item then
-		index = game.item.get_index(item, index)
+		index = game.item.get_index(item, index, closest)
 	end
 
 	if cursor then

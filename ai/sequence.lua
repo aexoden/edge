@@ -270,8 +270,8 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 				table.insert(stack, {menu.field.item.open, {}})
 
 				if underflow_target_hp == 0 then
-					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
-					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
+					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE, nil, true}})
+					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE, nil, true}})
 					table.insert(stack, {menu.field.item.select_character, {underflow_target}})
 
 					life[underflow_target] = nil

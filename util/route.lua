@@ -225,7 +225,7 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.MOMBOMB] = {
 	{game.ITEM.ITEM.CARROT,     nil, {4}, {}},
 	{game.ITEM.ITEM.TRASHCAN,   nil, {6}, {}},
 	{game.ITEM.ARMS.IRON,       nil, {8}, {}},
-	{game.ITEM.ITEM.LIFE,         1, {9}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
 	{game.ITEM.WEAPON.CHANGE,   nil, {11}, {}},
 }
 
@@ -236,7 +236,7 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.GENERAL] = {
 	{game.ITEM.ITEM.TRASHCAN,   nil, {6}, {}},
 	{game.ITEM.ARMS.IRON,       nil, {8}, {}},
 	{game.ITEM.WEAPON.CHANGE,   nil, {11}, {}},
-	{game.ITEM.ITEM.LIFE,         1, {15}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
 }
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.WEEPER] = _M.inventory["no64-excalbur"][game.battle.FORMATION.GENERAL]

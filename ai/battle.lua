@@ -2336,6 +2336,19 @@ local function _battle_mombomb(character, turn, strat)
 		_command_wait_frames(60)
 		return true
 	else
+		if memory.read("battle", "enemies") <= 2 and not _state.bomb_waited then
+			_command_wait_text("Dancing ", 180)
+			_state.bomb_waited = true
+			return true
+		end
+
+		if memory.read("battle", "enemies") <= 2 and worst_hp == 0 and game.item.get_index(game.ITEM.ITEM.LIFE, 0, game.INVENTORY.BATTLE) then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, worst_index)
+			return false
+		elseif memory.read("battle", "enemies") <= 2 then
+			_manage_inventory(1)
+		end
+
 		if character == game.CHARACTER.ROSA then
 			if game.enemy.get_stat(1, "hp") < game.enemy.get_stat(2, "hp") then
 				_command_aim(menu.battle.TARGET.ENEMY, 1)
@@ -2924,7 +2937,7 @@ local _formations = {
 	[game.battle.FORMATION.MAGE]     = {title = "Mages",                            f = _battle_mages,    split = false},
 	[game.battle.FORMATION.MILON]    = {title = "Milon",                            f = _battle_milon,    split = true},
 	[game.battle.FORMATION.MILON_Z]  = {title = "Milon Z.",                         f = _battle_milon_z,  split = true},
-	[game.battle.FORMATION.MOMBOMB]  = {title = "MomBomb",                          f = _battle_mombomb,  split = true,  full_inventory = true},
+	[game.battle.FORMATION.MOMBOMB]  = {title = "MomBomb",                          f = _battle_mombomb,  split = true},
 	[game.battle.FORMATION.OCTOMAMM] = {title = "Octomamm",                         f = _battle_octomamm, split = true},
 	[game.battle.FORMATION.OFFICER]  = {title = "Officer/Soldiers",                 f = _battle_officer,  split = true},
 	[game.battle.FORMATION.ORDEALS1] = {title = "Lilith x1, Red Bone x2",           f = _battle_ordeals,  split = false},

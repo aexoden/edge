@@ -634,7 +634,7 @@ function _M.item.get_count(item, inventory)
 	return count
 end
 
-function _M.item.get_index(item, index, inventory)
+function _M.item.get_index(item, index, inventory, closest)
 	local category, key
 
 	if inventory == _M.INVENTORY.BATTLE then
@@ -652,16 +652,23 @@ function _M.item.get_index(item, index, inventory)
 
 	for i = 0, 47 do
 		if memory.read(category, key, i) == item then
-			if index then
+			if index and not closest then
 				if count == index then
 					return i
 				end
 			else
 				local number = memory.read(category, "item_count", i)
 
-				if number < best_count then
-					best = i
-					best_count = number
+				if closest then
+					if math.abs(i - index) < best_count then
+						best = i
+						best_count = math.abs(i - index)
+					end
+				else
+					if number < best_count then
+						best = i
+						best_count = number
+					end
 				end
 			end
 
