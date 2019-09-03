@@ -3320,7 +3320,7 @@ local function _sequence_magus_sisters()
 	-- Prepare the party for battle.
 	local weapon, quantity = game.character.get_equipment(game.character.get_slot(game.CHARACTER.CECIL), game.EQUIP.R_HAND)
 
-	if quantity == 255 then
+	if weapon == 0 and quantity == 1 then
 		table.insert(_q, {menu.field.open, {}})
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
@@ -3375,7 +3375,7 @@ local function _sequence_valvalis()
 
 	local weapon, quantity = game.character.get_equipment(game.character.get_slot(game.CHARACTER.CECIL), game.EQUIP.R_HAND)
 
-	if quantity == 255 then
+	if weapon == 0 and quantity == 1 then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
