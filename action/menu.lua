@@ -511,7 +511,11 @@ function _M.field.item.select(item, index, closest)
 	local cursor = _M.field.item.get_cursor()
 
 	if closest then
-		index = cursor
+		if cursor then
+			index = cursor
+		else
+			index = 0
+		end
 	end
 
 	if item then

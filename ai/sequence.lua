@@ -376,8 +376,8 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 		-- Use Life items on anyone dead.
 		for character, hp in pairs(target_hp) do
 			if life[character] then
-				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
-				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE, nil, true}})
+				table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE, nil, true}})
 				table.insert(stack, {menu.field.item.select_character, {character}})
 
 				life[character] = nil
