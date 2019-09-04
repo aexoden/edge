@@ -1302,42 +1302,56 @@ local function _battle_girl(character, turn, strat)
 end
 
 local function _battle_golbez(character, turn, strat)
-	if not _state.stage then
-		_state.stage = 0
-	end
-
 	if character == game.CHARACTER.CECIL then
-		if turn == 1 then
-			_state.full_inventory = true
+		local fire_count = game.item.get_count(game.ITEM.WEAPON.FIRE, game.INVENTORY.BATTLE)
+		local hand, current_weapon = game.character.get_weapon(character, true)
 
-			if ROUTE == "nocw" then
-				if _state.stage == 0 then
-					_command_wait_text("Golbez:HA", 600)
-					_manage_inventory(1, true)
-					_state.stage = 1
-					return true
-				elseif _state.stage == 1 then
-					_command_wait_text(" Is t", 600)
-					_manage_inventory(1, true)
-					_state.stage = 2
-					return true
-				elseif _state.stage == 2 then
-					_command_wait_text(" Now", 600)
-					_manage_inventory(1, true)
-					_state.stage = 3
-					return true
-				elseif _state.stage == 3 then
-					_command_wait_text(" Wait", 600)
-					_manage_inventory(1, true)
-					_state.stage = 4
-					return true
-				else
-					_command_wait_text(" Meal", 600)
-					_manage_inventory(nil, true)
-				end
+		local target_weapon = current_weapon
+
+		if current_weapon ~= game.ITEM.WEAPON.FIRE and fire_count > 0 then
+			target_weapon = game.ITEM.WEAPON.FIRE
+		elseif current_weapon ~= game.ITEM.WEAPON.FIRE and current_weapon ~= game.ITEM.WEAPON.LEGEND then
+			target_weapon = game.ITEM.WEAPON.LEGEND
+		end
+
+		if turn == 1 then
+			if not _state.stage then
+				_command_wait_text("Golbez:HA", 600)
+				_command_equip(character, target_weapon)
+				_state.stage = 0
+				return true
 			end
 
-			_command_wait_text("Golbez:An")
+			if _state.stage == 0 then
+				_manage_inventory(2)
+				_state.stage = 1
+				return true
+			elseif _state.stage == 1 then
+				_command_wait_text(" Is t", 600)
+				_manage_inventory(2)
+				_state.stage = 2
+				return true
+			elseif _state.stage == 2 then
+				_command_wait_text(" Now", 600)
+				_manage_inventory(2)
+				_state.stage = 3
+				return true
+			elseif _state.stage == 3 then
+				_command_wait_text(" Wait", 600)
+				_manage_inventory(1)
+				_state.stage = 4
+				return true
+			elseif _state.stage == 4 then
+				_command_wait_text(" the r", 600)
+				_manage_inventory(1)
+				_state.stage = 5
+				return true
+			elseif _state.stage == 5 then
+				_command_wait_text(" Meal", 600)
+				_manage_inventory(48)
+			end
+
+			_command_wait_text("Golbez:An", 600)
 		end
 
 		_command_fight()
@@ -1347,7 +1361,6 @@ local function _battle_golbez(character, turn, strat)
 			_command_run_buffer()
 			_command_wait_frames(30)
 			_command_jump()
-			_state.full_inventory = true
 		elseif game.enemy.get_stat(0, "hp") < 20500 then
 			if ROUTE == "nocw" then
 				_manage_inventory(nil, true)
@@ -2736,6 +2749,8 @@ local function _battle_valvalis(character, turn, strat)
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
 		elseif cecil_hp == 0 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		elseif rosa_hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif game.character.is_status(game.CHARACTER.KAIN, game.STATUS.STONE) then
 			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
 		elseif game.character.is_status(game.CHARACTER.CECIL, game.STATUS.STONE) then

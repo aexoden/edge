@@ -3391,7 +3391,7 @@ local function _sequence_valvalis()
 	end
 
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.ROSA}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.HEADBAND}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.KARATE}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.SILVER}})
 	table.insert(_q, {menu.field.equip.close, {}})
@@ -3400,8 +3400,6 @@ local function _sequence_valvalis()
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.HEADBAND}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.KARATE}})
 	table.insert(_q, {menu.field.equip.close, {}})
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.KAIN, game.CHARACTER.CECIL, game.FORMATION.THREE_FRONT}})
-	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.CECIL, game.CHARACTER.ROSA}})
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.LIFE, [game.CHARACTER.YANG] = _RESTORE.LIFE, [game.CHARACTER.CID] = _RESTORE.LIFE}}})
 	table.insert(_q, {menu.field.close, {}})
 

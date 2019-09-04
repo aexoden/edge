@@ -540,16 +540,32 @@ _M.inventory["nocw"][game.battle.FORMATION.SISTERS] = {
 _M.inventory["no64-excalbur"][game.battle.FORMATION.VALVALIS] = {
 	{game.ITEM.WEAPON.FIRE,     nil, {0}, {}},
 	{game.ITEM.WEAPON.DANCING,  nil, {1}, {}},
+	{game.ITEM.WEAPON.LEGEND,   nil, {2}, {}},
 	{game.ITEM.ITEM.CURE2,      nil, {3}, {}},
 	{game.ITEM.ITEM.LIFE,       nil, {5}, {}},
-	{game.ITEM.HELM.GAEA,       nil, {6}, {}},
-	{game.ITEM.ITEM.ETHER1,     nil, {7}, {}},
-	{game.ITEM.HELM.TIARA,      nil, {8}, {}},
-	{game.ITEM.ARMOR.PRISONER,  nil, {9}, {}},
-	{game.ITEM.WEAPON.CHANGE,   nil, {10}, {}},
-	{game.ITEM.WEAPON.LEGEND,   nil, {11}, {}},
-	{game.ITEM.ITEM.HEAL,       nil, {12}, {}},
-	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
+	{game.ITEM.ARMOR.PRISONER,  nil, {7}, {}},
+	{game.ITEM.HELM.GAEA,       nil, {8}, {}},
+	{game.ITEM.WEAPON.CHANGE,   nil, {11}, {}},
+	{game.ITEM.ITEM.ETHER1,     nil, {13}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {15}, {}},
+	{game.ITEM.HELM.TIARA,      nil, {16}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
+}
+
+_M.inventory["no64-rosa"][game.battle.FORMATION.VALVALIS] = {
+	{game.ITEM.WEAPON.FIRE,     nil, {0}, {}},
+	{game.ITEM.WEAPON.DANCING,  nil, {1}, {}},
+	{game.ITEM.WEAPON.LEGEND,   nil, {2}, {}},
+	{game.ITEM.ITEM.CURE2,      nil, {3}, {}},
+	{game.ITEM.ITEM.LIFE,       nil, {5}, {}},
+	{game.ITEM.ARMOR.PRISONER,  nil, {7}, {}},
+	{game.ITEM.HELM.GAEA,       nil, {8}, {}},
+	{game.ITEM.WEAPON.CHANGE,   nil, {11}, {}},
+	{game.ITEM.ITEM.ETHER1,     nil, {13}, {}},
+	{game.ITEM.HELM.HEADBAND,   nil, {14}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {15}, {}},
+	{game.ITEM.HELM.TIARA,      nil, {16}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
 }
 
 _M.inventory["nocw"][game.battle.FORMATION.VALVALIS] = {
@@ -569,21 +585,34 @@ _M.inventory["nocw"][game.battle.FORMATION.VALVALIS] = {
 }
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.CALBRENA] = {
-	{game.ITEM.WEAPON.FIRE,     nil, {0}, {}},
+	{game.ITEM.WEAPON.LEGEND,   nil, {1}, {}},
+	{game.ITEM.ITEM.CURE2,      nil, {3}, {}},
+	{game.ITEM.ITEM.LIFE,       nil, {5}, {}},
+	{game.ITEM.ARMOR.PRISONER,  nil, {7}, {}},
+	{game.ITEM.HELM.TIARA,      nil, {8}, {}},
+	{game.ITEM.WEAPON.CHANGE,   nil, {9}, {}},
+	{game.ITEM.WEAPON.DANCING,  nil, {12}, {}},
+	{game.ITEM.ITEM.ETHER1,     nil, {13}, {}},
+	{game.ITEM.WEAPON.DANCING,    1, {14}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {15}, {}},
+	{game.ITEM.HELM.GAEA,       nil, {16}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
+}
+
+_M.inventory["no64-rosa"][game.battle.FORMATION.CALBRENA] = {
 	{game.ITEM.WEAPON.DANCING,  nil, {1}, {}},
 	{game.ITEM.ITEM.CURE2,      nil, {3}, {}},
 	{game.ITEM.ITEM.LIFE,       nil, {5}, {}},
-	{game.ITEM.HELM.GAEA,       nil, {6}, {}},
-	{game.ITEM.ITEM.ETHER1,     nil, {7}, {}},
+	{game.ITEM.ARMOR.PRISONER,  nil, {7}, {}},
 	{game.ITEM.HELM.TIARA,      nil, {8}, {}},
-	{game.ITEM.ARMOR.PRISONER,  nil, {9}, {}},
-	{game.ITEM.WEAPON.CHANGE,   nil, {10}, {}},
-	{game.ITEM.WEAPON.LEGEND,   nil, {11}, {}},
-	{game.ITEM.ITEM.HEAL,       nil, {12}, {}},
-	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
+	{game.ITEM.WEAPON.CHANGE,   nil, {9}, {}},
+	{game.ITEM.WEAPON.DANCING,    1, {12}, {}},
+	{game.ITEM.ITEM.ETHER1,     nil, {13}, {}},
+	{game.ITEM.HELM.HEADBAND,   nil, {14}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {15}, {}},
+	{game.ITEM.HELM.GAEA,       nil, {16}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
 }
-
-_M.inventory["no64-excalbur"][game.battle.FORMATION.GOLBEZ] = _M.inventory["no64-excalbur"][game.battle.FORMATION.CALBRENA]
 
 _M.inventory["nocw"][game.battle.FORMATION.CALBRENA] = {
 	{game.ITEM.WEAPON.FIRE,     nil, {0}, {}},
@@ -600,6 +629,9 @@ _M.inventory["nocw"][game.battle.FORMATION.CALBRENA] = {
 	{game.ITEM.WEAPON.STAFF,      1, {17}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
 }
+
+_M.inventory["no64-excalbur"][game.battle.FORMATION.GOLBEZ] = _M.inventory["no64-excalbur"][game.battle.FORMATION.CALBRENA]
+_M.inventory["no64-rosa"][game.battle.FORMATION.GOLBEZ] = _M.inventory["no64-rosa"][game.battle.FORMATION.CALBRENA]
 
 _M.inventory["nocw"][game.battle.FORMATION.GOLBEZ] = {
 	{game.ITEM.CLAW.FIRECLAW,    68, {1}, {}},
