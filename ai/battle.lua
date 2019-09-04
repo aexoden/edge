@@ -2283,8 +2283,6 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, best)
 		elseif character == game.CHARACTER.CECIL then
 			_command_fight()
-		elseif character == game.CHARACTER.POROM or character == game.CHARACTER.PALOM and palom_hp > 0 and porom_hp > 0 then
-			_command_twin()
 		else
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY)
 		end
