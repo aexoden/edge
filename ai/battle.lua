@@ -1850,6 +1850,11 @@ local function _battle_lugae1(character, turn, strat)
 			_command_fight()
 		end
 	elseif character == game.CHARACTER.YANG then
+		if turn == 2 and game.character.get_stat(game.CHARACTER.YANG, "level") == 17 then
+			_command_wait_text("Dr.:.", 600)
+			_manage_inventory(8)
+		end
+
 		_command_fight()
 	elseif character == game.CHARACTER.RYDIA then
 		if turn == 1 then

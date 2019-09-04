@@ -646,19 +646,34 @@ _M.inventory["nocw"][game.battle.FORMATION.GOLBEZ] = {
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.LUGAE1] = {
 	{game.ITEM.ITEM.DARKNESS,   nil, {0}, {}},
+	{game.ITEM.WEAPON.LEGEND,   nil, {1}, {}},
+	{game.ITEM.CLAW.CATCLAW,    nil, {2}, {}},
+	{game.ITEM.ITEM.CURE2,      nil, {3}, {}},
+	{game.ITEM.ITEM.LIFE,       nil, {5}, {}},
+	{game.ITEM.RING.RUNE,       nil, {7}, {}},
+	{game.ITEM.HELM.GAEA,       nil, {9}, {}},
+	{game.ITEM.WEAPON.DANCING,  nil, {12}, {}},
+	{game.ITEM.ITEM.ETHER1,     nil, {13}, {}},
+	{game.ITEM.WEAPON.DANCING,    1, {14}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {15}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
+}
+
+_M.inventory["no64-rosa"][game.battle.FORMATION.LUGAE1] = {
+	{game.ITEM.ITEM.DARKNESS,   nil, {0}, {}},
 	{game.ITEM.WEAPON.DANCING,  nil, {1}, {}},
 	{game.ITEM.CLAW.CATCLAW,    nil, {2}, {}},
 	{game.ITEM.ITEM.CURE2,      nil, {3}, {}},
-	{game.ITEM.ARMOR.WIZARD,    nil, {4}, {}},
 	{game.ITEM.ITEM.LIFE,       nil, {5}, {}},
-	{game.ITEM.HELM.GAEA,       nil, {6}, {}},
-	{game.ITEM.ITEM.ETHER1,     nil, {7}, {}},
-	{game.ITEM.HELM.TIARA,      nil, {8}, {}},
-	{game.ITEM.RING.RUNE,       nil, {9}, {}},
-	{game.ITEM.WEAPON.CHANGE,   nil, {10}, {}},
-	{game.ITEM.WEAPON.LEGEND,   nil, {11}, {}},
-	{game.ITEM.ITEM.HEAL,       nil, {12}, {}},
-	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
+	{game.ITEM.RING.RUNE,       nil, {7}, {}},
+	{game.ITEM.HELM.GAEA,       nil, {9}, {}},
+	{game.ITEM.ITEM.ELIXIR,     nil, {10}, {}},
+	{game.ITEM.ARMOR.WIZARD,    nil, {11}, {}},
+	{game.ITEM.WEAPON.DANCING,    1, {12}, {}},
+	{game.ITEM.ITEM.ETHER1,     nil, {13}, {}},
+	{game.ITEM.HELM.HEADBAND,   nil, {14}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {15}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
 }
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.LUGAE2] = _M.inventory["no64-excalbur"][game.battle.FORMATION.LUGAE1]
