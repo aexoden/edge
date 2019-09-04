@@ -1092,15 +1092,50 @@ local function _battle_eblan(character, turn, strat)
 
 	local kain_equipped = kain_weapon == game.ITEM.WEAPON.BLIZZARD
 
-	if character == game.CHARACTER.KAIN and not kain_equipped then
-		_command_equip(character, game.ITEM.WEAPON.BLIZZARD)
-		_command_parry()
-	elseif not kain_equipped and game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
-		_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
-	elseif not kain_equipped then
-		_command_parry()
+	if character ~= game.CHARACTER.KAIN then
+		if not kain_equipped and game.character.get_stat(game.CHARACTER.KAIN, "hp", true) == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		elseif not kain_equipped then
+			_command_parry()
+		end
 	else
-		return true
+		if not _state.stage then
+			_command_wait_text("Edge:Da", 600)
+			_command_equip(character, game.ITEM.WEAPON.BLIZZARD)
+			_manage_inventory(4)
+			_state.stage = 1
+			return true
+		elseif _state.stage == 1 then
+			_command_wait_text("Edge:It", 600)
+			_manage_inventory(2)
+			_state.stage = 2
+			return true
+		elseif _state.stage == 2 then
+			_command_wait_text("They be", 600)
+			_manage_inventory(2)
+			_state.stage = 3
+			return true
+		elseif _state.stage == 3 then
+			_command_wait_text("King:Ed", 600)
+			_manage_inventory(2)
+			_state.stage = 4
+			return true
+		elseif _state.stage == 4 then
+			_command_wait_text(" We're", 600)
+			_manage_inventory(2)
+			_state.stage = 5
+			return true
+		elseif _state.stage == 5 then
+			_command_wait_text(" We must", 600)
+			_manage_inventory(2)
+			_state.stage = 6
+			return true
+		elseif _state.stage == 6 then
+			_command_wait_text("Queen:", 600)
+			_manage_inventory(2)
+			_state.stage = 7
+			return true
+		end
 	end
 end
 
@@ -3027,7 +3062,7 @@ local _formations = {
 	[game.battle.FORMATION.DARK_ELF] = {title = "Dark Elf",                         f = _battle_dark_elf, split = true},
 	[game.battle.FORMATION.DARK_IMP] = {title = "Dark Imps",                        f = _battle_dark_imp, split = true},
 	[game.battle.FORMATION.DRAGOON]  = {title = "Dragoon",                          f = _battle_dragoon,  split = true},
-	[game.battle.FORMATION.EBLAN]    = {title = "K.Eblan/Q.Eblan",                  f = _battle_eblan,    split = true,  full_inventory = true},
+	[game.battle.FORMATION.EBLAN]    = {title = "K.Eblan/Q.Eblan",                  f = _battle_eblan,    split = true},
 	[game.battle.FORMATION.ELEMENTS] = {title = "Elements",                         f = _battle_elements, split = true},
 	[game.battle.FORMATION.FLAMEDOG] = {title = "FlameDog",                         f = _battle_flamedog, split = true},
 	[game.battle.FORMATION.GARGOYLE] = {title = "Gargoyle",                         f = _battle_gargoyle, split = false},
