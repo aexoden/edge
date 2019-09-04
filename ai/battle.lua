@@ -893,7 +893,10 @@ local function _battle_cpu(character, turn, strat)
 						_command_parry()
 					end
 				else
-					_command_wait_text("White")
+					_command_wait_text(" Meteo", 180)
+					_manage_inventory(6)
+					_command_wait_text(" White", 600)
+					_manage_inventory(4)
 					_state.edge_waited = true
 					return true
 				end
@@ -910,6 +913,7 @@ local function _battle_cpu(character, turn, strat)
 				_command_run_buffer()
 
 				if game.enemy.get_stat(0, "hp") < 1000 then
+					_state.virus = true
 					_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 				else
 					_command_black(game.MAGIC.BLACK.NUKE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
@@ -919,11 +923,18 @@ local function _battle_cpu(character, turn, strat)
 			end
 		elseif character == game.CHARACTER.ROSA then
 			if turn == 1 then
-				_command_wait_text("Wall ")
+				_command_wait_text(" Wall", 180)
 				_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 			elseif turn == 2 then
 				_command_run_buffer()
 				_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+			elseif turn == 3 then
+				if _state.virus then
+					_command_wait_text(" Virus")
+				else
+					_command_wait_text(" Nuke")
+				end
+				_manage_inventory(48)
 			end
 		elseif character == game.CHARACTER.CECIL then
 			_command_parry()
@@ -1021,7 +1032,7 @@ local function _battle_dark_elf(character, turn, strat)
 	elseif character == game.CHARACTER.YANG then
 		if turn == 1 or turn >= 3 then
 			if not _state.yang_waited and turn == 3 then
-				_command_wait_text(" Weak ", 300)
+				_command_wait_text(" Weak", 300)
 
 				if ROUTE ~= "nocw" then
 					_command_duplicate(game.EQUIP.L_HAND)
@@ -1323,14 +1334,14 @@ local function _battle_general(character, turn, strat)
 			_command_fight()
 		end
 	else
-		_command_wait_text("Retreat ")
+		_command_wait_text("Retreat")
 		_manage_inventory(nil)
 	end
 end
 
 local function _battle_girl(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
-		_command_wait_text("Quake ")
+		_command_wait_text("Quake")
 		_manage_inventory(nil)
 		_command_change()
 	end
@@ -1934,7 +1945,7 @@ local function _battle_lugae2(character, turn, strat)
 			_command_fight()
 		else
 			if turn == 3 then
-				_command_wait_text("Heal  ", 600)
+				_command_wait_text("Heal", 600)
 			end
 
 			_command_fight()
@@ -1954,7 +1965,7 @@ local function _battle_lugae2(character, turn, strat)
 			_command_fight()
 		elseif turn == 2 then
 			if not _state.waited then
-				_command_wait_text("Laser ", 300)
+				_command_wait_text("Laser", 300)
 				_state.waited = true
 				return true
 			end
@@ -2069,14 +2080,14 @@ local function _battle_milon_carrot(character, turn, strat)
 				if game.enemy.get_stat(3, "hp") == 0 then
 					_command_run_buffer()
 				else
-					_command_wait_text("Cure2 ", 60)
+					_command_wait_text("Cure2", 60)
 				end
 
 				_command_parry()
 			elseif turn == 4 then
-				_command_wait_text("Cure2 ", 120)
+				_command_wait_text("Cure2", 120)
 				_manage_inventory(5)
-				_command_wait_text(" Stop ")
+				_command_wait_text(" Stop")
 				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
 				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
 				table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ITEM.CURE2}})
@@ -2094,7 +2105,7 @@ local function _battle_milon_carrot(character, turn, strat)
 			end
 		elseif character == game.CHARACTER.PALOM then
 			if turn == 1 then
-				_command_wait_text("Cure2 ", 300)
+				_command_wait_text("Cure2", 300)
 				_manage_inventory(4)
 				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.BLACK}})
 				_command_wait_frames(100)
@@ -2454,7 +2465,7 @@ local function _battle_mombomb(character, turn, strat)
 		return true
 	else
 		if memory.read("battle", "enemies") <= 2 and not _state.bomb_waited then
-			_command_wait_text("Dancing ", 180)
+			_command_wait_text("Dancing", 180)
 			_state.bomb_waited = true
 			return true
 		end
@@ -2645,7 +2656,7 @@ local function _battle_rubicant(character, turn, strat)
 				_command_fight()
 			else
 				if not _state.cecil_waited then
-					_command_wait_text("Glare ", 600)
+					_command_wait_text("Glare", 600)
 					_command_wait_frames(60)
 					_state.cecil_waited = true
 					return true
@@ -2818,7 +2829,7 @@ local function _battle_valvalis(character, turn, strat)
 		end
 	elseif character == game.CHARACTER.CECIL then
 		if turn == 1 then
-			_command_wait_text(" Weak ", 300)
+			_command_wait_text(" Weak", 300)
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 		else
 			if game.enemy.get_stat(0, "defense_base") > 0 then
@@ -2935,7 +2946,7 @@ local function _battle_zeromus_excalbur(character, turn, strat)
 					_state.waited = nil
 					_state.cecil_nuke = nuke_target == 0
 				else
-					_command_wait_text(" Nuke ")
+					_command_wait_text(" Nuke")
 					_state.waited = true
 					return true
 				end

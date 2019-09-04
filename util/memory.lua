@@ -32,6 +32,8 @@ memory.usememorydomain("CARTROM")
 
 local _characters = {
 	[0x3F] = " ",
+	[0x40] = " ",
+	[0x41] = " ",
 	[0x42] = "A",
 	[0x43] = "B",
 	[0x44] = "C",

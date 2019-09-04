@@ -695,7 +695,7 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.EBLAN] = {
 }
 
 _M.inventory["no64-rosa"][game.battle.FORMATION.EBLAN] = {
-	{game.ITEM.ITEM.DARKNESS,   nil, {0}, {}},
+	{game.ITEM.ITEM.ELIXIR,     nil, {0}, {}},
 	{game.ITEM.WEAPON.DANCING,  nil, {1}, {}},
 	{game.ITEM.ITEM.CURE2,      nil, {3}, {}},
 	{game.ITEM.WEAPON.DWARF,    nil, {4}, {}},
@@ -706,7 +706,6 @@ _M.inventory["no64-rosa"][game.battle.FORMATION.EBLAN] = {
 	{game.ITEM.HELM.GAEA,       nil, {9}, {}},
 	{game.ITEM.ARMOR.WIZARD,    nil, {11}, {}},
 	{game.ITEM.ITEM.ETHER1,     nil, {13}, {}},
-	{game.ITEM.ITEM.ELIXIR,     nil, {14}, {}},
 	{game.ITEM.ITEM.HEAL,       nil, {15}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
 }
@@ -719,17 +718,19 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.ELEMENTS] = {
 	{game.ITEM.ITEM.ELIXIR,     nil, {1}, {}},
 	{game.ITEM.RING.STRENGTH,   nil, {2}, {}},
 	{game.ITEM.ITEM.LIFE,       nil, {3}, {}},
-	{game.ITEM.ITEM.HEAL,       nil, {4}, {}},
-	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {5}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
 }
 
 _M.inventory["no64-rosa"][game.battle.FORMATION.ELEMENTS] = {
 	{game.ITEM.ITEM.ELIXIR,     nil, {0}, {}},
-	{game.ITEM.RING.STRENGTH,   nil, {1}, {}},
-	{game.ITEM.ITEM.LIFE,       nil, {2}, {}},
-	{game.ITEM.ITEM.HEAL,       nil, {3}, {}},
-	{game.ITEM.WEAPON.ICEBRAND, nil, {4}, {}},
-	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
+	{game.ITEM.WEAPON.ICEBRAND, nil, {1}, {}},
+	{game.ITEM.RING.STRENGTH,   nil, {2}, {}},
+	{game.ITEM.ITEM.CURE2,      nil, {3}, {}},
+	{game.ITEM.HELM.HEADBAND,   nil, {4}, {}},
+	{game.ITEM.ITEM.LIFE,       nil, {5}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {15}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
 }
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.CPU] = _M.inventory["no64-excalbur"][game.battle.FORMATION.ELEMENTS]

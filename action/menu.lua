@@ -1027,7 +1027,6 @@ function _M.battle.target(target, index, wait, limit, delay)
 
 		if not index or cursor == index or emu.framecount() > _state.max_frame then
 			input.press({"P1 A"}, delay)
-
 			_state.pressed = true
 		else
 			if index == _M.battle.TARGET.PARTY_ALL or (cursor < _M.battle.TARGET.PARTY and index >= _M.battle.TARGET.PARTY and index < _M.battle.TARGET.PARTY_ALL) then
@@ -1060,8 +1059,6 @@ function _M.battle.target(target, index, wait, limit, delay)
 				end
 			end
 		end
-	elseif _M.battle.is_open() and not _M.battle.is_target() and not _state.pressed then
-
 	elseif _state.pressed then
 		_state.pressed = nil
 		_state.max_frame = nil
@@ -1257,8 +1254,8 @@ end
 
 function _M.battle.magic.cast(spell, target_type, target, wait, limit, delay)
 	if _M.battle.is_open() then
-		if _M.battle.is_target() then
-			_state.select_count = nil
+		if _M.battle.is_target() or _state.pressed then
+			_state.select_frame = nil
 			return _M.battle.target(target_type, target, wait, limit, delay)
 		elseif not _state.select_frame or emu.framecount() - _state.select_frame > 15 then
 			if _M.battle.magic.select(spell) then
