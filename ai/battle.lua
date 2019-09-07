@@ -2468,8 +2468,22 @@ local function _battle_mombomb(character, turn, strat)
 			return true
 		end
 
-		if memory.read("battle", "enemies") <= 2 and worst_hp == 0 and game.item.get_index(game.ITEM.ITEM.LIFE, 0, game.INVENTORY.BATTLE) then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, worst_index)
+		local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
+		local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp", true)
+		local edward_hp = game.character.get_stat(game.CHARACTER.EDWARD, "hp", true)
+
+		local dead_character = nil
+
+		if edward_hp == 0 then
+			dead_character = game.CHARACTER.EDWARD
+		elseif yang_hp == 0 then
+			dead_character = game.CHARACTER.YANG
+		elseif cecil_hp == 0 then
+			dead_character = game.CHARACTER.CECIL
+		end
+
+		if memory.read("battle", "enemies") <= 2 and dead_character and game.item.get_index(game.ITEM.ITEM.LIFE, 0, game.INVENTORY.BATTLE) then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, dead_character)
 			return false
 		elseif memory.read("battle", "enemies") <= 2 then
 			_manage_inventory(1)
