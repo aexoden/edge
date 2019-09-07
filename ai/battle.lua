@@ -1215,7 +1215,7 @@ local function _battle_elements_rosa(character, turn, strat)
 		elseif turn == 3 then
 			_command_black(game.MAGIC.BLACK.FIRE3, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 4 then
-			if game.character.get_stat(game.CHARACTER.EDGE, "hp") == 0 then
+			if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) == 0 then
 				_command_black(game.MAGIC.BLACK.NUKE, menu.battle.TARGET.ENEMY, 0)
 			else
 				_command_black(game.MAGIC.BLACK.ICE3, menu.battle.TARGET.ENEMY, 0)
@@ -1223,7 +1223,7 @@ local function _battle_elements_rosa(character, turn, strat)
 		end
 	elseif character == game.CHARACTER.ROSA then
 		if turn == 1 or turn == 5 then
-			if game.character.get_stat(game.CHARACTER.EDGE, "hp") == 0 then
+			if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) == 0 then
 				_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 			else
 				_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.ENEMY, 0)
@@ -1898,7 +1898,7 @@ local function _battle_lugae1(character, turn, strat)
 			_command_fight()
 		end
 	elseif character == game.CHARACTER.YANG then
-		if turn == 2 and game.character.get_stat(game.CHARACTER.YANG, "level") == 17 then
+		if turn == 2 and game.character.get_stat(game.CHARACTER.YANG, "level", true) == 17 then
 			_command_wait_text("Dr.:.", 600)
 			_manage_inventory(8)
 		end
