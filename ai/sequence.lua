@@ -561,8 +561,8 @@ local function _post_grind_menu()
 		end
 
 		if revive then
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
-			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE, nil, true}})
+			table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.LIFE, nil, true}})
 			table.insert(stack, {menu.field.item.select_character, {game.CHARACTER.EDGE}})
 		end
 
