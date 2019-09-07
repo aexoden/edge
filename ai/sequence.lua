@@ -3237,25 +3237,26 @@ local function _sequence_flamedog()
 	table.insert(_q, {walk.step, {walk.DIRECTION.LEFT}})
 	table.insert(_q, {walk.interact, {}})
 
-	-- TODO: Walk a tile first, otherwise, the bot gets confused.
-	table.insert(_q, {walk.walk, {153, 8, 16}})
-end
-
-local function _sequence_magus_sisters()
 	-- Prepare the party for the Magus Sisters battle.
 	local weapon, quantity = game.character.get_equipment(game.character.get_slot(game.CHARACTER.CECIL), game.EQUIP.R_HAND)
 
 	if weapon == 0 and quantity == 1 then
-		table.insert(_q, {menu.field.open, {}})
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
-		table.insert(_q, {menu.field.equip.close, {}})
-		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH}})
-		table.insert(_q, {menu.field.close, {}})
+	    table.insert(_q, {menu.field.open, {}})
+	    table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+	    table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
+	    table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
+	    table.insert(_q, {menu.field.equip.close, {}})
+	    table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH}})
+	    table.insert(_q, {menu.field.close, {}})
 	else
-		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH, true}})
+	    table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH, true}})
 	end
+
+	table.insert(_q, {walk.walk, {153, 8, 16}})
+end
+
+local function _sequence_magus_sisters()
+
 
 	-- Walk to the top floor of the tower.
 	table.insert(_q, {walk.walk, {153, 8, 20}})

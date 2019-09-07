@@ -297,6 +297,8 @@ end
 function _M.field.open_submenu(menu, is_open)
 	if is_open then
 		return true
+	elseif not _M.field.is_open() then
+		_M.field.open()
 	else
 		_M.field.select(menu)
 	end
@@ -318,6 +320,8 @@ function _M.field.open_submenu_with_character(menu, character, is_open, is_selec
 		else
 			return true
 		end
+	elseif not _M.field.is_open() then
+		_M.field.open()
 	else
 		_M.field.select(menu)
 	end
