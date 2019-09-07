@@ -735,8 +735,9 @@ local function _fix_chocobo()
 
 	table.insert(stack, {walk.walk, {nil, 89, 163}})
 	table.insert(stack, {walk.chase, {210, {6, 7, 8}}})
-	table.insert(stack, {walk.walk, {nil, 90, 163}})
+	table.insert(stack, {walk.walk, {nil, 89, 163}})
 	table.insert(stack, {walk.interact, {}})
+	table.insert(stack, {walk.walk, {nil, 90, 163}})
 
 	while #stack > 0 do
 		table.insert(_q, 1, table.remove(stack))
