@@ -3026,6 +3026,8 @@ local function _battle_zeromus_rosa(character, turn, strat)
 		elseif turn == 3 then
 			if game.enemy.get_stat(1, "hp") > 18050 then
 				_command_fight()
+			elseif game.enemy.get_stat(1, "hp") > 16000 then
+				_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.ENEMY, 1)
 			else
 				_command_parry()
 			end
