@@ -2945,9 +2945,13 @@ local function _battle_zeromus_excalbur(character, turn, strat)
 				_command_dart(game.ITEM.WEAPON.EXCALBUR)
 			end
 		elseif character == game.CHARACTER.KAIN then
-			if turn > 3 and game.character.get_stat(game.CHARACTER.EDGE, "hp", true) < 2000 then
+			if turn == 4 and game.character.get_stat(game.CHARACTER.ROSA, "hp", true) > 0 then
+				_state.rosa_lived = true
+			end
+
+			if turn > 3 and game.character.get_stat(game.CHARACTER.EDGE, "hp", true) < 2000 and _state.rosa_lived then
 				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
-			elseif turn > 3 and game.character.get_stat(game.CHARACTER.KAIN, "hp", true) < 2000 then
+			elseif turn > 3 and game.character.get_stat(game.CHARACTER.KAIN, "hp", true) < 2000 and _state.rosa_lived then
 					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
 			elseif turn <= 3 or turn == 6 or turn == 7 then
 				_command_fight()
