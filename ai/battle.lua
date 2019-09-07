@@ -1360,6 +1360,8 @@ local function _battle_golbez(character, turn, strat)
 			target_weapon = game.ITEM.WEAPON.LEGEND
 		end
 
+		local fixed = ROUTE == "nocw"
+
 		if turn == 1 then
 			if not _state.stage then
 				_command_wait_text("Golbez:HA", 600)
@@ -1369,32 +1371,32 @@ local function _battle_golbez(character, turn, strat)
 			end
 
 			if _state.stage == 0 then
-				_manage_inventory(2)
+				_manage_inventory(2, fixed)
 				_state.stage = 1
 				return true
 			elseif _state.stage == 1 then
 				_command_wait_text(" Is t", 600)
-				_manage_inventory(2)
+				_manage_inventory(2, fixed)
 				_state.stage = 2
 				return true
 			elseif _state.stage == 2 then
 				_command_wait_text(" Now", 600)
-				_manage_inventory(2)
+				_manage_inventory(2, fixed)
 				_state.stage = 3
 				return true
 			elseif _state.stage == 3 then
 				_command_wait_text(" Wait", 600)
-				_manage_inventory(1)
+				_manage_inventory(1, fixed)
 				_state.stage = 4
 				return true
 			elseif _state.stage == 4 then
 				_command_wait_text(" the r", 600)
-				_manage_inventory(1)
+				_manage_inventory(1, fixed)
 				_state.stage = 5
 				return true
 			elseif _state.stage == 5 then
 				_command_wait_text(" Meal", 600)
-				_manage_inventory(48)
+				_manage_inventory(48, fixed)
 			end
 
 			_command_wait_text("Golbez:An", 600)
