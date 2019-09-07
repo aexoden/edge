@@ -874,6 +874,11 @@ local function _battle_cpu(character, turn, strat)
 
 			_command_dart(game.ITEM.WEAPON.EXCALBUR, menu.battle.TARGET.ENEMY, 0)
 		elseif character == game.CHARACTER.CECIL then
+			if turn == 2 then
+				_command_wait_text(" Quake", 180)
+				_manage_inventory(6)
+			end
+
 			_command_fight(menu.battle.TARGET.ENEMY, 0)
 		elseif character == game.CHARACTER.FUSOYA then
 			_command_black(game.MAGIC.BLACK.QUAKE)
@@ -1182,6 +1187,7 @@ local function _battle_elements_excalbur(character, turn, strat)
 	elseif character == game.CHARACTER.EDGE then
 		if turn == 5 then
 			_command_wait_text(" Ice-3")
+			_manage_inventory(6)
 		end
 
 		_command_dart(game.ITEM.WEAPON.EXCALBUR)
