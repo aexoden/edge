@@ -3024,7 +3024,7 @@ local function _battle_zeromus_rosa(character, turn, strat)
 			_command_run_buffer()
 			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 3 then
-			if game.enemy.get_stat(1, "hp") > 18700 then
+			if game.enemy.get_stat(1, "hp") > 18050 then
 				_command_fight()
 			else
 				_command_parry()
