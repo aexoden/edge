@@ -791,6 +791,23 @@ local function _validate_fireclaw()
 	return true
 end
 
+local function _validate_shield()
+	local slot = game.character.get_slot(game.CHARACTER.KAIN)
+	local count = memory.read_stat(slot, "r_hand_count")
+
+	if ROUTE == "no64-excalbur" then
+		slot = game.character.get_slot(game.CHARACTER.CECIL)
+		count = memory.read_stat(slot, "l_hand_count")
+	end
+
+	if count ~= 255 then
+		log.log("Resetting due to failed shield dupe...")
+		_M.end_run()
+	end
+
+	return true
+end
+
 --------------------------------------------------------------------------------
 -- Healing Strategies
 --------------------------------------------------------------------------------
@@ -1174,6 +1191,9 @@ local function _sequence_d_mist()
 end
 
 local function _sequence_clip()
+	-- Ensure that the shield was duplicated.
+	table.insert(_q, {_validate_shield, {}})
+
 	-- Walk toward mist and begin the Mist Clip.
 	table.insert(_q, {walk.walk, {nil, 86, 120}})
 	table.insert(_q, {walk.walk, {nil, 86, 119}})
