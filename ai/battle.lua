@@ -1116,39 +1116,39 @@ local function _battle_eblan(character, turn, strat)
 		end
 	else
 		if not _state.stage then
-			_command_wait_text("Edge:Da", 600)
+			_command_wait_text("Edge:Da", 1200)
 			_command_equip(character, game.ITEM.WEAPON.BLIZZARD)
 			_manage_inventory(4)
 			_state.stage = 1
 			return true
 		elseif _state.stage == 1 then
-			_command_wait_text("Edge:It", 600)
+			_command_wait_text("Edge:It", 1200)
 			_manage_inventory(2)
 			_state.stage = 2
 			return true
 		elseif _state.stage == 2 then
-			_command_wait_text("They be", 600)
+			_command_wait_text("They be", 1200)
 			_manage_inventory(2)
 			_state.stage = 3
 			return true
 		elseif _state.stage == 3 then
-			_command_wait_text("King:Ed", 600)
+			_command_wait_text("King:Ed", 1200)
 			_manage_inventory(2)
 			_state.stage = 4
 			return true
 		elseif _state.stage == 4 then
-			_command_wait_text(" We're", 600)
+			_command_wait_text(" We're", 1200)
 			_manage_inventory(2)
 			_state.stage = 5
 			return true
 		elseif _state.stage == 5 then
-			_command_wait_text(" We must", 600)
+			_command_wait_text(" We must", 1200)
 			_manage_inventory(2)
 			_state.stage = 6
 			return true
 		elseif _state.stage == 6 then
 			_command_wait_text("Queen:", 600)
-			_manage_inventory(2)
+			_manage_inventory(4)
 			_state.stage = 7
 			return true
 		end
