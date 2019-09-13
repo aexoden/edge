@@ -275,6 +275,7 @@ _M.inventory["nocw"][game.battle.FORMATION.MILON] = {
 	{game.ITEM.SHIELD.PALADIN,  nil, {12}, {}},
 	{game.ITEM.ARMS.PALADIN,    nil, {14}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {15}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {16}, {}},
 }
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.MILON_Z] = {
@@ -308,6 +309,7 @@ _M.inventory["nocw"][game.battle.FORMATION.MILON_Z] = {
 	{game.ITEM.ARMS.IRON,       nil, {16}, {}},
 	{game.ITEM.WEAPON.CHANGE,   nil, {17}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {19}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {20}, {}},
 }
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.D_KNIGHT] = {
@@ -340,6 +342,7 @@ _M.inventory["nocw"][game.battle.FORMATION.D_KNIGHT] = {
 	{game.ITEM.ITEM.ETHER1,     nil, {14}, {}},
 	{game.ITEM.ARMS.IRON,       nil, {16}, {}},
 	{game.ITEM.WEAPON.CHANGE,   nil, {17}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {20}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
 }
 
@@ -372,6 +375,7 @@ _M.inventory["nocw"][game.battle.FORMATION.GUARDS] = {
 	{game.ITEM.ITEM.ETHER1,     nil, {14}, {}},
 	{game.ITEM.ARMS.IRON,       nil, {16}, {}},
 	{game.ITEM.WEAPON.CHANGE,   nil, {17}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {20}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
 }
 
@@ -416,6 +420,7 @@ _M.inventory["nocw"][game.battle.FORMATION.BAIGAN] = {
 	{game.ITEM.WEAPON.CURE,      20, {20}, {}},
 	{game.ITEM.CLAW.FIRECLAW,    68, {21}, {}},
 	{game.ITEM.CLAW.THUNDER,      8, {22}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {23}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
 }
 
@@ -457,6 +462,7 @@ _M.inventory["nocw"][game.battle.FORMATION.DARK_ELF] = {
 	{game.ITEM.WEAPON.CURE,      20, {20}, {}},
 	{game.ITEM.CLAW.FIRECLAW,    68, {21}, {}},
 	{game.ITEM.CLAW.THUNDER,      8, {22}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {23}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
 }
 
@@ -495,6 +501,7 @@ _M.inventory["nocw"][game.battle.FORMATION.FLAMEDOG] = {
 	{game.ITEM.WEAPON.CURE,      20, {20}, {}},
 	{game.ITEM.CLAW.FIRECLAW,    68, {21}, {}},
 	{game.ITEM.CLAW.THUNDER,      8, {22}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {23}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
 }
 
@@ -534,6 +541,7 @@ _M.inventory["nocw"][game.battle.FORMATION.SISTERS] = {
 	{game.ITEM.WEAPON.CURE,      20, {20}, {}},
 	{game.ITEM.CLAW.FIRECLAW,    68, {21}, {}},
 	{game.ITEM.CLAW.THUNDER,      8, {22}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {23}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
 }
 
@@ -581,6 +589,7 @@ _M.inventory["nocw"][game.battle.FORMATION.VALVALIS] = {
 	{game.ITEM.WEAPON.CURE,      13, {10, 12, 15, 18}, {}},
 	{game.ITEM.CLAW.ICECLAW,     57, {16}, {}},
 	{game.ITEM.WEAPON.STAFF,      1, {17}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {20}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
 }
 
@@ -627,6 +636,7 @@ _M.inventory["nocw"][game.battle.FORMATION.CALBRENA] = {
 	{game.ITEM.WEAPON.CURE,      13, {10, 12, 15, 18}, {}},
 	{game.ITEM.CLAW.ICECLAW,     57, {16}, {}},
 	{game.ITEM.WEAPON.STAFF,      1, {17}, {}},
+	{game.ITEM.ITEM.HEAL,       nil, {20}, {}},
 	{game.ITEM.ITEM.LIFE,         1, {25}, {}},
 }
 
