@@ -253,8 +253,15 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 		end
 	end
 
+	-- Determine if underflow is necessary.
+	local need_underflow = false
+
+	if underflow_target and game.character.get_stat(underflow_target, "hp") < 1000 then
+		need_underflow = true
+	end
+
 	-- Open the menu if necessary.
-	if open_menu and _count_entries(life) + _count_entries(target_hp) + _count_entries(target_mp) > 0 then
+	if open_menu and (_count_entries(life) + _count_entries(target_hp) + _count_entries(target_mp) > 0 or need_underflow) then
 		table.insert(stack, {menu.field.open, {}})
 		close_menu = true
 	end
