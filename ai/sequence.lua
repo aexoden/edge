@@ -602,6 +602,29 @@ local function _post_grind_menu()
 	end
 end
 
+local function _post_flamedog_menu()
+	local stack = {}
+	local weapon, quantity = game.character.get_equipment(game.character.get_slot(game.CHARACTER.CECIL), game.EQUIP.R_HAND)
+
+	if weapon == 0 and quantity == 1 then
+	    table.insert(stack, {menu.field.open, {}})
+	    table.insert(stack, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+	    table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
+	    table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
+	    table.insert(stack, {menu.field.equip.close, {}})
+	    table.insert(stack, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH}})
+	    table.insert(stack, {menu.field.close, {}})
+	else
+	    table.insert(stack, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH, true}})
+	end
+
+	while #stack > 0 do
+		table.insert(_q, 2, table.remove(stack))
+	end
+
+	return true
+end
+
 local function _pre_milon_menu()
 	local stack = {}
 
@@ -3237,27 +3260,11 @@ local function _sequence_flamedog()
 
 	table.insert(_q, {walk.step, {walk.DIRECTION.LEFT}})
 	table.insert(_q, {walk.interact, {}})
-
-	-- Prepare the party for the Magus Sisters battle.
-	local weapon, quantity = game.character.get_equipment(game.character.get_slot(game.CHARACTER.CECIL), game.EQUIP.R_HAND)
-
-	if weapon == 0 and quantity == 1 then
-	    table.insert(_q, {menu.field.open, {}})
-	    table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
-	    table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
-	    table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
-	    table.insert(_q, {menu.field.equip.close, {}})
-	    table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH}})
-	    table.insert(_q, {menu.field.close, {}})
-	else
-	    table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH, true}})
-	end
-
-	table.insert(_q, {walk.walk, {153, 8, 16}})
 end
 
 local function _sequence_magus_sisters()
-
+	-- Prepare the party for the Magus Sisters battle.
+	table.insert(_q, {_post_flamedog_menu, {}})
 
 	-- Walk to the top floor of the tower.
 	table.insert(_q, {walk.walk, {153, 8, 20}})
@@ -6116,7 +6123,7 @@ local _sequences = {
 	{title = "Kainazzo",       f = _sequence_kainazzo,       map_area = 3, map_id = 42,  map_x = 8,   map_y = 4},
 	{title = "Dark Elf",       f = _sequence_dark_elf,       map_area = 0, map_id = nil, map_x = 102, map_y = 155},
 	{title = "FlameDog",       f = _sequence_flamedog,       map_area = 3, map_id = 147, map_x = 13,  map_y = 7},
-	{title = "Magus Sisters",  f = _sequence_magus_sisters,  map_area = 3, map_id = 153, map_x = 8,   map_y = 16},
+	{title = "Magus Sisters",  f = _sequence_magus_sisters,  map_area = 3, map_id = 153, map_x = 8,   map_y = 15},
 	{title = "Valvalis",       f = _sequence_valvalis,       map_area = 3, map_id = 157, map_x = 15,  map_y = 16},
 	{title = "Calbrena",       f = _sequence_calbrena,       map_area = 3, map_id = 52,  map_x = 6,   map_y = 4},
 	{title = "Dr.Lugae",       f = _sequence_dr_lugae,       map_area = 3, map_id = 265, map_x = 10,  map_y = 8},
