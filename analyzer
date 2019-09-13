@@ -303,6 +303,8 @@ class Log(object):
 			return 'Ragequit because of bad yellow chocobo ({})'.format(format_time(self.last_frame))
 		elif self._reset_for_fireclaw:
 			return 'Ragequit because of failed FireClaw dupe ({})'.format(format_time(self.last_frame))
+		elif self._reset_for_shield:
+			return 'Ragequit because of failed shield dupe ({})'.format(format_time(self.last_frame))
 		elif len(self._battles) > 0 and self._battles[-1]['result'].startswith('Perished'):
 			return 'Died to {} ({})'.format(describe_formation(self._battles[-1]['formation']), format_time(self.last_frame))
 		else:
@@ -344,6 +346,8 @@ class Log(object):
 					self._reset_for_chocobo = True
 				elif line_type == 'reset_for_fireclaw':
 					self._reset_for_fireclaw = True
+				elif line_type == 'reset_for_shield':
+					self._reset_for_shield = True
 				elif line_type == 'battle_start':
 					if current_battle:
 						print('WARNING: A new battle has started without finishing the previous one while parsing {}'.format(filename))
@@ -384,6 +388,7 @@ class Log(object):
 			'reset_for_time': 'Resetting for time...',
 			'reset_for_chocobo': 'Resetting due to bad yellow chocobo...',
 			'reset_for_fireclaw': 'Resetting due to failed FireClaw dupe...',
+			'reset_for_shield': 'Resetting due to failed shield dupe...',
 			'step_seed': 'Encounter Seed: (?P<seed>.*)',
 			'sequence': 'Sequence: (?P<sequence>.*)',
 			'split': 'Split: (?P<split>.*)',
