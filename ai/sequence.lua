@@ -610,23 +610,28 @@ local function _post_grind_menu()
 end
 
 local function _post_flamedog_menu()
-	local stack = {}
-	local weapon, quantity = game.character.get_equipment(game.character.get_slot(game.CHARACTER.CECIL), game.EQUIP.R_HAND)
-
-	if weapon == 0 and quantity == 1 then
-	    table.insert(stack, {menu.field.open, {}})
-	    table.insert(stack, {menu.field.equip.open, {game.CHARACTER.CECIL}})
-	    table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
-	    table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
-	    table.insert(stack, {menu.field.equip.close, {}})
-	    table.insert(stack, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH}})
-	    table.insert(stack, {menu.field.close, {}})
+	-- Only execute if the Fire sword is in the inventory.
+	if game.item.get_count(game.ITEM.WEAPON.FIRE) < 1 then
+		return false
 	else
-	    table.insert(stack, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH, true}})
-	end
+		local stack = {}
+		local weapon, quantity = game.character.get_equipment(game.character.get_slot(game.CHARACTER.CECIL), game.EQUIP.R_HAND)
 
-	while #stack > 0 do
-		table.insert(_q, 2, table.remove(stack))
+		if weapon == 0 and quantity == 1 then
+			table.insert(stack, {menu.field.open, {}})
+			table.insert(stack, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.FIRE}})
+			table.insert(stack, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
+			table.insert(stack, {menu.field.equip.close, {}})
+			table.insert(stack, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH}})
+			table.insert(stack, {menu.field.close, {}})
+		else
+			table.insert(stack, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP}, game.CHARACTER.TELLAH, true}})
+		end
+
+		while #stack > 0 do
+			table.insert(_q, 2, table.remove(stack))
+		end
 	end
 
 	return true
