@@ -3220,7 +3220,7 @@ local function _sequence_flamedog()
 	-- Leave the castle and walk to the Fire sword chest.
 	table.insert(_q, {menu.field.open, {}})
 
-	if game.character.get_stat(game.CHARACTER.TELLAH, "mp") < 15 then
+	if game.character.get_stat(game.CHARACTER.TELLAH, "mp") < 25 then
 		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.ALL, [game.CHARACTER.YANG] = _RESTORE.HP}}})
 	else
 		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.TELLAH] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.HP}}})
