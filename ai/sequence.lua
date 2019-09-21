@@ -256,7 +256,7 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 	-- Determine if underflow is necessary.
 	local need_underflow = false
 
-	if underflow_target and game.character.get_stat(underflow_target, "hp") < 1000 then
+	if underflow_target and game.character.get_stat(underflow_target, "mp") < 1000 then
 		need_underflow = true
 	end
 
