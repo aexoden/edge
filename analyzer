@@ -226,9 +226,11 @@ class Log(object):
 		self._route = None
 		self._rng_seed = None
 		self._step_seed = None
+		self._last_frame = None
 		self._reset_for_time = False
 		self._reset_for_chocobo = False
 		self._reset_for_fireclaw = False
+		self._reset_for_shield = False
 		self._version = None
 
 		self._parse_file(filename)
@@ -273,6 +275,10 @@ class Log(object):
 	@property
 	def splits(self):
 		return self._splits
+
+	@property
+	def valid(self):
+		return self._last_frame is not None
 
 	@property
 	def success(self):
@@ -413,7 +419,7 @@ class Log(object):
 def img_output_battle(f, key, data):
 	colors = ['#ffbfbf', '#ffee00', '#00e2f2', '#3a00d9', '#f20041', '#e56739', '#74d900', '#bff2ff', '#eeb6f2', '#ff8800', '#adcc99', '#00a2f2', '#d900ca', '#ffc480', '#39e695', '#7989f2', '#d96c98']
 
-	figure = plt.figure()
+	figure = plt.figure(figsize=(12.0, 4.8))
 	figure.suptitle('{} Battle Time'.format(describe_formation(data['formation'])))
 
 	axis_min = None
@@ -444,10 +450,10 @@ def img_output_battle(f, key, data):
 		except Exception:
 			kde = None
 
-		subplot.plot(x, numpy.zeros(x.shape), 'b+', ms=20, color=colors[i])
+		subplot.plot(x, numpy.zeros(x.shape), 'b+', ms=20, color=colors[i%len(colors)])
 
 		if kde:
-			subplot.plot(axis, kde(axis), 'k-', color=colors[i], label=strat)
+			subplot.plot(axis, kde(axis), 'k-', color=colors[i%len(colors)], label=strat)
 
 	fontprop = FontProperties()
 	fontprop.set_size('small')
@@ -462,10 +468,10 @@ def img_output_battle(f, key, data):
 	plt.savefig(f)
 	plt.close(figure)
 
-def img_output_runs(f, logs):
+def img_output_runs(f, logs, seed=False):
 	colors = ['#ffbfbf', '#ffee00', '#00e2f2', '#3a00d9', '#f20041', '#e56739', '#74d900', '#bff2ff', '#eeb6f2', '#ff8800', '#adcc99', '#00a2f2', '#d900ca', '#ffc480', '#39e695', '#7989f2', '#d96c98']
 
-	figure = plt.figure()
+	figure = plt.figure(figsize=(12.0, 4.8))
 	figure.suptitle('Run Completion Times')
 
 	axis_min = None
@@ -474,11 +480,16 @@ def img_output_runs(f, logs):
 	values = {}
 
 	for log in logs:
-		if log.success:
-			if log.route not in values:
-				values[log.route] = []
+		if seed:
+			key = '{}-{}'.format(log.route, log.step_seed)
+		else:
+			key = log.route
 
-			values[log.route].append(log.frames * 655171 / 39370000)
+		if log.success:
+			if key not in values:
+				values[key] = []
+
+			values[key].append(log.frames * 655171 / 39375000)
 
 	mintmp = [min(x) for x in values.values() if len(x) > 0]
 	maxtmp = [max(x) for x in values.values() if len(x) > 0]
@@ -869,6 +880,9 @@ def html_output_runs(f, logs):
 	f.write('\t\t\t<h2>Finished Runs Plot</h2>\n')
 	f.write('\t\t\t<img src="img/runs.png">')
 
+	f.write('\t\t\t<h2>Finished Seeds Plot</h2>\n')
+	f.write('\t\t\t<img src="img/seeds.png">')
+
 #-------------------------------------------------------------------------------
 # Main Execution
 #-------------------------------------------------------------------------------
@@ -880,7 +894,12 @@ if not os.path.exists(sys.argv[1]):
 	sys.exit(1)
 
 for filename in sys.argv[2:]:
-	logs.append(Log(filename))
+	log = Log(filename)
+
+	if log.valid:
+		logs.append(log)
+	else:
+		print('WARNING: {} is not a valid log.'.format(filename))
 
 with open(os.path.join(sys.argv[1], 'index.html'), 'w') as f:
 	html_output_header(f)
@@ -898,6 +917,7 @@ os.mkdir(os.path.join(sys.argv[1], 'img'))
 os.mkdir(os.path.join(sys.argv[1], 'runs'))
 
 img_output_runs(os.path.join(sys.argv[1], 'img', 'runs.png'), logs)
+img_output_runs(os.path.join(sys.argv[1], 'img', 'seeds.png'), logs, True)
 
 for log in logs:
 	with open(os.path.join(sys.argv[1], 'runs', '{}-{:03}-{:010}.html'.format(log.route, log.step_seed, log.rng_seed)), 'w') as f:
