@@ -3,22 +3,27 @@
 This list of features and bug fixes isn't necessarily exhaustive, but it does
 provide a good list of improvements that can be made.
 
-## Critical Issues
+## v1.0.0 Issues
+
+These are the issues I want implemented before tagging a 1.0.0 release. The
+primary goal is to have no remaining softlocks.
 
 * If Cecil isn't properly muted in the Calbrena fight, the Golbez fight can fail
   to fully set up the nocw inventory in the event that Kain+Rydia is enough to
   defeat Golbez. Probably no solution other than adding a backup inventory swap
   after the battle.
 
-* Find a way to get the git version info into the script.
-
 * Step routes need to be updated to the latest version as they become available.
 
 * Fix the potential for a failed CatClaw duplication.
 
-* The no64-rosa route occasionally runs out of Cure2 options during the final descent.
-
 * Find a way to reliably detect NoCW bacon.
+
+* Improve the log based on current knowledge of the game's battle system.
+
+* Investigate a quick fix to Cecil gaining too many levels in the Rosa route.
+
+* Review no64-rosa Zeromus fight once more, especially in the cases it fails.
 
 ## Major Features
 
@@ -34,16 +39,6 @@ provide a good list of improvements that can be made.
   battle timing being significantly different. Some battles could benefit from
   knowing what recent actions have been and who the target was.
 
-* Revamp the inventory management system. (This could either rely more heavily
-  on scripted times to manipulate the inventory, or do a better job of detecting
-  when it's safe to do inventory management.) In either case, we could also
-  drastically improve the actual decisions on how to manage the inventory. Each
-  run should be largely the same, so there is little need for a dynamic
-  infrastructure. Additionally, allow inventory management to take place during
-  times when a character is waiting for some event to complete (such as Rydia's
-  first turn in the Dr. Lugae/Balnab battle). Need to identify why the bot's
-  inventory usually ends up more cluttered than a human's.
-
 * Consider making the bot less tolerant of serious time penalties. Currently,
   the bot simply tries to finish as best it can, continuing even after events
   that many human runners would choose to give up after. This would probably be
@@ -56,11 +51,6 @@ provide a good list of improvements that can be made.
   definitely take more risks and not worry so much about dying. The current
   version of the bot is very much a compromise on this front.
 
-* Consider dynamically preventing softlocks by adding code to automatically
-  handle situations where a spell caster hasn't enough MP for a requested spell
-  or when a requested item is unavailable. This has the disadvantage of masking
-  bugs in actual battle code.
-
 * Use data on encounter formations to make decisions. (Examples include healing
   before Arachne or Red Worm battles, delaying the grind fight menu until
   immediately prior to the grind fight, and so on.)
@@ -70,7 +60,10 @@ provide a good list of improvements that can be made.
   around the NPCs.
 
 * Improve the routing of character levels. There is ongoing research on the
-  ideal combination of levels and it may vary by route.
+  ideal combination of levels and it may vary by route. In any case, the
+  route should be dynamic to some extent, allowing for the bot to make up
+  for major experience problems. A large proportion of the current failed
+  no64-rosa runs are the result of Cecil gaining too many levels.
 
 * Simulate human reactions better during battle with regard to decision-making.
   For instance, the bot currently makes its decisions approximately 12 frames
@@ -103,20 +96,8 @@ provide a good list of improvements that can be made.
 
 ## Minor Issues
 
-* Check healing strategy upon immediately entering Zot. Death was observed with
-  only Tellah and Yang alive with a total of approximately ~500 HP.
-
-* Move the IceClaw dupe away from the Magus Sisters battle to avoid needing to
-  revive Yang unconditionally.
-
 * On the off chance the GP is wrong on the nocw route, implement a system to
   fix it.
-
-* Ensure that Yang always equips his IceClaw from the stack of 58 in the nocw
-  route.
-
-* Improve the yellow chocobo handling on the nocw route to fix the bad yellow
-  chocobo. Not really useful for PB attempts, but for potential marathon runs.
 
 ## Battle-Specific Issues
 
@@ -130,25 +111,17 @@ provide a good list of improvements that can be made.
 
 * Restore the Twins' MP if they don't have enough to Twin.
 
-* Rewrite the carrot strategy to use modern strategies and backups.
+* Rewrite the carrot strategy to use modern backups.
 
 ### Milon Z
 
-* Ensure that we switch to backup strats as quickly as possible.
-
-### Magus Sisters
-
-* Avoid healing after the second delta attack, unless necessary.
+* Investigate switching to the Darkness sword strategy.
 
 ### Calbrena
 
 * Not sure how feasible it is, but Yang and/or Rosa being dead at the end of
   this fight seems to be a bad thing, so attempting to revive them may be
   very desirable.
-
-### Dark Elf
-
-### Golbez
 
 ### Dr. Lugae
 
@@ -157,11 +130,6 @@ provide a good list of improvements that can be made.
   Otherwise, an important damage dealer such as Kain dying can have serious
   consequences with regard to defeating the pair simultaneously, which can make
   starting the second battle more difficult.
-
-* Yang should be at least level 15. There are potentially dire consequences if
-  he is not.
-
-### Dark Imps
 
 ### Grind Fight
 
