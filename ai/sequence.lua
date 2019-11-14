@@ -603,10 +603,10 @@ local function _post_grind_menu()
 		local strat = _M.get_battle_strat(game.battle.FORMATION.GRIND)
 
 		if strat == "rosa-battle-speed-2" or strat == "excalbur-battle-speed-2" then
-			table.insert(_q, {menu.field.custom.open, {}})
-			table.insert(_q, {menu.field.custom.select, {menu.field.custom.CHOICE.SPEED}})
-			table.insert(_q, {input.press, {{"P1 Left"}, input.DELAY.MASH}})
-			table.insert(_q, {menu.field.custom.close, {}})
+			table.insert(stack, {menu.field.custom.open, {}})
+			table.insert(stack, {menu.field.custom.select, {menu.field.custom.CHOICE.SPEED}})
+			table.insert(stack, {input.press, {{"P1 Left"}, input.DELAY.MASH}})
+			table.insert(stack, {menu.field.custom.close, {}})
 		end
 
 		table.insert(stack, {menu.field.close, {}})
