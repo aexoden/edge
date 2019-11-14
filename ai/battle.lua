@@ -1593,7 +1593,7 @@ local function _battle_grind(character, turn, strat)
 				end
 			elseif _state.character_index == 1 then
 				if dragon_hp > 0 then
-					if _state.cycle > 2 and _state.attempt_timing_fix and strat == "battle-speed-1" then
+					if _state.cycle > 2 and _state.attempt_timing_fix and (strat == "rosa-battle-speed-1" or strat == "excalbur-battle-speed-1") then
 						_command_wait_text("..Id", 30)
 						table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
 						_command_wait_frames(30)

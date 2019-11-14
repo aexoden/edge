@@ -600,7 +600,9 @@ local function _post_grind_menu()
 			table.insert(stack, {menu.field.magic.close, {}})
 		end
 
-		if _M.get_battle_strat(game.battle.FORMATION.GRIND) == "battle-speed-2" then
+		local strat = _M.get_battle_strat(game.battle.FORMATION.GRIND)
+
+		if strat == "rosa-battle-speed-2" or strat == "excalbur-battle-speed-2" then
 			table.insert(_q, {menu.field.custom.open, {}})
 			table.insert(_q, {menu.field.custom.select, {menu.field.custom.CHOICE.SPEED}})
 			table.insert(_q, {input.press, {{"P1 Left"}, input.DELAY.MASH}})
@@ -5415,10 +5417,15 @@ local function _sequence_grind_start()
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.ROSA, game.CHARACTER.EDGE}})
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.RYDIA, game.CHARACTER.ROSA}})
 
-	_M.set_battle_strat(game.battle.FORMATION.GRIND, {"battle-speed-1", "battle-speed-2"})
+	if ROUTE == "no64-rosa" then
+		_M.set_battle_strat(game.battle.FORMATION.GRIND, {"rosa-battle-speed-1", "rosa-battle-speed-2"})
+	else
+		_M.set_battle_strat(game.battle.FORMATION.GRIND, {"excalbur-battle-speed-1", "excalbur-battle-speed-2"})
+	end
+
 	local strat = _M.get_battle_strat(game.battle.FORMATION.GRIND)
 
-	if strat == "battle-speed-2" then
+	if strat == "rosa-battle-speed-2" or strat == "excalbur-battle-speed-2" then
 		table.insert(_q, {menu.field.custom.open, {}})
 		table.insert(_q, {menu.field.custom.select, {menu.field.custom.CHOICE.SPEED}})
 		table.insert(_q, {input.press, {{"P1 Right"}, input.DELAY.MASH}})
