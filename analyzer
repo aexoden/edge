@@ -108,7 +108,7 @@ def format_time(frames):
 	return '{:.0f}:{:02.0f}:{:05.2f}'.format(seconds // 3600, (seconds // 60) % 60, seconds % 60)
 
 
-def get_battle_data(logs, classified=False, strat=True):
+def get_battle_data(logs, classified=False, strat=True, agility=False):
 	battles = OrderedDict()
 
 	for log in logs:
@@ -126,7 +126,10 @@ def get_battle_data(logs, classified=False, strat=True):
 						battles[key] = {'formation': battle['formation'], 'strat': battle['strat'] if strat else set([battle['strat']]) if battle['strat'] else set(), 'count': 0, 'data': [] if strat or not battle['strat'] else {}}
 
 				if classified:
-					subkey = (battle['type'], ' '.join(map(str, battle['enemy_agility'])), battle['party_formation'])
+					if agility:
+						subkey = (battle['type'], ' '.join(map(str, battle['enemy_agility'])), battle['party_agility'])
+					else:
+						subkey = (battle['type'], ' '.join(map(str, battle['enemy_agility'])), battle['party_formation'])
 
 					if subkey not in battles[key]:
 						battles[key][subkey] = {'formation': battle['formation'], 'strat': battle['strat'] if strat else set([battle['strat']]), 'count': 0, 'data': [] if strat or not battle['strat'] else {}}
@@ -372,6 +375,8 @@ class Log(object):
 					current_battle['enemy_agility'] = list(map(int, fields['agility'].split()))
 				elif line_type == 'battle_party_formation':
 					current_battle['party_formation'] = fields['formation']
+				elif line_type == 'battle_party_agility':
+					current_battle['party_agility'] = fields['agility']
 				elif line_type == 'battle_stop':
 					current_battle['frames'] = int(fields['frames'])
 					current_battle['dropped_gp'] = int(fields['dropped_gp'])
@@ -387,6 +392,7 @@ class Log(object):
 			'battle_strat': 'Battle Strat: (?P<strat>.*)',
 			'battle_enemy_agility': 'Enemy Agility: (?P<agility>.*)',
 			'battle_party_formation': 'Party Formation: (?P<formation>.*)',
+			'battle_party_agility': 'Party Agility: (?P<agility>.*)',
 			'battle_stop': 'Battle Complete: (?P<description>.*) \((?P<formation>.*)/(?P<frames>.*) frames/(?P<dropped_gp>.*) GP dropped/(?P<result>.*)\)',
 			'inventory': 'Inventory: .*',
 			'route': 'Route: (?P<route>.*)',
@@ -399,7 +405,7 @@ class Log(object):
 			'sequence': 'Sequence: (?P<sequence>.*)',
 			'split': 'Split: (?P<split>.*)',
 			'version': 'Version: (?P<version>.*)',
-			'_ignore': '(Edge Final Fantasy IV|--------------------|Beginning Full Run|WARNING|Setting Initial Seed|Yellow Chocobo Coordinates|Current Glitch Floor|Rebooting|Load game screen|New Seed|Setting encounter seed|Detected|Zeromus has|Cecil|Do not have|Action|Party Agility|Party Experience)',
+			'_ignore': '(Edge Final Fantasy IV|--------------------|Beginning Full Run|WARNING|Setting Initial Seed|Yellow Chocobo Coordinates|Current Glitch Floor|Rebooting|Load game screen|New Seed|Setting encounter seed|Detected|Zeromus has|Cecil|Do not have|Action|Battle Menu|Party Experience)',
 		}
 
 		for line_type, regex in regexes.items():
@@ -667,8 +673,31 @@ def html_output_battles(f, logs):
 	f.write('\t\t\t\t</tbody>\n')
 	f.write('\t\t\t</table>\n')
 
+def html_output_table(headers, rows):
+	f.write('\t\t\t<table class="table table-striped">\n')
+	f.write('\t\t\t\t<thead>\n')
+	f.write('\t\t\t\t\t<tr>\n')
 
-def html_output_battle(f, key, battle_data):
+	for header in headers:
+		f.write('\t\t\t\t\t\t<th>{}</th>\n'.format(header))
+
+	f.write('\t\t\t\t\t</tr>\n')
+	f.write('\t\t\t\t</thead>\n')
+	f.write('\t\t\t\t<tbody>\n')
+
+	for row in rows:
+		f.write('\t\t\t\t\t<tr>\n')
+
+		for index, header in enumerate(headers):
+			f.write('\t\t\t\t\t\t<td>{}</td>'.format(row[index]))
+
+		f.write('\t\t\t\t\t</tr>\n')
+
+	f.write('\t\t\t\t</tbody>\n')
+	f.write('\t\t\t</table>\n')
+
+
+def html_output_battle(f, key, battle_data, agility_battle_data):
 	first_data = list(battle_data.values())[0]
 
 	if 'strat' in first_data and first_data['strat']:
@@ -678,43 +707,193 @@ def html_output_battle(f, key, battle_data):
 
 	f.write('\t\t\t<h3>Time Graph</h3>\n')
 	f.write('\t\t\t<p><img src="img/{}.png"></p>'.format(key))
-	f.write('\t\t\t<h3>Data</h3>\n')
-	f.write('\t\t\t<table class="table table-striped">\n')
-	f.write('\t\t\t\t<thead>\n')
-	f.write('\t\t\t\t\t<tr>\n')
-	f.write('\t\t\t\t\t\t<th>Battle Type</th>\n')
-	f.write('\t\t\t\t\t\t<th>Enemy Agility</th>\n')
-	f.write('\t\t\t\t\t\t<th>Party Formation</th>\n')
-	f.write('\t\t\t\t\t\t<th>Battles</th>\n')
-	f.write('\t\t\t\t\t\t<th>Deaths</th>\n')
-	f.write('\t\t\t\t\t\t<th>Best Time</th>\n')
-	f.write('\t\t\t\t\t\t<th>Worst Time</th>\n')
-	f.write('\t\t\t\t\t\t<th>Median Time</th>\n')
-	f.write('\t\t\t\t\t</tr>\n')
-	f.write('\t\t\t\t</thead>\n')
-	f.write('\t\t\t\t<tbody>\n')
 
-	for (battle_type, enemy_agility, party_formation), data in sorted(battle_data.items(), key=lambda x: statistics.median(x[1]['data']) if len(x[1]['data']) > 0 else 1000000):
-		f.write('\t\t\t\t\t<tr>\n')
-		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(battle_type))
-		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(enemy_agility))
-		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(party_formation))
-		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['count']))
-		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['count'] - len(data['data'])))
+	#---------------------------------------------------------------------------
+	# Battle Type Statistics
+	#---------------------------------------------------------------------------
 
-		if len(data['data']) > 0:
-			f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data']))))
-			f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data']))))
-			f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data']))))
+	f.write('\t\t\t<h3>Battle Type Statistics</h3>\n')
+	battle_type_data = {}
+
+	for (battle_type, _, _), data in sorted(battle_data.items()):
+		if battle_type not in battle_type_data:
+			battle_type_data[battle_type] = data
 		else:
-			f.write('\t\t\t\t\t\t<td>N/A</td>\n')
-			f.write('\t\t\t\t\t\t<td>N/A</td>\n')
-			f.write('\t\t\t\t\t\t<td>N/A</td>\n')
+			battle_type_data[battle_type]['count'] += data['count']
+			battle_type_data[battle_type]['data'].extend(data['data'])
 
-		f.write('\t\t\t\t\t</tr>\n')
+	headers = ['Battle Type', 'Battles', 'Deaths', 'Best Time', 'Worst Time', 'Median Time']
+	rows = []
 
-	f.write('\t\t\t\t</tbody>\n')
-	f.write('\t\t\t</table>\n')
+	for battle_type, data in battle_type_data.items():
+		if len(data['data']) > 0:
+			minimum = format_time(min(data['data']))
+			maximum = format_time(max(data['data']))
+			median = format_time(statistics.median(data['data']))
+		else:
+			minimum = 'N/A'
+			maximum = 'N/A'
+			median = 'N/A'
+
+		rows.append([
+			battle_type,
+			data['count'],
+			data['count'] - len(data['data']),
+			minimum,
+			maximum,
+			median,
+		])
+
+	html_output_table(headers, rows)
+
+	#---------------------------------------------------------------------------
+	# Relative Speed Statistics
+	#---------------------------------------------------------------------------
+
+	f.write('\t\t\t<h3>Relative Speed Statistics</h3>\n')
+	battle_type_data = {}
+
+	for (battle_type, enemy_agility_raw, party_agility_raw), data in sorted(agility_battle_data.items()):
+		enemy_agility = [int(x) for x in enemy_agility_raw.split()]
+		party_names = []
+		party_agility = []
+		anchor_agility = None
+
+		for slot in party_agility_raw.split('/'):
+			slot = slot.strip()
+
+			if slot.endswith('empty'):
+				party_names.append(slot)
+				party_agility.append(None)
+			else:
+				tokens = slot.split(':')
+
+				if tokens[0].endswith('Cecil'):
+					anchor_agility = int(tokens[1])
+
+				party_names.append(tokens[0])
+				party_agility.append(int(tokens[1]))
+
+		if anchor_agility is None:
+			for slot in [2, 0, 4, 1, 3]:
+				if not party_names[slot].endswith('empty'):
+					anchor_agility = party_agility[slot]
+					break
+
+		for index in range(len(enemy_agility)):
+			enemy_agility[index] = max(1, anchor_agility * 5 // enemy_agility[index])
+
+		for index in range(len(party_agility)):
+			if party_agility[index] is not None:
+				party_agility[index] = max(1, anchor_agility * 5 // party_agility[index])
+
+		key = '{}-{}-{}'.format(battle_type, '-'.join([str(x) for x in enemy_agility]), '-'.join([str(x) for x in party_agility]))
+
+		if key not in battle_type_data:
+			battle_type_data[key] = data
+			battle_type_data[key]['battle_type'] = battle_type
+			battle_type_data[key]['enemy_rs'] = ' '.join([str(x) for x in enemy_agility])
+
+			party_agility_tokens = []
+
+			for index, name in enumerate(party_names):
+				if name.endswith('empty'):
+					party_agility_tokens.append(name)
+				else:
+					party_agility_tokens.append(':'.join([name, str(party_agility[index])]))
+
+			battle_type_data[key]['party_rs'] = ' / '.join(party_agility_tokens)
+		else:
+			battle_type_data[key]['count'] += data['count']
+			battle_type_data[key]['data'].extend(data['data'])
+
+	headers = ['Battle Type', 'Enemy Speed', 'Party Speed', 'Battles', 'Deaths', 'Best Time', 'Worst Time', 'Median Time']
+	rows = []
+
+	for key, data in sorted(battle_type_data.items()):
+		if len(data['data']) > 0:
+			minimum = format_time(min(data['data']))
+			maximum = format_time(max(data['data']))
+			median = format_time(statistics.median(data['data']))
+		else:
+			minimum = 'N/A'
+			maximum = 'N/A'
+			median = 'N/A'
+
+		rows.append([
+			data['battle_type'],
+			data['enemy_rs'],
+			data['party_rs'],
+			data['count'],
+			data['count'] - len(data['data']),
+			minimum,
+			maximum,
+			median,
+		])
+
+	html_output_table(headers, rows)
+
+	#---------------------------------------------------------------------------
+	# Full Statistics (Agility)
+	#---------------------------------------------------------------------------
+
+	f.write('\t\t\t<h3>Full Statistics (Agility)</h3>\n')
+	headers = ['Battle Type', 'Enemy Agility', 'Party Agility', 'Battles', 'Deaths', 'Best Time', 'Worst Time', 'Median Time']
+	rows = []
+
+	for (battle_type, enemy_agility, party_agility), data in agility_battle_data.items():
+		if len(data['data']) > 0:
+			minimum = format_time(min(data['data']))
+			maximum = format_time(max(data['data']))
+			median = format_time(statistics.median(data['data']))
+		else:
+			minimum = 'N/A'
+			maximum = 'N/A'
+			median = 'N/A'
+
+		rows.append([
+			battle_type,
+			enemy_agility,
+			party_agility,
+			data['count'],
+			data['count'] - len(data['data']),
+			minimum,
+			maximum,
+			median,
+		])
+
+	html_output_table(headers, rows)
+
+	#---------------------------------------------------------------------------
+	# Full Statistics (Level)
+	#---------------------------------------------------------------------------
+
+	f.write('\t\t\t<h3>Full Statistics (Level)</h3>\n')
+	headers = ['Battle Type', 'Enemy Agility', 'Party Agility', 'Battles', 'Deaths', 'Best Time', 'Worst Time', 'Median Time']
+	rows = []
+
+	for (battle_type, enemy_agility, party_agility), data in battle_data.items():
+		if len(data['data']) > 0:
+			minimum = format_time(min(data['data']))
+			maximum = format_time(max(data['data']))
+			median = format_time(statistics.median(data['data']))
+		else:
+			minimum = 'N/A'
+			maximum = 'N/A'
+			median = 'N/A'
+
+		rows.append([
+			battle_type,
+			enemy_agility,
+			party_agility,
+			data['count'],
+			data['count'] - len(data['data']),
+			minimum,
+			maximum,
+			median,
+		])
+
+	html_output_table(headers, rows)
 
 
 def html_output_seeds(f, logs):
@@ -929,10 +1108,12 @@ battles = get_battle_data(logs, True)
 
 os.mkdir(os.path.join(sys.argv[1], 'battles'))
 
+agility_data = get_battle_data(logs, True, agility=True)
+
 for key, data in battles.items():
 	with open(os.path.join(sys.argv[1], 'battles', '{}.html'.format(key)), 'w') as f:
 		html_output_header(f)
-		html_output_battle(f, key, data)
+		html_output_battle(f, key, data, agility_data[key])
 		html_output_footer(f)
 
 battles = get_battle_data(logs, False, False)
