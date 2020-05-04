@@ -62,9 +62,22 @@ local function _read_damage(index)
 	return value
 end
 
-local function _get_damage()
+local function _get_damage(wall)
+	local action_flags = memory.read("battle", "action_flags")
 	local target_group = memory.read("battle", "target_group")
 	local target_mask = memory.read("battle", "target_mask")
+	local wall_active = memory.read("battle", "wall_active")
+
+	local result = ""
+
+	if wall then
+		if bit.band(action_flags, game.battle.ACTION.MAGIC) > 0 and wall_active then
+			target_group = bit.bxor(target_group, 0x80)
+			target_mask = memory.read("battle", "wall_targets")
+		else
+			return ""
+		end
+	end
 
 	local damage_data = {}
 
@@ -107,8 +120,6 @@ local function _get_damage()
 		table.insert(strings, new_damage)
 	end
 
-	local result = ""
-
 	for i = 1, #strings do
 		local conjunction = ", "
 
@@ -123,11 +134,19 @@ local function _get_damage()
 		result = string.format("%s%s%s", result, conjunction, strings[i])
 	end
 
+	if wall and result ~= "" then
+		result = string.format("it reflects and %s", result)
+	end
+
 	return result
 end
 
+-- add command queueing
+-- add battle result (who lived/died/new exp)
+-- rewrite whole system
+
 local function _log_action()
-	local action_type = memory.read("battle", "action_type")
+	local action_flags = memory.read("battle", "action_flags")
 	local actor_group = memory.read("battle", "actor_group")
 	local actor_slot = memory.read("battle", "actor_slot")
 	local action_index = memory.read("battle", "action_index")
@@ -141,35 +160,54 @@ local function _log_action()
 		end
 	else
 		actor = string.format("Enemy #%d", actor_slot)
+		actor_slot = actor_slot + 5
 	end
 
-	local action
+	local command = memory.read_stat(actor_slot, "command", true)
+	local subcommand = memory.read_stat(actor_slot, "subcommand", true)
+	local target_monster = memory.read_stat(actor_slot, "target_monster", true)
+	local target_party = memory.read_stat(actor_slot, "target_party", true)
 
-	if action_type == game.battle.ACTION.CRITICAL then
-		action = "critically attacks"
-	elseif action_type == game.battle.ACTION.ATTACK then
+	log.log(string.format("Action: (debug) Command: %02X  Subcommand: %02X  Target Party: %02X  Target Monster: %02X", command, subcommand, target_party, target_monster))
+
+	local action
+	local critical = ""
+
+	if bit.band(action_flags, game.battle.ACTION.CRITICAL) > 0 then
+		critical = "critically "
+	end
+
+	if bit.band(action_flags, game.battle.ACTION.ATTACK) > 0 then
 		action = "attacks"
-	elseif action_type == game.battle.ACTION.MAGIC then
+	elseif bit.band(action_flags, game.battle.ACTION.MAGIC) > 0 then
 		if action_index == 0 then
-			action = string.format("casts a secret enemy spell")
+			action = string.format("casts %s", game.magic.get_spell_description(memory.read_stat(actor_slot, "subcommand", true)))
 		else
 			action = string.format("casts %s", game.magic.get_spell_description(action_index))
 		end
-	elseif action_type == game.battle.ACTION.ITEM then
+	elseif bit.band(action_flags, game.battle.ACTION.ITEM) > 0 then
 		action = string.format("uses %s", game.item.get_description(action_index))
-	elseif action_type == game.battle.ACTION.COMMAND then
-		action = string.format("uses a command")
+	elseif bit.band(action_flags, game.battle.ACTION.COMMAND) > 0 then
+		action = string.format("uses %s", game.battle.get_command_description(action_index))
+	elseif action_flags == game.battle.ACTION.MISS then
+		action = "attacks"
 	else
-		action = string.format("does an unknown action (%02X)", action_type)
+		action = string.format("does an unknown action (%02X)", action_flags)
 	end
 
-	local damage = _get_damage()
+	local damage = _get_damage(false)
 
 	if damage ~= "" then
 		damage = string.format(" and %s", damage)
 	end
 
-	log.log(string.format("Action: %s %s%s", actor, action, damage))
+	local wall_damage = _get_damage(true)
+
+	if wall_damage ~= "" then
+		wall_damage = string.format(" and %s", wall_damage)
+	end
+
+	log.log(string.format("Action: %s %s%s%s%s", actor, critical, action, damage, wall_damage))
 end
 
 local function _reset_state()
@@ -3275,13 +3313,13 @@ function _M.cycle()
 			end
 		end
 
-		local action_type = memory.read("battle", "action_type")
+		local action_flags = memory.read("battle", "action_flags")
 
-		if action_type ~= game.battle.ACTION.NONE and action_type ~= _state.last_action then
+		if action_flags ~= game.battle.ACTION.NONE and action_flags ~= _state.last_action then
 			_state.pending_action = 5
 		end
 
-		_state.last_action = action_type
+		_state.last_action = action_flags
 
 		if _state.pending_action ~= nil then
 		 	if _state.pending_action == 0 and memory.read("battle", "calculations_left") == 0 then
@@ -3339,6 +3377,8 @@ function _M.cycle()
 					if (formation.full_inventory or _state.full_inventory) and memory.read("battle", "active") ~= 0xFF then
 						inventory_limit = 2
 					end
+
+					log.log(string.format("Battle Menu: %s", game.character.get_name(game.character.get_character(slot))))
 
 					if (_state.disable_inventory or not _manage_inventory(inventory_limit)) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1, _state.strat) then
 						_state.turns[slot] = _state.turns[slot] + 1

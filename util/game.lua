@@ -40,12 +40,13 @@ _M.battle.ACTOR = {
 }
 
 _M.battle.ACTION = {
-	NONE    =  0x00,
-	COMMAND =  0x10,
-	ITEM    =  0x20,
-	MAGIC   =  0x40,
-	ATTACK  =  0x80,
-	CRITICAL = 0x84,
+	NONE     = 0x00,
+	CRITICAL = 0x04,
+	MISS     = 0x08,
+	COMMAND  = 0x10,
+	ITEM     = 0x20,
+	MAGIC    = 0x40,
+	ATTACK   = 0x80,
 }
 
 _M.battle.FORMATION = {
@@ -339,6 +340,11 @@ local _CHARACTER_NAMES = {
 	[_M.CHARACTER.YANG]   = "Yang",
 }
 
+local _COMMANDS = {
+	[0x13] = "Cover",
+	[0x16] = "Dart",
+}
+
 local _ITEMS = {
 	[0x3C] = "Dancing",
 	[0xC0] = "FireBomb",
@@ -367,8 +373,19 @@ local _MAGIC = {
 	[0x0D] = "Peep",
 	[0x0E] = "Cure1",
 	[0x0F] = "Cure2",
+	[0x10] = "Cure3",
 	[0x11] = "Cure4",
+	[0x12] = "Heal",
 	[0x13] = "Life1",
+	[0x14] = "Life2",
+	[0x15] = "Size",
+	[0x16] = "Exit",
+	[0x17] = "Sight",
+	[0x18] = "Float",
+	[0x19] = "Toad",
+	[0x1A] = "Piggy",
+	[0x1B] = "Warp",
+	[0x1C] = "Venom",
 	[0x1D] = "Fire1",
 	[0x1E] = "Fire2",
 	[0x1F] = "Fire3",
@@ -381,15 +398,22 @@ local _MAGIC = {
 	[0x26] = "Virus",
 	[0x27] = "Weak",
 	[0x28] = "Quake",
+	[0x29] = "Sleep",
+	[0x2A] = "Stone",
+	[0x2B] = "Fatal",
 	[0x2C] = "Stop",
 	[0x2D] = "Drain",
+	[0x2E] = "Psych",
 	[0x2F] = "Meteo",
 	[0x30] = "Nuke",
 	[0x40] = "Comet",
 	[0x41] = "Flare",
 	[0x42] = "Flame",
 	[0x43] = "Flood",
+	[0x44] = "Blitz",
 	[0x45] = "Smoke",
+	[0x46] = "Pin",
+	[0x47] = "Image",
 	[0x52] = "Shiva",
 	[0x55] = "Titan",
 	[0x5E] = "W.Meteo",
@@ -404,6 +428,7 @@ local _MAGIC = {
 	[0x78] = "Gas",
 	[0x79] = "Poison",
 	[0x7A] = "Maser",
+	[0x7B] = "Vanish",
 	[0x7C] = "Demolish",
 	[0x7D] = "Blk.Hole",
 	[0x84] = "Remedy",
@@ -412,6 +437,7 @@ local _MAGIC = {
 	[0x88] = "Vampire",
 	[0x8C] = "Alert",
 	[0x8D] = "Call",
+	[0x8E] = "Dummy (order other monsters)",
 	[0x92] = "Retreat",
 	[0x94] = "Beam",
 	[0x95] = "Globe199",
@@ -425,7 +451,23 @@ local _MAGIC = {
 	[0xA1] = "Quake",
 	[0xA2] = "Emission",
 	[0xA4] = "Glare",
+	[0xA9] = "Dummy (set invincible)",
+	[0xAA] = "Dummy (unset invincible)",
 	[0xAB] = "Recover",
+	[0xAD] = "Dummy (transition to next monster)",
+	[0xAE] = "Dummy (end battle)",
+	[0xB0] = "<unnamed> (make Rydia visible)",
+	[0xB3] = "<unnamed> (create Anna apparition)",
+	[0xB4] = "<unnamed> (create Edward/Tellah apparition)",
+	[0xB5] = "<unnamed> (create Palom/Porom apparition)",
+	[0xB6] = "<unnamed> (create Yang/Cid apparition)",
+	[0xB7] = "<unnamed> (create Golbez/FuSoYa apparition)",
+	[0xB8] = "<unnamed> (hide apparitions)",
+	[0xBA] = "<unnamed> (revive party)",
+	[0xBB] = "<unnamed> (shake)",
+	[0xBC] = "<unnamed> (damage all allies)",
+	[0xBD] = "<unnamed> (super haste)",
+	[0xBE] = "<unnamed> (restore HP/MP)",
 }
 
 local _CHARACTER_IDS = {}
@@ -449,6 +491,16 @@ end
 --------------------------------------------------------------------------------
 -- Public Functions
 --------------------------------------------------------------------------------
+
+function _M.battle.get_command_description(command)
+	local result = _COMMANDS[command]
+
+	if not result then
+		result = string.format("Command #%02X", command)
+	end
+
+	return result
+end
 
 function _M.battle.get_type()
 	local type = _M.battle.TYPE.NORMAL

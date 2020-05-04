@@ -114,7 +114,7 @@ end
 
 local _addresses = {
 	battle = {
-		action_type         = {f = mainmemory.read_u8,     address = 0x0034C7, record_size = {0x01, 0x01}},
+		action_flags        = {f = mainmemory.read_u8,     address = 0x0034C7, record_size = {0x01, 0x01}},
 		action_index        = {f = mainmemory.read_u8,     address = 0x0034C8, record_size = {0x01, 0x01}},
 		actor_group         = {f = mainmemory.read_u8,     address = 0x0034C2, record_size = {0x01, 0x01}},
 		actor_slot          = {f = mainmemory.read_u8,     address = 0x0034C3, record_size = {0x01, 0x01}},
@@ -137,6 +137,9 @@ local _addresses = {
 		target_group        = {f = mainmemory.read_u8,     address = 0x0034C4, record_size = {0x01, 0x01}},
 		target_mask         = {f = mainmemory.read_u8,     address = 0x0034C5, record_size = {0x01, 0x01}},
 		type                = {f = mainmemory.read_u8,     address = 0x0038D8, record_size = {0x01, 0x01}},
+		wall_active         = {f = mainmemory.read_u8,     address = 0x003554, record_size = {0x01, 0x01}},
+		wall_sources        = {f = mainmemory.read_u8,     address = 0x003522, record_size = {0x01, 0x01}},
+		wall_targets        = {f = mainmemory.read_u8,     address = 0x003523, record_size = {0x01, 0x01}},
 	},
 	battle_dialog = {
 		state               = {f = mainmemory.read_u8,     address = 0x00F43A, record_size = {0x01, 0x01}},
@@ -303,6 +306,10 @@ local _stats = {
 	l_hand_count    = {f = mainmemory.read_u8,     address = 0x000036},
 	exp             = {f = mainmemory.read_u24_le, address = 0x000037},
 	speed_modifier  = {f = mainmemory.read_u8,     address = 0x00003B},
+	command         = {f = mainmemory.read_u8,     address = 0x000051},
+	subcommand      = {f = mainmemory.read_u8,     address = 0x000052},
+	target_monster  = {f = mainmemory.read_u8,     address = 0x000053},
+	target_party    = {f = mainmemory.read_u8,     address = 0x000054},
 }
 
 --------------------------------------------------------------------------------
