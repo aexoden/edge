@@ -3230,6 +3230,7 @@ function _M.cycle()
 			_state.strat = sequence.get_battle_strat(index)
 			_state.last_action = nil
 			_battle_count = _battle_count + 1
+			log.clear()
 
 			local attack_type = game.battle.get_type()
 

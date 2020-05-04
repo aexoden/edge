@@ -82,6 +82,10 @@ function _M.freeze()
 	_final_frame = emu.framecount()
 end
 
+function _M.clear()
+	console.clear()
+end
+
 function _M.error(message)
 	return _log(string.format("ERROR :: %s", message))
 end
