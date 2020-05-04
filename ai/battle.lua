@@ -1249,8 +1249,16 @@ local function _battle_elements_excalbur(character, turn, strat)
 end
 
 local function _battle_elements_rosa(character, turn, strat)
+	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
+	local edge_hp = game.character.get_stat(game.CHARACTER.EDGE, "hp", true)
+	local rydia_hp = game.character.get_stat(game.CHARACTER.RYDIA, "hp", true)
+
 	if character == game.CHARACTER.EDGE then
-		_command_parry()
+		if cecil_hp > 0 then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		else
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+		end
 	elseif character == game.CHARACTER.FUSOYA then
 		if turn == 1 then
 			_command_black(game.MAGIC.BLACK.NUKE)
@@ -1258,31 +1266,51 @@ local function _battle_elements_rosa(character, turn, strat)
 			_command_black(game.MAGIC.BLACK.FIRE3, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 3 then
 			_command_black(game.MAGIC.BLACK.FIRE3, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-		elseif turn == 4 then
-			if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) == 0 then
+		else
+			if _state.rosa_queued then
 				_command_black(game.MAGIC.BLACK.NUKE, menu.battle.TARGET.ENEMY, 0)
 			else
 				_command_black(game.MAGIC.BLACK.ICE3, menu.battle.TARGET.ENEMY, 0)
 			end
+
+			_state.fusoya_queued = true
 		end
 	elseif character == game.CHARACTER.ROSA then
-		if turn == 1 or turn == 5 then
-			if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) == 0 then
-				_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-			else
-				_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.ENEMY, 0)
-			end
+		if turn == 1 then
+			_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.ENEMY, 0)
 		elseif turn == 2 then
 			_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 3 or turn == 4 then
 			_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		else
-			_command_white(game.MAGIC.WHITE.WHITE)
+			if _state.fusoya_queued then
+				_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.ENEMY, 0)
+			else
+				_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+			end
+
+			_state.rosa_queued = true
 		end
 	elseif character == game.CHARACTER.CECIL then
-		_command_parry()
+		if turn == 1 then
+			_command_cover(game.CHARACTER.RYDIA)
+		elseif edge_hp == 0 and rydia_hp == 0 then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		else
+			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		end
 	elseif character == game.CHARACTER.RYDIA then
-		_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+		if cecil_hp > 0 then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		elseif edge_hp > 0 then
+			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+		else
+			if game.item.get_count(game.ITEM.WEAPON.CHANGE, game.INVENTORY.BATTLE) > 0 then
+				_command_equip(character, game.ITEM.WEAPON.CHANGE)
+			end
+
+			_command_parry()
+		end
 	end
 end
 
@@ -1586,6 +1614,8 @@ local function _battle_grind(character, turn, strat)
 					_command_wait_text(" Quake", 600)
 					_command_parry()
 					_state.setup_complete = true
+				elseif type == game.battle.TYPE.SURPRISED then
+					_command_change()
 				else
 					_command_parry()
 				end
