@@ -1367,8 +1367,10 @@ local function _sequence_tellah()
 	table.insert(_q, {walk.walk, {2, 15, 30, true}})
 	table.insert(_q, {walk.walk, {2, 16, 30}})
 	table.insert(_q, {walk.walk, {2, 16, 31}})
-	table.insert(_q, {walk.walk, {nil, 135, 104}})
-	table.insert(_q, {walk.walk, {nil, 135, 84}})
+	table.insert(_q, {walk.walk, {nil, 127, 104}})
+	table.insert(_q, {walk.walk, {nil, 127, 90}})
+	table.insert(_q, {walk.walk, {nil, 136, 90}})
+	table.insert(_q, {walk.walk, {nil, 136, 84}})
 	table.insert(_q, {walk.walk, {nil, 138, 84}})
 	table.insert(_q, {walk.walk, {nil, 138, 83}})
 	table.insert(_q, {walk.walk, {111, 26, 28}})
@@ -3578,19 +3580,15 @@ local function _sequence_dr_lugae()
 		-- Walk to the right tower and collect the Strength ring.
 		local steps = route.get_value("E310700")
 
-		if route.get_value("C310700") == 1 then
-			table.insert(_q, {menu.field.open, {}})
-			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
-			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
-			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
-			table.insert(_q, {menu.field.close, {}})
+		table.insert(_q, {walk.walk, {269, 9, 20}})
+
+		if route.get_value("C310700") >= 2 then
 			table.insert(_q, {menu.field.open, {}})
 			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 			table.insert(_q, {menu.field.close, {}})
 		else
-			table.insert(_q, {walk.walk, {269, 9, 20}})
 			table.insert(_q, {walk.walk, {265, 8, 1}})
 			table.insert(_q, {walk.walk, {265, 8, 6}})
 
@@ -3677,17 +3675,24 @@ local function _sequence_dr_lugae()
 		end
 
 		table.insert(_q, {walk.walk, {270, 13, 4, true}})
-		table.insert(_q, {walk.walk, {272, 10, 6}})
 
 		-- Step Route: Castle of Dwarves D
-		if steps >= 1 then
+		if steps >= 2 then
+			table.insert(_q, {walk.walk, {272, 10, 8}})
+			table.insert(_q, {walk.walk, {272, 8, 8}})
+			table.insert(_q, {walk.walk, {272, 8, 4}})
+			steps = steps - 2
+		elseif steps == 1 then
 			table.insert(_q, {walk.walk, {272, 10, 5}})
+			table.insert(_q, {walk.walk, {272, 9, 5}})
+			table.insert(_q, {walk.walk, {272, 9, 4}})
 			steps = steps - 1
 		else
+			table.insert(_q, {walk.walk, {272, 10, 6}})
 			table.insert(_q, {walk.walk, {272, 9, 6}})
+			table.insert(_q, {walk.walk, {272, 9, 4}})
 		end
 
-		table.insert(_q, {walk.walk, {272, 9, 4}})
 		table.insert(_q, {walk.walk, {272, 6, 4}})
 		table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
 		table.insert(_q, {walk.interact, {}})
@@ -3698,28 +3703,64 @@ local function _sequence_dr_lugae()
 
 		if ROUTE == "no64-rosa" then
 			table.insert(_q, {walk.walk, {281, 4, 4}})
-			table.insert(_q, {walk.walk, {281, 4, 8}})
+			table.insert(_q, {walk.walk, {281, 4, 7}})
+
+			if steps >= 1 then
+				table.insert(_q, {walk.walk, {281, 5, 7}})
+				table.insert(_q, {walk.walk, {281, 5, 8}})
+				steps = steps - 1
+			else
+				table.insert(_q, {walk.walk, {281, 4, 8}})
+			end
+
 			table.insert(_q, {walk.walk, {281, 6, 8}})
 			table.insert(_q, {walk.walk, {281, 6, 10}})
 			table.insert(_q, {walk.interact, {}})
 		end
 
 		-- Walk back to the shop and purchase Rune rings.
-		table.insert(_q, {walk.walk, {281, 6, 7}})
-		table.insert(_q, {walk.walk, {283, 24, 21}})
-		table.insert(_q, {walk.walk, {272, 6, 7}})
-
-		-- Step Route: Castle of Dwarves E
-		if steps >= 1 then
-			table.insert(_q, {walk.walk, {272, 8, 7}})
-			steps = steps - 1
+		if ROUTE == "no64-excalbur" and route.get_value("C310700") >= 3 then
+			table.insert(_q, {menu.field.open, {}})
+			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
+			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+			table.insert(_q, {menu.field.close, {}})
 		else
-			table.insert(_q, {walk.walk, {272, 6, 8}})
+			table.insert(_q, {walk.walk, {281, 6, 7}})
 		end
 
-		table.insert(_q, {walk.walk, {272, 8, 8}})
-		table.insert(_q, {walk.walk, {272, 10, 8}})
-		table.insert(_q, {walk.walk, {272, 10, 10}})
+		if (ROUTE == "no64-rosa" and route.get_value("C310700") >= 3) or (ROUTE == "no64-excalbur" and route.get_value("C310700") >= 4) then
+			table.insert(_q, {menu.field.open, {}})
+			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
+			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+			table.insert(_q, {menu.field.close, {}})
+		else
+			table.insert(_q, {walk.walk, {283, 24, 21}})
+		end
+
+		if route.get_value("C310700") >= 1 then
+			table.insert(_q, {menu.field.open, {}})
+			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
+			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+			table.insert(_q, {menu.field.close, {}})
+		else
+			table.insert(_q, {walk.walk, {272, 6, 7}})
+
+			-- Step Route: Castle of Dwarves E
+			if steps >= 1 then
+				table.insert(_q, {walk.walk, {272, 8, 7}})
+				steps = steps - 1
+			else
+				table.insert(_q, {walk.walk, {272, 6, 8}})
+			end
+
+			table.insert(_q, {walk.walk, {272, 8, 8}})
+			table.insert(_q, {walk.walk, {272, 10, 8}})
+			table.insert(_q, {walk.walk, {272, 10, 10}})
+		end
+
 		table.insert(_q, {walk.walk, {270, 13, 6}})
 		table.insert(_q, {walk.walk, {270, 10, 6}})
 		table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
@@ -4268,6 +4309,20 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {200, 17, 10}})
 	table.insert(_q, {walk.walk, {200, 17, 7}})
 
+	-- Step Route: Cave Eblana B2F
+	local steps = route.get_value("E30C800")
+
+	if route.get_value("C30C800") == 1 and steps > 0 then
+		table.insert(_q, {walk.walk, {204, 9, 9}})
+
+		for i = 1, steps / 2 do
+			table.insert(_q, {walk.walk, {204, 8, 9}})
+			table.insert(_q, {walk.walk, {204, 9, 9}})
+		end
+
+		steps = 0
+	end
+
 	-- Buy weapons and armor.
 	table.insert(_q, {walk.walk, {204, 9, 5}})
 	table.insert(_q, {walk.interact, {}})
@@ -4284,24 +4339,30 @@ local function _sequence_edge()
 	table.insert(_q, {menu.shop.close, {}})
 
 	-- Step Route: Cave Eblana B2F
-	local steps = route.get_value("E30C800")
-
-	if steps % 2 == 1 then
-		table.insert(_q, {walk.walk, {204, 8, 5}})
-		table.insert(_q, {walk.walk, {204, 8, 9}})
-		steps = steps - 1
-	elseif steps >= 2 then
-		table.insert(_q, {walk.walk, {204, 7, 9}})
-		steps = steps - 2
+	if route.get_value("C30C800") == 1 then
+		table.insert(_q, {menu.field.open, {}})
+		table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
+		table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+		table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+		table.insert(_q, {menu.field.close, {}})
 	else
-		table.insert(_q, {walk.walk, {204, 9, 5}})
-	end
+		if steps % 2 == 1 then
+			table.insert(_q, {walk.walk, {204, 8, 5}})
+			table.insert(_q, {walk.walk, {204, 8, 9}})
+			steps = steps - 1
+		elseif steps >= 2 then
+			table.insert(_q, {walk.walk, {204, 7, 9}})
+			steps = steps - 2
+		else
+			table.insert(_q, {walk.walk, {204, 9, 5}})
+		end
 
-	table.insert(_q, {walk.walk, {204, 9, 9}})
-
-	for i = 1, steps / 2 do
-		table.insert(_q, {walk.walk, {204, 8, 9}})
 		table.insert(_q, {walk.walk, {204, 9, 9}})
+
+		for i = 1, steps / 2 do
+			table.insert(_q, {walk.walk, {204, 8, 9}})
+			table.insert(_q, {walk.walk, {204, 9, 9}})
+		end
 	end
 
 	-- Continue walking to the meeting with Edge.
@@ -4347,6 +4408,25 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {202, 13, 24}})
 	table.insert(_q, {walk.walk, {202, 11, 24}})
 	table.insert(_q, {walk.walk, {202, 11, 27}})
+
+	if ROUTE == "no64-rosa" then
+		table.insert(_q, {walk.walk, {201, 15, 9}})
+		table.insert(_q, {walk.walk, {201, 18, 9}})
+		table.insert(_q, {walk.walk, {201, 18, 11}})
+		table.insert(_q, {walk.walk, {201, 19, 11}})
+		table.insert(_q, {walk.walk, {201, 19, 13}})
+		table.insert(_q, {walk.walk, {201, 20, 13}})
+		table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
+		table.insert(_q, {walk.interact, {"Found"}})
+		table.insert(_q, {walk.step, {walk.DIRECTION.DOWN}})
+		table.insert(_q, {walk.interact, {"Found"}})
+		table.insert(_q, {walk.walk, {201, 19, 13}})
+		table.insert(_q, {walk.walk, {201, 19, 11}})
+		table.insert(_q, {walk.walk, {201, 18, 11}})
+		table.insert(_q, {walk.walk, {201, 18, 9}})
+		table.insert(_q, {walk.walk, {201, 15, 9}})
+	end
+
 	table.insert(_q, {walk.walk, {201, 15, 20}})
 	table.insert(_q, {walk.walk, {201, 22, 20}})
 	table.insert(_q, {walk.walk, {201, 22, 28}})
@@ -5231,6 +5311,14 @@ local function _sequence_fusoya()
 		table.insert(_q, {walk.interact, {}})
 	end
 
+	-- Step Route: Walk or Fly to the Big Whale
+	if route.get_value("C000500") == 1 then
+		table.insert(_q, {walk.walk, {nil, 153, 199}})
+		table.insert(_q, {walk.board, {}})
+		table.insert(_q, {walk.walk, {nil, 151, 199}})
+		table.insert(_q, {walk.interact, {}})
+	end
+
 	table.insert(_q, {walk.walk, {nil, 150, 199}})
 
 	-- Step Route: Overworld (Mysidia) [after Big Whale]
@@ -5922,7 +6010,15 @@ local function _sequence_core()
 	end
 
 	table.insert(_q, {walk.walk, {363, 20, 31}})
-	table.insert(_q, {walk.walk, {364, 20, 10}})
+	table.insert(_q, {walk.walk, {364, 20, 8}})
+
+	if route.get_value("C316C00") == 0 then
+		table.insert(_q, {walk.walk, {364, 25, 8}})
+		table.insert(_q, {walk.walk, {364, 25, 6}})
+		table.insert(_q, {walk.walk, {364, 25, 8}})
+	end
+
+	table.insert(_q, {walk.walk, {364, 21, 8}})
 	table.insert(_q, {walk.walk, {364, 21, 10}})
 	table.insert(_q, {walk.walk, {364, 21, 14}})
 	table.insert(_q, {walk.walk, {364, 23, 14}})
@@ -6013,6 +6109,17 @@ local function _sequence_zemus()
 	table.insert(_q, {walk.walk, {366, 21, 13}})
 	table.insert(_q, {walk.walk, {366, 13, 13}})
 	table.insert(_q, {walk.walk, {366, 13, 15}})
+
+	if route.get_value("C316C00") == 1 then
+		table.insert(_q, {walk.walk, {366, 8, 15}})
+		table.insert(_q, {walk.walk, {366, 8, 13}})
+		table.insert(_q, {walk.walk, {366, 7, 13}})
+		table.insert(_q, {walk.walk, {366, 7, 12}})
+		table.insert(_q, {walk.walk, {366, 7, 13}})
+		table.insert(_q, {walk.walk, {366, 8, 13}})
+		table.insert(_q, {walk.walk, {366, 8, 15}})
+	end
+
 	table.insert(_q, {walk.walk, {366, 9, 15}})
 	table.insert(_q, {walk.walk, {366, 9, 20}})
 	table.insert(_q, {walk.walk, {366, 12, 20}})
@@ -6064,10 +6171,8 @@ local function _sequence_zemus()
 	table.insert(_q, {walk.walk, {368, 22, 12}})
 	table.insert(_q, {walk.walk, {368, 22, 15}})
 
-	if ROUTE == "no64-rosa" then
+	if route.get_value("C316C00") == 2 then
 		table.insert(_q, {walk.walk, {368, 24, 15}})
-		table.insert(_q, {walk.step, {walk.DIRECTION.UP}})
-		table.insert(_q, {walk.interact, {"Found"}})
 		table.insert(_q, {walk.walk, {368, 22, 15}})
 	end
 
