@@ -5510,9 +5510,9 @@ local function _sequence_grind_start()
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.RYDIA, game.CHARACTER.ROSA}})
 
 	if ROUTE == "no64-rosa" then
-		_M.set_battle_strat(game.battle.FORMATION.GRIND, {"rosa-battle-speed-1", "rosa-battle-speed-2"})
+		_M.set_battle_strat(game.battle.FORMATION.GRIND, {"rosa-battle-speed-2"})
 	else
-		_M.set_battle_strat(game.battle.FORMATION.GRIND, {"excalbur-battle-speed-1", "excalbur-battle-speed-2"})
+		_M.set_battle_strat(game.battle.FORMATION.GRIND, {"excalbur-battle-speed-2"})
 	end
 
 	local strat = _M.get_battle_strat(game.battle.FORMATION.GRIND)
