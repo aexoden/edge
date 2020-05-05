@@ -3446,12 +3446,14 @@ function _M.cycle()
 					_state.q = {}
 					_state.slot = slot
 					_state.queued = false
+					_state.turn_logged = nil
 					_state.disable_inventory = nil
 					menu.reset()
 				elseif not open then
 					_state.q = {}
 					_state.slot = -1
 					_state.queued = false
+					_state.turn_logged = nil
 					_state.disable_inventory = nil
 					menu.reset()
 				end
@@ -3485,7 +3487,10 @@ function _M.cycle()
 						inventory_limit = 2
 					end
 
-					log.log(string.format("Battle Menu: %s", game.character.get_name(game.character.get_character(slot))))
+					if not _state.turn_logged then
+						log.log(string.format("Battle Menu: %s", game.character.get_name(game.character.get_character(slot))))
+						_state.turn_logged = true
+					end
 
 					if (_state.disable_inventory or not _manage_inventory(inventory_limit)) and not formation.f(game.character.get_character(slot), _state.turns[slot] + 1, _state.strat) then
 						_state.turns[slot] = _state.turns[slot] + 1
