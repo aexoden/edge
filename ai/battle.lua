@@ -1620,7 +1620,7 @@ local function _battle_grind(character, turn, strat)
 					_command_wait_text(" Quake", 600)
 					_command_parry()
 					_state.setup_complete = true
-				elseif type == game.battle.TYPE.SURPRISED then
+				elseif type ~= game.battle.TYPE.BACK_ATTACK then
 					_command_change()
 				else
 					_command_parry()
@@ -1693,8 +1693,6 @@ local function _battle_grind(character, turn, strat)
 			elseif _state.character_index == 3 then
 				if dragon_hp > 50 and dragon_hp < 15000 then
 					_command_fight()
-				elseif game.enemy.get_stat(0, "hp") < 800 then
-					_command_use_item(cure_item, menu.battle.TARGET.ENEMY, 0)
 				elseif dragon_kills < required_dragons - 1 then
 					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.ENEMY, 1)
 				else
@@ -1702,8 +1700,14 @@ local function _battle_grind(character, turn, strat)
 				end
 			elseif _state.character_index == 4 then
 				if _state.waited then
-					_command_fight()
 					_state.searcher_hp = game.enemy.get_stat(0, "hp")
+
+					if _state.searcher_hp < 600 then
+						_command_parry()
+					else
+						_command_fight()
+					end
+
 					_state.waited = nil
 					_state.attacked = true
 				else
