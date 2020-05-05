@@ -189,6 +189,7 @@ _M.ITEM = {
 	ARMS = {
 		IRON     = 0x9C,
 		PALADIN  = 0xA0,
+		SAMURAI  = 0xA4,
 	},
 	CLAW = {
 		CATCLAW  = 0x06,
@@ -258,6 +259,7 @@ _M.ITEM = {
 		SHORTBOW = 0x4D,
 		STAFF    = 0x0F,
 		THUNDER  = 0x0A,
+		WIND     = 0x24,
 	},
 }
 
@@ -312,6 +314,7 @@ _M.STATUS = {
 	WALL     = 0x00000020,
 	HIDING   = 0x00000080,
 	JUMPING  = 0x00000200,
+	SLEEP    = 0x00100000,
 	PARALYZE = 0x00200000,
 	POISON   = 0x01000000,
 	MUTE     = 0x04000000,

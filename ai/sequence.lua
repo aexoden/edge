@@ -2212,7 +2212,6 @@ local function _sequence_twins()
 		table.insert(_q, {menu.shop.sell.sell, {game.ITEM.CLAW.FIRECLAW, 114}})
 	end
 
-	table.insert(_q, {menu.shop.sell.sell, {game.ITEM.WEAPON.DARKNESS}})
 	table.insert(_q, {menu.shop.sell.close, {}})
 	table.insert(_q, {menu.shop.buy.open, {quantity}})
 	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.ITEM.CURE2}})
@@ -2385,6 +2384,18 @@ end
 local function _sequence_milon_z()
 	-- Heal and prepare the party.
 	table.insert(_q, {menu.field.open, {}})
+
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+	table.insert(_q, {menu.field.equip.close, {}})
+
+	local _, cecil_weapon = game.character.get_weapon(game.CHARACTER.CECIL)
+
+	if cecil_weapon ~= game.ITEM.WEAPON.DARKNESS then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DARKNESS}})
+		table.insert(_q, {menu.field.equip.close, {}})
+	end
 
 	local milon_strat = _M.get_battle_strat(game.battle.FORMATION.MILON)
 	local milon_z_strat = _M.set_battle_strat(game.battle.FORMATION.MILON_Z, {"trashcan"})
@@ -2811,19 +2822,9 @@ local function _sequence_baigan()
 		table.insert(_q, {menu.field.equip.close, {}})
 	end
 
-	local tellah_head = game.character.get_equipment(game.character.get_slot(game.CHARACTER.TELLAH), game.EQUIP.HEAD)
-
-	if tellah_weapon ~= game.ITEM.WEAPON.CHANGE or tellah_head ~= game.ITEM.HELM.GAEA then
+	if tellah_weapon ~= game.ITEM.WEAPON.CHANGE then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
-
-		if tellah_weapon ~= game.ITEM.WEAPON.CHANGE then
-			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
-		end
-
-		if tellah_head ~= game.ITEM.HELM.GAEA then
-			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
-		end
-
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.CHANGE}})
 		table.insert(_q, {menu.field.equip.close, {}})
 	end
 
@@ -4790,7 +4791,7 @@ local function _sequence_falcon_upgrade()
 	-- Remove the Strength ring from Kain and cast Exit.
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.NONE, 1}})
 	table.insert(_q, {menu.field.equip.close, {}})
 
 	-- Equip the Dwarf axe again (if necessary).
@@ -5615,6 +5616,10 @@ local function _sequence_cpu()
 
 	-- Do the post-battle menu.
 	table.insert(_q, {menu.field.open, {}})
+
+	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.EDGE}})
+	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.CLAW.CATCLAW}})
+	table.insert(_q, {menu.field.equip.close, {}})
 
 	if ROUTE == "no64-excalbur" then
 		_M.set_battle_strat(game.battle.FORMATION.CPU, {"excalbur-quake"})

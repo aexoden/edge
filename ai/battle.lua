@@ -700,16 +700,20 @@ local function _battle_antlion(character, turn, strat)
 end
 
 local function _battle_baigan(character, turn, strat)
+	local palom_hp = game.character.get_stat(game.CHARACTER.PALOM, "hp", true)
+	local porom_hp = game.character.get_stat(game.CHARACTER.POROM, "hp", true)
+	local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp", true)
+
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
 			_command_run_buffer()
 			_command_cover(game.CHARACTER.TELLAH)
 		elseif turn == 2 or turn == 3 then
-			if game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 then
+			if yang_hp > 0 then
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
-			elseif game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
+			elseif porom_hp > 0 then
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
-			elseif game.character.get_stat(game.CHARACTER.PALOM, "hp", true) > 0 then
+			elseif palom_hp > 0 then
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
 			else
 				_command_wait_text(" Meteo")
@@ -722,25 +726,19 @@ local function _battle_baigan(character, turn, strat)
 			_manage_inventory(nil)
 		end
 	elseif character == game.CHARACTER.PALOM then
-		if game.character.get_stat(game.CHARACTER.YANG, "hp", true) > 0 then
-			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
-		elseif game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
+		if porom_hp > 0 then
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 		else
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
 		end
 	elseif character == game.CHARACTER.YANG then
-		if game.character.get_stat(game.CHARACTER.POROM, "hp", true) > 0 then
+		if porom_hp > 0 and (porom_hp < 50 or palom_hp == 0) then
 			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
-		elseif game.character.get_stat(game.CHARACTER.PALOM, "hp", true) > 0 then
-			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
 		else
 			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		end
 	elseif character == game.CHARACTER.TELLAH then
 		_command_black(game.MAGIC.BLACK.METEO, menu.battle.TARGET.ENEMY_ALL)
-	else
-		_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 	end
 end
 
@@ -859,6 +857,10 @@ local function _battle_calbrena(character, turn, strat)
 				end
 			end
 		elseif character == game.CHARACTER.KAIN then
+			if turn == 1 then
+				_command_run_buffer()
+			end
+
 			if _state.jumps == 2 and cals > 1 then
 				if not cecil_muted and rosa_hp == 0 then
 					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
@@ -1032,14 +1034,24 @@ local function _battle_d_mist(character, turn, strat)
 end
 
 local function _battle_dark_elf(character, turn, strat)
-	if character == game.CHARACTER.CECIL then
-		if turn == 1 then
-			_command_run_buffer()
-		end
+	local dark_elf_hp = game.enemy.get_stat(0, "hp")
+	local dark_elf_max_hp = game.enemy.get_stat(0, "hp_max")
 
-		_command_fight()
+	if not _state.cecil_damage and dark_elf_hp < dark_elf_max_hp then
+		_state.cecil_damage = dark_elf_max_hp - dark_elf_hp
+		log.log(string.format("Note: Cecil's initial damage at Dark Elf was %d.", _state.cecil_damage))
+	end
+
+	if character == game.CHARACTER.CECIL then
+		if _state.yang_waited and game.enemy.get_stat(1, "hp") == 0 then
+			_manage_inventory(nil)
+		elseif turn ~= 2 or _state.cecil_damage < 942 then
+			_command_fight()
+		else
+			_command_parry()
+		end
 	elseif character == game.CHARACTER.YANG then
-		if turn == 1 or turn >= 3 then
+		if turn == 1 or turn >= 3 or _state.cecil_damage <= 684 or _state.cecil_damage >= 942 then
 			if not _state.yang_waited and turn == 3 then
 				_command_wait_text(" Weak", 300)
 
@@ -1074,6 +1086,11 @@ local function _battle_dark_elf(character, turn, strat)
 	elseif character == game.CHARACTER.TELLAH then
 		if turn == 1 then
 			_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.CID)
+
+			if _state.cecil_damage < 942 then
+				_command_run_buffer()
+				_state.flush_queue = true
+			end
 		elseif turn == 2 then
 			_command_wait_text("Da", 300)
 
@@ -1091,13 +1108,23 @@ local function _battle_dark_elf(character, turn, strat)
 			end
 		end
 	elseif character == game.CHARACTER.CID then
-		_command_fight()
+		if _state.cecil_damage >= 942 then
+			_command_fight()
+		else
+			_command_parry()
+		end
 	end
 end
 
 local function _battle_dark_imp(character, turn, strat)
-	if character == game.CHARACTER.RYDIA and game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 5 then
-		_command_black(game.MAGIC.BLACK.ICE1)
+	if character == game.CHARACTER.RYDIA then
+		_manage_inventory(1)
+
+		if game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 5 then
+			_command_black(game.MAGIC.BLACK.ICE1)
+		else
+			_command_fight()
+		end
 	else
 		_command_fight()
 	end
@@ -1345,7 +1372,13 @@ local function _battle_general(character, turn, strat)
 
 	if game.enemy.get_weakest(game.ENEMY.FIGHTER) then
 		if character == game.CHARACTER.CECIL then
-			_command_fight()
+			if not _state.yang_queued or _state.cecil_waited then
+				_command_fight()
+			else
+				_command_wait_frames(90)
+				_state.cecil_waited = true
+				return true
+			end
 		elseif character == game.CHARACTER.EDWARD then
 			if menu.battle.command.has_command(menu.battle.COMMAND.SHOW) then
 				_command_parry()
@@ -1370,6 +1403,7 @@ local function _battle_general(character, turn, strat)
 			end
 
 			_command_fight()
+			_state.yang_queued = true
 		end
 	else
 		_command_wait_text("Retreat")
@@ -1434,10 +1468,13 @@ local function _battle_golbez(character, turn, strat)
 				return true
 			elseif _state.stage == 5 then
 				_command_wait_text(" Meal", 600)
+				_manage_inventory(3, fixed)
+				_state.stage = 6
+				return true
+			elseif _state.stage == 6 then
+				_command_wait_text("Golbez:An", 600)
 				_manage_inventory(48, fixed)
 			end
-
-			_command_wait_text("Golbez:An", 600)
 		end
 
 		_command_fight()
@@ -1476,6 +1513,9 @@ local function _battle_grind(character, turn, strat)
 	local required_dragons = 15
 	local cure_item = game.ITEM.ITEM.ELIXIR
 	local level = game.character.get_stat(game.CHARACTER.EDGE, "level", true)
+
+	local edge_hp = game.character.get_stat(game.CHARACTER.EDGE, "hp", true)
+	local rydia_hp = game.character.get_stat(game.CHARACTER.RYDIA, "hp", true)
 
 	if ROUTE == "no64-rosa" then
 		grind_character = game.CHARACTER.ROSA
@@ -1761,12 +1801,11 @@ local function _battle_grind(character, turn, strat)
 
 							_command_parry()
 						else
-							if not _state.equipped then
-								_command_equip(character, game.ITEM.WEAPON.DWARF)
-								_state.equipped = true
+							if edge_hp > 0 then
+								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+							else
+								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
 							end
-
-							_command_parry()
 						end
 					elseif character == game.CHARACTER.EDGE then
 						if ROUTE == "no64-rosa" then
@@ -1819,15 +1858,10 @@ local function _battle_grind(character, turn, strat)
 						end
 					elseif character == game.CHARACTER.ROSA then
 						if ROUTE == "no64-rosa" then
-							if game.battle.get_type() ~= game.battle.TYPE.BACK_ATTACK and not _state.changed then
-								_command_change()
-								_state.changed = true
+							if strongest[1] or game.character.get_stat(game.CHARACTER.FUSOYA, "hp", true) > 0 then
+								_command_parry()
 							else
-								if strongest[1] or game.character.get_stat(game.CHARACTER.FUSOYA, "hp", true) > 0 then
-									_command_parry()
-								else
-									_command_fight()
-								end
+								_command_fight()
 							end
 						else
 							if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) < 750 then
@@ -1844,10 +1878,10 @@ local function _battle_grind(character, turn, strat)
 								_command_parry()
 							end
 						else
-							if strongest[1] and strongest[2] > 400 then
-								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
+							if edge_hp > 0 then
+								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
 							else
-								_command_parry()
+								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
 							end
 						end
 					end
@@ -1888,8 +1922,10 @@ local function _battle_guards(character, turn, strat)
 end
 
 local function _battle_kainazzo(character, turn, strat)
+	local yang_level = game.character.get_stat(game.CHARACTER.YANG, "level", true)
+
 	if character == game.CHARACTER.CECIL or character == game.CHARACTER.YANG then
-		if character == game.CHARACTER.CECIL and turn == 1 then
+		if character == game.CHARACTER.CECIL and turn == 1 and yang_level == 13 then
 			_command_run_buffer()
 		end
 
@@ -1933,12 +1969,13 @@ end
 local function _battle_lugae1(character, turn, strat)
 	if character == game.CHARACTER.KAIN then
 		if turn == 1 then
+			_command_run_buffer()
 			_command_jump(menu.battle.TARGET.ENEMY, 0)
 		else
 			_command_fight()
 		end
 	elseif character == game.CHARACTER.YANG then
-		if turn == 2 and game.character.get_stat(game.CHARACTER.YANG, "level", true) == 17 then
+		if turn == 2 then
 			_command_wait_text("Dr.:.", 600)
 			_manage_inventory(8)
 		end
@@ -1976,22 +2013,13 @@ local function _battle_lugae2(character, turn, strat)
 
 	if character == game.CHARACTER.KAIN then
 		if turn == 1 then
-			_command_wait_text("Now", 300)
+			_command_run_buffer()
 			_command_jump()
 		else
 			_command_fight()
 		end
 	elseif character == game.CHARACTER.YANG then
-		if turn <= 2 then
-			_command_wait_frames(15)
-			_command_fight()
-		else
-			if turn == 3 then
-				_command_wait_text("Heal", 600)
-			end
-
-			_command_fight()
-		end
+		_command_fight()
 	elseif character == game.CHARACTER.RYDIA then
 		if turn == 1 then
 			if game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 40 then
@@ -2000,33 +2028,25 @@ local function _battle_lugae2(character, turn, strat)
 				_command_parry()
 			end
 		else
-			_command_fight()
+			if game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 25 then
+				_command_black(game.MAGIC.BLACK.LIT_2)
+			else
+				_command_fight()
+			end
 		end
 	elseif character == game.CHARACTER.CECIL then
-		if turn == 1 then
+		if lowest[1] and lowest[2] == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
+		elseif game.character.is_status(game.CHARACTER.YANG, game.STATUS.SLEEP) then
 			_command_fight()
-		elseif turn == 2 then
-			if not _state.waited then
-				_command_wait_text("Laser", 300)
-				_state.waited = true
-				return true
-			end
-
-			if lowest[1] then
-				if lowest[2] == 0 then
-					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
-				else
-					_command_parry()
-				end
-			else
-				_command_parry()
-			end
 		else
-			_command_fight()
+			_command_parry()
 		end
 	elseif character == game.CHARACTER.ROSA then
 		if game.character.get_stat(game.CHARACTER.CECIL, "hp", true) == 0 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		elseif game.character.is_status(game.CHARACTER.YANG, game.STATUS.SLEEP) then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		else
 			_command_parry()
 		end
@@ -2080,6 +2100,12 @@ local function _battle_milon_carrot(character, turn, strat)
 		end
 
 		if character == game.CHARACTER.CECIL or character == game.CHARACTER.TELLAH then
+			local _, cecil_weapon = game.character.get_weapon(game.CHARACTER.CECIL, true)
+
+			if character == game.CHARACTER.CECIL and cecil_weapon ~= game.ITEM.WEAPON.DARKNESS then
+				_command_equip(character, game.ITEM.WEAPON.DARKNESS)
+			end
+
 			if character == game.CHARACTER.CECIL and game.enemy.get_stat(0, "hp") < 150 then
 				_command_fight()
 			elseif worst_twin and ((worst_twin.hp and worst_twin.hp < 40) or character == game.CHARACTER.TELLAH) then
@@ -2128,6 +2154,7 @@ local function _battle_milon_carrot(character, turn, strat)
 				_command_parry()
 			elseif turn == 4 then
 				_command_wait_text("Cure2", 120)
+				_command_equip(character, game.ITEM.WEAPON.DARKNESS)
 				_manage_inventory(5)
 				_command_wait_text(" Stop")
 				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
@@ -2331,30 +2358,24 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 	else
 		if character == game.CHARACTER.CECIL then
 			if turn == 1 then
-				if not _state.cecil_waited then
-					_command_wait_frames(30)
-					table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
-					_command_wait_frames(150)
-					_state.cecil_waited = true
+				table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+
+				if porom_hp == 0 then
+					_state.alternate = true
+					_state.full_inventory = true
 					return true
+				elseif porom_hp < palom_hp and porom_hp < 75 then
+					_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+				elseif palom_hp < porom_hp and palom_hp < 75 then
+					_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
+				elseif game.character.is_status(game.CHARACTER.PALOM, game.STATUS.POISON) then
+					_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
+				elseif game.character.is_status(game.CHARACTER.POROM, game.STATUS.POISON) then
+					_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
+				elseif game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.POISON) then
+					_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 				else
-					if porom_hp == 0 then
-						_state.alternate = true
-						_state.full_inventory = true
-						return true
-					elseif porom_hp < palom_hp and porom_hp < 75 then
-						_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
-					elseif palom_hp < porom_hp and palom_hp < 75 then
-						_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
-					elseif game.character.is_status(game.CHARACTER.PALOM, game.STATUS.POISON) then
-						_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
-					elseif game.character.is_status(game.CHARACTER.POROM, game.STATUS.POISON) then
-						_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
-					elseif game.character.is_status(game.CHARACTER.TELLAH, game.STATUS.POISON) then
-						_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
-					else
-						_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
-					end
+					_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.PALOM)
 				end
 			elseif turn >= 2 then
 				if palom_hp == 0 then
@@ -2390,7 +2411,6 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 			_state.palom_acted = true
 
 			if porom_hp > 0 then
-				_command_wait_frames(15)
 				_command_black(game.MAGIC.BLACK.ICE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 			else
 				_state.alternate = true
@@ -2400,8 +2420,6 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 		elseif character == game.CHARACTER.TELLAH then
 			if palom_hp > 0 then
 				if turn == 1 then
-					_command_wait_frames(15)
-					_command_run_buffer()
 					_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 				else
 					_command_wait_text("TrashCan", 180)
@@ -2469,9 +2487,7 @@ local function _battle_mombomb(character, turn, strat)
 
 			_command_use_weapon(character, game.ITEM.WEAPON.DANCING)
 		elseif character == game.CHARACTER.ROSA then
-			if count > 1 then
-				_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY_ALL)
-			elseif count == 1 then
+			if count > 0 then
 				_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY, worst_index)
 			else
 				_command_parry()
@@ -2484,12 +2500,12 @@ local function _battle_mombomb(character, turn, strat)
 			_command_kick()
 			_state.kicked = true
 		elseif character == game.CHARACTER.ROSA then
-			if count > 1 then
-				_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY_ALL)
+			if count > 0 then
+				_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY, worst_index)
 			elseif worst_index ~= nil then
-				if worst_hp > 0 then
+				if worst_hp > 0 and worst_hp < 200 then
 					_command_white(game.MAGIC.WHITE.CURE1, menu.battle.TARGET.PARTY, worst_index)
-				elseif game.item.get_count(game.ITEM.ITEM.LIFE, game.INVENTORY.BATTLE) > 0 then
+				elseif worst_hp == 0 and game.item.get_count(game.ITEM.ITEM.LIFE, game.INVENTORY.BATTLE) > 0 then
 					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, worst_index)
 				else
 					_command_parry()
@@ -2720,7 +2736,9 @@ local function _battle_rubicant(character, turn, strat)
 			_command_wait_frames(60)
 		end
 
-		if game.character.get_stat(game.CHARACTER.EDGE, "mp", true) >= 20 then
+		if turn == 3 and _state.glare_target == game.CHARACTER.KAIN then
+			_command_parry()
+		elseif game.character.get_stat(game.CHARACTER.EDGE, "mp", true) >= 20 then
 			_command_ninja(game.MAGIC.NINJA.FLOOD)
 		else
 			_command_fight()
@@ -2729,9 +2747,13 @@ local function _battle_rubicant(character, turn, strat)
 		if turn == 1 then
 			_command_run_buffer()
 			_command_jump()
-		elseif turn == 2 then
-			if cecil_hp == 0 then
+		elseif turn == 2 or _state.glare_target == game.CHARACTER.EDGE then
+			if not _state.glare_target and cecil_hp == 0 then
 				_state.glare_target = game.CHARACTER.CECIL
+			end
+
+			if _state.glare_target == game.CHARACTER.KAIN then
+				_command_run_buffer()
 			end
 
 			_command_jump()
@@ -2744,7 +2766,10 @@ local function _battle_rubicant(character, turn, strat)
 			_command_fight()
 		elseif turn == 2 then
 			if _state.glare_target == game.CHARACTER.CECIL then
-				_command_wait_text(" Ice-2", 300)
+				if rydia_hp > 0 then
+					_command_wait_text(" Ice-2", 300)
+				end
+
 				_command_fight()
 			else
 				if not _state.cecil_waited then
@@ -2772,13 +2797,21 @@ local function _battle_rubicant(character, turn, strat)
 		elseif turn == 3 and _state.glare_target == game.CHARACTER.ROSA then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 3 and _state.glare_target == game.CHARACTER.EDGE then
-			_command_wait_text(" Ice-2")
+			-- This is temporarily commented out, since it's not in my notes. If it causes problems, it can be brought back.
+			--_command_wait_text(" Ice-2")
 			_command_fight()
+		elseif turn == 3 and _state.glare_target == game.CHARACTER.RYDIA then
+			_command_cover(game.CHARACTER.RYDIA)
 		else
+			if _state.glare_target == game.CHARACTER.KAIN then
+				_command_run_buffer()
+			end
+
 			_command_fight()
 		end
 	elseif character == game.CHARACTER.RYDIA then
 		if turn == 2 and _state.glare_target == game.CHARACTER.KAIN then
+			_command_run_buffer()
 			_command_call(game.MAGIC.CALL.SHIVA)
 		elseif turn == 2 and _state.glare_target == game.CHARACTER.EDGE then
 			_command_wait_actor(game.CHARACTER.KAIN, 300)
@@ -2853,6 +2886,7 @@ local function _battle_sisters(character, turn, strat)
 			elseif cecil_hp < 300 and _state.tellah_revived then
 				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 			elseif yang_hp > 0 then
+				_command_run_buffer()
 				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 			else
 				_command_wait_text(" Meteo")
@@ -2868,8 +2902,6 @@ local function _battle_sisters(character, turn, strat)
 		if tellah_hp == 0 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 			_state.tellah_revived = true
-		elseif tellah_hp < 310 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 		else
 			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		end
@@ -2951,8 +2983,19 @@ local function _battle_valvalis(character, turn, strat)
 		end
 	elseif character == game.CHARACTER.CECIL then
 		if turn == 1 then
-			_command_wait_text(" Weak", 300)
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			if not _state.cecil_waited then
+				_command_wait_text(" Weak", 300)
+				_state.cecil_waited = true
+				return true
+			end
+
+			_manage_inventory(1)
+
+			if cecil_hp < 700 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			else
+				_command_cover(game.CHARACTER.ROSA)
+			end
 		else
 			if game.enemy.get_stat(0, "defense_base") > 0 then
 				_command_wait_frames(120)
@@ -3114,7 +3157,9 @@ end
 local function _battle_zeromus_rosa(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
-			-- TODO: Quick inventory management.
+			table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.ITEM}})
+			table.insert(_state.q, {menu.battle.item.select, {game.ITEM.ARMOR.WIZARD}})
+			table.insert(_state.q, {menu.battle.item.select, {game.ITEM.WEAPON.DANCING}})
 			_command_use_item(game.ITEM.ITEM.CRYSTAL)
 		else
 			_command_parry()

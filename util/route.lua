@@ -247,6 +247,7 @@ _M.inventory["no64-excalbur"][game.battle.FORMATION.MILON] = {
 	{game.ITEM.ITEM.CURE2,      nil, {0}, {}},
 	{game.ITEM.WEAPON.DANCING,  nil, {1}, {}},
 	{game.ITEM.SHIELD.PALADIN,  nil, {2}, {}},
+	{game.ITEM.WEAPON.DARKNESS, nil, {3}, {}},
 	{game.ITEM.ITEM.CARROT,     nil, {4}, {}},
 	{game.ITEM.ITEM.LIFE,       nil, {5}, {}},
 	{game.ITEM.ITEM.TRASHCAN,   nil, {6}, {}},
@@ -750,6 +751,20 @@ _M.inventory["no64-rosa"][game.battle.FORMATION.ELEMENTS] = {
 
 _M.inventory["no64-excalbur"][game.battle.FORMATION.CPU] = _M.inventory["no64-excalbur"][game.battle.FORMATION.ELEMENTS]
 _M.inventory["no64-rosa"][game.battle.FORMATION.CPU] = _M.inventory["no64-rosa"][game.battle.FORMATION.ELEMENTS]
+
+_M.inventory["no64-rosa"][game.battle.FORMATION.ZEROMUS] = {
+	{game.ITEM.WEAPON.GUNGNIR,  nil, {0}, {}},
+	{game.ITEM.ITEM.ELIXIR,     nil, {1}, {}},
+	{game.ITEM.WEAPON.DANCING,  nil, {2}, {}},
+	{game.ITEM.ITEM.CURE2,      nil, {3}, {}},
+	{game.ITEM.ARMOR.SAMURAI,   nil, {4}, {}},
+	{game.ITEM.ITEM.LIFE,       nil, {5}, {}},
+	{game.ITEM.ARMS.SAMURAI,    nil, {6}, {}},
+	{game.ITEM.RING.RUNE,       nil, {7}, {}},
+	{game.ITEM.ARMOR.WIZARD,    nil, {8}, {}},
+	{game.ITEM.ITEM.CRYSTAL,    nil, {9}, {}},
+	{game.ITEM.ITEM.LIFE,         1, {43}, {}},
+}
 
 --------------------------------------------------------------------------------
 -- Step Route Data
