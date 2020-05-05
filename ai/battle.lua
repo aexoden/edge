@@ -422,7 +422,7 @@ local function _manage_inventory(limit, fixed_only, reset)
 	while true do
 		local best = {nil, nil, nil}
 
-		if limit and limit > 0 and #_state.inventory > 0 then
+		if ((limit and limit > 0) or not limit) and #_state.inventory > 0 then
 			best = {-1, _state.inventory[1][1], _state.inventory[1][2]}
 			table.remove(_state.inventory, 1)
 		end
@@ -928,6 +928,7 @@ local function _battle_cpu(character, turn, strat)
 			if turn == 1 then
 				_command_black(game.MAGIC.BLACK.METEO)
 			else
+				_manage_inventory(2)
 				_command_black(game.MAGIC.BLACK.NUKE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 			end
 		elseif character == game.CHARACTER.ROSA then
@@ -944,6 +945,7 @@ local function _battle_cpu(character, turn, strat)
 				if game.item.get_count(game.ITEM.WEAPON.CHANGE, game.INVENTORY.BATTLE) > 0 then
 					_command_equip(character, game.ITEM.WEAPON.CHANGE)
 				end
+				_manage_inventory(nil)
 			end
 		end
 	end
