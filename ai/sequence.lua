@@ -5634,6 +5634,14 @@ local function _sequence_cpu()
 	else
 		_M.set_battle_strat(game.battle.FORMATION.CPU, {"rosa"})
 
+		local _, weapon = game.character.get_weapon(game.CHARACTER.CECIL)
+
+		if weapon ~= game.ITEM.WEAPON.DWARF then
+			table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
+			table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DWARF}})
+			table.insert(_q, {menu.field.equip.close, {}})
+		end
+
 		table.insert(_q, {_restore_party, {{[game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP}, game.CHARACTER.FUSOYA}})
 	end
 
