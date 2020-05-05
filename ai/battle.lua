@@ -2570,7 +2570,7 @@ local function _battle_moon_run_check(strat)
 		return true
 	elseif type ~= game.battle.TYPE.STRIKE_FIRST then
 		return true
-	elseif kain_weapon ~= game.ITEM.WEAPON.GUNGNIR then
+	elseif not _state.kain_dupe then
 		return true
 	else
 		return false
