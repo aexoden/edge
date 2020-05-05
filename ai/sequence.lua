@@ -589,7 +589,6 @@ local function _post_grind_menu()
 
 		if rosa_menu then
 			table.insert(stack, {menu.field.form.swap, {game.CHARACTER.EDGE, game.CHARACTER.ROSA, game.FORMATION.TWO_FRONT}})
-			table.insert(stack, {menu.field.form.swap, {game.CHARACTER.CECIL, game.CHARACTER.RYDIA}})
 			table.insert(stack, {menu.field.magic.open, {game.CHARACTER.ROSA}})
 			table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.CURE1}})
 			table.insert(stack, {menu.field.magic.select, {game.MAGIC.WHITE.WALL}})
@@ -5629,7 +5628,7 @@ local function _sequence_cpu()
 	else
 		_M.set_battle_strat(game.battle.FORMATION.CPU, {"rosa"})
 
-		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.HP}, game.CHARACTER.FUSOYA}})
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.FUSOYA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP}, game.CHARACTER.FUSOYA}})
 	end
 
 	table.insert(_q, {menu.field.close, {}})
@@ -6197,14 +6196,22 @@ local function _sequence_zemus()
 		_excalbur_zeromus_menu()
 	elseif ROUTE == "no64-rosa" then
 		table.insert(_q, {menu.field.open, {}})
-		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.HEADBAND}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.STRENGTH}})
-		table.insert(_q, {menu.field.equip.close, {}})
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.ROSA}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.WHITE}})
 		table.insert(_q, {menu.field.equip.close, {}})
-		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.CECIL, game.CHARACTER.KAIN, game.FORMATION.THREE_FRONT}})
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.EDGE}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.KARATE}})
+		table.insert(_q, {menu.field.equip.close, {}})
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.KAIN}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.GUNGNIR}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.NONE}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.WEAPON.GUNGNIR}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.BL_BELT}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.ARMS, game.ITEM.RING.STRENGTH}})
+		table.insert(_q, {menu.field.equip.close, {}})
+		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.EDGE, game.CHARACTER.KAIN}})
+		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.EDGE, game.CHARACTER.CECIL}})
+		table.insert(_q, {menu.field.form.swap, {game.CHARACTER.EDGE, game.CHARACTER.RYDIA}})
 		table.insert(_q, {menu.field.close, {}})
 	end
 

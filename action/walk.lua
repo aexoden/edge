@@ -230,7 +230,7 @@ function _M.chase(target_map_id, npcs, shop)
 end
 
 function _M.interact(dialog_text)
-	if dialog_text and dialog.get_text(#dialog_text) == dialog_text then
+	if dialog_text and memory.read("dialog", "height") == 7 and dialog.get_text(#dialog_text) == dialog_text then
 		return true
 	end
 

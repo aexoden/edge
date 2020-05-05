@@ -924,63 +924,27 @@ local function _battle_cpu(character, turn, strat)
 			_command_parry()
 		end
 	elseif ROUTE == "no64-rosa" then
-		if character == game.CHARACTER.EDGE then
-			if turn == 1 or turn == 2 then
-				_command_run_buffer()
-				_command_parry()
-			elseif turn == 3 then
-				if _state.edge_waited then
-					if game.enemy.get_stat(0, "hp") < 650 then
-						_command_dart(game.ITEM.WEAPON.DANCING)
-					else
-						_command_parry()
-					end
-				else
-					_command_wait_text(" Meteo", 180)
-					_manage_inventory(6)
-					_command_wait_text(" White", 600)
-					_manage_inventory(4)
-					_state.edge_waited = true
-					return true
-				end
-			else
-				_command_dart(game.ITEM.WEAPON.DANCING)
-			end
-		elseif character == game.CHARACTER.FUSOYA then
+		if character == game.CHARACTER.FUSOYA then
 			if turn == 1 then
-				_command_run_buffer()
 				_command_black(game.MAGIC.BLACK.METEO)
-				_command_run_buffer()
-				_state.flush_queue = true
 			else
-				_command_run_buffer()
-
-				if game.enemy.get_stat(0, "hp") < 1000 then
-					_state.virus = true
-					_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-				else
-					_command_black(game.MAGIC.BLACK.NUKE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-				end
-				_command_run_buffer()
-				_state.flush_queue = true
+				_command_black(game.MAGIC.BLACK.NUKE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 			end
 		elseif character == game.CHARACTER.ROSA then
 			if turn == 1 then
-				_command_wait_text(" Wall", 180)
 				_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-			elseif turn == 2 then
-				_command_run_buffer()
+			else
+				_command_wait_text("Maser")
 				_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-			elseif turn == 3 then
-				if _state.virus then
-					_command_wait_text(" Virus")
-				else
-					_command_wait_text(" Nuke")
-				end
-				_manage_inventory(48)
 			end
-		elseif character == game.CHARACTER.CECIL then
-			_command_parry()
+		elseif character == game.CHARACTER.RYDIA then
+			if turn == 1 or turn == 2 then
+				_command_parry()
+			else
+				if game.item.get_count(game.ITEM.WEAPON.CHANGE, game.INVENTORY.BATTLE) > 0 then
+					_command_equip(character, game.ITEM.WEAPON.CHANGE)
+				end
+			end
 		end
 	end
 end
@@ -2594,6 +2558,38 @@ local function _battle_mombomb(character, turn, strat)
 	end
 end
 
+local function _battle_moon_run_check(strat)
+	local type = game.battle.get_type()
+	local _, kain_weapon = game.character.get_weapon(game.CHARACTER.KAIN, true)
+
+	if kain_weapon == game.ITEM.WEAPON.GUNGNIR then
+		_state.kain_dupe = true
+	end
+
+	if ROUTE == "no64-excalbur" then
+		return true
+	elseif type ~= game.battle.TYPE.STRIKE_FIRST then
+		return true
+	elseif kain_weapon ~= game.ITEM.WEAPON.GUNGNIR then
+		return true
+	else
+		return false
+	end
+end
+
+local function _battle_moon(character, turn, strat)
+	if _state.dupe_complete then
+		_command_run()
+		return true
+	elseif character == game.CHARACTER.KAIN then
+		_command_duplicate(game.EQUIP.L_HAND, false)
+		_state.dupe_complete = true
+		return true
+	else
+		_command_parry()
+	end
+end
+
 local function _battle_octomamm(character, turn, strat)
 	local change = false
 
@@ -2683,23 +2679,29 @@ local function _battle_ordeals(character, turn, strat)
 	end
 end
 
-local function _battle_red_d(character, turn, strat)
+local function _battle_red_d_run_check(strat)
 	if ROUTE == "no64-rosa" then
-		return _command_run()
+		return true
 	else
 		local formation = memory.read("battle", "formation")
 
 		if route.get_value("C317500") == 0 then
-			return _command_run()
+			return true
 		elseif formation == game.battle.FORMATION.RED_D_2 then
-			return _command_run()
+			return true
 		elseif formation == game.battle.FORMATION.RED_D_B and route.get_value("C200001") == 0 then
-			return _command_run()
-		elseif character == game.CHARACTER.EDGE then
-			_command_ninja(game.MAGIC.NINJA.SMOKE)
+			return true
 		else
-			_command_parry()
+			return false
 		end
+	end
+end
+
+local function _battle_red_d(character, turn, strat)
+	if character == game.CHARACTER.EDGE then
+		_command_ninja(game.MAGIC.NINJA.SMOKE)
+	else
+		_command_parry()
 	end
 end
 
@@ -2873,6 +2875,36 @@ local function _battle_sisters(character, turn, strat)
 		_command_black(game.MAGIC.BLACK.METEO)
 	end
 end
+
+local function _battle_subterrane_run_check(strat)
+	local _, kain_weapon = game.character.get_weapon(game.CHARACTER.KAIN, true)
+
+	if kain_weapon == game.ITEM.WEAPON.GUNGNIR then
+		_state.kain_dupe = true
+	end
+
+	if ROUTE == "no64-excalbur" then
+		return true
+	elseif not _state.kain_dupe then
+		return true
+	else
+		return false
+	end
+end
+
+local function _battle_subterrane(character, turn, strat)
+	if _state.dupe_complete then
+		_command_run()
+		return true
+	elseif character == game.CHARACTER.KAIN then
+		_command_duplicate(game.EQUIP.L_HAND, false)
+		_state.dupe_complete = true
+		return true
+	else
+		_command_parry()
+	end
+end
+
 
 local function _battle_valvalis(character, turn, strat)
 	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp", true)
@@ -3080,61 +3112,82 @@ end
 local function _battle_zeromus_rosa(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if turn == 1 then
+			-- TODO: Quick inventory management.
 			_command_use_item(game.ITEM.ITEM.CRYSTAL)
-		elseif turn == 2 then
+		else
 			_command_parry()
 		end
 	elseif character == game.CHARACTER.EDGE then
 		if turn == 1 then
-			_command_dart(game.ITEM.STAR.NINJA)
-		elseif turn == 2 and game.item.get_count(game.ITEM.WEAPON.GUNGNIR, game.INVENTORY.BATTLE) > 0 then
 			_command_dart(game.ITEM.WEAPON.GUNGNIR)
-		else
-			-- Battle is probably shot anyway, but at least this way we prevent softlocks.
-			log.log("WARNING: Rosa Zeromus fight is missing Gungnir.")
-			_command_fight()
+		elseif turn == 2 then
+			_command_dart(game.ITEM.WEAPON.DANCING)
 		end
 	elseif character == game.CHARACTER.KAIN then
 		if turn == 1 then
-			_command_equip(character, game.ITEM.WEAPON.ICEBRAND)
-			_command_parry()
-		elseif turn == 2 then
-			_command_run_buffer()
-			_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-		elseif turn == 3 then
-			if game.enemy.get_stat(1, "hp") > 18050 then
+			-- TODO: Eventually, this should use a damage threshold. For now, it's being used for data collection.
+			log.log(string.format("Deciding Kain's action. Current Zeromus HP: %d", game.enemy.get_stat(1, "hp")))
+			if math.random(0, 1) == 0 then
+				log.log("Kain action: Fight")
+				_state.extra_kain = true
 				_command_fight()
-			elseif game.enemy.get_stat(1, "hp") > 16000 then
-				_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.ENEMY, 1)
+			else
+				log.log("Kain action: Elixir")
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+			end
+		elseif turn == 2 then
+			if _state.extra_kain then
+				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 			else
 				_command_parry()
 			end
-		elseif turn == 4 then
-			_command_run_buffer()
-			_command_fight(menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
 		end
 	elseif character == game.CHARACTER.ROSA then
 		if turn == 1 then
 			_command_white(game.MAGIC.WHITE.BERSK, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
 		elseif turn == 2 then
-			_command_parry()
+			_command_white(game.MAGIC.WHITE.WHITE)
 		elseif turn == 3 then
 			_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.PARTY_ALL)
-		elseif turn == 4 or turn == 6 then
-			-- TODO: Wait for Kain's attack explicitly if necessary. Probably can wait until the current actor is Kain.
+		elseif turn == 4 then
+			_command_wait_frames(540)
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+		elseif turn == 5 then
+			_command_wait_text("Blk.Hole")
 			_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-		elseif turn == 5 or turn == 7 then
-			-- TODO: Again, wait for Kain on turn 5.
+		elseif turn == 6 then
 			_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-		elseif turn == 8 then
+		elseif turn == 7 then
 			_command_white(game.MAGIC.WHITE.WHITE)
 		end
 	elseif character == game.CHARACTER.RYDIA then
 		if turn == 1 then
 			_command_parry()
-		else
-			table.insert(_state.q, {menu.battle.command.select, {menu.battle.COMMAND.FIGHT, input.DELAY.NONE}})
-			table.insert(_state.q, {menu.battle.target, {nil, nil, nil, nil, input.DELAY.NONE}})
+		elseif turn == 2 then
+			if _state.waited then
+				local weak_target = memory.read("battle", "enemy_target")
+
+				if weak_target == 1 or weak_target == 3 then
+					_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.PARTY, weak_target)
+				else
+					_command_parry()
+				end
+
+				_state.waited = nil
+			else
+				_command_wait_text("Weak")
+				_command_wait_frames(90)
+				_state.waited = true
+				return true
+			end
+		elseif turn == 3 then
+			_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+		elseif turn == 4 then
+			if _state.extra_kain then
+				_command_run_buffer()
+			end
+
+			_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		end
 	end
 end
@@ -3158,53 +3211,76 @@ local function _battle_zeromus(character, turn, strat)
 end
 
 local _formations = {
-	[game.battle.FORMATION.ANTLION]  = {title = "Antlion",                          f = _battle_antlion,  split = true},
-	[game.battle.FORMATION.BAIGAN]   = {title = "Baigan",                           f = _battle_baigan,   split = true},
-	[game.battle.FORMATION.CALBRENA] = {title = "Calbrena",                         f = _battle_calbrena, split = true},
-	[game.battle.FORMATION.CPU]      = {title = "CPU",                              f = _battle_cpu,      split = true},
-	[game.battle.FORMATION.D_KNIGHT] = {title = "D.Knight",                         f = _battle_d_knight, split = false},
-	[game.battle.FORMATION.D_MIST]   = {title = "D.Mist",                           f = _battle_d_mist,   split = true},
-	[game.battle.FORMATION.DARK_ELF] = {title = "Dark Elf",                         f = _battle_dark_elf, split = true},
-	[game.battle.FORMATION.DARK_IMP] = {title = "Dark Imps",                        f = _battle_dark_imp, split = true},
-	[game.battle.FORMATION.DRAGOON]  = {title = "Dragoon",                          f = _battle_dragoon,  split = true},
-	[game.battle.FORMATION.EBLAN]    = {title = "K.Eblan/Q.Eblan",                  f = _battle_eblan,    split = true},
-	[game.battle.FORMATION.ELEMENTS] = {title = "Elements",                         f = _battle_elements, split = true},
-	[game.battle.FORMATION.FLAMEDOG] = {title = "FlameDog",                         f = _battle_flamedog, split = true},
-	[game.battle.FORMATION.GARGOYLE] = {title = "Gargoyle",                         f = _battle_gargoyle, split = false},
-	[game.battle.FORMATION.GENERAL]  = {title = "General/Fighters",                 f = _battle_general,  split = false},
-	[game.battle.FORMATION.GIRL]     = {title = "Girl",                             f = _battle_girl,     split = true},
-	[game.battle.FORMATION.GOLBEZ]   = {title = "Golbez",                           f = _battle_golbez,   split = true},
-	[game.battle.FORMATION.GRIND]    = {title = "Grind Fight",                      f = _battle_grind,    split = true, presplit = true},
-	[game.battle.FORMATION.GUARDS]   = {title = "Guards",                           f = _battle_guards,   split = false},
-	[game.battle.FORMATION.KAINAZZO] = {title = "Kainazzo",                         f = _battle_kainazzo, split = true},
-	[game.battle.FORMATION.KARATE]   = {title = "Karate",                           f = _battle_karate,   split = true},
-	[game.battle.FORMATION.LUGAE1]   = {title = "Dr.Lugae/Balnab",                  f = _battle_lugae1,   split = true},
-	[game.battle.FORMATION.LUGAE2]   = {title = "Dr.Lugae",                         f = _battle_lugae2,   split = true},
-	[game.battle.FORMATION.MAGE]     = {title = "Mages",                            f = _battle_mages,    split = false},
-	[game.battle.FORMATION.MILON]    = {title = "Milon",                            f = _battle_milon,    split = true},
-	[game.battle.FORMATION.MILON_Z]  = {title = "Milon Z.",                         f = _battle_milon_z,  split = true},
-	[game.battle.FORMATION.MOMBOMB]  = {title = "MomBomb",                          f = _battle_mombomb,  split = true},
-	[game.battle.FORMATION.OCTOMAMM] = {title = "Octomamm",                         f = _battle_octomamm, split = true},
-	[game.battle.FORMATION.OFFICER]  = {title = "Officer/Soldiers",                 f = _battle_officer,  split = true},
-	[game.battle.FORMATION.ORDEALS1] = {title = "Lilith x1, Red Bone x2",           f = _battle_ordeals,  split = false},
-	[game.battle.FORMATION.ORDEALS2] = {title = "Ghoul x2, Soul x2",                f = _battle_ordeals,  split = false},
-	[game.battle.FORMATION.ORDEALS3] = {title = "Revenant x1, Ghoul x2",            f = _battle_ordeals,  split = false},
-	[game.battle.FORMATION.ORDEALS4] = {title = "Zombie x3, Ghoul x2, Revenant x2", f = _battle_ordeals,  split = false},
-	[game.battle.FORMATION.ORDEALS5] = {title = "Lilith x1",                        f = _battle_ordeals,  split = false},
-	[game.battle.FORMATION.ORDEALS6] = {title = "Soul x2, Ghoul x2, Revenant x2",   f = _battle_ordeals,  split = false},
-	[game.battle.FORMATION.ORDEALS7] = {title = "Soul x3, Ghoul x1, Revenant x1",   f = _battle_ordeals,  split = false},
-	[game.battle.FORMATION.ORDEALS8] = {title = "Lilith x2",                        f = _battle_ordeals,  split = false},
-	[game.battle.FORMATION.RED_D_1]  = {title = "Red D. x1",                        f = _battle_red_d,    split = false},
-	[game.battle.FORMATION.RED_D_2]  = {title = "Red D. x2",                        f = _battle_red_d,    split = false},
-	[game.battle.FORMATION.RED_D_B]  = {title = "Red D. x1, Behemoth x1",           f = _battle_red_d,    split = false},
-	[game.battle.FORMATION.RED_D_3]  = {title = "Red D. x3",                        f = _battle_red_d,    split = false},
-	[game.battle.FORMATION.RUBICANT] = {title = "Rubicant",                         f = _battle_rubicant, split = true},
-	[game.battle.FORMATION.SISTERS]  = {title = "Magus Sisters",                    f = _battle_sisters,  split = true},
-	[game.battle.FORMATION.VALVALIS] = {title = "Valvalis",                         f = _battle_valvalis, split = true},
-	[game.battle.FORMATION.WATERHAG] = {title = "WaterHag",                         f = _battle_waterhag, split = true},
-	[game.battle.FORMATION.WEEPER]   = {title = "Weeper/WaterHag/Imp",              f = _battle_weeper,   split = false},
-	[game.battle.FORMATION.ZEMUS]    = {title = "Zemus",                            f = nil,              split = true},
-	[game.battle.FORMATION.ZEROMUS]  = {title = "Zeromus",                          f = _battle_zeromus,  split = false},
+	[game.battle.FORMATION.ANTLION]       = {title = "Antlion",                               f = _battle_antlion,  split = true},
+	[game.battle.FORMATION.BAIGAN]        = {title = "Baigan",                                f = _battle_baigan,   split = true},
+	[game.battle.FORMATION.CALBRENA]      = {title = "Calbrena",                              f = _battle_calbrena, split = true},
+	[game.battle.FORMATION.CPU]           = {title = "CPU",                                   f = _battle_cpu,      split = true},
+	[game.battle.FORMATION.D_KNIGHT]      = {title = "D.Knight",                              f = _battle_d_knight, split = false},
+	[game.battle.FORMATION.D_MIST]        = {title = "D.Mist",                                f = _battle_d_mist,   split = true},
+	[game.battle.FORMATION.DARK_ELF]      = {title = "Dark Elf",                              f = _battle_dark_elf, split = true},
+	[game.battle.FORMATION.DARK_IMP]      = {title = "Dark Imps",                             f = _battle_dark_imp, split = true},
+	[game.battle.FORMATION.DRAGOON]       = {title = "Dragoon",                               f = _battle_dragoon,  split = true},
+	[game.battle.FORMATION.EBLAN]         = {title = "K.Eblan/Q.Eblan",                       f = _battle_eblan,    split = true},
+	[game.battle.FORMATION.ELEMENTS]      = {title = "Elements",                              f = _battle_elements, split = true},
+	[game.battle.FORMATION.FLAMEDOG]      = {title = "FlameDog",                              f = _battle_flamedog, split = true},
+	[game.battle.FORMATION.GARGOYLE]      = {title = "Gargoyle",                              f = _battle_gargoyle, split = false},
+	[game.battle.FORMATION.GENERAL]       = {title = "General/Fighters",                      f = _battle_general,  split = false},
+	[game.battle.FORMATION.GIRL]          = {title = "Girl",                                  f = _battle_girl,     split = true},
+	[game.battle.FORMATION.GOLBEZ]        = {title = "Golbez",                                f = _battle_golbez,   split = true},
+	[game.battle.FORMATION.GRIND]         = {title = "Grind Fight",                           f = _battle_grind,    split = true, presplit = true},
+	[game.battle.FORMATION.GUARDS]        = {title = "Guards",                                f = _battle_guards,   split = false},
+	[game.battle.FORMATION.KAINAZZO]      = {title = "Kainazzo",                              f = _battle_kainazzo, split = true},
+	[game.battle.FORMATION.KARATE]        = {title = "Karate",                                f = _battle_karate,   split = true},
+	[game.battle.FORMATION.LUGAE1]        = {title = "Dr.Lugae/Balnab",                       f = _battle_lugae1,   split = true},
+	[game.battle.FORMATION.LUGAE2]        = {title = "Dr.Lugae",                              f = _battle_lugae2,   split = true},
+	[game.battle.FORMATION.MAGE]          = {title = "Mages",                                 f = _battle_mages,    split = false},
+	[game.battle.FORMATION.MILON]         = {title = "Milon",                                 f = _battle_milon,    split = true},
+	[game.battle.FORMATION.MILON_Z]       = {title = "Milon Z.",                              f = _battle_milon_z,  split = true},
+	[game.battle.FORMATION.MOMBOMB]       = {title = "MomBomb",                               f = _battle_mombomb,  split = true},
+	[game.battle.FORMATION.MOON_1]        = {title = "MoonCell x2, Pudding x2",               f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
+	[game.battle.FORMATION.MOON_2]        = {title = "Juclyote x2, MoonCell x2, Grenade x1",  f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
+	[game.battle.FORMATION.MOON_3]        = {title = "Procyote x1, Juclyote x2",              f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
+	[game.battle.FORMATION.MOON_4]        = {title = "Procyote x1, Pudding x2",               f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
+	[game.battle.FORMATION.MOON_5]        = {title = "Juclyote x1, Procyote x2",              f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
+	[game.battle.FORMATION.MOON_6]        = {title = "Red Worm x1, Procyote x1, Juclyote x1", f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
+	[game.battle.FORMATION.MOON_7]        = {title = "Red Worm x2",                           f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
+	[game.battle.FORMATION.MOON_8]        = {title = "Pudding x4",                            f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
+	[game.battle.FORMATION.MOON_9]        = {title = "Pudding x2, Grenade x2",                f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
+	[game.battle.FORMATION.MOON_10]       = {title = "Balloon x2, Grenade x2",                f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
+	[game.battle.FORMATION.MOON_11]       = {title = "Slime x1, Tofu x1, Pudding x1",         f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
+	[game.battle.FORMATION.MOON_12]       = {title = "Red Worm x1, Grenade x3",               f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
+	[game.battle.FORMATION.OCTOMAMM]      = {title = "Octomamm",                              f = _battle_octomamm, split = true},
+	[game.battle.FORMATION.OFFICER]       = {title = "Officer/Soldiers",                      f = _battle_officer,  split = true},
+	[game.battle.FORMATION.ORDEALS1]      = {title = "Lilith x1, Red Bone x2",                f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.ORDEALS2]      = {title = "Ghoul x2, Soul x2",                     f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.ORDEALS3]      = {title = "Revenant x1, Ghoul x2",                 f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.ORDEALS4]      = {title = "Zombie x3, Ghoul x2, Revenant x2",      f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.ORDEALS5]      = {title = "Lilith x1",                             f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.ORDEALS6]      = {title = "Soul x2, Ghoul x2, Revenant x2",        f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.ORDEALS7]      = {title = "Soul x3, Ghoul x1, Revenant x1",        f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.ORDEALS8]      = {title = "Lilith x2",                             f = _battle_ordeals,  split = false},
+	[game.battle.FORMATION.RED_D_1]       = {title = "Red D. x1",                             f = _battle_red_d,    split = false, f_run_check = _battle_red_d_run_check},
+	[game.battle.FORMATION.RED_D_2]       = {title = "Red D. x2",                             f = _battle_red_d,    split = false, f_run_check = _battle_red_d_run_check},
+	[game.battle.FORMATION.RED_D_B]       = {title = "Red D. x1, Behemoth x1",                f = _battle_red_d,    split = false, f_run_check = _battle_red_d_run_check},
+	[game.battle.FORMATION.RED_D_3]       = {title = "Red D. x3",                             f = _battle_red_d,    split = false, f_run_check = _battle_red_d_run_check},
+	[game.battle.FORMATION.RUBICANT]      = {title = "Rubicant",                              f = _battle_rubicant, split = true},
+	[game.battle.FORMATION.SISTERS]       = {title = "Magus Sisters",                         f = _battle_sisters,  split = true},
+	[game.battle.FORMATION.SUBTERRANE_1]  = {title = "Warlock x1",                            f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
+	[game.battle.FORMATION.SUBTERRANE_2]  = {title = "Warlock x1, Kary x1",                   f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
+	[game.battle.FORMATION.SUBTERRANE_3]  = {title = "Warlock x1, Kary x2",                   f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
+	[game.battle.FORMATION.SUBTERRANE_4]  = {title = "RedGiant x1",                           f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
+	[game.battle.FORMATION.SUBTERRANE_5]  = {title = "Warlock x1, Kary x1, RedGiant x1",      f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
+	[game.battle.FORMATION.SUBTERRANE_6]  = {title = "RedGiant x2",                           f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
+	[game.battle.FORMATION.SUBTERRANE_7]  = {title = "Warlock x2, RedGiant x1",               f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
+	[game.battle.FORMATION.SUBTERRANE_8]  = {title = "D.Bone x1",                             f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
+	[game.battle.FORMATION.SUBTERRANE_9]  = {title = "Ging-Ryu x1",                           f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
+	[game.battle.FORMATION.SUBTERRANE_10] = {title = "D.Bone x1, Warlock x1",                 f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
+	[game.battle.FORMATION.SUBTERRANE_11] = {title = "King-Ryu x2",                           f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
+	[game.battle.FORMATION.VALVALIS]      = {title = "Valvalis",                              f = _battle_valvalis, split = true},
+	[game.battle.FORMATION.WATERHAG]      = {title = "WaterHag",                              f = _battle_waterhag, split = true},
+	[game.battle.FORMATION.WEEPER]        = {title = "Weeper/WaterHag/Imp",                   f = _battle_weeper,   split = false},
+	[game.battle.FORMATION.ZEMUS]         = {title = "Zemus",                                 f = nil,              split = true},
+	[game.battle.FORMATION.ZEROMUS]       = {title = "Zeromus",                               f = _battle_zeromus,  split = false},
 }
 
 --------------------------------------------------------------------------------
@@ -3399,7 +3475,7 @@ function _M.cycle()
 				end
 			end
 
-			if run then
+			if run or (formation.f_run_check and formation.f_run_check(_state.strat)) then
 				input.press({"P1 L", "P1 R"}, input.DELAY.NONE)
 			elseif (open and memory.read("battle_menu", "menu") ~= menu.battle.MENU.NONE) or _state.flush_queue then
 				 if #_state.q == 0 and not _state.queued then
