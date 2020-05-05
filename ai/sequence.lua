@@ -2879,6 +2879,7 @@ end
 local function _sequence_dark_elf()
 	-- Fly to Toroia and visit Edward.
 	table.insert(_q, {_set_healing, {_healing_dark_elf}})
+	table.insert(_q, {walk.walk, {nil, 102, 83}})
 	table.insert(_q, {walk.walk, {nil, 36, 83}})
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {walk.walk, {nil, 36, 82}})
