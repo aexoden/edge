@@ -1072,6 +1072,8 @@ local function _battle_dark_elf(character, turn, strat)
 					else
 						_command_fight()
 					end
+				elseif game.character.get_stat(game.CHARACTER.TELLAH, "hp", true) < 100 then
+					_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 				elseif game.character.get_stat(game.CHARACTER.TELLAH, "mp", true) < 25 then
 					_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 				else
