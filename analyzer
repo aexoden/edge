@@ -142,6 +142,11 @@ def get_battle_data(logs, classified=False, strat=True, agility=False):
 					if not strat and battle['strat'] and battle['strat'] not in battles[key][subkey]['data']:
 						battles[key][subkey]['data'][battle['strat']] = []
 
+					if 'success' in battle:
+						if 'success' not in battles[key][subkey]:
+							battles[key][subkey]['success'] = 0
+						battles[key][subkey]['success'] += 1
+
 					if battle['result'].startswith('Victory') or battle['result'].startswith('Stalemate'):
 						if strat or (not strat and not battle['strat']):
 							battles[key][subkey]['data'].append(battle['frames'])
@@ -155,6 +160,11 @@ def get_battle_data(logs, classified=False, strat=True, agility=False):
 
 					if not strat and battle['strat'] and battle['strat'] not in battles[key]['data']:
 						battles[key]['data'][battle['strat']] = []
+
+					if 'success' in battle:
+						if 'success' not in battles[key]:
+							battles[key]['success'] = 0
+						battles[key]['success'] += 1
 
 					if battle['result'].startswith('Victory') or battle['result'].startswith('Stalemate'):
 						if strat or (not strat and not battle['strat']):
@@ -369,6 +379,13 @@ class Log(object):
 						'party_level': None if fields['party_level'] == '-' else int(fields['party_level']),
 						'enemy_level': None if fields['enemy_level'] == '-' else int(fields['enemy_level']),
 					}
+				elif line_type == 'battle_action':
+					if current_battle['formation'] == 226 and current_battle['strat'] == 'carrot':
+						if fields['action'].endswith('Carrot') and 'Enemy #0' in fields['result']:
+							current_battle['success'] = True
+					elif current_battle['formation'] == 227 and current_battle['strat'] == 'trashcan':
+						if fields['action'].endswith('TrashCan') and 'Enemy #0' in fields['result']:
+							current_battle['success'] = True
 				elif line_type == 'battle_strat':
 					current_battle['strat'] = fields['strat']
 				elif line_type == 'battle_enemy_agility':
@@ -388,6 +405,7 @@ class Log(object):
 		base_regex = '(?P<timestamp>.*) :: (?P<frame>.*) :: (?P<time>.*) :: (?P<game_time>.*) :: '
 
 		regexes = {
+			'battle_action': 'Action: (?P<actor>.*) (?P<action>(uses|casts|attacks) [^ ]*)( and (?P<result>(hits|misses|heals).*))?',
 			'battle_start': 'Battle Start: (?P<description>.*) \((?P<formation>.*)/(?P<type>.*)/(?P<party_level>.*)/(?P<enemy_level>.*)\)',
 			'battle_strat': 'Battle Strat: (?P<strat>.*)',
 			'battle_enemy_agility': 'Enemy Agility: (?P<agility>.*)',
@@ -405,7 +423,7 @@ class Log(object):
 			'sequence': 'Sequence: (?P<sequence>.*)',
 			'split': 'Split: (?P<split>.*)',
 			'version': 'Version: (?P<version>.*)',
-			'_ignore': '(Edge Final Fantasy IV|--------------------|Beginning Full Run|WARNING|Setting Initial Seed|Yellow Chocobo Coordinates|Current Glitch Floor|Rebooting|Load game screen|New Seed|Setting encounter seed|Detected|Zeromus has|Cecil|Do not have|Action|Battle Menu|Party Experience)',
+			'_ignore': '(Edge Final Fantasy IV|--------------------|Note:|Action: \(debug\)|Deciding|Kain action|Beginning Full Run|WARNING|Setting Initial Seed|Yellow Chocobo Coordinates|Current Glitch Floor|Rebooting|Load game screen|New Seed|Setting encounter seed|Detected|Zeromus has|Cecil|Do not have|Battle Menu|Party Experience)',
 		}
 
 		for line_type, regex in regexes.items():
@@ -627,6 +645,7 @@ def html_output_battles(f, logs):
 	f.write('\t\t\t\t\t\t<th>Description</th>\n')
 	f.write('\t\t\t\t\t\t<th>Strat</th>\n')
 	f.write('\t\t\t\t\t\t<th>Count</th>\n')
+	f.write('\t\t\t\t\t\t<th>Victory Rate</th>\n')
 	f.write('\t\t\t\t\t\t<th>Success Rate</th>\n')
 	f.write('\t\t\t\t\t\t<th>Minimum</th>\n')
 	f.write('\t\t\t\t\t\t<th>Maximum</th>\n')
@@ -654,6 +673,11 @@ def html_output_battles(f, logs):
 				if key not in battles:
 					battles[key] = {'formation': battle['formation'], 'strat': battle['strat'], 'data': [], 'count': 0, 'index': ordering[battle['formation']]}
 
+				if 'success' in battle:
+					if 'success' not in battles[key]:
+						battles[key]['success'] = 0
+					battles[key]['success'] += battle['success']
+
 				if battle['result'].startswith('Victory') or battle['result'].startswith('Stalemate'):
 					battles[key]['data'].append(battle['frames'])
 
@@ -665,6 +689,12 @@ def html_output_battles(f, logs):
 		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['strat'] if data['strat'] else '-'))
 		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(data['count']))
 		f.write('\t\t\t\t\t\t<td>{:.3f}%</td>\n'.format(len(data['data']) * 100 / data['count']))
+
+		if 'success' in data:
+			f.write('\t\t\t\t\t\t<td>{:.3f}%</td>\n'.format(data['success'] * 100 / data['count']))
+		else:
+			f.write('\t\t\t\t\t\t<td>-</td>\n')
+
 		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(min(data['data'])) if len(data['data']) > 0 else 'N/A'))
 		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(max(data['data'])) if len(data['data']) > 0 else 'N/A'))
 		f.write('\t\t\t\t\t\t<td>{}</td>\n'.format(format_time(statistics.median(data['data'])) if len(data['data']) > 0 else 'N/A'))
@@ -722,7 +752,12 @@ def html_output_battle(f, key, battle_data, agility_battle_data):
 			battle_type_data[battle_type]['count'] += data['count']
 			battle_type_data[battle_type]['data'].extend(data['data'])
 
-	headers = ['Battle Type', 'Battles', 'Deaths', 'Best Time', 'Worst Time', 'Median Time']
+			if 'success' in data:
+				if 'success' not in battle_type_data[battle_type]:
+					battle_type_data[battle_type]['success'] = 0
+				battle_type_data[battle_type]['success'] += data['success']
+
+	headers = ['Battle Type', 'Battles', 'Successes', 'Deaths', 'Best Time', 'Worst Time', 'Median Time']
 	rows = []
 
 	for battle_type, data in battle_type_data.items():
@@ -738,6 +773,7 @@ def html_output_battle(f, key, battle_data, agility_battle_data):
 		rows.append([
 			battle_type,
 			data['count'],
+			data['success'] if 'success' in data else 'N/A',
 			data['count'] - len(data['data']),
 			minimum,
 			maximum,
@@ -807,7 +843,12 @@ def html_output_battle(f, key, battle_data, agility_battle_data):
 			battle_type_data[key]['count'] += data['count']
 			battle_type_data[key]['data'].extend(data['data'])
 
-	headers = ['Battle Type', 'Enemy Speed', 'Party Speed', 'Battles', 'Deaths', 'Best Time', 'Worst Time', 'Median Time']
+			if 'success' in data:
+				if 'success' not in battle_type_data[battle_type]:
+					battle_type_data[battle_type]['success'] = 0
+				battle_type_data[battle_type]['success'] += data['success']
+
+	headers = ['Battle Type', 'Enemy Speed', 'Party Speed', 'Battles', 'Successes', 'Deaths', 'Best Time', 'Worst Time', 'Median Time']
 	rows = []
 
 	for key, data in sorted(battle_type_data.items()):
@@ -825,6 +866,7 @@ def html_output_battle(f, key, battle_data, agility_battle_data):
 			data['enemy_rs'],
 			data['party_rs'],
 			data['count'],
+			data['success'] if 'success' in data else 'N/A',
 			data['count'] - len(data['data']),
 			minimum,
 			maximum,
@@ -838,7 +880,7 @@ def html_output_battle(f, key, battle_data, agility_battle_data):
 	#---------------------------------------------------------------------------
 
 	f.write('\t\t\t<h3>Full Statistics (Agility)</h3>\n')
-	headers = ['Battle Type', 'Enemy Agility', 'Party Agility', 'Battles', 'Deaths', 'Best Time', 'Worst Time', 'Median Time']
+	headers = ['Battle Type', 'Enemy Agility', 'Party Agility', 'Battles', 'Successes', 'Deaths', 'Best Time', 'Worst Time', 'Median Time']
 	rows = []
 
 	for (battle_type, enemy_agility, party_agility), data in agility_battle_data.items():
@@ -856,6 +898,7 @@ def html_output_battle(f, key, battle_data, agility_battle_data):
 			enemy_agility,
 			party_agility,
 			data['count'],
+			data['success'] if 'success' in data else 'N/A',
 			data['count'] - len(data['data']),
 			minimum,
 			maximum,
@@ -869,7 +912,7 @@ def html_output_battle(f, key, battle_data, agility_battle_data):
 	#---------------------------------------------------------------------------
 
 	f.write('\t\t\t<h3>Full Statistics (Level)</h3>\n')
-	headers = ['Battle Type', 'Enemy Agility', 'Party Agility', 'Battles', 'Deaths', 'Best Time', 'Worst Time', 'Median Time']
+	headers = ['Battle Type', 'Enemy Agility', 'Party Agility', 'Battles', 'Successes', 'Deaths', 'Best Time', 'Worst Time', 'Median Time']
 	rows = []
 
 	for (battle_type, enemy_agility, party_agility), data in battle_data.items():
@@ -887,6 +930,7 @@ def html_output_battle(f, key, battle_data, agility_battle_data):
 			enemy_agility,
 			party_agility,
 			data['count'],
+			data['success'] if 'success' in data else 'N/A',
 			data['count'] - len(data['data']),
 			minimum,
 			maximum,
