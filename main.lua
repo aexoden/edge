@@ -45,12 +45,12 @@ INITIALIZED = false
 
 local function _get_version()
 	local file = io.popen("git describe --tags --dirty", "r")
-	local version = string.match(string.match(file:read('*all'), "%S.*"), ".*%S")
+	local version_full = file:read('*all')
 
-	if version == "" then
+	if version_full == "" then
 		return "v0.0.9-dev"
 	else
-		return version
+		return string.match(string.match(version_full, "%S.*"), ".*%S")
 	end
 end
 
