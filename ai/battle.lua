@@ -1876,7 +1876,11 @@ local function _battle_grind(character, turn, strat)
 								_command_fight()
 							end
 						else
-							if game.character.get_stat(game.CHARACTER.EDGE, "hp", true) < 750 then
+							local edge_hp = game.character.get_stat(game.CHARACTER.EDGE, "hp", true)
+
+							if edge_hp == 0 then
+								_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+							elseif edge_hp < 750 then
 								_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
 							else
 								_command_parry()
