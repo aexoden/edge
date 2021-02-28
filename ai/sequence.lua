@@ -2385,9 +2385,11 @@ local function _sequence_milon_z()
 	-- Heal and prepare the party.
 	table.insert(_q, {menu.field.open, {}})
 
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
-	table.insert(_q, {menu.field.equip.close, {}})
+	if ROUTE ~= "paladin" then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.TELLAH}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.GAEA}})
+		table.insert(_q, {menu.field.equip.close, {}})
+	end
 
 	local _, cecil_weapon = game.character.get_weapon(game.CHARACTER.CECIL)
 
