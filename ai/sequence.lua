@@ -5476,6 +5476,13 @@ local function _sequence_grind_start()
 	table.insert(_q, {dialog.set_mash_button, {"P1 B"}})
 	table.insert(_q, {menu.field.open, {}})
 	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.ALL, [game.CHARACTER.FUSOYA] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP}, game.CHARACTER.FUSOYA}})
+
+	if ROUTE ~= "no64-rosa" then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.RYDIA}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
+		table.insert(_q, {menu.field.equip.close, {}})
+	end
+
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.FUSOYA}})
 
 	if ROUTE == "no64-rosa" then
@@ -5504,9 +5511,13 @@ local function _sequence_grind_start()
 	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
 	table.insert(_q, {menu.field.equip.close, {}})
-	table.insert(_q, {menu.field.equip.open, {game.CHARACTER.RYDIA}})
-	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
-	table.insert(_q, {menu.field.equip.close, {}})
+
+	if ROUTE == "no64-rosa" then
+		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.RYDIA}})
+		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.DANCING}})
+		table.insert(_q, {menu.field.equip.close, {}})
+	end
+
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.CECIL, game.CHARACTER.ROSA}})
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.ROSA, game.CHARACTER.EDGE}})
 	table.insert(_q, {menu.field.form.swap, {game.CHARACTER.RYDIA, game.CHARACTER.ROSA}})
