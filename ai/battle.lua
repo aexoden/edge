@@ -1798,6 +1798,14 @@ local function _battle_grind(character, turn, strat)
 				end
 			end
 
+			local alive = true
+
+			for i = 0, 4 do
+				if memory.read_stat(i, "hp", true) == 0 then
+					alive = false
+				end
+			end
+
 			if _state.waited then
 				if not _state.revived and weakest[1] and weakest[2] == 0 then
 					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, weakest[1])
@@ -1850,14 +1858,6 @@ local function _battle_grind(character, turn, strat)
 								_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.FUSOYA)
 							end
 						elseif _state.duplicated and game.character.get_stat(game.CHARACTER.EDGE, "hp", true) >= 725 then
-							local alive = true
-
-							for i = 0, 4 do
-								if memory.read_stat(i, "hp", true) == 0 then
-									alive = false
-								end
-							end
-
 							if alive then
 								_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.PARTY_ALL)
 							else
@@ -1894,10 +1894,10 @@ local function _battle_grind(character, turn, strat)
 								_command_parry()
 							end
 						else
-							if edge_hp > 0 then
-								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
-							else
+							if not alive then
 								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+							else
+								_command_parry()
 							end
 						end
 					end
