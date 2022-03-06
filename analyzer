@@ -38,6 +38,28 @@ import matplotlib.pyplot as plt
 
 from matplotlib.font_manager import FontProperties
 
+COLORS = [
+	'#e6194B',
+	'#3cb44b',
+	'#ffe119',
+	'#4363d8',
+	'#f58231',
+	'#911eb4',
+	'#42d4f4',
+	'#f032e6',
+	'#bfef45',
+	'#fabed4',
+	'#469990',
+	'#dcbeff',
+	'#9A6324',
+	'#fffac8',
+	'#800000',
+	'#aaffc3',
+	'#808000',
+	'#ffd8b1',
+	'#000075',
+	'#a9a9a9'
+]
 
 #-------------------------------------------------------------------------------
 # Functions
@@ -441,8 +463,6 @@ class Log(object):
 #-------------------------------------------------------------------------------
 
 def img_output_battle(f, key, data):
-	colors = ['#ffbfbf', '#ffee00', '#00e2f2', '#3a00d9', '#f20041', '#e56739', '#74d900', '#bff2ff', '#eeb6f2', '#ff8800', '#adcc99', '#00a2f2', '#d900ca', '#ffc480', '#39e695', '#7989f2', '#d96c98']
-
 	figure = plt.figure(figsize=(12.0, 4.8))
 	figure.suptitle('{} Battle Time'.format(describe_formation(data['formation'])))
 
@@ -467,17 +487,17 @@ def img_output_battle(f, key, data):
 	axis = numpy.linspace(axis_min, axis_max)
 
 	for i, (strat, strat_data) in enumerate(values.items()):
-		x = numpy.array(strat_data, dtype=numpy.float)
+		x = numpy.array(strat_data, dtype=float)
 
 		try:
 			kde = stats.gaussian_kde(x)
 		except Exception:
 			kde = None
 
-		subplot.plot(x, numpy.zeros(x.shape), 'b+', ms=20, color=colors[i%len(colors)])
+		subplot.plot(x, numpy.zeros(x.shape), '+', ms=20, color=COLORS[i%len(COLORS)])
 
 		if kde:
-			subplot.plot(axis, kde(axis), 'k-', color=colors[i%len(colors)], label=strat)
+			subplot.plot(axis, kde(axis), '-', color=COLORS[i%len(COLORS)], label=strat)
 
 	fontprop = FontProperties()
 	fontprop.set_size('small')
@@ -493,8 +513,6 @@ def img_output_battle(f, key, data):
 	plt.close(figure)
 
 def img_output_runs(f, logs, seed=False):
-	colors = ['#ffbfbf', '#ffee00', '#00e2f2', '#3a00d9', '#f20041', '#e56739', '#74d900', '#bff2ff', '#eeb6f2', '#ff8800', '#adcc99', '#00a2f2', '#d900ca', '#ffc480', '#39e695', '#7989f2', '#d96c98']
-
 	figure = plt.figure(figsize=(12.0, 4.8))
 	figure.suptitle('Run Completion Times')
 
@@ -525,17 +543,17 @@ def img_output_runs(f, logs, seed=False):
 	axis = numpy.linspace(axis_min, axis_max)
 
 	for i, (category, data) in enumerate(values.items()):
-		x = numpy.array(data, dtype=numpy.float)
+		x = numpy.array(data, dtype=float)
 
 		try:
 			kde = stats.gaussian_kde(x)
 		except Exception:
 			kde = None
 
-		subplot.plot(x, numpy.zeros(x.shape), 'b+', ms=20, color=colors[i])
+		subplot.plot(x, numpy.zeros(x.shape), '+', ms=20, color=COLORS[i % len(COLORS)])
 
 		if kde:
-			subplot.plot(axis, kde(axis), 'k-', color=colors[i], label=category)
+			subplot.plot(axis, kde(axis), '-', color=COLORS[i % len(COLORS)], label=category)
 
 	fontprop = FontProperties()
 	fontprop.set_size('small')
