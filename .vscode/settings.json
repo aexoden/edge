@@ -1,0 +1,14 @@
+{
+    "Lua.diagnostics.globals": [
+		"client",
+		"console",
+		"emu",
+		"bit",
+		"gui",
+		"joypad",
+		"mainmemory",
+		"memory",
+		"savestate"
+	],
+	"Lua.runtime.version": "Lua 5.1"
+}

@@ -398,7 +398,7 @@ local function _manage_inventory(limit, fixed_only, reset)
 
 	local menu_open = false
 	local current_inventory = _get_current_inventory()
-	local goal_inventory = _get_goal_inventory(inventory_data, false)
+	local goal_inventory = _get_goal_inventory(inventory_data)
 	local current_position = 0
 	local search = true
 	local flip = false

@@ -23,9 +23,10 @@
 local _M = {}
 
 local log = require "util.log"
+local socket = nil
 
 if CONFIG.LIVESPLIT then
-	local socket = require "socket"
+	socket = require "socket"
 end
 
 --------------------------------------------------------------------------------

@@ -1120,7 +1120,7 @@ function _M.battle.command.select(target_command, delay)
 			elseif index == 6 then
 				input.press({"P1 Right"}, delay)
 			else
-				_select_vertical(cursor, index, math.floor(entries / 2), delay)
+				_select_vertical(cursor, index, math.floor(entries / 2))
 			end
 		end
 	end

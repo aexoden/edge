@@ -95,9 +95,9 @@ local function _set_seed()
 	end
 
 	math.randomseed(seed)
-	math.random()
-	math.random()
-	math.random()
+	_ = math.random()
+	_ = math.random()
+	_ = math.random()
 
 	return seed
 end
