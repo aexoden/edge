@@ -3722,7 +3722,7 @@ local function _sequence_dr_lugae()
 		end
 
 		-- Walk back to the shop and purchase Rune rings.
-		if ROUTE == "no64-excalbur" and route.get_value("C310700") >= 3 then
+		if route.get_value("C310700") >= 4 then
 			table.insert(_q, {menu.field.open, {}})
 			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
@@ -3732,7 +3732,7 @@ local function _sequence_dr_lugae()
 			table.insert(_q, {walk.walk, {281, 6, 7}})
 		end
 
-		if (ROUTE == "no64-rosa" and route.get_value("C310700") >= 3) or (ROUTE == "no64-excalbur" and route.get_value("C310700") >= 4) then
+		if route.get_value("C310700") >= 3 then
 			table.insert(_q, {menu.field.open, {}})
 			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
@@ -4366,10 +4366,11 @@ local function _sequence_edge()
 			table.insert(_q, {walk.walk, {204, 8, 9}})
 			table.insert(_q, {walk.walk, {204, 9, 9}})
 		end
+
+		table.insert(_q, {walk.walk, {204, 9, 14}})
 	end
 
 	-- Continue walking to the meeting with Edge.
-	table.insert(_q, {walk.walk, {204, 9, 14}})
 	table.insert(_q, {walk.walk, {200, 17, 13}})
 	table.insert(_q, {walk.walk, {200, 13, 13}})
 	table.insert(_q, {walk.walk, {200, 13, 9}})
@@ -5058,7 +5059,18 @@ local function _sequence_big_whale()
 		table.insert(_q, {walk.walk, {160, 7, 13}})
 		table.insert(_q, {walk.interact, {}})
 		table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.RAT}})
-		table.insert(_q, {walk.walk, {160, 7, 21}})
+
+		-- Step Route: Grotto Adamant
+		if route.get_value("C30A000") == 2 then
+			table.insert(_q, {menu.field.open, {}})
+			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
+			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+			table.insert(_q, {menu.field.close, {}})
+		else
+			table.insert(_q, {walk.walk, {160, 7, 21}})
+		end
+
 		table.insert(_q, {walk.walk, {nil, 218, 136}})
 		table.insert(_q, {walk.board, {}})
 		table.insert(_q, {walk.walk, {nil, 214, 136}})
