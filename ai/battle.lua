@@ -1386,7 +1386,11 @@ local function _battle_general(character, turn, strat)
 				_command_parry()
 			elseif turn == 1 then
 				_command_run_buffer()
-				_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 1)
+				if game.character.get_stat(game.CHARACTER.EDWARD, "level", true) >= 10 then
+					_command_fight(menu.battle.TARGET.ENEMY, 1)
+				else
+					_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.ENEMY, 1)
+				end
 			else
 				_command_fight()
 			end
