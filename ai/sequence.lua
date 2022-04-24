@@ -3869,19 +3869,24 @@ local function _sequence_dr_lugae()
 		end
 
 		table.insert(_q, {walk.walk, {271, 26, 8}})
-		table.insert(_q, {walk.walk, {271, 10, 8}})
-		table.insert(_q, {walk.walk, {271, 10, 12}})
-		table.insert(_q, {walk.walk, {271, 3, 12}})
-		table.insert(_q, {walk.walk, {271, 3, 7}})
-		table.insert(_q, {walk.step, {walk.DIRECTION.LEFT}})
-		table.insert(_q, {walk.interact, {}})
+		table.insert(_q, {walk.walk, {271, 15, 8}})
 
 		for i = 1, steps / 2 do
-			table.insert(_q, {walk.walk, {271, 3, 6}})
-			table.insert(_q, {walk.walk, {271, 3, 7}})
+			table.insert(_q, {walk.walk, {271, 15, 9}})
+			table.insert(_q, {walk.walk, {271, 15, 8}})
 		end
 
-		table.insert(_q, {walk.walk, {271, 3, 14, true}})
+		table.insert(_q, {walk.walk, {271, 10, 8}})
+		table.insert(_q, {walk.walk, {271, 10, 12}})
+
+		if ROUTE == "no64-excalbur" then
+			table.insert(_q, {walk.walk, {271, 3, 12}})
+			table.insert(_q, {walk.walk, {271, 3, 7}})
+			table.insert(_q, {walk.walk, {271, 3, 14, true}})
+		else
+			table.insert(_q, {walk.walk, {271, 3, 14, true}})
+		end
+
 		table.insert(_q, {_set_healing, {_healing_dr_lugae}})
 
 		-- Walk to the Tower of Bab-il
@@ -4412,24 +4417,6 @@ local function _sequence_edge()
 	table.insert(_q, {walk.walk, {202, 13, 24}})
 	table.insert(_q, {walk.walk, {202, 11, 24}})
 	table.insert(_q, {walk.walk, {202, 11, 27}})
-
-	if ROUTE == "no64-rosa" then
-		table.insert(_q, {walk.walk, {201, 15, 9}})
-		table.insert(_q, {walk.walk, {201, 18, 9}})
-		table.insert(_q, {walk.walk, {201, 18, 11}})
-		table.insert(_q, {walk.walk, {201, 19, 11}})
-		table.insert(_q, {walk.walk, {201, 19, 12}})
-		table.insert(_q, {walk.step, {walk.DIRECTION.RIGHT}})
-		table.insert(_q, {walk.interact, {"Found"}})
-		table.insert(_q, {walk.walk, {201, 19, 14}})
-		table.insert(_q, {walk.step, {walk.DIRECTION.RIGHT}})
-		table.insert(_q, {walk.interact, {"Found"}})
-		table.insert(_q, {walk.walk, {201, 19, 11}})
-		table.insert(_q, {walk.walk, {201, 18, 11}})
-		table.insert(_q, {walk.walk, {201, 18, 9}})
-		table.insert(_q, {walk.walk, {201, 15, 9}})
-	end
-
 	table.insert(_q, {walk.walk, {201, 15, 20}})
 	table.insert(_q, {walk.walk, {201, 22, 20}})
 	table.insert(_q, {walk.walk, {201, 22, 28}})
