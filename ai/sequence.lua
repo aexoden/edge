@@ -3455,7 +3455,7 @@ local function _sequence_valvalis()
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.HEAD, game.ITEM.HELM.HEADBAND}})
 	table.insert(_q, {menu.field.equip.equip, {game.EQUIP.BODY, game.ITEM.ARMOR.KARATE}})
 	table.insert(_q, {menu.field.equip.close, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.LIFE, [game.CHARACTER.YANG] = _RESTORE.LIFE, [game.CHARACTER.CID] = _RESTORE.LIFE}}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.YANG] = _RESTORE.LIFE, [game.CHARACTER.CID] = _RESTORE.LIFE}}})
 	table.insert(_q, {menu.field.close, {}})
 
 	-- Engage Valvalis
