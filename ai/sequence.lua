@@ -870,13 +870,13 @@ end
 
 local function _healing_dr_lugae()
 	local cecil_hp = game.character.get_stat(game.CHARACTER.CECIL, "hp")
-	local yang_hp = game.character.get_stat(game.CHARACTER.YANG, "hp")
+	local kain_hp = game.character.get_stat(game.CHARACTER.KAIN, "hp")
+	local rydia_hp = game.character.get_stat(game.CHARACTER.RYDIA, "hp")
 
-	if cecil_hp == 0 or cecil_hp + yang_hp < 800 then
+	if cecil_hp == 0 or cecil_hp + kain_hp + rydia_hp < 800 then
 		_restore_party({
 			[game.CHARACTER.CECIL] = _RESTORE.HP,
 			[game.CHARACTER.KAIN] = _RESTORE.HP,
-			[game.CHARACTER.ROSA] = _RESTORE.HP,
 			[game.CHARACTER.RYDIA] = _RESTORE.ALL,
 			[game.CHARACTER.YANG] = _RESTORE.HP,
 		}, nil, true, true)
@@ -4054,7 +4054,7 @@ local function _sequence_dr_lugae()
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.NONE}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.CLAW.CATCLAW}})
 		table.insert(_q, {menu.field.equip.close, {}})
-		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.KAIN] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.ALL, [game.CHARACTER.YANG] = _RESTORE.HP}}})
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.KAIN] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.ALL, [game.CHARACTER.YANG] = _RESTORE.HP}}})
 		table.insert(_q, {menu.field.close, {}})
 
 		-- Advance on Dr.Lugae.

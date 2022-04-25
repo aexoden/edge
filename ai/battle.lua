@@ -1992,7 +1992,7 @@ local function _battle_lugae1(character, turn, strat)
 			_command_run_buffer()
 			_command_jump(menu.battle.TARGET.ENEMY, 0)
 		else
-			_command_fight()
+			_command_fight(menu.battle.TARGET.ENEMY, 0)
 		end
 	elseif character == game.CHARACTER.YANG then
 		if turn == 2 then
@@ -2009,12 +2009,6 @@ local function _battle_lugae1(character, turn, strat)
 		end
 	elseif character == game.CHARACTER.CECIL then
 		_command_fight(menu.battle.TARGET.ENEMY, 0)
-	elseif character == game.CHARACTER.ROSA then
-		if turn == 1 then
-			_command_white(game.MAGIC.WHITE.MUTE, menu.battle.TARGET.ENEMY, 0)
-		else
-			_command_fight()
-		end
 	end
 end
 
@@ -2022,7 +2016,7 @@ local function _battle_lugae2(character, turn, strat)
 	local lowest = {nil, 99999}
 
 	for i = 0, 4 do
-		if not game.character.is_status_by_slot(i, game.STATUS.JUMPING) then
+		if game.character.get_character(i) ~= game.CHARACTER.ROSA and not game.character.is_status_by_slot(i, game.STATUS.JUMPING) then
 			local hp = memory.read_stat(i, "hp", true)
 
 			if hp < memory.read_stat(i, "hp_max", true) and hp < lowest[2] then
@@ -2031,15 +2025,14 @@ local function _battle_lugae2(character, turn, strat)
 		end
 	end
 
-	if character == game.CHARACTER.KAIN then
+	if character == game.CHARACTER.KAIN or character == game.CHARACTER.YANG then
 		if turn == 1 then
 			_command_run_buffer()
-			_command_jump()
-		else
-			_command_fight()
 		end
-	elseif character == game.CHARACTER.YANG then
+
 		_command_fight()
+	elseif lowest[1] and lowest[2] == 0 then
+		_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
 	elseif character == game.CHARACTER.RYDIA then
 		if turn == 1 then
 			if game.character.get_stat(game.CHARACTER.RYDIA, "mp", true) >= 40 then
@@ -2055,20 +2048,10 @@ local function _battle_lugae2(character, turn, strat)
 			end
 		end
 	elseif character == game.CHARACTER.CECIL then
-		if lowest[1] and lowest[2] == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, lowest[1])
-		elseif game.character.is_status(game.CHARACTER.YANG, game.STATUS.SLEEP) then
+		if turn == 1 then
+			_command_parry()
+		else
 			_command_fight()
-		else
-			_command_parry()
-		end
-	elseif character == game.CHARACTER.ROSA then
-		if game.character.get_stat(game.CHARACTER.CECIL, "hp", true) == 0 then
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-		elseif game.character.is_status(game.CHARACTER.YANG, game.STATUS.SLEEP) then
-			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
-		else
-			_command_parry()
 		end
 	end
 end
