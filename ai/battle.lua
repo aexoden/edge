@@ -1620,12 +1620,11 @@ local function _battle_grind(character, turn, strat)
 			elseif type == game.battle.TYPE.SURPRISED or type == game.battle.TYPE.BACK_ATTACK then
 				if character == game.CHARACTER.EDGE and turn == 1 then
 					_command_wait_text("Beam")
+					_command_wait_frames(190)
 					_command_wait_text("Beam")
-					_command_wait_frames(180)
+					_command_wait_frames(190)
 					_command_parry()
-					--_command_ninja(game.MAGIC.NINJA.FLOOD)
 				elseif character == game.CHARACTER.FUSOYA then
-					--_command_wait_text(" Flood")
 					_command_black(game.MAGIC.BLACK.QUAKE)
 					_state.quaked = true
 				elseif _state.character_index == 1 and _state.quaked then
