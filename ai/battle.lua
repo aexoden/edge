@@ -3187,17 +3187,23 @@ local function _battle_zeromus_rosa(character, turn, strat)
 		if turn == 1 then
 			-- TODO: Eventually, this should use a damage threshold. For now, it's being used for data collection.
 			log.log(string.format("Deciding Kain's action. Current Zeromus HP: %d", game.enemy.get_stat(1, "hp")))
-			if math.random(0, 1) == 0 then
-				log.log("Kain action: Fight")
+			local choice = math.random(0, 2)
+
+			if choice == 0 then
+				log.log("Kain action: Fight/Fight")
 				_state.extra_kain = true
 				_command_fight()
+			elseif choice == 1 then
+				log.log("Kain action: Fight/Parry")
+				_command_fight()
 			else
-				log.log("Kain action: Elixir")
-				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+				log.log("Kain action: Parry/Parry")
+				_state.kain_parried = true
+				_command_parry()
 			end
 		elseif turn == 2 then
 			if _state.extra_kain then
-				_command_use_item(game.ITEM.ITEM.ELIXIR, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
+				_command_fight()
 			else
 				_command_parry()
 			end
@@ -3211,11 +3217,15 @@ local function _battle_zeromus_rosa(character, turn, strat)
 			_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.PARTY_ALL)
 		elseif turn == 4 then
 			_command_wait_frames(540)
-			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
+			_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 5 then
 			_command_wait_text("Blk.Hole")
 			_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 6 then
+			--if _state.kain_parried then
+			--	_command_run_buffer()
+			--end
+
 			_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 7 then
 			_command_white(game.MAGIC.WHITE.WHITE)
@@ -3240,14 +3250,6 @@ local function _battle_zeromus_rosa(character, turn, strat)
 				_state.waited = true
 				return true
 			end
-		elseif turn == 3 then
-			_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-		elseif turn == 4 then
-			if _state.extra_kain then
-				_command_run_buffer()
-			end
-
-			_command_black(game.MAGIC.BLACK.VIRUS, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		end
 	end
 end
