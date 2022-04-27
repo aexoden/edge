@@ -423,11 +423,16 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 
 		-- Use Cure2 items on anyone else who needs HP.
 		if game.item.get_index(game.ITEM.ITEM.CURE2, 0, game.INVENTORY.FIELD) then
+			local count = game.item.get_count(game.ITEM.ITEM.CURE2, game.INVENTORY.FIELD)
+
 			for character, hp in pairs(target_hp) do
 				while target_hp[character] do
-					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
-					table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
-					table.insert(stack, {menu.field.item.select_character, {character}})
+					if count > 0 then
+						table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
+						table.insert(stack, {menu.field.item.select, {game.ITEM.ITEM.CURE2}})
+						table.insert(stack, {menu.field.item.select_character, {character}})
+						count = count - 1
+					end
 
 					target_hp[character] = target_hp[character] - 480
 
@@ -1067,21 +1072,44 @@ local function _healing_rubicant()
 end
 
 local function _healing_subterrane()
+	local dead_count = 0
+	local force = false
+	local edge_restore = _RESTORE.LIFE
+	local rosa_restore = _RESTORE.LIFE
+
+	if ROUTE == "no64-excalbur" then
+		edge_restore = _RESTORE.HP
+	else
+		rosa_restore = _RESTORE.HP
+	end
+
 	for i = 0, 4 do
 		local character = game.character.get_character(i)
 		local hp = memory.read_stat(i, "hp")
 
-		if character == game.CHARACTER.EDGE and hp < 2000 or hp == 0 then
-			_restore_party({
-				[game.CHARACTER.CECIL] = _RESTORE.HP,
-				[game.CHARACTER.EDGE] = _RESTORE.HP,
-				[game.CHARACTER.KAIN] = _RESTORE.HP,
-				[game.CHARACTER.ROSA] = _RESTORE.HP,
-				[game.CHARACTER.RYDIA] = _RESTORE.HP,
-			}, nil, true, true)
-
-			return true
+		if hp == 0 then
+			dead_count = dead_count + 1
 		end
+
+		if ROUTE == "no64-excalbur" then
+			if character == game.CHARACTER.EDGE and hp < 2000 then
+				force = true
+			end
+		else
+			if character == game.CHARACTER.ROSA and hp < 2000 then
+				force = true
+			end
+		end
+	end
+
+	if dead_count > 1 or force then
+		_restore_party({
+			[game.CHARACTER.CECIL] = _RESTORE.LIFE,
+			[game.CHARACTER.EDGE] = edge_restore,
+			[game.CHARACTER.KAIN] = _RESTORE.HP,
+			[game.CHARACTER.ROSA] = rosa_restore,
+			[game.CHARACTER.RYDIA] = _RESTORE.LIFE,
+		}, nil, true, true)
 	end
 
 	return true
