@@ -4735,8 +4735,8 @@ local function _sequence_falcon_upgrade()
 
 	-- Step Route: Underworld (Castle of Dwarves) [after Rubicant]
 	for i = 1, route.get_value("E100002") / 2 do
-		table.insert(_q, {walk.walk, {287, 16, 12}})
-		table.insert(_q, {walk.walk, {287, 16, 11}})
+		table.insert(_q, {walk.walk, {nil, 98, 83}})
+		table.insert(_q, {walk.walk, {nil, 98, 82}})
 	end
 
 	table.insert(_q, {walk.walk, {nil, 99, 82}})
