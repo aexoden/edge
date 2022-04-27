@@ -3272,32 +3272,32 @@ local function _battle_zeromus(character, turn, strat)
 end
 
 local _formations = {
-	[game.battle.FORMATION.ANTLION]       = {title = "Antlion",                               f = _battle_antlion,  split = true},
-	[game.battle.FORMATION.BAIGAN]        = {title = "Baigan",                                f = _battle_baigan,   split = true},
-	[game.battle.FORMATION.CALBRENA]      = {title = "Calbrena",                              f = _battle_calbrena, split = true},
-	[game.battle.FORMATION.CPU]           = {title = "CPU",                                   f = _battle_cpu,      split = true},
+	[game.battle.FORMATION.ANTLION]       = {title = "Antlion",                               f = _battle_antlion,  split = true, presplit = true},
+	[game.battle.FORMATION.BAIGAN]        = {title = "Baigan",                                f = _battle_baigan,   split = true, presplit = true},
+	[game.battle.FORMATION.CALBRENA]      = {title = "Calbrena",                              f = _battle_calbrena, split = true, presplit = true},
+	[game.battle.FORMATION.CPU]           = {title = "CPU",                                   f = _battle_cpu,      split = true, presplit = true},
 	[game.battle.FORMATION.D_KNIGHT]      = {title = "D.Knight",                              f = _battle_d_knight, split = false},
-	[game.battle.FORMATION.D_MIST]        = {title = "D.Mist",                                f = _battle_d_mist,   split = true},
-	[game.battle.FORMATION.DARK_ELF]      = {title = "Dark Elf",                              f = _battle_dark_elf, split = true},
-	[game.battle.FORMATION.DARK_IMP]      = {title = "Dark Imps",                             f = _battle_dark_imp, split = true},
-	[game.battle.FORMATION.DRAGOON]       = {title = "Dragoon",                               f = _battle_dragoon,  split = true},
-	[game.battle.FORMATION.EBLAN]         = {title = "K.Eblan/Q.Eblan",                       f = _battle_eblan,    split = true},
-	[game.battle.FORMATION.ELEMENTS]      = {title = "Elements",                              f = _battle_elements, split = true},
-	[game.battle.FORMATION.FLAMEDOG]      = {title = "FlameDog",                              f = _battle_flamedog, split = true},
+	[game.battle.FORMATION.D_MIST]        = {title = "D.Mist",                                f = _battle_d_mist,   split = true, presplit = true},
+	[game.battle.FORMATION.DARK_ELF]      = {title = "Dark Elf",                              f = _battle_dark_elf, split = true, presplit = true},
+	[game.battle.FORMATION.DARK_IMP]      = {title = "Dark Imps",                             f = _battle_dark_imp, split = true, presplit = true},
+	[game.battle.FORMATION.DRAGOON]       = {title = "Dragoon",                               f = _battle_dragoon,  split = true, presplit = true},
+	[game.battle.FORMATION.EBLAN]         = {title = "K.Eblan/Q.Eblan",                       f = _battle_eblan,    split = true, presplit = true},
+	[game.battle.FORMATION.ELEMENTS]      = {title = "Elements",                              f = _battle_elements, split = true, presplit = true},
+	[game.battle.FORMATION.FLAMEDOG]      = {title = "FlameDog",                              f = _battle_flamedog, split = true, presplit = true},
 	[game.battle.FORMATION.GARGOYLE]      = {title = "Gargoyle",                              f = _battle_gargoyle, split = false},
 	[game.battle.FORMATION.GENERAL]       = {title = "General/Fighters",                      f = _battle_general,  split = false},
-	[game.battle.FORMATION.GIRL]          = {title = "Girl",                                  f = _battle_girl,     split = true},
-	[game.battle.FORMATION.GOLBEZ]        = {title = "Golbez",                                f = _battle_golbez,   split = true},
+	[game.battle.FORMATION.GIRL]          = {title = "Girl",                                  f = _battle_girl,     split = true, presplit = true},
+	[game.battle.FORMATION.GOLBEZ]        = {title = "Golbez",                                f = _battle_golbez,   split = true, presplit = true},
 	[game.battle.FORMATION.GRIND]         = {title = "Grind Fight",                           f = _battle_grind,    split = true, presplit = true},
-	[game.battle.FORMATION.GUARDS]        = {title = "Guards",                                f = _battle_guards,   split = false},
-	[game.battle.FORMATION.KAINAZZO]      = {title = "Kainazzo",                              f = _battle_kainazzo, split = true},
-	[game.battle.FORMATION.KARATE]        = {title = "Karate",                                f = _battle_karate,   split = true},
-	[game.battle.FORMATION.LUGAE1]        = {title = "Dr.Lugae/Balnab",                       f = _battle_lugae1,   split = true},
-	[game.battle.FORMATION.LUGAE2]        = {title = "Dr.Lugae",                              f = _battle_lugae2,   split = true},
+	[game.battle.FORMATION.GUARDS]        = {title = "Guards",                                f = _battle_guards,   split = true, presplit = true},
+	[game.battle.FORMATION.KAINAZZO]      = {title = "Kainazzo",                              f = _battle_kainazzo, split = true, presplit = true},
+	[game.battle.FORMATION.KARATE]        = {title = "Karate",                                f = _battle_karate,   split = true, presplit = true},
+	[game.battle.FORMATION.LUGAE1]        = {title = "Dr.Lugae/Balnab",                       f = _battle_lugae1,   split = true, presplit = true},
+	[game.battle.FORMATION.LUGAE2]        = {title = "Dr.Lugae",                              f = _battle_lugae2,   split = true, presplit = true},
 	[game.battle.FORMATION.MAGE]          = {title = "Mages",                                 f = _battle_mages,    split = false},
-	[game.battle.FORMATION.MILON]         = {title = "Milon",                                 f = _battle_milon,    split = true},
-	[game.battle.FORMATION.MILON_Z]       = {title = "Milon Z.",                              f = _battle_milon_z,  split = true},
-	[game.battle.FORMATION.MOMBOMB]       = {title = "MomBomb",                               f = _battle_mombomb,  split = true},
+	[game.battle.FORMATION.MILON]         = {title = "Milon",                                 f = _battle_milon,    split = true, presplit = true},
+	[game.battle.FORMATION.MILON_Z]       = {title = "Milon Z.",                              f = _battle_milon_z,  split = true, presplit = true},
+	[game.battle.FORMATION.MOMBOMB]       = {title = "MomBomb",                               f = _battle_mombomb,  split = true, presplit = true},
 	[game.battle.FORMATION.MOON_1]        = {title = "MoonCell x2, Pudding x2",               f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
 	[game.battle.FORMATION.MOON_2]        = {title = "Juclyote x2, MoonCell x2, Grenade x1",  f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
 	[game.battle.FORMATION.MOON_3]        = {title = "Procyote x1, Juclyote x2",              f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
@@ -3310,8 +3310,8 @@ local _formations = {
 	[game.battle.FORMATION.MOON_10]       = {title = "Balloon x2, Grenade x2",                f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
 	[game.battle.FORMATION.MOON_11]       = {title = "Slime x1, Tofu x1, Pudding x1",         f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
 	[game.battle.FORMATION.MOON_12]       = {title = "Red Worm x1, Grenade x3",               f = _battle_moon,     split = false, f_run_check = _battle_moon_run_check},
-	[game.battle.FORMATION.OCTOMAMM]      = {title = "Octomamm",                              f = _battle_octomamm, split = true},
-	[game.battle.FORMATION.OFFICER]       = {title = "Officer/Soldiers",                      f = _battle_officer,  split = true},
+	[game.battle.FORMATION.OCTOMAMM]      = {title = "Octomamm",                              f = _battle_octomamm, split = true, presplit = true},
+	[game.battle.FORMATION.OFFICER]       = {title = "Officer/Soldiers",                      f = _battle_officer,  split = true, presplit = true},
 	[game.battle.FORMATION.ORDEALS1]      = {title = "Lilith x1, Red Bone x2",                f = _battle_ordeals,  split = false},
 	[game.battle.FORMATION.ORDEALS2]      = {title = "Ghoul x2, Soul x2",                     f = _battle_ordeals,  split = false},
 	[game.battle.FORMATION.ORDEALS3]      = {title = "Revenant x1, Ghoul x2",                 f = _battle_ordeals,  split = false},
@@ -3324,8 +3324,8 @@ local _formations = {
 	[game.battle.FORMATION.RED_D_2]       = {title = "Red D. x2",                             f = _battle_red_d,    split = false, f_run_check = _battle_red_d_run_check},
 	[game.battle.FORMATION.RED_D_B]       = {title = "Red D. x1, Behemoth x1",                f = _battle_red_d,    split = false, f_run_check = _battle_red_d_run_check},
 	[game.battle.FORMATION.RED_D_3]       = {title = "Red D. x3",                             f = _battle_red_d,    split = false, f_run_check = _battle_red_d_run_check},
-	[game.battle.FORMATION.RUBICANT]      = {title = "Rubicant",                              f = _battle_rubicant, split = true},
-	[game.battle.FORMATION.SISTERS]       = {title = "Magus Sisters",                         f = _battle_sisters,  split = true},
+	[game.battle.FORMATION.RUBICANT]      = {title = "Rubicant",                              f = _battle_rubicant, split = true, presplit = true},
+	[game.battle.FORMATION.SISTERS]       = {title = "Magus Sisters",                         f = _battle_sisters,  split = true, presplit = true},
 	[game.battle.FORMATION.SUBTERRANE_1]  = {title = "Warlock x1",                            f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
 	[game.battle.FORMATION.SUBTERRANE_2]  = {title = "Warlock x1, Kary x1",                   f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
 	[game.battle.FORMATION.SUBTERRANE_3]  = {title = "Warlock x1, Kary x2",                   f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
@@ -3337,11 +3337,11 @@ local _formations = {
 	[game.battle.FORMATION.SUBTERRANE_9]  = {title = "Ging-Ryu x1",                           f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
 	[game.battle.FORMATION.SUBTERRANE_10] = {title = "D.Bone x1, Warlock x1",                 f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
 	[game.battle.FORMATION.SUBTERRANE_11] = {title = "King-Ryu x2",                           f = _battle_subterrane, split = false, f_run_check = _battle_subterrane_run_check},
-	[game.battle.FORMATION.VALVALIS]      = {title = "Valvalis",                              f = _battle_valvalis, split = true},
-	[game.battle.FORMATION.WATERHAG]      = {title = "WaterHag",                              f = _battle_waterhag, split = true},
+	[game.battle.FORMATION.VALVALIS]      = {title = "Valvalis",                              f = _battle_valvalis, split = true, presplit = true},
+	[game.battle.FORMATION.WATERHAG]      = {title = "WaterHag",                              f = _battle_waterhag, split = true, presplit = true},
 	[game.battle.FORMATION.WEEPER]        = {title = "Weeper/WaterHag/Imp",                   f = _battle_weeper,   split = false},
-	[game.battle.FORMATION.ZEMUS]         = {title = "Zemus",                                 f = nil,              split = true},
-	[game.battle.FORMATION.ZEROMUS]       = {title = "Zeromus",                               f = _battle_zeromus,  split = false},
+	[game.battle.FORMATION.ZEMUS]         = {title = "Zemus",                                 f = nil,              split = false, presplit = true},
+	[game.battle.FORMATION.ZEROMUS]       = {title = "Zeromus",                               f = _battle_zeromus,  split = false, presplit = true},
 }
 
 --------------------------------------------------------------------------------
@@ -3450,7 +3450,7 @@ function _M.cycle()
 			end
 
 			if _state.formation.presplit and not _splits[_state.index] then
-				sequence.split(_state.formation.title .. " (start)")
+				sequence.split(_state.formation.title .. " Begin")
 			end
 		end
 
@@ -3616,7 +3616,7 @@ function _M.cycle()
 			menu.wait_clear()
 
 			if ending ~= 0x00 and ending ~= 0x80 and _state.formation.split and not _splits[_state.index] then
-				sequence.split(_state.formation.title)
+				sequence.split(_state.formation.title .. " End")
 			end
 
 			if _formations[_state.index] then

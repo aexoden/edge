@@ -2030,6 +2030,8 @@ local function _sequence_dragoon()
 	table.insert(_q, {walk.walk, {nil, 214, 58}})
 
 	-- Walk to the King.
+	table.insert(_q, {walk.walk, {38, 15, 29}})
+	table.insert(_q, {_M.split, {"Fabul Entrance"}})
 	table.insert(_q, {walk.walk, {38, 15, 14}})
 	table.insert(_q, {walk.walk, {71, 11, 3}})
 	table.insert(_q, {walk.walk, {72, 4, 0}})
@@ -2980,6 +2982,8 @@ local function _sequence_dark_elf()
 	table.insert(_q, {walk.walk, {nil, 74, 53}})
 
 	-- Walk to the crystal room.
+	table.insert(_q, {walk.walk, {140, 5, 7}})
+	table.insert(_q, {_M.split, {"Cave Magnes Entrance"}})
 	table.insert(_q, {walk.walk, {140, 5, 8}})
 	table.insert(_q, {walk.walk, {140, 9, 8}})
 	table.insert(_q, {walk.walk, {140, 9, 5}})
@@ -5828,7 +5832,7 @@ end
 
 local function _sequence_core()
 	-- Walk to the Protect ring chest.
-	table.insert(_q, {_M.split, {"Lunar Subterrane"}})
+	table.insert(_q, {_M.split, {"Lunar Subterrane Entrance"}})
 	table.insert(_q, {walk.walk, {359, 13, 8}})
 	table.insert(_q, {walk.walk, {359, 17, 8}})
 
@@ -6112,7 +6116,7 @@ end
 
 local function _sequence_zemus()
 	-- Walk to the Zemus battle.
-	table.insert(_q, {_M.split, {"Lunar Core"}})
+	table.insert(_q, {_M.split, {"Lunar Core Entrance"}})
 	table.insert(_q, {walk.walk, {366, 17, 9}})
 	table.insert(_q, {walk.walk, {366, 24, 9}})
 	table.insert(_q, {walk.walk, {366, 24, 12}})
