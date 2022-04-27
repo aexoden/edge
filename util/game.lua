@@ -310,16 +310,17 @@ _M.MAGIC = {
 }
 
 _M.STATUS = {
-	CRITICAL = 0x00000001,
-	WALL     = 0x00000020,
-	HIDING   = 0x00000080,
-	JUMPING  = 0x00000200,
-	SLEEP    = 0x00100000,
-	PARALYZE = 0x00200000,
-	POISON   = 0x01000000,
-	MUTE     = 0x04000000,
-	PIG      = 0x08000000,
-	STONE    = 0x40000000,
+	CRITICAL              = 0x00000001,
+	WALL                  = 0x00000020,
+	HIDING                = 0x00000080,
+	JUMPING               = 0x00000200,
+	GRADUAL_PETRIFICATION = 0x00030000,
+	SLEEP                 = 0x00100000,
+	PARALYZE              = 0x00200000,
+	POISON                = 0x01000000,
+	MUTE                  = 0x04000000,
+	PIG                   = 0x08000000,
+	STONE                 = 0x40000000,
 }
 
 --------------------------------------------------------------------------------
@@ -597,6 +598,10 @@ function _M.character.get_stat(character, stat, battle)
 	else
 		return nil
 	end
+end
+
+function _M.character.get_gradual_petrification(character)
+	return bit.rshift(bit.band(memory.read_stat(_M.character.get_slot(character), "status", true), _M.STATUS.GRADUAL_PETRIFICATION), 16)
 end
 
 function _M.character.is_status(character, status)

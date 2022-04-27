@@ -2967,18 +2967,8 @@ local function _battle_valvalis(character, turn, strat)
 			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
 		elseif cecil_stone then
 			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-		elseif rosa_stone then
-			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-		elseif cecil_hp < 300 then
-			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
-		elseif character == game.CHARACTER.CECIL then
-			_command_fight()
-		elseif character == game.CHARACTER.ROSA then
-			_command_parry()
-		elseif character == game.CHARACTER.KAIN then
-			_command_jump()
 		else
-			_command_fight()
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		end
 
 		return false
@@ -3014,10 +3004,7 @@ local function _battle_valvalis(character, turn, strat)
 			_command_wait_actor(game.CHARACTER.KAIN, 300)
 			_command_wait_frames(60)
 			_command_fight()
-		elseif turn == 2 then
-			_command_fight()
-		elseif turn == 3 then
-			_command_run_buffer()
+		elseif turn == 2 or turn == 3 then
 			_command_fight()
 		else
 			_command_wait_frames(15)
@@ -3043,16 +3030,33 @@ local function _battle_valvalis(character, turn, strat)
 			_state.rosa_max = nil
 		end
 
+		local yang_gradual = game.character.get_gradual_petrification(game.CHARACTER.YANG)
+		local rosa_gradual = game.character.get_gradual_petrification(game.CHARACTER.ROSA)
+		local cecil_gradual = game.character.get_gradual_petrification(game.CHARACTER.CECIL)
+		local kain_gradual = game.character.get_gradual_petrification(game.CHARACTER.KAIN)
+
 		if game.enemy.get_stat(0, "speed_modifier") < 32 then
 			_command_white(game.MAGIC.WHITE.SLOW)
-		elseif cecil_hp < 300 then
+		elseif cecil_hp < 400 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		elseif cecil_gradual >= 3 then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 		elseif yang_hp == 0 then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+		elseif kain_gradual >= 3 then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.KAIN)
+		elseif yang_gradual >= 3 then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
 		elseif cecil_hp < 700 then
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		elseif cecil_gradual > 0 then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+		elseif yang_gradual > 0 then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.YANG)
+		elseif rosa_gradual > 0 then
+			_command_use_item(game.ITEM.ITEM.HEAL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		else
-			_command_parry()
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 		end
 	elseif character == game.CHARACTER.CID then
 		if turn >= 4 then
