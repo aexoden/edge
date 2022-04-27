@@ -198,7 +198,7 @@ local function _glitch_walk(target_map_id, target_x, target_y)
 	return false
 end
 
-local function _restore_party(characters, underflow_target, open_menu, immediate)
+local function _restore_party(characters, underflow_target, open_menu, immediate, ignore_status)
 	if walk.is_mid_tile() or not walk.is_ready() then
 		return false
 	end
@@ -246,7 +246,7 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 					end
 				end
 
-				if game.character.is_status(character, game.STATUS.POISON) or game.character.is_status(character, game.STATUS.MUTE) then
+				if not ignore_status and (game.character.is_status(character, game.STATUS.POISON) or game.character.is_status(character, game.STATUS.MUTE)) then
 					heal[character] = true
 				end
 			end
@@ -879,7 +879,7 @@ local function _healing_dr_lugae()
 			[game.CHARACTER.KAIN] = _RESTORE.HP,
 			[game.CHARACTER.RYDIA] = _RESTORE.ALL,
 			[game.CHARACTER.YANG] = _RESTORE.HP,
-		}, nil, true, true)
+		}, nil, true, true, true)
 	end
 
 	return true
@@ -3573,7 +3573,7 @@ local function _sequence_dr_lugae()
 	-- Cast Warp and get the crystal.
 	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.RYDIA] = _RESTORE.LIFE}}})
+	table.insert(_q, {_restore_party, {{[game.CHARACTER.RYDIA] = _RESTORE.LIFE}, nil, nil, nil, true}})
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
@@ -4058,7 +4058,7 @@ local function _sequence_dr_lugae()
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.NONE}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.CLAW.CATCLAW}})
 		table.insert(_q, {menu.field.equip.close, {}})
-		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.KAIN] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.ALL, [game.CHARACTER.YANG] = _RESTORE.HP}}})
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.KAIN] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.ALL, [game.CHARACTER.YANG] = _RESTORE.HP}, nil, nil, nil, true}})
 		table.insert(_q, {menu.field.close, {}})
 
 		-- Advance on Dr.Lugae.
