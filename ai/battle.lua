@@ -1581,9 +1581,11 @@ local function _battle_grind(character, turn, strat)
 		end
 
 		-- Change phases on FuSoYa's turn or at the end of the cycle if he's dead.
-		if _state.phase == PHASE.SETUP and _state.character_index == 0 and _state.setup_complete then
+		if dragon_kills >= required_dragons then
+			_state.phase = PHASE.END
+		elseif _state.phase == PHASE.SETUP and _state.character_index == 0 and _state.setup_complete then
 			_state.phase = PHASE.GRIND
-		elseif _state.phase == PHASE.GRIND and (_state.character_index == 0 or _state.character_index == 4 or weakest[2] == 0) and (weakest[2] == 0 or fusoya_hp <= 760 or game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 25 or (ROUTE == "no64-rosa" and _state.healing_searcher)) then
+		elseif _state.phase == PHASE.GRIND and dragon_kills < required_dragons and (_state.character_index == 0 or _state.character_index == 4 or weakest[2] == 0) and (weakest[2] == 0 or fusoya_hp <= 760 or game.character.get_stat(game.CHARACTER.FUSOYA, "mp", true) < 25 or (ROUTE == "no64-rosa" and _state.healing_searcher)) then
 			_state.phase = PHASE.HEAL
 			_state.dragon_hp = dragon_hp
 			_state.waited = nil
@@ -1707,7 +1709,11 @@ local function _battle_grind(character, turn, strat)
 				if dragon_hp > 50 and dragon_hp < 15000 then
 					_command_fight()
 				elseif dragon_kills < required_dragons - 1 then
-					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.ENEMY, 1)
+					if ROUTE == "no64-rosa" and dragon_kills >= 15 then
+						_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
+					else
+						_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.ENEMY, 1)
+					end
 				else
 					_command_parry()
 				end
@@ -1814,7 +1820,7 @@ local function _battle_grind(character, turn, strat)
 			end
 
 			if _state.waited then
-				if not _state.revived and weakest[1] and weakest[2] == 0 then
+				if ROUTE == "no64-excalbur" and not _state.revived and weakest[1] and weakest[2] == 0 then
 					_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, weakest[1])
 				else
 					_state.revived = true
@@ -1895,10 +1901,10 @@ local function _battle_grind(character, turn, strat)
 						end
 					elseif character == game.CHARACTER.RYDIA then
 						if ROUTE == "no64-rosa" then
-							if strongest[1] then
-								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.PARTY, strongest[1])
+							if edge_hp > 0 then
+								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.EDGE)
 							else
-								_command_parry()
+								_command_use_weapon(character, game.ITEM.WEAPON.DANCING, menu.battle.TARGET.CHARACTER, game.CHARACTER.RYDIA)
 							end
 						else
 							if not alive then
@@ -1912,7 +1918,7 @@ local function _battle_grind(character, turn, strat)
 
 				_state.waited = nil
 			else
-				_command_wait_frames(60)
+				_command_wait_frames(15)
 				_state.waited = true
 				return true
 			end
