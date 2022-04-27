@@ -1037,6 +1037,9 @@ local function _battle_dark_elf(character, turn, strat)
 	local dark_elf_hp = game.enemy.get_stat(0, "hp")
 	local dark_elf_max_hp = game.enemy.get_stat(0, "hp_max")
 
+	local dragon_hp = game.enemy.get_stat(1, "hp")
+	local tellah_hp = game.character.get_stat(game.CHARACTER.TELLAH, "hp", true)
+
 	if not _state.cecil_damage and dark_elf_hp < dark_elf_max_hp then
 		_state.cecil_damage = dark_elf_max_hp - dark_elf_hp
 		log.log(string.format("Note: Cecil's initial damage at Dark Elf was %d.", _state.cecil_damage))
@@ -1045,6 +1048,10 @@ local function _battle_dark_elf(character, turn, strat)
 	if character == game.CHARACTER.CECIL then
 		if _state.yang_waited and game.enemy.get_stat(1, "hp") == 0 then
 			_manage_inventory(nil)
+		elseif dragon_hp > 50 and tellah_hp == 0 then
+			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
+		elseif _state.tellah_weaked and dragon_hp > 50 and tellah_hp < 300 then
+			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 		elseif turn ~= 2 or _state.cecil_damage < 942 then
 			_command_fight()
 		else
@@ -1102,6 +1109,7 @@ local function _battle_dark_elf(character, turn, strat)
 
 			_manage_inventory(1)
 			_command_black(game.MAGIC.BLACK.WEAK)
+			_state.tellah_weaked = true
 		else
 			if game.character.get_stat(game.CHARACTER.TELLAH, "mp", true) >= 25 then
 				_command_black(game.MAGIC.BLACK.WEAK)
