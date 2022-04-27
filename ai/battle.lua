@@ -3221,9 +3221,9 @@ local function _battle_zeromus_rosa(character, turn, strat)
 			_command_wait_text("Blk.Hole")
 			_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 6 then
-			--if _state.kain_parried then
-			--	_command_run_buffer()
-			--end
+			if _state.kain_parried then
+				_command_run_buffer()
+			end
 
 			_command_white(game.MAGIC.WHITE.WHITE, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 7 then
