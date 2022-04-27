@@ -3619,6 +3619,7 @@ local function _sequence_dr_lugae()
 
 		if route.get_value("C310700") >= 2 then
 			table.insert(_q, {menu.field.open, {}})
+			table.insert(_q, {_restore_party, {{[game.CHARACTER.RYDIA] = _RESTORE.LIFE}}})
 			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
@@ -3756,6 +3757,7 @@ local function _sequence_dr_lugae()
 		-- Walk back to the shop and purchase Rune rings.
 		if route.get_value("C310700") >= 4 then
 			table.insert(_q, {menu.field.open, {}})
+			table.insert(_q, {_restore_party, {{[game.CHARACTER.RYDIA] = _RESTORE.LIFE}}})
 			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
@@ -3766,6 +3768,7 @@ local function _sequence_dr_lugae()
 
 		if route.get_value("C310700") >= 3 then
 			table.insert(_q, {menu.field.open, {}})
+			table.insert(_q, {_restore_party, {{[game.CHARACTER.RYDIA] = _RESTORE.LIFE}}})
 			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
@@ -3776,6 +3779,7 @@ local function _sequence_dr_lugae()
 
 		if route.get_value("C310700") >= 1 then
 			table.insert(_q, {menu.field.open, {}})
+			table.insert(_q, {_restore_party, {{[game.CHARACTER.RYDIA] = _RESTORE.LIFE}}})
 			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
@@ -4376,6 +4380,7 @@ local function _sequence_edge()
 	-- Step Route: Cave Eblana B2F
 	if route.get_value("C30C800") == 1 then
 		table.insert(_q, {menu.field.open, {}})
+		table.insert(_q, {_restore_party, {{[game.CHARACTER.RYDIA] = _RESTORE.LIFE}}})
 		table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 		table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 		table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
@@ -5075,6 +5080,7 @@ local function _sequence_big_whale()
 		-- Step Route: Grotto Adamant
 		if route.get_value("C30A000") == 2 then
 			table.insert(_q, {menu.field.open, {}})
+			table.insert(_q, {_restore_party, {{[game.CHARACTER.RYDIA] = _RESTORE.LIFE}}})
 			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 			table.insert(_q, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
