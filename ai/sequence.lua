@@ -4337,11 +4337,6 @@ local function _sequence_edge()
 
 	-- Buy weapons and armor.
 	table.insert(_q, {walk.walk, {204, 9, 5}})
-	table.insert(_q, {walk.interact, {}})
-	table.insert(_q, {menu.shop.buy.open, {1}})
-	table.insert(_q, {menu.shop.buy.buy, {game.ITEM.SHIELD.ICE}})
-	table.insert(_q, {menu.shop.buy.close, {}})
-	table.insert(_q, {menu.shop.close, {}})
 	table.insert(_q, {walk.walk, {204, 5, 5}})
 	table.insert(_q, {walk.interact, {}})
 	table.insert(_q, {menu.shop.buy.open, {1}})
@@ -4512,7 +4507,6 @@ local function _sequence_rubicant()
 	if route.get_value("C30CA01") == 0 then
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.ICEBRAND}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.SHIELD.ICE}})
 		table.insert(_q, {menu.field.equip.close, {}})
 	end
 
@@ -4655,7 +4649,6 @@ local function _sequence_rubicant()
 		table.insert(_q, {menu.field.open, {}})
 		table.insert(_q, {menu.field.equip.open, {game.CHARACTER.CECIL}})
 		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.R_HAND, game.ITEM.WEAPON.ICEBRAND}})
-		table.insert(_q, {menu.field.equip.equip, {game.EQUIP.L_HAND, game.ITEM.SHIELD.ICE}})
 		table.insert(_q, {menu.field.equip.close, {}})
 		table.insert(_q, {menu.field.close, {}})
 	end
