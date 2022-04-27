@@ -2370,8 +2370,6 @@ local function _battle_milon_z_trashcan(character, turn, strat)
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, character)
 		elseif count > 2 or (character == game.CHARACTER.CECIL and turn == 1 and count > 0) then
 			_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.PARTY, best)
-		elseif character == game.CHARACTER.CECIL then
-			_command_fight()
 		else
 			_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.ENEMY)
 		end
