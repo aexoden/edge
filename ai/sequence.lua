@@ -5408,23 +5408,22 @@ local function _sequence_grind_start()
 
 	-- Walk to the Passage.
 	table.insert(_q, {walk.walk, {181, 9, 20}})
-	table.insert(_q, {walk.walk, {181, 9, 16}})
+	table.insert(_q, {walk.walk, {181, 9, 14}})
 
 	-- Step Route: Giant of Bab-il Mouth
 	if route.get_value("E30B500") % 2 == 1 then
-		table.insert(_q, {walk.walk, {181, 10, 16}})
+		table.insert(_q, {walk.walk, {181, 9, 10}})
 	else
-		table.insert(_q, {walk.walk, {181, 9, 15}})
-	end
-
-	table.insert(_q, {walk.walk, {181, 10, 15}})
-
-	for i = 1, route.get_value("E30B500") / 2 do
 		table.insert(_q, {walk.walk, {181, 10, 14}})
-		table.insert(_q, {walk.walk, {181, 10, 15}})
 	end
 
 	table.insert(_q, {walk.walk, {181, 10, 10}})
+
+	for i = 1, route.get_value("E30B500") / 2 do
+		table.insert(_q, {walk.walk, {181, 9, 10}})
+		table.insert(_q, {walk.walk, {181, 10, 10}})
+	end
+
 	table.insert(_q, {walk.walk, {181, 11, 10}})
 	table.insert(_q, {walk.walk, {181, 11, 9}})
 	table.insert(_q, {walk.walk, {181, 12, 9}})
