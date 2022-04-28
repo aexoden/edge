@@ -3200,15 +3200,15 @@ local function _battle_zeromus_rosa(character, turn, strat)
 		end
 	elseif character == game.CHARACTER.KAIN then
 		if turn == 1 then
-			-- TODO: Eventually, this should use a damage threshold. For now, it's being used for data collection.
-			log.log(string.format("Deciding Kain's action. Current Zeromus HP: %d", game.enemy.get_stat(1, "hp")))
-			local choice = math.random(0, 2)
+			local zeromus_hp = game.enemy.get_stat(1, "hp")
 
-			if choice == 0 then
+			log.log(string.format("Deciding Kain's action. Current Zeromus HP: %d", zeromus_hp))
+
+			if zeromus_hp > 19902 then
 				log.log("Kain action: Fight/Fight")
 				_state.extra_kain = true
 				_command_fight()
-			elseif choice == 1 then
+			elseif zeromus_hp > 18202 then
 				log.log("Kain action: Fight/Parry")
 				_command_fight()
 			else
