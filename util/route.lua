@@ -82,7 +82,7 @@ _M.splits = { -- 3:04:15.88 / 43 / 1056341484 / v0.0.8-249-ge9df382
 		["CPU End"]                   = 590316,
 		["Lunar Subterrane Entrance"] = 610176,
 		["Lunar Core Entrance"]       = 623778,
-		["Zemus Begin"]               = 637764,
+		["Zemus End"]                 = 637764,
 		["Zeromus Death"]             = 664630,
 	},
 	["no64-rosa"] = { -- 3:02:14.24 / 43 / 983397690 / v0.0.8-241-g7d632e6
@@ -126,7 +126,7 @@ _M.splits = { -- 3:04:15.88 / 43 / 1056341484 / v0.0.8-249-ge9df382
 		["CPU End"]                   = 582133,
 		["Lunar Subterrane Entrance"] = 603560,
 		["Lunar Core Entrance"]       = 616782,
-		["Zemus Begin"]               = 630505,
+		["Zemus End"]                 = 630505,
 		["Zeromus Death"]             = 657320,
 	},
 	["nocw"] = { -- 1:57:28.21 / 43 / 1466019522 / v0.0.8-241-g7d632e6
@@ -157,7 +157,7 @@ _M.splits = { -- 3:04:15.88 / 43 / 1056341484 / v0.0.8-249-ge9df382
 		["Golbez End"]                = 383475,
 		["Lost the Dark Crystal!"]    = 389588,
 		["FuSoYa"]                    = 393229,
-		["Zemus Begin"]               = 408865,
+		["Zemus End"]                 = 408865,
 		["Zeromus Death"]             = 423774,
 	},
 	["paladin"] = { -- 0:57:32.93 / 43 / 1837619982 / v0.0.8-241-g7d632e6
