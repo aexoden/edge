@@ -5655,13 +5655,13 @@ local function _sequence_elements()
 		_post_grind_menu()
 		table.insert(_q, {walk.walk, {188, 15, 15}})
 	end
-end
 
-local function _sequence_cpu()
 	table.insert(_q, {dialog.set_mash_button, {"P1 A"}})
 	table.insert(_q, {_set_healing, {nil}})
 	table.insert(_q, {walk.walk, {188, 15, 14}})
+end
 
+local function _sequence_cpu()
 	-- Do the post-battle menu.
 	table.insert(_q, {menu.field.open, {}})
 
@@ -6373,7 +6373,7 @@ local _sequences = {
 	{title = "FuSoYa",         f = _sequence_fusoya,         map_area = 0, map_id = nil, map_x = 153, map_y = 199},
 	{title = "Grind Start",    f = _sequence_grind_start,    map_area = 3, map_id = 303, map_x = 3,   map_y = 13},
 	{title = "Elements",       f = _sequence_elements,       map_area = 3, map_id = 188, map_x = 15,  map_y = 16},
-	{title = "CPU",            f = _sequence_cpu,            map_area = 3, map_id = 188, map_x = 15,  map_y = 15},
+	{title = "CPU",            f = _sequence_cpu,            map_area = 3, map_id = 188, map_x = 15,  map_y = 14},
 	{title = "Subterrane",     f = _sequence_subterrane,     map_area = 2, map_id = nil, map_x = 19,  map_y = 39},
 	{title = "Lunar Core",     f = _sequence_core,           map_area = 3, map_id = 359, map_x = 13,  map_y = 13},
 	{title = "Zemus",          f = _sequence_zemus,          map_area = 3, map_id = 366, map_x = 17,  map_y = 8},
