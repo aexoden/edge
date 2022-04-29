@@ -1110,12 +1110,14 @@ local function _battle_dark_elf(character, turn, strat)
 			_manage_inventory(1)
 			_command_black(game.MAGIC.BLACK.WEAK)
 			_state.tellah_weaked = true
-		else
+		elseif game.enemy.get_stat(1, "hp") > 50 then
 			if game.character.get_stat(game.CHARACTER.TELLAH, "mp", true) >= 25 then
 				_command_black(game.MAGIC.BLACK.WEAK)
 			else
 				_command_use_item(game.ITEM.ITEM.ETHER1, menu.battle.TARGET.CHARACTER, game.CHARACTER.TELLAH)
 			end
+		else
+			_command_fight()
 		end
 	elseif character == game.CHARACTER.CID then
 		if _state.cecil_damage >= 942 then
