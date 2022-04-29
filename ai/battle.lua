@@ -2750,6 +2750,7 @@ local function _battle_rubicant(character, turn, strat)
 
 	if character == game.CHARACTER.EDGE then
 		if turn == 3 and _state.glare_target ~= game.CHARACTER.KAIN and _state.glare_target ~= game.CHARACTER.EDGE then
+			_command_wait_actor(game.CHARACTER.ROSA, 300)
 			_command_wait_actor(game.CHARACTER.KAIN, 600)
 			_command_wait_frames(60)
 		end
@@ -2829,6 +2830,7 @@ local function _battle_rubicant(character, turn, strat)
 		end
 	elseif character == game.CHARACTER.RYDIA then
 		if turn == 2 and _state.glare_target == game.CHARACTER.KAIN then
+			_command_wait_frames(15)
 			_command_run_buffer()
 			_command_call(game.MAGIC.CALL.SHIVA)
 		elseif turn == 2 and _state.glare_target == game.CHARACTER.EDGE then
