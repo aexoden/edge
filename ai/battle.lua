@@ -1269,7 +1269,7 @@ local function _battle_elements_rosa(character, turn, strat)
 			_command_black(game.MAGIC.BLACK.FIRE3, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 3 then
 			_command_black(game.MAGIC.BLACK.FIRE3, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-		else
+		elseif turn == 4 then
 			if _state.rosa_queued then
 				_command_black(game.MAGIC.BLACK.NUKE, menu.battle.TARGET.ENEMY, 0)
 			else
@@ -1277,6 +1277,8 @@ local function _battle_elements_rosa(character, turn, strat)
 			end
 
 			_state.fusoya_queued = true
+		else
+			_command_parry()
 		end
 	elseif character == game.CHARACTER.ROSA then
 		if turn == 1 then
@@ -1285,7 +1287,7 @@ local function _battle_elements_rosa(character, turn, strat)
 			_command_white(game.MAGIC.WHITE.WALL, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
 		elseif turn == 3 or turn == 4 then
 			_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.CHARACTER, game.CHARACTER.ROSA)
-		else
+		elseif game.character.get_stat(game.CHARACTER.ROSA, "mp", true) >= 40 then
 			if _state.fusoya_queued then
 				_command_white(game.MAGIC.WHITE.CURE4, menu.battle.TARGET.ENEMY, 0)
 			else
@@ -1293,6 +1295,8 @@ local function _battle_elements_rosa(character, turn, strat)
 			end
 
 			_state.rosa_queued = true
+		else
+			_command_parry()
 		end
 	elseif character == game.CHARACTER.CECIL then
 		if turn == 1 then
