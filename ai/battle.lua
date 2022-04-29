@@ -3023,7 +3023,11 @@ local function _battle_valvalis(character, turn, strat)
 			_command_wait_frames(60)
 			_command_fight()
 		elseif turn == 2 or turn == 3 then
-			_command_fight()
+			if cecil_hp < 300 then
+				_command_use_item(game.ITEM.ITEM.CURE2, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
+			else
+				_command_fight()
+			end
 		else
 			_command_wait_frames(15)
 			_command_fight()
