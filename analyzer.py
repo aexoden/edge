@@ -21,6 +21,7 @@
 # THE SOFTWARE.
 #
 
+import copy
 import os
 import re
 import statistics
@@ -791,7 +792,7 @@ def html_output_battle(f: TextIO, key: str, battle_data: dict[tuple[str, str, st
 
     for (battle_type, _, _), data in sorted(battle_data.items()):
         if battle_type not in battle_type_data:
-            battle_type_data[battle_type] = data
+            battle_type_data[battle_type] = copy.deepcopy(data)
         else:
             battle_type_data[battle_type]['count'] += data['count']
             battle_type_data[battle_type]['data'].extend(data['data'])
