@@ -4958,7 +4958,6 @@ local function _sequence_sealed_cave()
 
 	-- Cast Exit and head to the Sealed Cave.
 	table.insert(_q, {menu.field.open, {}})
-	table.insert(_q, {_restore_party, {{[game.CHARACTER.CECIL] = _RESTORE.HP, [game.CHARACTER.EDGE] = _RESTORE.HP, [game.CHARACTER.ROSA] = _RESTORE.HP, [game.CHARACTER.RYDIA] = _RESTORE.HP}}})
 	table.insert(_q, {menu.field.magic.open, {game.CHARACTER.CECIL}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
 	table.insert(_q, {menu.field.magic.select, {game.MAGIC.WHITE.EXIT}})
