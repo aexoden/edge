@@ -271,6 +271,8 @@ local _addresses = {
 		chocobo_x           = {f = mainmemory.read_u8,     address = 0x001710, record_size = {0x01, 0x01}},
 		chocobo_y           = {f = mainmemory.read_u8,     address = 0x001711, record_size = {0x01, 0x01}},
 		direction           = {f = mainmemory.read_u8,     address = 0x001705, record_size = {0x01, 0x01}},
+		formation_index     = {f = mainmemory.read_u8,     address = 0x000687, record_size = {0x01, 0x01}},
+		formation_seed      = {f = mainmemory.read_u8,     address = 0x0017EE, record_size = {0x01, 0x01}},
 		frames              = {f = mainmemory.read_u8,     address = 0x00067B, record_size = {0x01, 0x01}},
 		index               = {f = mainmemory.read_u8,     address = 0x000686, record_size = {0x01, 0x01}},
 		map_area            = {f = mainmemory.read_u8,     address = 0x001700, record_size = {0x01, 0x01}},

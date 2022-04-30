@@ -469,7 +469,7 @@ class Log(object):
             'sequence': r'Sequence: (?P<sequence>.*)',
             'split': r'Split: (?P<split>.*)',
             'version': r'Version: (?P<version>.*)',
-            '_ignore': r'(Edge Final Fantasy IV|--------------------|Note:|Action: \(debug\)|Deciding|Kain action|Beginning Full Run|WARNING|Setting Initial Seed|Yellow Chocobo Coordinates|Current Glitch Floor|Rebooting|Load game screen|New Seed|Setting encounter seed|Detected|Zeromus has|Cecil|Do not have|Battle Menu|Party Experience)',
+            '_ignore': r'(Edge Final Fantasy IV|--------------------|Note:|Action: \(debug\)|Deciding|Kain action|New Map|Beginning Full Run|WARNING|Setting Initial Seed|Yellow Chocobo Coordinates|Current Glitch Floor|Rebooting|Load game screen|New Seed|Setting encounter seed|Detected|Zeromus has|Cecil|Do not have|Battle Menu|Party Experience)',
         }
 
         for line_type, regex in regexes.items():

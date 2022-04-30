@@ -6416,9 +6416,26 @@ local function _check_autoreload()
 end
 
 local function _check_sequence()
+	local map_area = memory.read("walk", "map_area")
+	local map_id = memory.read("walk", "map_id")
+
+	if map_area ~= 3 then
+		map_id = 0
+	end
+
+	if _state.enable_step_log and (map_area ~= _state.map_area or map_id ~= _state.map_id) then
+		_state.map_area = map_area
+		_state.map_id = map_id
+
+		local encounter_seed = memory.read("walk", "seed")
+		local encounter_index = memory.read("walk", "index")
+		local formation_seed = memory.read("walk", "formation_seed")
+		local formation_index = memory.read("walk", "formation_index")
+
+		log.log(string.format("New Map: %03X / Encounter Seed: %d @ %d / Formation Seed: %d @ %d", map_area * 256 + map_id, encounter_seed, encounter_index, formation_seed, formation_index))
+	end
+
 	if #_q == 0 and walk.is_ready() and not walk.is_mid_tile() and not walk.is_transition() and dialog.get_save_text(3) ~= "New" and not emu.islagged() then
-		local map_area = memory.read("walk", "map_area")
-		local map_id = memory.read("walk", "map_id")
 		local map_x = memory.read("walk", "x")
 		local map_y = memory.read("walk", "y")
 
@@ -6427,6 +6444,7 @@ local function _check_sequence()
 				log.log(string.format("Sequence: %s", sequence.title))
 				sequence.f()
 				_state.check_healing = true
+				_state.enable_step_log = true
 			end
 		end
 	end
@@ -6583,6 +6601,7 @@ function _M.reset()
 		battle_strats = {},
 		check_autoreload = true,
 		check_healing = false,
+		enable_step_log = false,
 		split_color = 0xFFFFFF00,
 	}
 
