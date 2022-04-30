@@ -107,11 +107,69 @@ end
 local function _hummingway_finish()
 	local stack = {}
 	local index = memory.read("walk", "index")
+	local base_x = 10
+	local base_y = 16
+	local target_x = 11
+	local target_y = 16
+
+	local x = memory.read("walk", "x")
+	local y = memory.read("walk", "y")
+	local distance = math.abs(10 - x) + math.abs(16 - y)
+	local warp = false
+
+	if y == 12 and (x < 7 or x > 13) then
+		distance = distance - 1
+	end
+
+	log.log(string.format("Currently at %d, %d with distance %d", x, y, distance))
+
+	if (index + distance) % 256 > _state.target_index then
+		warp = true
+
+		base_x = x
+		base_y = y
+		target_x = x
+		target_y = y + 1
+
+		if target_y == 15 and (target_x == 7 or target_x == 15) then
+			target_x = x + 1
+			target_y = y
+		end
+
+		log.log(string.format("Can't make it back to entrance, targeting %d, %d", target_x, target_y))
+	end
+
+	if not warp then
+		index = (index + distance) % 2
+		table.insert(stack, {walk.walk, {357, 10, 16}})
+		log.log("Can make it back, walking to 10,16")
+	end
+
+	log.log(string.format("Using %d, %d as base with %d, %d as target", base_x, base_y, target_x, target_y))
 
 	while index ~= _state.target_index and index ~= _state.target_index - 1 do
-		table.insert(stack, {walk.walk, {357, 11, 16}})
-		table.insert(stack, {walk.walk, {357, 10, 16}})
+		table.insert(stack, {walk.walk, {357, target_x, target_y}})
+		table.insert(stack, {walk.walk, {357, base_x, base_y}})
 		index = (index + 2) % 256
+		log.log(string.format("Stepped once, index is now %d", index))
+	end
+
+	if index == _state.target_index - 1 then
+		log.log(string.format("Correcting odd step"))
+		table.insert(stack, {walk.walk, {357, target_x, target_y}})
+		warp = true
+	end
+
+	if warp then
+		log.log("Warping out")
+		table.insert(stack, {menu.field.open, {}})
+		table.insert(stack, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
+		table.insert(stack, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+		table.insert(stack, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
+		table.insert(stack, {menu.field.close, {}})
+	else
+		log.log("Walking out")
+		table.insert(stack, {walk.walk, {357, 10, 17}})
 	end
 
 	_state.target_index = nil
@@ -5138,9 +5196,7 @@ local function _sequence_fusoya_hummingway()
 	table.insert(_q, {menu.shop.close, {}})
 
 	-- Leave the cave and board the Big Whale.
-	table.insert(_q, {walk.walk, {357, 10, 16}})
 	table.insert(_q, {_hummingway_finish, {}})
-	table.insert(_q, {walk.walk, {357, 10, 17}})
 	table.insert(_q, {walk.walk, {nil, 33, 40}})
 
 	-- Step Route: Lunar Overworld [after Hummingway Cave]
