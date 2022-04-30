@@ -588,9 +588,8 @@ local function _post_grind_menu()
 			if game.item.get_count(cure_item) >= 1 then
 				table.insert(stack, {menu.field.item.select, {cure_item}})
 				table.insert(stack, {menu.field.item.select, {cure_item}})
+				table.insert(stack, {menu.field.item.select_character, {grind_character}})
 			end
-
-			table.insert(stack, {menu.field.item.select_character, {grind_character}})
 		end
 
 		table.insert(stack, {menu.field.item.close, {}})
