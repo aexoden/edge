@@ -6073,7 +6073,8 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {363, 20, 31}})
 	table.insert(_q, {walk.walk, {364, 20, 8}})
 
-	if route.get_value("C316C00") == 0 then
+	-- Step Route: Lunar Subterrane B6 Choice
+	if ROUTE ~= "no64-excalbur" and route.get_value("C316C00") == 0 then
 		table.insert(_q, {walk.walk, {364, 25, 8}})
 		table.insert(_q, {walk.walk, {364, 25, 6}})
 		table.insert(_q, {walk.walk, {364, 25, 8}})
@@ -6102,7 +6103,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {377, 5, 11}})
 	table.insert(_q, {walk.walk, {377, 10, 11}})
 
-	-- Step ROute: Lunar Subterrane B6 Passage
+	-- Step Route: Lunar Subterrane B6 Passage
 	for i = 1, route.get_value("E317900") / 2 do
 		table.insert(_q, {walk.walk, {377, 10, 10}})
 		table.insert(_q, {walk.walk, {377, 10, 11}})
