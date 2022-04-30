@@ -6479,7 +6479,7 @@ local function _check_sequence()
 		map_id = 0
 	end
 
-	if _state.enable_step_log and (map_area ~= _state.map_area or map_id ~= _state.map_id) then
+	if _state.enable_step_log and walk.is_ready() and (map_area ~= _state.map_area or map_id ~= _state.map_id) then
 		_state.map_area = map_area
 		_state.map_id = map_id
 
@@ -6488,7 +6488,7 @@ local function _check_sequence()
 		local formation_seed = memory.read("walk", "formation_seed")
 		local formation_index = memory.read("walk", "formation_index")
 
-		log.log(string.format("New Map: %03X / Encounter Seed: %d @ %d / Formation Seed: %d @ %d", map_area * 256 + map_id, encounter_seed, encounter_index, formation_seed, formation_index))
+		log.log(string.format("New Map: 0x%01X%03X / Encounter Seed: %d @ %d / Formation Seed: %d @ %d", map_area, map_id, encounter_seed, encounter_index, formation_seed, formation_index))
 	end
 
 	if #_q == 0 and walk.is_ready() and not walk.is_mid_tile() and not walk.is_transition() and dialog.get_save_text(3) ~= "New" and not emu.islagged() then
