@@ -98,22 +98,62 @@ local function _log_seed()
 	return log.log(string.format("New Seed: %d", seed))
 end
 
+local function _increment_seed(seed, index, value)
+	while value >= 256 do
+		seed = (seed + 17) % 256
+		value = value - 256
+	end
+
+	index = index + value
+
+	if index > 255 then
+		seed = (seed + 17) % 256
+		index = index - 256
+	end
+
+	return seed, index
+end
+
+local function _get_seed_distance(seed, index, target_seed, target_index)
+	local distance = 0
+
+	if target_index >= index then
+		distance = distance + target_index - index
+	else
+		distance = distance + (target_index + 256) - index
+		seed = (seed + 17) % 256
+	end
+
+	index = target_index
+
+	while seed ~= target_seed do
+		distance = distance + 256
+		seed = (seed + 17) % 256
+	end
+
+	return distance
+end
+
 local function _hummingway_start()
-	_state.target_index = (memory.read("walk", "index") + 16 + route.get_value("E316500")) % 256
+	local seed = memory.read("walk", "seed")
+	local index = memory.read("walk", "index")
+
+	_state.target_seed, _state.target_index = _increment_seed(seed, index, 16 + route.get_value("E316500"))
 
 	return true
 end
 
 local function _hummingway_finish()
 	local stack = {}
-	local index = memory.read("walk", "index")
-	local base_x = 10
-	local base_y = 16
-	local target_x = 11
-	local target_y = 16
 
+	local seed = memory.read("walk", "seed")
+	local index = memory.read("walk", "index")
 	local x = memory.read("walk", "x")
 	local y = memory.read("walk", "y")
+
+	local base_x, base_y = 10, 16
+	local target_x, target_y = 11, 16
+
 	local distance = math.abs(10 - x) + math.abs(16 - y)
 	local warp = false
 
@@ -121,54 +161,57 @@ local function _hummingway_finish()
 		distance = distance - 1
 	end
 
-	log.log(string.format("Currently at %d, %d with distance %d", x, y, distance))
+	log.log(string.format("DEBUG: Seed: %d @ %d  Coordinates: %d, %d  Distance: %d", seed, index, x, y, distance))
 
-	if (index + distance) % 256 > _state.target_index then
+	local test_seed, test_index = _increment_seed(seed, index, distance)
+	local target_distance = _get_seed_distance(seed, index, _state.target_seed, _state.target_index)
+
+	if distance > target_distance then
 		warp = true
 
-		base_x = x
-		base_y = y
-		target_x = x
-		target_y = y + 1
+		-- Do extra steps on a tile to the south, since these are almost always accessible.
+		base_x, base_y = x, y
+		target_x, target_y = x, y + 1
 
-		if target_y == 15 and (target_x == 7 or target_x == 15) then
-			target_x = x + 1
-			target_y = y
+		-- Avoid using the two blocked tiles or the central southern wall as extra steps.
+		if (target_y == 15 and (target_x == 7 or target_x == 15)) or target_y == 17 then
+			target_x, target_y = x + 1, y
 		end
 
-		log.log(string.format("Can't make it back to entrance, targeting %d, %d", target_x, target_y))
+		log.log(string.format("DEBUG: Entrance too distant.", target_x, target_y))
 	end
 
 	if not warp then
-		index = (index + distance) % 2
+		seed, index = _increment_seed(seed, index, distance)
 		table.insert(stack, {walk.walk, {357, 10, 16}})
-		log.log("Can make it back, walking to 10,16")
+		log.log("DEBUG: Entrance within target step range.")
 	end
 
-	log.log(string.format("Using %d, %d as base with %d, %d as target", base_x, base_y, target_x, target_y))
+	log.log(string.format("DEBUG: Base Coordinates: %d, %d  Target Coordinates: %d, %d", base_x, base_y, target_x, target_y))
 
-	while index ~= _state.target_index and index ~= _state.target_index - 1 do
+	while _get_seed_distance(seed, index, _state.target_seed, _state.target_index) > 1 do
 		table.insert(stack, {walk.walk, {357, target_x, target_y}})
 		table.insert(stack, {walk.walk, {357, base_x, base_y}})
-		index = (index + 2) % 256
-		log.log(string.format("Stepped once, index is now %d", index))
+		seed, index = _increment_seed(seed, index, 2)
+		log.log(string.format("DEBUG: Took one pair of steps. New Seed: %d @ %d", seed, index))
 	end
 
-	if index == _state.target_index - 1 then
-		log.log(string.format("Correcting odd step"))
+	if index ~= _state.target_index then
 		table.insert(stack, {walk.walk, {357, target_x, target_y}})
 		warp = true
+		seed, index = _increment_seed(seed, index, 1)
+		log.log(string.format("DEBUG: Corrected odd step. New Seed: %d @ %d", seed, index))
 	end
 
 	if warp then
-		log.log("Warping out")
+		log.log("DEBUG: Casting Warp to leave")
 		table.insert(stack, {menu.field.open, {}})
 		table.insert(stack, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
 		table.insert(stack, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 		table.insert(stack, {menu.field.magic.select, {game.MAGIC.BLACK.WARP}})
 		table.insert(stack, {menu.field.close, {}})
 	else
-		log.log("Walking out")
+		log.log("DEBUG: Walking out to leave")
 		table.insert(stack, {walk.walk, {357, 10, 17}})
 	end
 
