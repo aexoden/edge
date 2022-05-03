@@ -5167,7 +5167,7 @@ function _M.get_best_split_frame(split)
 	if _M.splits[ROUTE][split] then
 		return _M.splits[ROUTE][split]
 	else
-		-- TODO: This is temporary until all the new splits have been added to the route data.
+		log.log(string.format("DEBUG: Missing split: %s", split))
 		return 0
 	end
 end
