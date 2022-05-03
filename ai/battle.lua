@@ -3302,6 +3302,7 @@ end
 local _formations = {
 	[game.battle.FORMATION.ANTLION]       = {title = "Antlion",                               f = _battle_antlion,  split = true, presplit = true},
 	[game.battle.FORMATION.BAIGAN]        = {title = "Baigan",                                f = _battle_baigan,   split = true, presplit = true},
+	[game.battle.FORMATION.BARD]          = {title = "Bard",                                  f = nil,              pause = true},
 	[game.battle.FORMATION.CALBRENA]      = {title = "Calbrena",                              f = _battle_calbrena, split = true, presplit = true},
 	[game.battle.FORMATION.CPU]           = {title = "CPU",                                   f = _battle_cpu,      split = true, presplit = true},
 	[game.battle.FORMATION.D_KNIGHT]      = {title = "D.Knight",                              f = _battle_d_knight, split = false},
@@ -3316,6 +3317,7 @@ local _formations = {
 	[game.battle.FORMATION.GENERAL]       = {title = "General/Fighters",                      f = _battle_general,  split = false},
 	[game.battle.FORMATION.GIRL]          = {title = "Girl",                                  f = _battle_girl,     split = true, presplit = true},
 	[game.battle.FORMATION.GOLBEZ]        = {title = "Golbez",                                f = _battle_golbez,   split = true, presplit = true},
+	[game.battle.FORMATION.GOLBEZ_TELLAH] = {title = "Golbez vs. Tellah",                     f = nil,              pause = true},
 	[game.battle.FORMATION.GRIND]         = {title = "Grind Fight",                           f = _battle_grind,    split = true, presplit = true},
 	[game.battle.FORMATION.GUARDS]        = {title = "Guards",                                f = _battle_guards,   split = true, presplit = true},
 	[game.battle.FORMATION.KAINAZZO]      = {title = "Kainazzo",                              f = _battle_kainazzo, split = true, presplit = true},
@@ -3523,6 +3525,25 @@ function _M.cycle()
 				_log_action()
 			elseif _state.pending_action > 0 then
 				_state.pending_action = _state.pending_action - 1
+			end
+		end
+
+		if ROUTE == "nocw" and formation.pause then
+			if _state.pause_delay then
+				_state.pause_delay = _state.pause_delay - 1
+
+				if _state.pause_delay == 0 then
+					_state.pause_delay = nil
+				end
+			else
+				local paused = memory.read("battle", "paused") ~= 0
+				local active = memory.read("battle", "active") == 0xFF
+				local delay_counter = memory.read("battle", "delay_counter")
+
+				if (delay_counter == 1 and paused) or (not active and not paused) then
+					input.press({"P1 Start"}, input.DELAY.NONE)
+					_state.pause_delay = 10
+				end
 			end
 		end
 
