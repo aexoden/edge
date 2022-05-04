@@ -23,6 +23,7 @@
 local _M = {}
 
 local game = require "util.game"
+local log = require "util.log"
 
 --------------------------------------------------------------------------------
 -- Variables
