@@ -13,8 +13,6 @@ primary goal is to have no remaining softlocks.
   defeat Golbez. Probably no solution other than adding a backup inventory swap
   after the battle.
 
-* Step routes need to be updated to the latest version as they become available.
-
 * Fix the potential for a failed CatClaw duplication.
 
 * Find a way to reliably detect NoCW bacon.
@@ -23,7 +21,13 @@ primary goal is to have no remaining softlocks.
 
 * Investigate a quick fix to Cecil gaining too many levels in the Rosa route.
 
-* Review no64-rosa Zeromus fight once more, especially in the cases it fails.
+* Investigate a rare NoCW failure on floor -47 or so, where it endlessly tries
+  to walk left on a black map.
+
+* Investigate a rare Milon softlock where all the Cure2 items are used. (This is
+  actually a more general problem. We need to mitigate script crashes when an
+  expected item is not available, most likely by failing the run with a big
+  error message so the cause can potentially be fixed.)
 
 ## Major Features
 
@@ -51,9 +55,9 @@ primary goal is to have no remaining softlocks.
   definitely take more risks and not worry so much about dying. The current
   version of the bot is very much a compromise on this front.
 
-* Use data on encounter formations to make decisions. (Examples include healing
-  before Arachne or Red Worm battles, delaying the grind fight menu until
-  immediately prior to the grind fight, and so on.)
+* Use data on encounter formations to make decisions. (This is mainly useful
+  for delaying the grind menu until just before the grind, but could also
+  inform deciding when to hurt Porom before Milon or other minor decisions.)
 
 * Improve NPC-safe walking to better avoid NPCs, without simply stopping. In
   areas where the step route is not affected, the bot should be rerouting
@@ -82,8 +86,9 @@ primary goal is to have no remaining softlocks.
   This makes changes easier if two routes have different formations, for
   example, but need to come together again.
 
-* For nocw, figure out a system for pausing during battle to eliminate or at
-  least mitigate the need for the wait at the end.
+* For NoCW, improve the pausing system to be more dynamic based on the current
+  expected finish time. This mainly affects the pausing during the Golbez and
+  Tellah fight.
 
 * If the FireClaw dupe fails for whatever reason during the Gargoyle fight, set
   up a backup later in the run (requires an extra shop visit).
@@ -101,10 +106,6 @@ primary goal is to have no remaining softlocks.
 
 ## Battle-Specific Issues
 
-### Fabul Battles
-
-* Prevent attacking the General if possible.
-
 ### Milon
 
 * Don't double use Cure2 when healing the twins.
@@ -112,10 +113,6 @@ primary goal is to have no remaining softlocks.
 * Restore the Twins' MP if they don't have enough to Twin.
 
 * Rewrite the carrot strategy to use modern backups.
-
-### Milon Z
-
-* Investigate switching to the Darkness sword strategy.
 
 ### Calbrena
 
