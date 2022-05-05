@@ -5189,7 +5189,7 @@ local function _sequence_big_whale()
 		table.insert(_q, {menu.dialog.select, {game.ITEM.ITEM.RAT}})
 
 		-- Step Route: Grotto Adamant
-		if route.get_value("C30A000") == 2 then
+		if route.get_value("C30A000") == 1 then
 			table.insert(_q, {menu.field.open, {}})
 			table.insert(_q, {_restore_party, {{[game.CHARACTER.RYDIA] = _RESTORE.LIFE}}})
 			table.insert(_q, {menu.field.magic.open, {game.CHARACTER.RYDIA}})
