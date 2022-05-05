@@ -93,6 +93,9 @@ local function _log_seed()
 		table.insert(_q, 3, {input.press, {{"Reset"}, input.DELAY.NORMAL}})
 		table.insert(_q, 4, {menu.wait, {math.random(132, 387)}})
 		table.insert(_q, 5, {input.press, {{"P1 A"}, input.DELAY.MASH}})
+	else
+		ENCOUNTER_SEED = seed
+		route.set_enabled(true)
 	end
 
 	return log.log(string.format("New Seed: %d", seed))
