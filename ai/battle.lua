@@ -2228,7 +2228,7 @@ local function _battle_milon_carrot(character, turn, strat)
 				_command_use_item(game.ITEM.ITEM.LIFE, menu.battle.TARGET.CHARACTER, game.CHARACTER.POROM)
 			elseif turn == 2 then
 				if porom_hp > 0 then
-					_command_wait_frames(15)
+					_command_wait_frames(20)
 					_command_black(game.MAGIC.BLACK.STOP, menu.battle.TARGET.CHARACTER, game.CHARACTER.CECIL)
 				else
 					_state.alternate = true
