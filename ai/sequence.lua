@@ -2610,13 +2610,13 @@ local function _sequence_karate()
 		end
 
 		table.insert(_q, {walk.walk, {135, 17, 16}})
+		table.insert(_q, {walk.walk, {135, 18, 16}})
 
 		for i = 1, route.get_value("E308702") / 2 do
+			table.insert(_q, {walk.walk, {135, 19, 16}})
 			table.insert(_q, {walk.walk, {135, 18, 16}})
-			table.insert(_q, {walk.walk, {135, 17, 16}})
 		end
 
-		table.insert(_q, {walk.walk, {135, 18, 16}})
 		table.insert(_q, {walk.walk, {135, 18, 23}})
 		table.insert(_q, {walk.walk, {135, 15, 23}})
 		table.insert(_q, {walk.walk, {135, 15, 21}})
