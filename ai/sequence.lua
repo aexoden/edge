@@ -6091,7 +6091,7 @@ local function _sequence_core()
 	table.insert(_q, {walk.walk, {373, 16, 5}})
 
 	-- Step Route: Lunar Subterrane B5 Passage A [after Protect Ring]
-	if route.get_value("E317501") % 2 == 1 then
+	if (ROUTE == "no64-rosa" and route.get_value("E317500") % 2 == 1) or route.get_value("E317501") % 2 == 1 then
 		table.insert(_q, {walk.walk, {373, 17, 5}})
 		table.insert(_q, {walk.walk, {373, 16, 5}})
 	end
