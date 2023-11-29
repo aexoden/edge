@@ -514,7 +514,7 @@ end
 --------------------------------------------------------------------------------
 
 local function _get_character_id(slot)
-	return bit.band(memory.read_stat(slot, "id", false), 0x1F)
+	return memory.read_stat(slot, "id", false) & 0x1F
 end
 
 --------------------------------------------------------------------------------
@@ -603,15 +603,15 @@ function _M.character.get_stat(character, stat, battle)
 end
 
 function _M.character.get_gradual_petrification(character)
-	return bit.rshift(bit.band(memory.read_stat(_M.character.get_slot(character), "status", true), _M.STATUS.GRADUAL_PETRIFICATION), 16)
+	return (memory.read_stat(_M.character.get_slot(character), "status", true) & _M.STATUS.GRADUAL_PETRIFICATION) >> 16
 end
 
 function _M.character.is_status(character, status)
-	return bit.band(memory.read_stat(_M.character.get_slot(character), "status", true), status) > 0
+	return (memory.read_stat(_M.character.get_slot(character), "status", true) & status) > 0
 end
 
 function _M.character.is_status_by_slot(slot, status)
-	return bit.band(memory.read_stat(slot, "status", true), status) > 0
+	return (memory.read_stat(slot, "status", true) & status) > 0
 end
 
 function _M.character.get_equipment(slot, location, battle)
@@ -632,7 +632,7 @@ function _M.character.get_weapon(character, battle)
 	local slot = _M.character.get_slot(character)
 	local hand, weapon
 
-	if bit.band(memory.read_stat(slot, "id", battle), 0x40) > 0 then
+	if (memory.read_stat(slot, "id", battle) & 0x40) > 0 then
 		return _M.EQUIP.L_HAND, memory.read_stat(slot, "l_hand", battle)
 	else
 		return _M.EQUIP.R_HAND, memory.read_stat(slot, "r_hand", battle)

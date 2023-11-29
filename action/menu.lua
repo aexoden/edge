@@ -978,7 +978,7 @@ function _M.battle.get_target_direction(cursor, index)
 	local direction
 
 	while index ~= cursor do
-		index, direction = unpack(parents[index])
+		index, direction = table.unpack(parents[index])
 	end
 
 	return direction

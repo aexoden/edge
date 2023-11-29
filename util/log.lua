@@ -58,7 +58,7 @@ function _M.game_time()
 	if time > 36000 then
 		return string.format("%11s", "-")
 	else
-		return string.format("%02d:%02d:%02d.%02d", time / 3600, (time / 60) % 60, time % 60, frames)
+		return string.format("%02d:%02d:%02d.%02d", time // 3600, (time // 60) % 60, time % 60, frames)
 	end
 end
 
@@ -72,7 +72,7 @@ function _M.get_time(actual)
 	if _base_frame then
 		local time = (end_frame - _base_frame) * 655171.0 / 39375000
 
-		return string.format("%02d:%02d:%05.2f", time / 3600, (time / 60) % 60, time % 60)
+		return string.format("%02d:%02d:%05.2f", time // 3600, (time // 60) % 60, time % 60)
 	else
 		return string.format("%11s", "-")
 	end

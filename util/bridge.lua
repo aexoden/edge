@@ -23,11 +23,7 @@
 local _M = {}
 
 local log = require "util.log"
-local socket = nil
-
-if CONFIG.LIVESPLIT then
-	socket = require "socket"
-end
+local socket = require "socket.core"
 
 --------------------------------------------------------------------------------
 -- Variables

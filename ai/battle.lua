@@ -49,7 +49,7 @@ local function _is_battle()
 end
 
 local function _check_target(mask, target)
-	return bit.band(mask, math.pow(2, 7 - target)) > 0
+	return (mask & (2 ^ (7 - target))) > 0
 end
 
 local function _read_damage(index)
@@ -71,8 +71,8 @@ local function _get_damage(wall)
 	local result = ""
 
 	if wall then
-		if bit.band(action_flags, game.battle.ACTION.MAGIC) > 0 and wall_active then
-			target_group = bit.bxor(target_group, 0x80)
+		if (action_flags & game.battle.ACTION.MAGIC) > 0 and wall_active then
+			target_group = target_group ~ 0x80
 			target_mask = memory.read("battle", "wall_targets")
 		else
 			return ""
@@ -173,21 +173,21 @@ local function _log_action()
 	local action
 	local critical = ""
 
-	if bit.band(action_flags, game.battle.ACTION.CRITICAL) > 0 then
+	if (action_flags & game.battle.ACTION.CRITICAL) > 0 then
 		critical = "critically "
 	end
 
-	if bit.band(action_flags, game.battle.ACTION.ATTACK) > 0 then
+	if (action_flags & game.battle.ACTION.ATTACK) > 0 then
 		action = "attacks"
-	elseif bit.band(action_flags, game.battle.ACTION.MAGIC) > 0 then
+	elseif (action_flags & game.battle.ACTION.MAGIC) > 0 then
 		if action_index == 0 then
 			action = string.format("casts %s", game.magic.get_spell_description(memory.read_stat(actor_slot, "subcommand", true)))
 		else
 			action = string.format("casts %s", game.magic.get_spell_description(action_index))
 		end
-	elseif bit.band(action_flags, game.battle.ACTION.ITEM) > 0 then
+	elseif (action_flags & game.battle.ACTION.ITEM) > 0 then
 		action = string.format("uses %s", game.item.get_description(action_index))
-	elseif bit.band(action_flags, game.battle.ACTION.COMMAND) > 0 then
+	elseif (action_flags & game.battle.ACTION.COMMAND) > 0 then
 		action = string.format("uses %s", game.battle.get_command_description(action_index))
 	elseif action_flags == game.battle.ACTION.MISS then
 		action = "attacks"
@@ -260,7 +260,7 @@ local function _get_goal_inventory(inventory_data)
 	local priority_map = {}
 
 	for i, entry in ipairs(inventory_data) do
-		local item, count, fixed, priorities = unpack(entry)
+		local item, count, fixed, priorities = table.unpack(entry)
 
 		if not count then
 			count = "any"
@@ -296,7 +296,7 @@ local function _get_goal_inventory(inventory_data)
 
 	for i = 0, 47 do
 		if current_inventory[i] then
-			local item, count = unpack(current_inventory[i])
+			local item, count = table.unpack(current_inventory[i])
 			local map_count = count
 
 			if fixed_map[item] and (fixed_map[item][map_count] or fixed_map[item]["any"]) then
@@ -411,7 +411,7 @@ local function _manage_inventory(limit, fixed_only, reset)
 
 	if fixed_only then
 		for i, entry in ipairs(inventory_data) do
-			local item, count, fixed, priorities = unpack(entry)
+			local item, count, fixed, priorities = table.unpack(entry)
 
 			if #fixed > 0 then
 				fixed_map[item] = true
@@ -3612,7 +3612,7 @@ function _M.cycle()
 					local command = _state.q[1]
 
 					if command then
-						if command[1](unpack(command[2])) then
+						if command[1](table.unpack(command[2])) then
 							table.remove(_state.q, 1)
 						end
 					end

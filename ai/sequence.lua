@@ -326,7 +326,7 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 			max_count = max_count + 1
 
 			if characters[character] then
-				if bit.band(characters[character], _RESTORE.HP) == _RESTORE.HP then
+				if (characters[character] & _RESTORE.HP) == _RESTORE.HP then
 					cure_count = cure_count + 1
 					target_hp[character] = memory.read_stat(slot, "hp_max") - hp
 
@@ -337,12 +337,12 @@ local function _restore_party(characters, underflow_target, open_menu, immediate
 					if hp == 0 then
 						life[character] = true
 					end
-				elseif bit.band(characters[character], _RESTORE.LIFE) == _RESTORE.LIFE and hp == 0 then
+				elseif (characters[character] & _RESTORE.LIFE) == _RESTORE.LIFE and hp == 0 then
 					target_hp[character] = memory.read_stat(slot, "stamina") * 5
 					life[character] = true
 				end
 
-				if bit.band(characters[character], _RESTORE.MP) == _RESTORE.MP then
+				if (characters[character] & _RESTORE.MP) == _RESTORE.MP then
 					target_mp[character] = memory.read_stat(slot, "mp_max") - mp
 
 					if target_mp[character] <= 0 then
@@ -6576,7 +6576,7 @@ function _M.cycle()
 				_state.healing()
 				_state.check_healing = false
 			else
-				local result = command[1](unpack(command[2]))
+				local result = command[1](table.unpack(command[2]))
 
 				if result then
 					table.remove(_q, 1)

@@ -4,22 +4,16 @@ Edge is a script for the BizHawk emulator to speed run Final Fantasy IV. It
 currently can run the following routes:
 
 * Any% No64 (Edge+Excalbur)
-* Any% No64 (Rosa) (partial support)
+* Any% No64 (Rosa)
 * Any% NoCW
 * Paladin%
 
+It may occasionally get stuck in Any% NoCW runs during the glitch portion.
+
 ## Prerequisites
 
-* BizHawk (currently tested with v2.3.2)
+* BizHawk (currently tested with v2.9.1)
 * Final Fantasy IV US 1.0 (originally released as Final Fantasy II)
-* luasocket (optional: for LiveSplit integration)
-
-BizHawk must be configured to use LuaInterface:
-
-1. Within BizHawk, go to Config->Customize in the menu.
-2. Click on the Advanced tab.
-3. At the bottom, under Lua Core, choose Lua+LuaInterface.
-4. Restart BizHawk.
 
 ## Configuration
 
@@ -58,7 +52,7 @@ seeds 5, 6, 7, etc.)
 ### LIVESPLIT
 
 Enables or disables LiveSplit integration. By default this is disabled. Enabling
-this requires luasocket and a correctly configured LiveSplit.
+this requires a correctly configured LiveSplit.
 
 ### SAVESTATE
 
@@ -84,24 +78,20 @@ for the current route by too much. It is disabled by default.
 This option displays an informational overlay to provide some basic information
 about the run. It is disabled by default.
 
-## LiveSplit Integration Requirements (optional)
+## LiveSplit Integration
 
-In order to use LiveSplit integration, you must be using a recent version of
-BizHawk (tested with v2.3.2+). You must also download luasocket and copy the
-socket.lua file to your root BizHawk directory.
-
-On the LiveSplit end, you must add the LiveSplit server to your layout.
-
-Again, this is entirely optional and is only useful if you want to record or
-stream runs with LiveSplit.
+On the LiveSplit end, you must add the LiveSplit server to your layout, ensure
+that it is configured to use port 16834, and then start the server with LiveSplit's
+right click menu.
 
 ## Usage
 
-1. Ensure the SRAM file is cleared. (The easiest way to do this is to load the
+1. Configure BizHawk to use BSNES as its SNES core. (Config->Preferred Cores->SNES)
+2. Ensure the SRAM file is cleared. (The easiest way to do this is to load the
    Final Fantasy II ROM image, right click on the display, and choose "Close and
    Clear SRAM".)
-2. Open the Final Fantasy II ROM image.
-3. Ensure the emulator is not paused.
-4. Open the BizHawk Lua Console, and load main.lua.
-5. From BizHawk's "Emulation" menu, choose "Reboot Core". The script should
+3. Open the Final Fantasy II ROM image.
+4. Ensure the emulator is not paused.
+5. Open the BizHawk Lua Console, and load main.lua.
+6. From BizHawk's "Emulation" menu, choose "Reboot Core". The script should
    begin a run from the beginning.
