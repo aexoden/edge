@@ -36,7 +36,7 @@ local sequence = require "ai.sequence"
 -- Variables
 --------------------------------------------------------------------------------
 
-local _state = nil
+local _state = {}
 local _splits = {}
 local _battle_count = 0
 
